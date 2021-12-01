@@ -1,0 +1,41 @@
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import ObservableGrid from '../components/ObservableGrid';
+import SampleRow from './SampleRow';
+
+const useStyles = makeStyles(() => ({
+  wrapper: {
+    display: 'flex',
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    flexDirection: 'column',
+  },
+}))
+
+const gridSpacing = 'minmax(200px, 1fr) 110px 2fr 3fr'
+const headers = [
+  { label: 'Name', property: 'name' },
+  { label: 'Description', property: 'description' },
+  { label: 'Price', property: 'price', align: 'flex-end', noSort: true },
+  { label: 'Actions', align: 'flex-end', noSort: true },
+]
+
+const ImplementationFrame = ({ rows }) => {
+  const theme = useTheme()
+  const classes = useStyles(theme)
+
+  return <div className={classes.wrapper}>
+    <ObservableGrid
+      {...{ headers, gridSpacing, rows }}
+      isEmpty={rows.length === 0}
+      emptyElement={<div>No data found ...</div>}
+      keyPattern={row => row.uuid}
+      rowOptions={row => ({
+        padding: '8px',
+      })}
+      rowRenderer={row => <SampleRow {...{ row }} />}
+    />
+  </div>
+}
+
+export default ImplementationFrame;
