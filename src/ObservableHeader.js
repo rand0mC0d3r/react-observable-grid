@@ -1,8 +1,9 @@
-import { Typography } from '@material-ui/core'
-import { makeStyles, useTheme } from '@material-ui/core/styles'
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward'
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'
-import PropTypes from 'prop-types'
+import { Typography } from '@material-ui/core';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import ArrowDropDownCircleOutlinedIcon from '@material-ui/icons/ArrowDropDownCircleOutlined';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles(theme => ({
   wrapper: {
@@ -10,53 +11,64 @@ const useStyles = makeStyles(theme => ({
   },
   header: {
     display: 'grid',
-    padding: '0px 12px',
     fontSize: '12px',
     minHeight: '50px',
     alignItems: 'center',
     gridColumnGap: '16px',
     gridRowGap: '16px',
 
-    borderBottom: `1px solid ${theme.palette.augmentColor({ main: theme.palette.primary.main }).light}`,
-    backgroundColor: `${theme.palette.augmentColor({ main: theme.palette.primary.light }).light}`
+    boxShadow: '0px 0px 1px 0px rgba(0,0,0,0.2)',
+    borderBottom: `2px solid ${theme.palette.divider}`,
   },
   flexbox: {
     display: 'flex',
     alignItems: 'center',
     flexWrap: 'nowrap',
-    gap: '0px'
+    gap: '4px'
+  },
+  flipped: {
+    transform: 'rotate(180deg)'
   }
 }))
 
-const ObservableHeader = ({ headers, gridSpacing, order, orderBy, handleRequestSort }) => {
+const ObservableHeader = ({ headers, gridSpacing, order, orderBy, handleRequestSort, rowOptions }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
 
   const evaluateOrderBy = ({ property, label }) => orderBy === (property || label.toLowerCase())
 
   return <div className={classes.wrapper}>
-    <div className={classes.header} style={{ gridTemplateColumns: gridSpacing }}>
+    <div
+      className={classes.header}
+      style={{
+        gridTemplateColumns: gridSpacing,
+        padding: rowOptions.padding,
+      }}
+    >
       {headers?.map(({ align, label, property, noSort }) => <div
           key={`${label}`}
           className={classes.flexbox}
+          onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
           style={{
-            justifyContent: align || 'flex-start'
-          }}
+              cursor: noSort ? 'default' : 'pointer',
+              justifyContent: align || 'flex-start'
+            }}
         >
           <Typography
             title={!noSort ? 'Click to toggle sorting direction for column' : ''}
-            onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
             variant='subtitle2'
             color={evaluateOrderBy({ property, label }) ? 'primary' : 'initial'}
             style={{
-              cursor: noSort ? 'default' : 'pointer',
+              lineHeight: '1',
               fontWeight: evaluateOrderBy({property, label}) ? 'bold' : 'normal'
             }}
           >
             {label}
           </Typography>
-          {evaluateOrderBy({ property, label }) &&
-            (order === 'asc' ? <ArrowDownwardIcon color='primary' /> : <ArrowUpwardIcon color='primary' />)}
+        {evaluateOrderBy({ property, label }) && <ArrowDropDownCircleOutlinedIcon
+          className={order === 'asc' && classes.flipped}
+          style={{ fontSize: 18 }}
+          color='primary' />}
       </div>)}
     </div>
   </div>
@@ -68,6 +80,7 @@ ObservableHeader.propTypes = {
   order: PropTypes.string.isRequired,
   orderBy: PropTypes.string.isRequired,
   handleRequestSort: PropTypes.func.isRequired,
+  rowOptions: PropTypes.object
 }
 
 export default ObservableHeader

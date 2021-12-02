@@ -28,11 +28,11 @@ const useStyles = makeStyles(theme => ({
     gridRowGap: '16px',
 
     '&:hover': {
-      backgroundColor: theme.palette.augmentColor({ main: theme.palette.primary.light }).light,
+      backgroundColor: theme.palette.augmentColor({ main: theme.palette.divider }).light,
     }
   },
   isSelected: {
-    backgroundColor: `${theme.palette.augmentColor({ main: theme.palette.primary.light }).main} !important`,
+    backgroundColor: `${theme.palette.augmentColor({ main: theme.palette.divider }).main} !important`,
   }
 }))
 

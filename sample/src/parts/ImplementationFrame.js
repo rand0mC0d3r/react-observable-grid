@@ -16,7 +16,7 @@ const gridSpacing = 'minmax(200px, 1fr) 3fr 110px 1fr'
 const headers = [
   { label: 'Name', property: 'name' },
   { label: 'Description', property: 'description' },
-  { label: 'Price', property: 'price', align: 'flex-end', noSort: true },
+  { label: 'Price', property: 'price', align: 'flex-end' },
   { label: 'Actions', align: 'flex-end', noSort: true },
 ]
 
@@ -30,9 +30,9 @@ const ImplementationFrame = ({ rows }) => {
       isEmpty={rows.length === 0}
       emptyElement={<div>No data found ...</div>}
       keyPattern={row => row.uuid}
-      rowOptions={row => ({
-        padding: '8px',
-      })}
+      rowOptions={{
+        padding: '4px 16px',
+      }}
       rowRenderer={row => <SampleRow {...{ row }} />}
     />
   </div>

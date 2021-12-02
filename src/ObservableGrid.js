@@ -11,12 +11,18 @@ const ObservableGrid =  ({
   keyPattern = () => { },
   gridSpacing,
   onLoadMore,
-  infiniteScrolling = false,
-  isScrollable = true,
+
   rowRenderer = () => { },
-  rowOptions = () => {},
-  isEmpty,
-  emptyElement
+  rowOptions = {
+    padding: '20px'
+  },
+
+  emptyElement,
+
+  isEmpty = true,
+  isInfinite = false,
+  isScrollable = true,
+  isAlternating = true,
 }) => {
   const [order, setOrder] = useState('asc')
   const [orderBy, setOrderBy] = useState('')
@@ -70,7 +76,6 @@ const ObservableGrid =  ({
 
   const callbackGetComparator = useCallback(getComparator, [order, orderBy])
   const callbackKeyPattern = useCallback(keyPattern, [keyPattern])
-  const callbackRowOptions = useCallback(rowOptions, [rowOptions])
 
   useEffect(() => {
     if (rows.length > 0) {
@@ -88,20 +93,20 @@ const ObservableGrid =  ({
   return isEmpty
     ? <ObservableEmpty>{emptyElement ? emptyElement : 'No data'}</ObservableEmpty>
     : <>
-      {throttling ? 'throttling' : 'not throttling'}
-      selectedIndex: {selectedIndex}
-      <ObservableHeader {...{ headers, gridSpacing, order, orderBy, handleRequestSort }} />
-      <ObservableContainer {...{ isScrollable }}>
+      {/* {throttling ? 'throttling' : 'not throttling'}
+      selectedIndex: {selectedIndex} {JSON.stringify(rowOptions)} */}
+      <ObservableHeader {...{ headers, gridSpacing, order, orderBy, handleRequestSort, rowOptions }} />
+      <ObservableContainer {...{ isScrollable, isAlternating }}>
         {sortedRows.map((row, index) => <ObservableRow
-          {...{ gridSpacing, updateGranularity, index, rowOptions: callbackRowOptions(row), currentIndex, isScrollable }}
+          {...{ gridSpacing, updateGranularity, index, rowOptions, currentIndex, isScrollable }}
           key={callbackKeyPattern(row)}
           isSelected={selectedIndex === index}
-          onClick={() => setSelectedIndex(index)}
+          onClick={() => setSelectedIndex(selectedIndex === index ? null : index)}
           isViewed={(vIndex) => Math.max(minRows, setCurrentIndex(vIndex))}
         >
           {rowRenderer(row, index)}
         </ObservableRow>)}
-        {infiniteScrolling && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />}
+        {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />}
       </ObservableContainer>
     </>
 }
