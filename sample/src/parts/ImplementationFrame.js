@@ -12,7 +12,7 @@ const useStyles = makeStyles(() => ({
   },
 }))
 
-const gridSpacing = 'minmax(200px, 1fr) 110px 2fr 3fr'
+const gridSpacing = 'minmax(200px, 1fr) 3fr 110px 1fr'
 const headers = [
   { label: 'Name', property: 'name' },
   { label: 'Description', property: 'description' },

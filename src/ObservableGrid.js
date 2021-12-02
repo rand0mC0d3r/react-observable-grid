@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
-import ObservableContainer from '../ObservableContainer'
-import ObservableEmpty from '../ObservableEmpty'
-import ObservableHeader from '../ObservableHeader'
-import ObservableLoadMore from '../ObservableLoadMore'
-import ObservableRow from '../ObservableRow'
+import ObservableContainer from './ObservableContainer'
+import ObservableEmpty from './ObservableEmpty'
+import ObservableHeader from './ObservableHeader'
+import ObservableLoadMore from './ObservableLoadMore'
+import ObservableRow from './ObservableRow'
 
 const ObservableGrid =  ({
   headers,
@@ -40,11 +40,13 @@ const ObservableGrid =  ({
     const aVal = typeof (a[valueOrderBy]) === 'string'
       ? a[valueOrderBy].toLowerCase()
       : a[valueOrderBy]
+
     const bVal = typeof (b[valueOrderBy]) === 'string'
       ? b[valueOrderBy].toLowerCase()
       : b[valueOrderBy]
     if (bVal < aVal) { return -1 }
     if (bVal > aVal) { return 1 }
+
     return 0
   }
 
@@ -59,8 +61,10 @@ const ObservableGrid =  ({
     stabilizedThis.sort((a, b) => {
       const resultOrder = comparator(a[0], b[0])
       if (resultOrder !== 0) return resultOrder
+
       return a[1] - b[1]
     })
+
     return stabilizedThis.map((el) => el[0])
   }
 
@@ -82,7 +86,7 @@ const ObservableGrid =  ({
   }, [gridSpacing])
 
   return isEmpty
-    ? <ObservableEmpty>{!!emptyElement ? emptyElement : 'No data'}</ObservableEmpty>
+    ? <ObservableEmpty>{emptyElement ? emptyElement : 'No data'}</ObservableEmpty>
     : <>
       {throttling ? 'throttling' : 'not throttling'}
       selectedIndex: {selectedIndex}

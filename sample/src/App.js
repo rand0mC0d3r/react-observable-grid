@@ -1,4 +1,4 @@
-import { createTheme, makeStyles, ThemeProvider, useTheme } from '@material-ui/core/styles';
+import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import { useMemo, useState } from 'react';
 import ImplementationFrame from './parts/ImplementationFrame';
 
@@ -29,26 +29,22 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const generateRows = (count) => new Array(count).fill().map((_, i) => ({
-  uuid: `uuid_${i}`,
-  name: `name ${i}`,
-  description: `description ${i}`,
-  price: `${i} @`,
-}));
-
 const App = () => {
   const [rows, setRows] = useState([]);
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
 
+  const generateRows = (count) => setRows(count === 0 ? [] : new Array(count).fill().map((_, i) => ({
+    uuid: `uuid_${i}`,
+    name: `name ${i}`,
+    description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar nisi pulvinar metus cursus, eget malesuada nunc auctor. Maecenas vitae suscipit elit, ut varius diam. Duis consectetur a erat non tempus. Sed molestie at nibh ut ullamcorper. Mauris hendrerit egestas quam, vitae dictum tellus condimentum ut. ${i}`,
+    price: `${i}.00 $`,
+  })));
+
   return <ThemeProvider {...{ theme }} >
     <div className={classes.wrapper}>
       <div className={classes.actions}>
-        <button onClick={() => setRows([])}>No data</button>
-        <button onClick={() => setRows(generateRows(50))}>Generate 50 rows</button>
-        <button onClick={() => setRows(generateRows(500))}>Generate 500 rows</button>
-        <button onClick={() => setRows(generateRows(5000))}>Generate 5000 rows</button>
-        <button onClick={() => setRows(generateRows(10000))}>Generate 10000 rows</button>
+        {[0, 10, 20, 50, 500, 5000].map(count => <button key={count} onClick={() => generateRows(count)}>Generate {count} rows</button>)}
       </div>
       <div className={classes.container}><ImplementationFrame {...{ rows }} /></div>
     </div>

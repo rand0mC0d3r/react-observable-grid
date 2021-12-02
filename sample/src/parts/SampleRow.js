@@ -1,6 +1,6 @@
-import { Typography } from '@material-ui/core'
+import { Typography } from '@material-ui/core';
 
-export default ({ inView = false, setSelected = () => { }, row: { name, description, price }}) => <>
+const SampleRow = ({ inView = false, setSelected = () => { }, row: { name, description, price }}) => <>
     {inView && <>
       <Typography style={{cursor: 'pointer'}} onClick={setSelected} variant='h6'>{name}</Typography>
       <Typography variant='body2'>{description}</Typography>
@@ -11,4 +11,6 @@ export default ({ inView = false, setSelected = () => { }, row: { name, descript
         button
       </div>
     </>}
-  </>
+</>
+
+export default SampleRow;
