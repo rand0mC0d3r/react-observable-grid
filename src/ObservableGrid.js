@@ -21,6 +21,7 @@ const ObservableGrid =  ({
 
   isEmpty = true,
   isInfinite = false,
+  isSelectable = true,
   isScrollable = true,
   isAlternating = true,
 }) => {
@@ -40,6 +41,11 @@ const ObservableGrid =  ({
     const isAsc = orderBy === property && order === 'asc'
     setOrder(isAsc ? 'desc' : 'asc')
     setOrderBy(property)
+  }
+
+  const handleResetSort = () => {
+    setOrderBy('')
+    setOrder('asc')
   }
 
   function descendingComparator(a, b, valueOrderBy) {
@@ -95,13 +101,13 @@ const ObservableGrid =  ({
     : <>
       {/* {throttling ? 'throttling' : 'not throttling'}
       selectedIndex: {selectedIndex} {JSON.stringify(rowOptions)} */}
-      <ObservableHeader {...{ headers, gridSpacing, order, orderBy, handleRequestSort, rowOptions }} />
+      <ObservableHeader {...{ headers, gridSpacing, order, orderBy, handleRequestSort, handleResetSort, rowOptions }} />
       <ObservableContainer {...{ isScrollable, isAlternating }}>
         {sortedRows.map((row, index) => <ObservableRow
           {...{ gridSpacing, updateGranularity, index, rowOptions, currentIndex, isScrollable }}
           key={callbackKeyPattern(row)}
-          isSelected={selectedIndex === index}
-          onClick={() => setSelectedIndex(selectedIndex === index ? null : index)}
+          isSelected={isSelectable && selectedIndex === index}
+          onClick={() => isSelectable && setSelectedIndex(selectedIndex === index ? null : index)}
           isViewed={(vIndex) => Math.max(minRows, setCurrentIndex(vIndex))}
         >
           {rowRenderer(row, index)}

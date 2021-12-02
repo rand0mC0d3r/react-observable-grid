@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const ObservableHeader = ({ headers, gridSpacing, order, orderBy, handleRequestSort, rowOptions }) => {
+const ObservableHeader = ({ headers, gridSpacing, order, orderBy, handleRequestSort, handleResetSort, rowOptions }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
 
@@ -49,6 +49,7 @@ const ObservableHeader = ({ headers, gridSpacing, order, orderBy, handleRequestS
           key={`${label}`}
           className={classes.flexbox}
           onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
+          onDoubleClick={() => !noSort && handleResetSort()}
           style={{
               cursor: noSort ? 'default' : 'pointer',
               justifyContent: align || 'flex-start'
@@ -66,7 +67,7 @@ const ObservableHeader = ({ headers, gridSpacing, order, orderBy, handleRequestS
             {label}
           </Typography>
         {evaluateOrderBy({ property, label }) && <ArrowDropDownCircleOutlinedIcon
-          className={order === 'asc' && classes.flipped}
+          className={order === 'asc' ? classes.flipped : null}
           style={{ fontSize: 18 }}
           color='primary' />}
       </div>)}
@@ -80,6 +81,7 @@ ObservableHeader.propTypes = {
   order: PropTypes.string.isRequired,
   orderBy: PropTypes.string.isRequired,
   handleRequestSort: PropTypes.func.isRequired,
+  handleResetSort: PropTypes.func.isRequired,
   rowOptions: PropTypes.object
 }
 

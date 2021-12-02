@@ -30,6 +30,7 @@ const ImplementationFrame = ({ rows }) => {
       isEmpty={rows.length === 0}
       emptyElement={<div>No data found ...</div>}
       keyPattern={row => row.uuid}
+      isSelectable={true}
       rowOptions={{
         padding: '4px 16px',
       }}
