@@ -13,19 +13,19 @@ const SampleRow = ({
           {name}
         </Typography>
         <div style={{ display: 'flex', flexDirection: 'row', gap: '8px'}}>
-        <Typography
-          style={{ cursor: 'pointer' }}
-          variant='caption'
-          color="textSecondary"
-        >
-          {nickname}
-        </Typography>
-        <Typography
-          style={{ cursor: 'pointer' }}
-          variant='caption'
-          color="textSecondary"
-        >
-          {streetname}
+          <Typography
+            style={{ cursor: 'pointer' }}
+            variant='caption'
+            color="textSecondary"
+          >
+            {nickname}
+          </Typography>
+          <Typography
+            style={{ cursor: 'pointer' }}
+            variant='caption'
+            color="textSecondary"
+          >
+            {streetname}
           </Typography>
         </div>
       </div>

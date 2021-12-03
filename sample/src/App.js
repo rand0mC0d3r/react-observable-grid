@@ -23,9 +23,10 @@ const useStyles = makeStyles(() => ({
     position: 'relative',
     borderRadius: '30px',
     maxWidth: '90%',
-    width: '70%',
-    border: '45px solid #333333',
-    height: '70%'
+    width: '80%',
+    border: '45px solid #333',
+    boxShadow: 'inset 0px 0px 3px 0px #333',
+    height: '80%'
   }
 }))
 
@@ -39,7 +40,6 @@ const App = () => {
     name: `${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)} ${i+1}`,
     nickname: `nck_${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)} ${i+1}`,
     streetname: `str_${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)} ${i+1}`,
-    name: `${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)} ${i+1}`,
     description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar nisi pulvinar metus cursus, eget malesuada nunc auctor. Maecenas vitae suscipit elit, ut varius diam. Duis consectetur a erat non tempus. Sed molestie at nibh ut ullamcorper. Mauris hendrerit egestas quam, vitae dictum tellus condimentum ut. ${i}`,
     price: `${i+1}.00 $`,
   })));
