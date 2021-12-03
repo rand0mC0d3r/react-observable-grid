@@ -41,6 +41,8 @@
   "author": "rand0mC0d3r",
   "license": "MIT",
   "scripts": {
+    "wipe": "rm -rf ./node_modules && cd sample && rm -rf ./node_modules",
+    "postinstall": "npm audit fix && cd sample && npm install",
     "dev": "ncu -u && concurrently \"npm run copy.component\" \"cd sample && npx react-scripts start\"",
     "start": "serve -s build",
     "prebuild": "npm install ./sample && npm run clone.component",
