@@ -12,7 +12,7 @@ const SampleRow = ({
           variant='subtitle2'>
           {name}
         </Typography>
-        <div style={{ display: 'flex', flexDirection: 'row'}}>
+        <div style={{ display: 'flex', flexDirection: 'row', gap: '8px'}}>
         <Typography
           style={{ cursor: 'pointer' }}
           variant='caption'

@@ -22,10 +22,8 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
     flexWrap: 'nowrap',
-
     gap: '4px'
   },
-
   secondaryHeaders: {
     display: 'flex',
     alignItems: 'center',
@@ -80,7 +78,8 @@ const ObservableHeader = ({ headers, order, orderBy, handleRequestSort, handleRe
             title={!noSort ? 'Click to toggle sorting direction for column' : ''}
             variant='subtitle2'
             style={{
-              lineHeight: '1',
+              lineHeight: '16px',
+              userSelect: 'none',
               fontWeight: evaluateOrderBy({property, label}) ? 'bold' : 'normal'
             }}
           >
@@ -93,9 +92,31 @@ const ObservableHeader = ({ headers, order, orderBy, handleRequestSort, handleRe
 
         </div>
         {secondaryHeaders && <div className={classes.secondaryHeaders}>
-            {secondaryHeaders.map(({ label, property }) => <Typography variant='caption' color="textSecondary">
-              {label}
-            </Typography>)}
+            {secondaryHeaders.map(({ label, property, noSort }) => <div
+              className={classes.flexbox}
+              style={{
+                cursor: noSort ? 'default' : 'pointer',
+              }}
+              key={`${label}_subHeader`}
+            >
+              <Typography
+                variant='caption'
+                style={{
+                  lineHeight: '1',
+                  userSelect: 'none',
+                  fontWeight: evaluateOrderBy({property, label}) ? 'bold' : 'normal'
+                }}
+                onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
+                onDoubleClick={() => !noSort && handleResetSort()}
+                color="textSecondary">
+                {label}
+              </Typography>
+              {evaluateOrderBy({ label, property }) && <ArrowDropDownIcon
+                color="action"
+                className={order === 'asc' ? classes.flipped : null}
+                style={{ fontSize: 16 }}
+              />}
+            </div>)}
           </div>}
       </div>)}
     </div>

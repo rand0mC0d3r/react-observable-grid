@@ -25,11 +25,12 @@ const headers = [
     ],
     secondaryHeaders: [
       {
-        label: 'Nickname',
-        property: 'nickname'
+        label: 'Name1',
+        property: 'nickname',
+        noSort: true
       },
       {
-        label: 'Street Name',
+        label: 'Name2',
         property: 'streetname'
       }
     ]
