@@ -30,6 +30,7 @@ const SampleRow = ({
         </div>
       </div>
       <Typography variant='body2'>{description}</Typography>
+      <Typography variant='body2'>tiles</Typography>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Typography variant='subtitle2'>{price}</Typography>
       </div>
