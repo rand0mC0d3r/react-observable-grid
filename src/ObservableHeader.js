@@ -102,7 +102,7 @@ const ObservableHeader = ({ headers, order, orderBy, handleRequestSort, handleRe
               <Typography
                 variant='caption'
                 style={{
-                  lineHeight: '1',
+                  lineHeight: '1.5',
                   userSelect: 'none',
                   fontWeight: evaluateOrderBy({property, label}) ? 'bold' : 'normal'
                 }}
@@ -114,7 +114,7 @@ const ObservableHeader = ({ headers, order, orderBy, handleRequestSort, handleRe
               {evaluateOrderBy({ label, property }) && <ArrowDropDownIcon
                 color="action"
                 className={order === 'asc' ? classes.flipped : null}
-                style={{ fontSize: 16 }}
+                style={{ fontSize: 12 }}
               />}
             </div>)}
           </div>}

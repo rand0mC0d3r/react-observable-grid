@@ -21,9 +21,9 @@ const ObservableGrid =  ({
 
   emptyElement,
 
-  // isDebugging = true,
   isEmpty = true,
   isInfinite = false,
+  isDebugging = true,
   isSelectable = true,
   isScrollable = true,
   isAlternating = true,
@@ -73,13 +73,12 @@ const ObservableGrid =  ({
   return isEmpty
     ? <ObservableEmpty>{emptyElement ? emptyElement : 'No data'}</ObservableEmpty>
     : <>
-      {/* {isDebugging && <ObservableDebugging>
+      {isDebugging && <ObservableDebugging>
         <div>{throttling ? 'throttling' : 'not throttling'}</div>
         <div>selectedIndex: {selectedIndex} {JSON.stringify(rowOptions)}</div>
-      </ObservableDebugging>} */}
+      </ObservableDebugging>}
 
-
-      <ObservableHeader {...{ headers, gridSpacing, order, orderBy, handleRequestSort, handleResetSort, rowOptions }} />
+      <ObservableHeader {...{ headers, order, orderBy, handleRequestSort, handleResetSort, rowOptions }} />
       <ObservableContainer {...{ isScrollable, isAlternating }}>
         {sortedRows.map((row, index) => <ObservableRow
           {...{ gridSpacing, updateGranularity, index, rowOptions, currentIndex, isScrollable }}

@@ -1,7 +1,7 @@
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
-import { cloneElement, useEffect } from 'react'
-import { useInView } from 'react-intersection-observer'
+import { cloneElement, useEffect, useState } from 'react'
+import { InView, useInView } from 'react-intersection-observer'
 // import { Wrapper } from './styles'
 
 // export const Wrapper = withTheme(styled.div.attrs(props => ({
@@ -53,7 +53,7 @@ const ObservableRow = ({
 }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
-  const [ref, inView] = useInView()
+  const [inView, setInView] = useState(false)
 
   useEffect(() => {
     if (inView
@@ -66,8 +66,22 @@ const ObservableRow = ({
   }, [inView, isViewed, isScrollable, index, currentIndex, updateGranularity])
 
   return <>
+    <InView
+      as='div'
+      className={`${classes.wrapper} ${isSelected && classes.isSelected}`}
+      onChange={setInView}
+      style={{
+        padding: rowOptions.padding,
+        gridTemplateColumns: gridSpacing
+      }}
+      key={index}
+      {...{ onClick }}
+      data-index={index}
+    >
+      {(inView || isScrollable) && children && cloneElement(children, { inView, index })}
+    </InView>
     {/* {rowOptions.isSelected && <>is selected</>} */}
-    {(isScrollable
+    {/* {(isScrollable
       ? !((index >= currentIndex + updateGranularity * 1.5) || (index <= Math.max(-1, currentIndex - updateGranularity * 4)))
       : true)
       && <div
@@ -81,7 +95,7 @@ const ObservableRow = ({
         data-index={index}
       >
         {(inView || isScrollable) && children && cloneElement(children, { inView, index })}
-      </div>}
+      </div>} */}
   </>
 }
 
