@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
     flexWrap: 'nowrap',
-    gap: '4px'
+    gap: '2px'
   },
   secondaryHeaders: {
     display: 'flex',
