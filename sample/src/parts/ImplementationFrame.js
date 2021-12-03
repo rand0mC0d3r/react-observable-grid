@@ -14,7 +14,26 @@ const useStyles = makeStyles(() => ({
 
 const gridSpacing = 'minmax(200px, 1fr) 3fr 110px 1fr'
 const headers = [
-  { label: 'Name', property: 'name' },
+  {
+    label: 'Name',
+    property: 'name',
+    additionalHeaders: [
+      {
+        label: 'Surname',
+        property: 'surname'
+      }
+    ],
+    secondaryHeaders: [
+      {
+        label: 'Nickname',
+        property: 'nickname'
+      },
+      {
+        label: 'Street Name',
+        property: 'streetname'
+      }
+    ]
+  },
   { label: 'Description', property: 'description' },
   { label: 'Price', property: 'price', align: 'flex-end' },
   { label: 'Actions', align: 'flex-end', noSort: true },

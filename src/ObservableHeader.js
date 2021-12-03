@@ -22,8 +22,24 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
     flexWrap: 'nowrap',
+
     gap: '4px'
   },
+
+  secondaryHeaders: {
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'nowrap',
+    gap: '8px'
+  },
+  headers: {
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'nowrap',
+    flexDirection: 'column',
+    gap: '4px'
+  },
+
   flipped: {
     transform: 'rotate(180deg)'
   }
@@ -37,14 +53,19 @@ const ObservableHeader = ({ headers, order, orderBy, handleRequestSort, handleRe
   const evaluateOrderBy = ({ property, label }) => orderBy === (property || label.toLowerCase())
 
   return <div className={classes.wrapper}>
-    <div
-      className={classes.header}
+    <div className={classes.header}
       style={{
         gridTemplateColumns: rowOptions.template,
         padding: rowOptions.padding,
       }}
     >
-      {headers?.map(({ align, label, property, noSort }) => <div
+      {headers?.map(({ align, label, property, secondaryHeaders, additionalHeaders, noSort }) =>
+        <div
+          className={classes.headers}
+          style={{
+              alignItems: align ? 'flex-end' : 'flex-start',
+            }}>
+        <div
           key={`${label}`}
           className={classes.flexbox}
           onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
@@ -67,8 +88,15 @@ const ObservableHeader = ({ headers, order, orderBy, handleRequestSort, handleRe
           </Typography>
         {evaluateOrderBy({ property, label }) && <ArrowDropDownIcon
           className={order === 'asc' ? classes.flipped : null}
-          style={{ fontSize: 18 }}
-        />}
+          style={{ fontSize: 16 }}
+          />}
+
+        </div>
+        {secondaryHeaders && <div className={classes.secondaryHeaders}>
+            {secondaryHeaders.map(({ label, property }) => <Typography variant='caption' color="textSecondary">
+              {label}
+            </Typography>)}
+          </div>}
       </div>)}
     </div>
   </div>
