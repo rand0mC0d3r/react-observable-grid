@@ -33,6 +33,7 @@ const ImplementationFrame = ({ rows }) => {
       isSelectable={true}
       rowOptions={{
         padding: '4px 16px',
+        template: gridSpacing,
       }}
       rowRenderer={row => <SampleRow {...{ row }} />}
     />

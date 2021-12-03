@@ -14,7 +14,8 @@ const ObservableGrid =  ({
 
   rowRenderer = () => { },
   rowOptions = {
-    padding: '20px'
+    padding: '20px',
+    template: 'repeat(1fr)'
   },
 
   emptyElement,

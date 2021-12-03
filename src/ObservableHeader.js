@@ -27,9 +27,10 @@ const useStyles = makeStyles(theme => ({
   flipped: {
     transform: 'rotate(180deg)'
   }
+
 }))
 
-const ObservableHeader = ({ headers, gridSpacing, order, orderBy, handleRequestSort, handleResetSort, rowOptions }) => {
+const ObservableHeader = ({ headers, order, orderBy, handleRequestSort, handleResetSort, rowOptions }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
 
@@ -39,7 +40,7 @@ const ObservableHeader = ({ headers, gridSpacing, order, orderBy, handleRequestS
     <div
       className={classes.header}
       style={{
-        gridTemplateColumns: gridSpacing,
+        gridTemplateColumns: rowOptions.template,
         padding: rowOptions.padding,
       }}
     >
@@ -50,13 +51,13 @@ const ObservableHeader = ({ headers, gridSpacing, order, orderBy, handleRequestS
           onDoubleClick={() => !noSort && handleResetSort()}
           style={{
               cursor: noSort ? 'default' : 'pointer',
-              justifyContent: align || 'flex-start'
+              justifyContent: align ? 'flex-end' : 'flex-start',
+              flexDirection: align === 'right' ? 'row-reverse' : 'row',
             }}
         >
           <Typography
             title={!noSort ? 'Click to toggle sorting direction for column' : ''}
             variant='subtitle2'
-            // color={evaluateOrderBy({ property, label }) ? 'primary' : 'initial'}
             style={{
               lineHeight: '1',
               fontWeight: evaluateOrderBy({property, label}) ? 'bold' : 'normal'
@@ -75,7 +76,6 @@ const ObservableHeader = ({ headers, gridSpacing, order, orderBy, handleRequestS
 
 ObservableHeader.propTypes = {
   headers: PropTypes.array.isRequired,
-  gridSpacing: PropTypes.string.isRequired,
   order: PropTypes.string.isRequired,
   orderBy: PropTypes.string.isRequired,
   handleRequestSort: PropTypes.func.isRequired,
