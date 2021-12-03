@@ -1,4 +1,5 @@
 export { default as ObservableContainer } from './ObservableContainer'
+export { default as ObservableDebugging } from './ObservableDebugging'
 export { default as ObservableEmpty } from './ObservableEmpty'
 export { default as ObservableGrid } from './ObservableGrid'
 export { default as ObservableHeader } from './ObservableHeader'
