@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import ObservableContainer from './ObservableContainer'
+import ObservableDebugging from './ObservableDebugging'
 import ObservableEmpty from './ObservableEmpty'
 import ObservableHeader from './ObservableHeader'
 import ObservableLoadMore from './ObservableLoadMore'
@@ -20,6 +21,7 @@ const ObservableGrid =  ({
 
   emptyElement,
 
+  // isDebugging = true,
   isEmpty = true,
   isInfinite = false,
   isSelectable = true,
@@ -36,7 +38,7 @@ const ObservableGrid =  ({
 
   const updateGranularity = 10
   const minRows = 10
-  const throttleLimit = 1000
+  const throttleLimit = 500
 
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && order === 'asc'
@@ -71,8 +73,12 @@ const ObservableGrid =  ({
   return isEmpty
     ? <ObservableEmpty>{emptyElement ? emptyElement : 'No data'}</ObservableEmpty>
     : <>
-      {/* {throttling ? 'throttling' : 'not throttling'}
-      selectedIndex: {selectedIndex} {JSON.stringify(rowOptions)} */}
+      {/* {isDebugging && <ObservableDebugging>
+        <div>{throttling ? 'throttling' : 'not throttling'}</div>
+        <div>selectedIndex: {selectedIndex} {JSON.stringify(rowOptions)}</div>
+      </ObservableDebugging>} */}
+
+
       <ObservableHeader {...{ headers, gridSpacing, order, orderBy, handleRequestSort, handleResetSort, rowOptions }} />
       <ObservableContainer {...{ isScrollable, isAlternating }}>
         {sortedRows.map((row, index) => <ObservableRow
