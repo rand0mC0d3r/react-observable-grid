@@ -1,8 +1,6 @@
 import { Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import ArrowDropDownCircleOutlinedIcon from '@material-ui/icons/ArrowDropDownCircleOutlined';
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import PropTypes from 'prop-types';
 
 const useStyles = makeStyles(theme => ({
@@ -58,7 +56,7 @@ const ObservableHeader = ({ headers, gridSpacing, order, orderBy, handleRequestS
           <Typography
             title={!noSort ? 'Click to toggle sorting direction for column' : ''}
             variant='subtitle2'
-            color={evaluateOrderBy({ property, label }) ? 'primary' : 'initial'}
+            // color={evaluateOrderBy({ property, label }) ? 'primary' : 'initial'}
             style={{
               lineHeight: '1',
               fontWeight: evaluateOrderBy({property, label}) ? 'bold' : 'normal'
@@ -66,10 +64,10 @@ const ObservableHeader = ({ headers, gridSpacing, order, orderBy, handleRequestS
           >
             {label}
           </Typography>
-        {evaluateOrderBy({ property, label }) && <ArrowDropDownCircleOutlinedIcon
+        {evaluateOrderBy({ property, label }) && <ArrowDropDownIcon
           className={order === 'asc' ? classes.flipped : null}
           style={{ fontSize: 18 }}
-          color='primary' />}
+        />}
       </div>)}
     </div>
   </div>
