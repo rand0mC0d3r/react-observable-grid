@@ -36,9 +36,9 @@ const App = () => {
 
   const generateRows = (count) => setRows(count === 0 ? [] : new Array(count).fill().map((_, i) => ({
     uuid: `uuid_${i}`,
-    name: `name ${i}`,
+    name: `name ${i+1}`,
     description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar nisi pulvinar metus cursus, eget malesuada nunc auctor. Maecenas vitae suscipit elit, ut varius diam. Duis consectetur a erat non tempus. Sed molestie at nibh ut ullamcorper. Mauris hendrerit egestas quam, vitae dictum tellus condimentum ut. ${i}`,
-    price: `${i}.00 $`,
+    price: `${i+1}.00 $`,
   })));
 
   return <ThemeProvider {...{ theme }} >
