@@ -25,7 +25,6 @@ const useStyles = makeStyles(() => ({
     maxWidth: '90%',
     width: '80%',
     border: '45px solid #333',
-    boxShadow: 'inset 0px 0px 3px 0px #333',
     height: '80%'
   }
 }))
