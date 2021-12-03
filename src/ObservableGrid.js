@@ -48,47 +48,18 @@ const ObservableGrid =  ({
     setOrder('asc')
   }
 
-  function descendingComparator(a, b, valueOrderBy) {
-    const aVal = typeof (a[valueOrderBy]) === 'string'
-      ? a[valueOrderBy].toLowerCase()
-      : a[valueOrderBy]
-
-    const bVal = typeof (b[valueOrderBy]) === 'string'
-      ? b[valueOrderBy].toLowerCase()
-      : b[valueOrderBy]
-    if (bVal < aVal) { return -1 }
-    if (bVal > aVal) { return 1 }
-
-    return 0
-  }
-
-  function getComparator() {
-    return order === 'desc'
-      ? (a, b) => descendingComparator(a, b, orderBy)
-      : (a, b) => -descendingComparator(a, b, orderBy)
-  }
-
-  function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index])
-    stabilizedThis.sort((a, b) => {
-      const resultOrder = comparator(a[0], b[0])
-      if (resultOrder !== 0) return resultOrder
-
-      return a[1] - b[1]
-    })
-
-    return stabilizedThis.map((el) => el[0])
-  }
-
-  const callbackGetComparator = useCallback(getComparator, [order, orderBy])
   const callbackKeyPattern = useCallback(keyPattern, [keyPattern])
 
   useEffect(() => {
     if (rows.length > 0) {
-      setThrottling(rows.length > throttleLimit)
-      setSortedRows(stableSort(rows, callbackGetComparator()))
+      const collator = new Intl.Collator(undefined, {
+        numeric: true,
+        sensitivity: 'base'
+      })
+      const sortedList = rows.sort((a, b) => collator.compare(a[orderBy], b[orderBy]))
+      setSortedRows(order === 'asc' ? sortedList : sortedList.reverse())
     }
-  }, [rows, callbackGetComparator])
+  }, [rows, order, orderBy])
 
   useEffect(() => {
     if (String(gridSpacing).indexOf('minmax') === -1) {
