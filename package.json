@@ -5,17 +5,17 @@
   "main": "lib/index.js",
   "private": false,
   "devDependencies": {
-    "@babel/cli": "^7.16.0",
-    "@babel/core": "^7.16.0",
-    "@babel/preset-env": "^7.16.4",
-    "@babel/preset-react": "^7.16.0",
-    "@babel/types": "^7.16.0",
-    "babel-eslint": "^10.0.3",
+    "@babel/cli": "7.16.0",
+    "@babel/core": "7.16.0",
+    "@babel/preset-env": "7.16.4",
+    "@babel/preset-react": "7.16.0",
+    "@babel/types": "7.16.0",
+    "babel-eslint": "10.0.3",
     "babel-loader": "8.2.3",
     "concurrently": "^6.4.0",
     "copy-and-watch": "^0.1.6",
     "eslint-plugin-mui-unused-classes": "^1.0.3",
-    "npm-check-updates": "^12.0.2"
+    "npm-check-updates": "12.0.2"
   },
   "dependencies": {
     "@material-ui/core": ">=4.12.3",
@@ -41,9 +41,9 @@
   "author": "rand0mC0d3r",
   "license": "MIT",
   "scripts": {
-    "wipe": "rm -rf ./node_modules && cd sample && rm -rf ./node_modules",
+    "wipe": "rm -rf package-lock.json && rm -rf ./node_modules && cd sample && rm -rf package-lock.json && rm -rf ./node_modules",
     "postinstall": "npm audit fix && cd sample && npm install",
-    "dev": "ncu -u && concurrently \"npm run copy.component\" \"cd sample && npx react-scripts start\"",
+    "dev": "concurrently \"npm run copy.component\" \"cd sample && npx react-scripts start\"",
     "start": "serve -s build",
     "prebuild": "npm install ./sample && npm run clone.component",
     "build": "rm -rf ./build && cd sample && npx react-scripts build && mv ./build ../",
