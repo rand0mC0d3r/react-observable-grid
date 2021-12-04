@@ -28,6 +28,9 @@ const useStyles = makeStyles(theme => ({
   miniFlexbox: {
     gap: '2px',
   },
+  maxiFlexbox: {
+    gap: '8px',
+  },
   secondaryHeaders: {
     display: 'flex',
     alignItems: 'center',
@@ -61,13 +64,8 @@ const ObservableHeader = ({
   const classes = useStyles(theme)
   const evaluateOrderBy = ({ property, label }) => orderBy === (property || label?.toLowerCase())
 
-  return <div className={classes.wrapper}>
-    <div className={classes.header} style={{ padding: rowOptions.padding, gridTemplateColumns: gridTemplateColumns}}>
-      {headers?.map(({ align, label, icon, tooltip, property, secondaryHeaders, additionalHeaders, noSort }) =>
-        <div key={`${label}`} className={classes.headers} style={{ alignItems: align ? 'flex-end' : 'flex-start' }}>
-
-          <div style={{ display: 'flex', gap: '8px'}}>
-            <Tooltip arrow placement="left" title={tooltip || (!noSort ? 'Click to toggle sorting direction for column' : '')}>
+  const renderMainHeader = ({tooltip, noSort, property, label, icon, align}) => {
+    return <Tooltip arrow placement="left" title={tooltip || (!noSort ? 'Click to toggle sorting direction for column' : '')}>
               <div
                 className={classes.flexbox}
                 onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
@@ -99,49 +97,23 @@ const ObservableHeader = ({
                 />}
               </div>
             </Tooltip>
+  }
+
+  return <div className={classes.wrapper}>
+    <div className={classes.header} style={{ padding: rowOptions.padding, gridTemplateColumns: gridTemplateColumns}}>
+      {headers?.map(({ align, label, icon, tooltip, property, secondaryHeaders, additionalHeaders, noSort }) =>
+        <div key={`${label}`} className={classes.headers} style={{ alignItems: align ? 'flex-end' : 'flex-start' }}>
+
+          <div className={`${classes.flexbox} ${classes.maxiFlexbox}`}>
+            {renderMainHeader({tooltip, noSort, property, label, icon, align})}
             {additionalHeaders && <div className={classes.secondaryHeaders}>
-                {additionalHeaders.map(({ label, property, noSort, icon }) =>
-                  <Tooltip arrow placement="left" title={tooltip || (!noSort ? 'Click to toggle sorting direction for column' : '')}>
-                <div
-                  className={classes.flexbox}
-                  onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
-                  onDoubleClick={() => !noSort && handleResetSort()}
-                  style={{
-                    cursor: noSort ? 'default' : 'pointer',
-                    justifyContent: align ? 'flex-end' : 'flex-start',
-                    flexDirection: align === 'right' ? 'row-reverse' : 'row',
-                  }}
-                >
-                  {icon && cloneElement(icon, { style: { fontSize: 16 } })}
-                  <Typography
-                    variant='subtitle2'
-                    style={{
-                      lineHeight: '16px',
-                      flexOrder: 0,
-                      userSelect: 'none',
-                      fontWeight: evaluateOrderBy({property, label}) ? 'bold' : 'normal'
-                    }}
-                  >
-                    {label}
-                  </Typography>
-                  {evaluateOrderBy({ property, label }) && <ArrowDropDownIcon
-                    className={order === 'asc' ? classes.flipped : null}
-                      style={{
-                        fontSize: 16,
-                        order: align ? -1 : 1,
-                      }}
-                  />}
-                </div>
-              </Tooltip>)}
+              {additionalHeaders.map(({ label, property, noSort, icon }) => renderMainHeader({tooltip, noSort, property, label, icon, align}))}
             </div>}
           </div>
         {secondaryHeaders && <div className={classes.secondaryHeaders}>
             {secondaryHeaders.map(({ label, property, noSort }) => <div
               className={`${classes.flexbox} ${classes.miniFlexbox}`}
-              style={{
-                // flexDirection: 'row-reverse',
-                cursor: noSort ? 'default' : 'pointer',
-              }}
+              style={{ cursor: noSort ? 'default' : 'pointer', }}
               key={`${label}_subHeader`}
             >
               <Typography
@@ -160,10 +132,7 @@ const ObservableHeader = ({
               {evaluateOrderBy({ label, property }) && <ArrowDropDownIcon
                 color="action"
                 className={order === 'asc' ? classes.flipped : null}
-                style={{
-                  fontSize: 12,
-                  order: align ? -1 : 1,
-                }}
+                style={{ fontSize: 12, order: align ? -1 : 1, }}
               />}
             </div>)}
           </div>}
@@ -173,6 +142,7 @@ const ObservableHeader = ({
 }
 
 ObservableHeader.propTypes = {
+  gridTemplateColumns: PropTypes.string.isRequired,
   headers: PropTypes.array.isRequired,
   order: PropTypes.string.isRequired,
   orderBy: PropTypes.string.isRequired,
