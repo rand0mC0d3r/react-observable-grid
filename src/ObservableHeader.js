@@ -62,53 +62,79 @@ const ObservableHeader = ({
   const evaluateOrderBy = ({ property, label }) => orderBy === (property || label?.toLowerCase())
 
   return <div className={classes.wrapper}>
-    <div
-      className={classes.header}
-      style={{
-        padding: rowOptions.padding,
-        gridTemplateColumns: gridTemplateColumns,
-      }}
-    >
+    <div className={classes.header} style={{ padding: rowOptions.padding, gridTemplateColumns: gridTemplateColumns}}>
       {headers?.map(({ align, label, icon, tooltip, property, secondaryHeaders, additionalHeaders, noSort }) =>
-        <div
-          key={`${label}`}
-          className={classes.headers}
-          style={{
-              alignItems: align ? 'flex-end' : 'flex-start',
-          }}>
+        <div key={`${label}`} className={classes.headers} style={{ alignItems: align ? 'flex-end' : 'flex-start' }}>
 
-          <Tooltip arrow placement="left" title={tooltip || (!noSort ? 'Click to toggle sorting direction for column' : '')}>
-            <div
-              className={classes.flexbox}
-              onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
-              onDoubleClick={() => !noSort && handleResetSort()}
-              style={{
-                cursor: noSort ? 'default' : 'pointer',
-                justifyContent: align ? 'flex-end' : 'flex-start',
-                flexDirection: align === 'right' ? 'row-reverse' : 'row',
-              }}
-            >
-              {icon && cloneElement(icon, { style: { fontSize: 16 } })}
-              <Typography
-                variant='subtitle2'
+          <div style={{ display: 'flex', gap: '8px'}}>
+            <Tooltip arrow placement="left" title={tooltip || (!noSort ? 'Click to toggle sorting direction for column' : '')}>
+              <div
+                className={classes.flexbox}
+                onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
+                onDoubleClick={() => !noSort && handleResetSort()}
                 style={{
-                  lineHeight: '16px',
-                  flexOrder: 0,
-                  userSelect: 'none',
-                  fontWeight: evaluateOrderBy({property, label}) ? 'bold' : 'normal'
+                  cursor: noSort ? 'default' : 'pointer',
+                  justifyContent: align ? 'flex-end' : 'flex-start',
+                  flexDirection: align === 'right' ? 'row-reverse' : 'row',
                 }}
               >
-                {label}
-              </Typography>
-              {evaluateOrderBy({ property, label }) && <ArrowDropDownIcon
-                className={order === 'asc' ? classes.flipped : null}
+                {icon && cloneElement(icon, { style: { fontSize: 16 } })}
+                <Typography
+                  variant='subtitle2'
                   style={{
-                    fontSize: 16,
-                    order: align ? -1 : 1,
+                    lineHeight: '16px',
+                    flexOrder: 0,
+                    userSelect: 'none',
+                    fontWeight: evaluateOrderBy({property, label}) ? 'bold' : 'normal'
                   }}
-              />}
-            </div>
-          </Tooltip>
+                >
+                  {label}
+                </Typography>
+                {evaluateOrderBy({ property, label }) && <ArrowDropDownIcon
+                  className={order === 'asc' ? classes.flipped : null}
+                    style={{
+                      fontSize: 16,
+                      order: align ? -1 : 1,
+                    }}
+                />}
+              </div>
+            </Tooltip>
+            {additionalHeaders && <div className={classes.secondaryHeaders}>
+                {additionalHeaders.map(({ label, property, noSort, icon }) =>
+                  <Tooltip arrow placement="left" title={tooltip || (!noSort ? 'Click to toggle sorting direction for column' : '')}>
+                <div
+                  className={classes.flexbox}
+                  onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
+                  onDoubleClick={() => !noSort && handleResetSort()}
+                  style={{
+                    cursor: noSort ? 'default' : 'pointer',
+                    justifyContent: align ? 'flex-end' : 'flex-start',
+                    flexDirection: align === 'right' ? 'row-reverse' : 'row',
+                  }}
+                >
+                  {icon && cloneElement(icon, { style: { fontSize: 16 } })}
+                  <Typography
+                    variant='subtitle2'
+                    style={{
+                      lineHeight: '16px',
+                      flexOrder: 0,
+                      userSelect: 'none',
+                      fontWeight: evaluateOrderBy({property, label}) ? 'bold' : 'normal'
+                    }}
+                  >
+                    {label}
+                  </Typography>
+                  {evaluateOrderBy({ property, label }) && <ArrowDropDownIcon
+                    className={order === 'asc' ? classes.flipped : null}
+                      style={{
+                        fontSize: 16,
+                        order: align ? -1 : 1,
+                      }}
+                  />}
+                </div>
+              </Tooltip>)}
+            </div>}
+          </div>
         {secondaryHeaders && <div className={classes.secondaryHeaders}>
             {secondaryHeaders.map(({ label, property, noSort }) => <div
               className={`${classes.flexbox} ${classes.miniFlexbox}`}

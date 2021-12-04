@@ -3,6 +3,7 @@ import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles
 import GitHubIcon from '@material-ui/icons/GitHub';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import MouseIcon from '@material-ui/icons/Mouse';
 import SubjectIcon from '@material-ui/icons/Subject';
 import { useEffect, useMemo, useState } from 'react';
 import ObservableGrid from './components/ObservableGrid';
@@ -57,6 +58,7 @@ const headers = [
     additionalHeaders: [
       {
         label: 'Surname',
+        icon: <MouseIcon />,
         property: 'surname'
       }
     ],
@@ -153,9 +155,10 @@ const App = () => {
 
   const generateRows = (count) => setRows(count === 0 ? [] : new Array(count).fill().map((_, i) => ({
     uuid: `uuid_${i}`,
-    name: `${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)} ${i+1}`,
-    nickname: `nck_${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)} ${i+1}`,
-    streetname: `str_${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)} ${i+1}`,
+    name: `${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)}.${i+1}`,
+    surname: `${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)}.${i+1}`,
+    nickname: `n1_${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 3)}${i+1}`,
+    streetname: `n2_${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 3)}${i+1}`,
     description: [
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       'Donec pulvinar nisi pulvinar metus cursus, eget malesuada nunc auctor.',

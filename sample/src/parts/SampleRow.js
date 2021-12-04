@@ -3,14 +3,14 @@ import { Typography } from '@material-ui/core';
 const SampleRow = ({
   inView = false,
   setSelected = () => { },
-  row: { name, description, price, currency, nickname, streetname } }) => <>
+  row: { name, surname, description, price, currency, nickname, streetname } }) => <>
     {inView && <>
       <div style={{ display: 'flex', flexDirection: 'column'}}>
         <Typography
           style={{ cursor: 'pointer' }}
           onClick={setSelected}
           variant='subtitle2'>
-          {name}
+          {name} {surname}
         </Typography>
         <div style={{ display: 'flex', flexDirection: 'row', gap: '8px'}}>
           <Typography
