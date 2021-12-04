@@ -1,3 +1,4 @@
+import { createNewSortInstance, sort } from 'fast-sort'
 import { useCallback, useEffect, useState } from 'react'
 import ObservableContainer from './ObservableContainer'
 import ObservableDebugging from './ObservableDebugging'
@@ -41,8 +42,11 @@ const ObservableGrid =  ({
   const throttleLimit = 500
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
 
+  const naturalSort = createNewSortInstance({
+    comparer: collator.compare,
+  })
+
   const handleRequestSort = (property) => {
-    console.log('handleRequestSort', property)
     const isAsc = orderBy === property && order === 'asc'
     setOrder(isAsc ? 'desc' : 'asc')
     setOrderBy(property)
@@ -57,8 +61,9 @@ const ObservableGrid =  ({
 
   useEffect(() => {
     if (rows.length > 0) {
-      const sortedList = rows.sort((a, b) => collator.compare(a[orderBy], b[orderBy]))
-      setSortedRows(order === 'asc' ? sortedList : sortedList.reverse())
+      setSortedRows(order === 'asc'
+        ? naturalSort(rows).asc([r => r[orderBy]])
+        : naturalSort(rows).desc([r => r[orderBy]]))
     }
   }, [rows, order, orderBy])
 
