@@ -53,8 +53,8 @@ const ObservableHeader = ({ headers, order, orderBy, handleRequestSort, handleRe
   return <div className={classes.wrapper}>
     <div className={classes.header}
       style={{
-        gridTemplateColumns: rowOptions.template,
         padding: rowOptions.padding,
+        gridTemplateColumns: headers.map(header => header.width).join(' '),
       }}
     >
       {headers?.map(({ align, label, property, secondaryHeaders, additionalHeaders, noSort }) =>

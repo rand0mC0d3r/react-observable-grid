@@ -1,5 +1,6 @@
-import { Button, Chip, Typography } from '@material-ui/core';
+import { Button, Chip, IconButton, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import GitHubIcon from '@material-ui/icons/GitHub';
 import { useEffect, useMemo, useState } from 'react';
 import ObservableGrid from './components/ObservableGrid';
 import SampleRow from './parts/SampleRow';
@@ -33,11 +34,12 @@ const useStyles = makeStyles(() => ({
     width: '90%',
   },
   container: {
+    minWidth: '800px',
     position: 'relative',
-    borderRadius: '30px',
+    borderRadius: '4px',
     maxWidth: '95%',
     width: '90%',
-    border: '45px solid #333',
+    border: '4px solid #333',
     height: '80%'
   }
 }))
@@ -47,6 +49,7 @@ const headers = [
   {
     label: 'Name',
     property: 'name',
+    width: 'minmax(200px, 1fr)',
     additionalHeaders: [
       {
         label: 'Surname',
@@ -65,10 +68,28 @@ const headers = [
       }
     ]
   },
-  { label: 'Description', property: 'description' },
-  { label: 'Tiles', property: 'tiles' },
-  { label: 'Price', property: 'price', align: 'flex-end' },
-  { label: 'Actions', align: 'flex-end', noSort: true },
+  {
+    label: 'Description',
+    property: 'description',
+    width: '3fr',
+  },
+  {
+    label: 'Tiles',
+    property: 'tiles',
+    width: 'minmax(100px, 300px)',
+  },
+  {
+    label: 'Price',
+    property: 'price',
+    align: 'flex-end',
+    width: '110px',
+  },
+  {
+    label: 'Actions',
+    align: 'flex-end',
+    noSort: true,
+    width: '1fr',
+  },
 ]
 
 const App = () => {
@@ -108,16 +129,23 @@ const App = () => {
   return <ThemeProvider {...{ theme }} >
     <div className={classes.wrapper}>
       <div className={`${classes.actions} ${classes.bigContainer}`}>
-        <Typography color="primary" variant="h6">React Grid Observable</Typography>
-
         <div className={classes.actions}>
-          {[0, 10, 20, 50, 500, 5000].map(count => <Button variant="outlined" color="primary" key={count} onClick={() => generateRows(count)}>{count} rows</Button>)}
+          <Typography color="textPrimary" variant="h6">React Grid Observable</Typography>
+          <IconButton onClick={() => window.open('https://github.com/rand0mC0d3r/react-observable-grid')}>
+            <GitHubIcon />
+          </IconButton>
         </div>
 
         <div className={classes.actions}>
-          <Chip variant="outlined" label={`Rows ${rows.length}`} />
-          <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debugging ${isDebugging}`} />
+          <Chip variant="outlined" label={`Rows: ${rows.length}`} />
+          <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debugging: ${isDebugging ? 'ON' : 'OFF'}`} />
         </div>
+
+        <div className={classes.actions}>
+          {[0, 10, 20, 50, 500, 5000].map(count => <Button style={{minWidth: 'unset'}} variant="outlined" key={count} onClick={() => generateRows(count)}>{count}</Button>)}
+        </div>
+
+
 
       </div>
       <div className={classes.container}>
