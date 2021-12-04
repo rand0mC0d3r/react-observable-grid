@@ -80,6 +80,8 @@ const ObservableGrid =  ({
     : <>
       {isDebugging && <ObservableDebugging items={[
         { label: 'throttling', value: throttling },
+        { label: 'order', value: order },
+        { label: 'orderBy', value: orderBy },
         { label: 'selectedIndex', value: selectedIndex },
         { label: 'sortedRows', value: sortedRows.length },
       ]}>

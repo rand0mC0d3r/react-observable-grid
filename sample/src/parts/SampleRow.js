@@ -3,7 +3,7 @@ import { Typography } from '@material-ui/core';
 const SampleRow = ({
   inView = false,
   setSelected = () => { },
-  row: { name, description, price, nickname, streetname } }) => <>
+  row: { name, description, price, currency, nickname, streetname } }) => <>
     {inView && <>
       <div style={{ display: 'flex', flexDirection: 'column'}}>
         <Typography
@@ -32,7 +32,7 @@ const SampleRow = ({
       <Typography variant='body2'>{description}</Typography>
       <Typography variant='body2'>tiles</Typography>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Typography variant='subtitle2'>{price}</Typography>
+        <Typography variant='subtitle2'>{price} {currency}</Typography>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         button

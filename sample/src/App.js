@@ -1,6 +1,9 @@
 import { Button, Chip, IconButton, TextField, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import GitHubIcon from '@material-ui/icons/GitHub';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import SubjectIcon from '@material-ui/icons/Subject';
 import { useEffect, useMemo, useState } from 'react';
 import ObservableGrid from './components/ObservableGrid';
 import SampleRow from './parts/SampleRow';
@@ -44,10 +47,10 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const gridSpacing = 'minmax(200px, 1fr) 3fr minmax(100px, 300px) 110px 1fr'
 const headers = [
   {
     label: 'Name',
+    icon: <GitHubIcon />,
     property: 'name',
     width: 'minmax(200px, 1fr)',
     additionalHeaders: [
@@ -60,7 +63,7 @@ const headers = [
       {
         label: 'Name1',
         property: 'nickname',
-        noSort: true
+        // noSort: true
       },
       {
         label: 'Name2',
@@ -70,6 +73,7 @@ const headers = [
   },
   {
     label: 'Description',
+    icon: <SubjectIcon />,
     property: 'description',
     width: '3fr',
   },
@@ -80,17 +84,60 @@ const headers = [
   },
   {
     label: 'Price',
+    icon: <MonetizationOnIcon />,
     property: 'price',
     align: 'flex-end',
     width: '110px',
+    secondaryHeaders: [
+      {
+        label: 'Currency',
+        property: 'currency',
+      },
+    ]
   },
   {
-    label: 'Actions',
+    icon: <MoreHorizIcon />,
     align: 'flex-end',
     noSort: true,
     width: '1fr',
   },
 ]
+
+const colorList = [
+  'pink',
+  'green',
+  'blue',
+  'yellow',
+  'orange',
+  'purple',
+  'brown',
+  'grey',
+  'black',
+  'white',
+]
+
+const flavorsList = [
+  'Chocolate',
+  'Vanilla',
+  'Strawberry',
+  'Mint',
+].map((flavor, index) => ({
+  id: index,
+  name: flavor,
+  color: colorList[index % colorList.length],
+}))
+
+const currencies = [
+  "USD",
+  "EUR",
+  "GBP",
+  "JPY",
+  "CAD",
+  "AUD",
+  "CHF",
+  "SEK",
+  "NZD"
+];
 
 const App = () => {
   const [rows, setRows] = useState([]);
@@ -100,6 +147,8 @@ const App = () => {
   const [isDebugging, setIsDebugging] = useState(false);
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
+
+
 
   const generateRows = (count) => setRows(count === 0 ? [] : new Array(count).fill().map((_, i) => ({
     uuid: `uuid_${i}`,
@@ -124,7 +173,8 @@ const App = () => {
       'Integer at ligula ac neque accumsan tincidunt.',
     ][Math.floor(Math.random()*14)]
   ,
-    price: `${i+1}.00 $`,
+    price: `${i + 1}.0${Math.floor(Math.random() * 100)}`,
+    currency: currencies[Math.floor(Math.random() * currencies.length)],
   })));
 
   useEffect(() => generateRows(30), [])
@@ -172,7 +222,6 @@ const App = () => {
             isSelectable={true}
             rowOptions={{
               padding: '4px 16px',
-              template: gridSpacing,
             }}
             rowRenderer={row => <SampleRow {...{ row }} />}
           />

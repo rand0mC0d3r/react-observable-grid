@@ -2,7 +2,7 @@ import { Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import PropTypes from 'prop-types';
-import { useCallback, useEffect, useState } from 'react';
+import { cloneElement, useCallback, useEffect, useState } from 'react';
 
 const useStyles = makeStyles(theme => ({
   wrapper: {
@@ -23,7 +23,10 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
     flexWrap: 'nowrap',
-    gap: '2px'
+    gap: '4px'
+  },
+  miniFlexbox: {
+    gap: '2px',
   },
   secondaryHeaders: {
     display: 'flex',
@@ -45,20 +48,28 @@ const useStyles = makeStyles(theme => ({
 
 }))
 
-const ObservableHeader = ({ gridTemplateColumns, headers, order, orderBy, handleRequestSort, handleResetSort, rowOptions }) => {
+const ObservableHeader = ({
+  gridTemplateColumns,
+  headers,
+  order,
+  orderBy,
+  handleRequestSort,
+  handleResetSort,
+  rowOptions
+}) => {
   const theme = useTheme()
   const classes = useStyles(theme)
-
-  const evaluateOrderBy = ({ property, label }) => orderBy === (property || label.toLowerCase())
+  const evaluateOrderBy = ({ property, label }) => orderBy === (property || label?.toLowerCase())
 
   return <div className={classes.wrapper}>
-    <div className={classes.header}
+    <div
+      className={classes.header}
       style={{
         padding: rowOptions.padding,
         gridTemplateColumns: gridTemplateColumns,
       }}
     >
-      {headers?.map(({ align, label, property, secondaryHeaders, additionalHeaders, noSort }) =>
+      {headers?.map(({ align, label, icon, property, secondaryHeaders, additionalHeaders, noSort }) =>
         <div
           key={`${label}`}
           className={classes.headers}
@@ -74,28 +85,33 @@ const ObservableHeader = ({ gridTemplateColumns, headers, order, orderBy, handle
               justifyContent: align ? 'flex-end' : 'flex-start',
               flexDirection: align === 'right' ? 'row-reverse' : 'row',
             }}
-        >
+          >
+            {icon && cloneElement(icon, { style: { fontSize: 16 } })}
           <Typography
             title={!noSort ? 'Click to toggle sorting direction for column' : ''}
             variant='subtitle2'
             style={{
               lineHeight: '16px',
+              flexOrder: 0,
               userSelect: 'none',
               fontWeight: evaluateOrderBy({property, label}) ? 'bold' : 'normal'
             }}
           >
             {label}
           </Typography>
-        {evaluateOrderBy({ property, label }) && <ArrowDropDownIcon
-          className={order === 'asc' ? classes.flipped : null}
-          style={{ fontSize: 16 }}
+          {evaluateOrderBy({ property, label }) && <ArrowDropDownIcon
+            className={order === 'asc' ? classes.flipped : null}
+              style={{
+                fontSize: 16,
+                order: align ? -1 : 1,
+              }}
           />}
-
         </div>
         {secondaryHeaders && <div className={classes.secondaryHeaders}>
             {secondaryHeaders.map(({ label, property, noSort }) => <div
-              className={classes.flexbox}
+              className={`${classes.flexbox} ${classes.miniFlexbox}`}
               style={{
+                // flexDirection: 'row-reverse',
                 cursor: noSort ? 'default' : 'pointer',
               }}
               key={`${label}_subHeader`}
