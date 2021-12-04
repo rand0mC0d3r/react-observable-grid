@@ -15,7 +15,13 @@ const useStyles = makeStyles(theme => ({
   actionContainer: {
     display: 'flex',
     justifyContent: 'flex-end',
-    gap: "8px"
+    gap: "8px",
+    opacity: '0.3',
+    filter: 'grayscale(70%)',
+    '&:hover': {
+      opacity: '1',
+      filter: 'grayscale(0%)',
+    }
   }
 }))
 

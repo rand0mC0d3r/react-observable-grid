@@ -3,7 +3,7 @@ import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles
 import GitHubIcon from '@material-ui/icons/GitHub';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import MouseIcon from '@material-ui/icons/Mouse';
+import PersonPinCircleIcon from '@material-ui/icons/PersonPinCircle';
 import SubjectIcon from '@material-ui/icons/Subject';
 import { useEffect, useMemo, useState } from 'react';
 import ObservableGrid from './components/ObservableGrid';
@@ -58,7 +58,7 @@ const headers = [
     additionalHeaders: [
       {
         label: 'Surname',
-        icon: <MouseIcon />,
+        icon: <PersonPinCircleIcon />,
         property: 'surname'
       }
     ],
@@ -101,6 +101,7 @@ const headers = [
   {
     icon: <MoreHorizIcon />,
     align: 'flex-end',
+    tooltip: "Actions for entries",
     noSort: true,
     width: '1fr',
   },
@@ -159,7 +160,7 @@ const App = () => {
     surname: `${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)}.${i+1}`,
     nickname: `n1_${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 3)}${i+1}`,
     streetname: `n2_${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 3)}${i+1}`,
-    description: [
+    description: `${[
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       'Donec pulvinar nisi pulvinar metus cursus, eget malesuada nunc auctor.',
       'Maecenas vitae suscipit elit, ut varius diam.',
@@ -175,7 +176,7 @@ const App = () => {
       'Praesent et nunc eget ipsum blandit venenatis et et est.',
       'Sed bibendum auctor ullamcorper.',
       'Integer at ligula ac neque accumsan tincidunt.',
-    ][Math.floor(Math.random()*14)]
+    ][Math.floor(Math.random()*14)]} ${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 3)}`
   ,
     price: `${i + 1}.0${Math.floor(Math.random() * 100)}`,
     currency: currencies[Math.floor(Math.random() * currencies.length)],

@@ -65,7 +65,7 @@ const ObservableHeader = ({
   const evaluateOrderBy = ({ property, label }) => orderBy === (property || label?.toLowerCase())
 
   const renderMainHeader = ({tooltip, noSort, property, label, icon, align}) => {
-    return <Tooltip arrow placement="left" title={tooltip || (!noSort ? 'Click to toggle sorting direction for column' : '')}>
+    return <Tooltip key={`${property}_${label}_${align}_${tooltip}`} arrow placement="left" title={tooltip || (!noSort ? 'Click to toggle sorting direction for column' : '')}>
               <div
                 className={classes.flexbox}
                 onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
