@@ -66,21 +66,23 @@ const ObservableRow = ({
   }, [inView, isViewed, isScrollable, index, currentIndex, updateGranularity])
 
   return <>
-    <InView
-      as='div'
-      className={`${classes.wrapper} ${isSelected && classes.isSelected}`}
-      onChange={setInView}
-      style={{
-        padding: rowOptions.padding,
-        gridTemplateColumns: gridSpacing
-      }}
-      key={index}
-      {...{ onClick }}
-      data-index={index}
-    >
-      {(inView || isScrollable) && children && cloneElement(children, { inView, index })}
-    </InView>
-    {/* {rowOptions.isSelected && <>is selected</>} */}
+    {(isScrollable
+      ? !((index >= currentIndex + updateGranularity * 1.5) || (index <= Math.max(-1, currentIndex - updateGranularity * 4)))
+      : true)
+      && <InView
+        as='div'
+        className={`${classes.wrapper} ${isSelected && classes.isSelected}`}
+        onChange={setInView}
+        style={{
+          padding: rowOptions.padding,
+          gridTemplateColumns: gridSpacing
+        }}
+        key={index}
+        {...{ onClick }}
+        data-index={index}
+      >
+        {(inView || isScrollable) && children && cloneElement(children, { inView, index })}
+      </InView>}
     {/* {(isScrollable
       ? !((index >= currentIndex + updateGranularity * 1.5) || (index <= Math.max(-1, currentIndex - updateGranularity * 4)))
       : true)

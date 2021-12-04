@@ -1,4 +1,4 @@
-import { createNewSortInstance, sort } from 'fast-sort'
+import { createNewSortInstance } from 'fast-sort'
 import { useCallback, useEffect, useState } from 'react'
 import ObservableContainer from './ObservableContainer'
 import ObservableDebugging from './ObservableDebugging'
@@ -61,12 +61,9 @@ const ObservableGrid =  ({
 
   useEffect(() => {
     if (rows.length > 0) {
-      const t0 = performance.now()
       setSortedRows(order === 'asc'
         ? naturalSort(rows).asc([r => r[orderBy]])
         : naturalSort(rows).desc([r => r[orderBy]]))
-      const t1 = performance.now()
-      console.log(`Sorting took ${t1 - t0} milliseconds.`)
     }
   }, [rows, order, orderBy])
 

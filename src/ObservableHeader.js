@@ -60,12 +60,12 @@ const ObservableHeader = ({ gridTemplateColumns, headers, order, orderBy, handle
     >
       {headers?.map(({ align, label, property, secondaryHeaders, additionalHeaders, noSort }) =>
         <div
+          key={`${label}`}
           className={classes.headers}
           style={{
               alignItems: align ? 'flex-end' : 'flex-start',
             }}>
         <div
-          key={`${label}`}
           className={classes.flexbox}
           onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
           onDoubleClick={() => !noSort && handleResetSort()}

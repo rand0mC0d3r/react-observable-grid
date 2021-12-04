@@ -2,7 +2,7 @@ import { Chip } from '@material-ui/core'
 import PropTypes from 'prop-types'
 
 /**
- * Adds a wrapper that allows to center the content of the component.
+ * Adds a wrapper that allows to show debug information in the UI.
  * @param { children } The React Node to be rendered
  */
 const ObservableDebugging = ({ items }) => <div style={{
@@ -16,7 +16,7 @@ const ObservableDebugging = ({ items }) => <div style={{
   right: '20px',
   zIndex: '1',
 }}>
-  {items.map(({ label, value }) => <Chip label={`${label}: ${value}`} />)}
+  {items.map(({ label, value }) => <Chip label={`${label}: ${value}`} key={`${label}: ${value}`} />)}
 </div>
 
 ObservableDebugging.defaultProps = {
