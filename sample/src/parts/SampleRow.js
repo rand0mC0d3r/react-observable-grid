@@ -1,17 +1,9 @@
-import { Button, Typography } from '@material-ui/core';
+import { Button, Chip, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import TuneIcon from '@material-ui/icons/Tune';
 
-
 const useStyles = makeStyles(theme => ({
-  // wrapper: {
-  //   '&:hover': {
-  //     "& $actionContainer": {
-  //       display: 'block',
-  //     }
-  //   }
-  // },
   actionContainer: {
     display: 'flex',
     justifyContent: 'flex-end',
@@ -25,11 +17,10 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-
 const SampleRow = ({
   inView = false,
   setSelected = () => { },
-  row: { name, surname, description, price, currency, nickname, streetname } }) => {
+  row: { name, surname, description, price, tiles, tilesHash, currency, nickname, streetname } }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
   return <>
@@ -59,7 +50,9 @@ const SampleRow = ({
         </div>
       </div>
       <Typography variant='body2'>{description}</Typography>
-      <Typography variant='body2'>tiles</Typography>
+      <div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row', gap: '8px 4px', padding: '4px 0px' }}>
+        {tiles.map(({ name }) => <Chip variant="outlined" size="small" key={name} label={name} />)}
+      </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Typography variant='subtitle2'>{price} {currency}</Typography>
       </div>
