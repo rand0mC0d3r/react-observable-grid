@@ -10,7 +10,6 @@ const ObservableGrid =  ({
   headers,
   rows = [],
   keyPattern = () => { },
-  gridSpacing,
   onLoadMore,
 
   rowRenderer = () => { },
@@ -31,16 +30,19 @@ const ObservableGrid =  ({
   const [order, setOrder] = useState('asc')
   const [orderBy, setOrderBy] = useState('')
   const [throttling, setThrottling] = useState(false)
+  const [gridTemplateColumns, setGridTemplateColumns] = useState('')
 
   const [selectedIndex, setSelectedIndex] = useState(null)
   const [sortedRows, setSortedRows] = useState([])
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [currentIndex, setCurrentIndex] = useState(0) // TODO: fix index to be bound to rows
 
   const updateGranularity = 10
   const minRows = 10
   const throttleLimit = 500
+  const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
 
   const handleRequestSort = (property) => {
+    console.log('handleRequestSort', property)
     const isAsc = orderBy === property && order === 'asc'
     setOrder(isAsc ? 'desc' : 'asc')
     setOrderBy(property)
@@ -55,20 +57,18 @@ const ObservableGrid =  ({
 
   useEffect(() => {
     if (rows.length > 0) {
-      const collator = new Intl.Collator(undefined, {
-        numeric: true,
-        sensitivity: 'base'
-      })
       const sortedList = rows.sort((a, b) => collator.compare(a[orderBy], b[orderBy]))
       setSortedRows(order === 'asc' ? sortedList : sortedList.reverse())
     }
   }, [rows, order, orderBy])
 
   useEffect(() => {
-    if (String(gridSpacing).indexOf('minmax') === -1) {
-      console.error(`Current ${gridSpacing} contains no minmax. Please use one`)
+    const gridTemplateString = headers.map(header => header.width).join(' ')
+    setGridTemplateColumns(gridTemplateString)
+    if (gridTemplateString.indexOf('minmax') === -1) {
+      console.error('Current grid-template-columns map contains no minmax(). Please use one otherwise the header will not be able to expand.')
     }
-  }, [gridSpacing])
+  }, [headers])
 
   return isEmpty
     ? <ObservableEmpty>{emptyElement ? emptyElement : 'No data'}</ObservableEmpty>
@@ -78,10 +78,10 @@ const ObservableGrid =  ({
         <div>selectedIndex: {selectedIndex} {JSON.stringify(rowOptions)}</div>
       </ObservableDebugging>}
 
-      <ObservableHeader {...{ headers, order, orderBy, handleRequestSort, handleResetSort, rowOptions }} />
+      <ObservableHeader {...{ gridTemplateColumns, headers, order, orderBy, handleRequestSort, handleResetSort, rowOptions }} />
       <ObservableContainer {...{ isScrollable, isAlternating }}>
         {sortedRows.map((row, index) => <ObservableRow
-          {...{ gridSpacing, updateGranularity, index, rowOptions, currentIndex, isScrollable }}
+          {...{ gridSpacing: gridTemplateColumns, updateGranularity, index, rowOptions, currentIndex, isScrollable }}
           key={callbackKeyPattern(row)}
           isSelected={isSelectable && selectedIndex === index}
           onClick={() => isSelectable && setSelectedIndex(selectedIndex === index ? null : index)}

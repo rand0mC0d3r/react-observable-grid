@@ -1,4 +1,4 @@
-import { Button, Chip, IconButton, Typography } from '@material-ui/core';
+import { Button, Chip, IconButton, TextField, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import { useEffect, useMemo, useState } from 'react';
@@ -94,6 +94,9 @@ const headers = [
 
 const App = () => {
   const [rows, setRows] = useState([]);
+  const [filteredRows, setFilteredRows] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+
   const [isDebugging, setIsDebugging] = useState(false);
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
@@ -126,6 +129,10 @@ const App = () => {
 
   useEffect(() => generateRows(30), [])
 
+  useEffect(() => {
+    setFilteredRows(rows.filter(({name, description}) => `${name}${description}`.toLowerCase().includes(searchTerm.toLowerCase())))
+  }, [searchTerm, rows])
+
   return <ThemeProvider {...{ theme }} >
     <div className={classes.wrapper}>
       <div className={`${classes.actions} ${classes.bigContainer}`}>
@@ -137,6 +144,15 @@ const App = () => {
         </div>
 
         <div className={classes.actions}>
+          <TextField
+            placeholder="Search ..."
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            variant="outlined"
+            size="small" />
+        </div>
+
+        <div className={classes.actions}>
           <Chip variant="outlined" label={`Rows: ${rows.length}`} />
           <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debugging: ${isDebugging ? 'ON' : 'OFF'}`} />
         </div>
@@ -145,14 +161,12 @@ const App = () => {
           {[0, 10, 20, 50, 500, 5000].map(count => <Button style={{minWidth: 'unset'}} variant="outlined" key={count} onClick={() => generateRows(count)}>{count}</Button>)}
         </div>
 
-
-
       </div>
       <div className={classes.container}>
         <div className={classes.wrapper2}>
           <ObservableGrid
-            {...{ headers, gridSpacing, rows, isDebugging }}
-            isEmpty={rows.length === 0}
+            {...{ headers, rows: filteredRows, isDebugging }}
+            isEmpty={filteredRows.length === 0}
             emptyElement={<div>No data found ...</div>}
             keyPattern={row => row.uuid}
             isSelectable={true}

@@ -2,6 +2,7 @@ import { Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import PropTypes from 'prop-types';
+import { useCallback, useEffect, useState } from 'react';
 
 const useStyles = makeStyles(theme => ({
   wrapper: {
@@ -44,7 +45,7 @@ const useStyles = makeStyles(theme => ({
 
 }))
 
-const ObservableHeader = ({ headers, order, orderBy, handleRequestSort, handleResetSort, rowOptions }) => {
+const ObservableHeader = ({ gridTemplateColumns, headers, order, orderBy, handleRequestSort, handleResetSort, rowOptions }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
 
@@ -54,7 +55,7 @@ const ObservableHeader = ({ headers, order, orderBy, handleRequestSort, handleRe
     <div className={classes.header}
       style={{
         padding: rowOptions.padding,
-        gridTemplateColumns: headers.map(header => header.width).join(' '),
+        gridTemplateColumns: gridTemplateColumns,
       }}
     >
       {headers?.map(({ align, label, property, secondaryHeaders, additionalHeaders, noSort }) =>
