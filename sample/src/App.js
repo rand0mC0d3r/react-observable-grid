@@ -50,6 +50,7 @@ const useStyles = makeStyles(() => ({
 const headers = [
   {
     label: 'Name',
+    tooltip: "Filter users by name",
     icon: <GitHubIcon />,
     property: 'name',
     width: 'minmax(200px, 1fr)',

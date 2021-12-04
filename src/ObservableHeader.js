@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core';
+import { Tooltip, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import PropTypes from 'prop-types';
@@ -69,44 +69,46 @@ const ObservableHeader = ({
         gridTemplateColumns: gridTemplateColumns,
       }}
     >
-      {headers?.map(({ align, label, icon, property, secondaryHeaders, additionalHeaders, noSort }) =>
+      {headers?.map(({ align, label, icon, tooltip, property, secondaryHeaders, additionalHeaders, noSort }) =>
         <div
           key={`${label}`}
           className={classes.headers}
           style={{
               alignItems: align ? 'flex-end' : 'flex-start',
-            }}>
-        <div
-          className={classes.flexbox}
-          onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
-          onDoubleClick={() => !noSort && handleResetSort()}
-          style={{
-              cursor: noSort ? 'default' : 'pointer',
-              justifyContent: align ? 'flex-end' : 'flex-start',
-              flexDirection: align === 'right' ? 'row-reverse' : 'row',
-            }}
-          >
-            {icon && cloneElement(icon, { style: { fontSize: 16 } })}
-          <Typography
-            title={!noSort ? 'Click to toggle sorting direction for column' : ''}
-            variant='subtitle2'
-            style={{
-              lineHeight: '16px',
-              flexOrder: 0,
-              userSelect: 'none',
-              fontWeight: evaluateOrderBy({property, label}) ? 'bold' : 'normal'
-            }}
-          >
-            {label}
-          </Typography>
-          {evaluateOrderBy({ property, label }) && <ArrowDropDownIcon
-            className={order === 'asc' ? classes.flipped : null}
+          }}>
+
+          <Tooltip title={tooltip || (!noSort ? 'Click to toggle sorting direction for column' : '')}>
+            <div
+              className={classes.flexbox}
+              onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
+              onDoubleClick={() => !noSort && handleResetSort()}
               style={{
-                fontSize: 16,
-                order: align ? -1 : 1,
-              }}
-          />}
-        </div>
+                  cursor: noSort ? 'default' : 'pointer',
+                  justifyContent: align ? 'flex-end' : 'flex-start',
+                  flexDirection: align === 'right' ? 'row-reverse' : 'row',
+                }}
+              >
+                {icon && cloneElement(icon, { style: { fontSize: 16 } })}
+                <Typography
+                  variant='subtitle2'
+                  style={{
+                    lineHeight: '16px',
+                    flexOrder: 0,
+                    userSelect: 'none',
+                    fontWeight: evaluateOrderBy({property, label}) ? 'bold' : 'normal'
+                  }}
+                >
+                  {label}
+                </Typography>
+                {evaluateOrderBy({ property, label }) && <ArrowDropDownIcon
+                  className={order === 'asc' ? classes.flipped : null}
+                    style={{
+                      fontSize: 16,
+                      order: align ? -1 : 1,
+                    }}
+                />}
+              </div>
+            </Tooltip>
         {secondaryHeaders && <div className={classes.secondaryHeaders}>
             {secondaryHeaders.map(({ label, property, noSort }) => <div
               className={`${classes.flexbox} ${classes.miniFlexbox}`}
