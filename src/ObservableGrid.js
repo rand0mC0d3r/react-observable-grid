@@ -61,9 +61,12 @@ const ObservableGrid =  ({
 
   useEffect(() => {
     if (rows.length > 0) {
+      const t0 = performance.now()
       setSortedRows(order === 'asc'
         ? naturalSort(rows).asc([r => r[orderBy]])
         : naturalSort(rows).desc([r => r[orderBy]]))
+      const t1 = performance.now()
+      console.log(`Sorting took ${t1 - t0} milliseconds.`)
     }
   }, [rows, order, orderBy])
 
@@ -78,7 +81,11 @@ const ObservableGrid =  ({
   return isEmpty
     ? <ObservableEmpty>{emptyElement ? emptyElement : 'No data'}</ObservableEmpty>
     : <>
-      {isDebugging && <ObservableDebugging>
+      {isDebugging && <ObservableDebugging items={[
+        { label: 'throttling', value: throttling },
+        { label: 'selectedIndex', value: selectedIndex },
+        { label: 'sortedRows', value: sortedRows.length },
+      ]}>
         <div>{throttling ? 'throttling' : 'not throttling'}</div>
         <div>selectedIndex: {selectedIndex} {JSON.stringify(rowOptions)}</div>
       </ObservableDebugging>}
