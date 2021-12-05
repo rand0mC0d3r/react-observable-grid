@@ -34,6 +34,9 @@ const useStyles = makeStyles(() => ({
     gap: '16px',
     alignItems: 'center'
   },
+  smallActions: {
+    gap: '8px',
+  },
   bigContainer: {
     width: '90%',
   },
@@ -234,7 +237,7 @@ const App = () => {
           <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debugging: ${isDebugging ? 'ON' : 'OFF'}`} />
         </div>
 
-        <div className={classes.actions}>
+        <div className={`${classes.actions} ${classes.smallActions}`}>
           {[0, 10, 20, 50, 500, 5000].map(count => <Button style={{minWidth: 'unset'}} variant="outlined" key={count} onClick={() => generateRows(count)}>{count}</Button>)}
         </div>
 
