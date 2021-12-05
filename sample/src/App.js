@@ -1,5 +1,7 @@
 import { Button, Chip, IconButton, TextField, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
@@ -14,11 +16,12 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     width: '100%',
     height: '100%',
+    minWidth: '850px',
     gap: '16px',
     flexDirection: 'column',
     position: 'absolute',
     alignContent: 'stretch',
-    justifyContent: "center",
+    justifyContent: 'center',
     alignItems: 'center',
   },
   wrapper2: {
@@ -41,7 +44,7 @@ const useStyles = makeStyles(() => ({
     width: '90%',
   },
   container: {
-    minWidth: '800px',
+    minWidth: '850px',
     position: 'relative',
     borderRadius: '4px',
     maxWidth: '95%',
@@ -84,13 +87,14 @@ const headers = [
     width: '2fr',
   },
   {
-    label: 'Tiles Count',
-    property: 'tiles',
+    label: 'Tiles',
+    icon: <DashboardIcon />,
+    property: 'tilesHash',
     width: 'minmax(100px, 2fr)',
     secondaryHeaders: [
       {
-        label: 'Tiles',
-        property: 'tilesHash',
+        label: 'Tiles Count',
+        property: 'tiles',
       },
     ]
   },

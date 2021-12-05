@@ -3,11 +3,12 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import TuneIcon from '@material-ui/icons/Tune';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   actionContainer: {
     display: 'flex',
     justifyContent: 'flex-end',
     gap: "8px",
+    flexWrap: 'wrap',
     opacity: '0.3',
     filter: 'grayscale(70%)',
     '&:hover': {
@@ -20,7 +21,7 @@ const useStyles = makeStyles(theme => ({
 const SampleRow = ({
   inView = false,
   setSelected = () => { },
-  row: { name, surname, description, price, tiles, tilesHash, currency, nickname, streetname } }) => {
+  row: { name, surname, description, price, tiles, currency, nickname, streetname } }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
   return <>
