@@ -12,7 +12,7 @@ import { ExpirationPlugin } from 'workbox-expiration';
 import { createHandlerBoundToURL, precacheAndRoute } from 'workbox-precaching';
 import { offlineFallback } from 'workbox-recipes';
 import { registerRoute } from 'workbox-routing';
-import { StaleWhileRevalidate } from 'workbox-strategies';
+import { NetworkOnly, StaleWhileRevalidate } from 'workbox-strategies';
 
 clientsClaim();
 
@@ -45,6 +45,10 @@ registerRoute(
     return true;
   },
   createHandlerBoundToURL(process.env.PUBLIC_URL + '/index.html')
+);
+
+setDefaultHandler(() =>
+  new NetworkOnly()
 );
 
 // An example runtime caching route for requests that aren't handled by the
