@@ -11,7 +11,7 @@ import { clientsClaim } from 'workbox-core';
 import { ExpirationPlugin } from 'workbox-expiration';
 import { createHandlerBoundToURL, precacheAndRoute } from 'workbox-precaching';
 import { offlineFallback } from 'workbox-recipes';
-import { registerRoute } from 'workbox-routing';
+import { registerRoute, setDefaultHandler } from 'workbox-routing';
 import { NetworkOnly, StaleWhileRevalidate } from 'workbox-strategies';
 
 clientsClaim();
