@@ -46,6 +46,7 @@ const ObservableRow = ({
   updateGranularity,
   children,
   isViewed = () => { },
+  isViewedNg = () => { },
   rowOptions = {
     padding: '4px 8px',
 
@@ -53,20 +54,43 @@ const ObservableRow = ({
 }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
+  const [firstRender, setFirstRender] = useState(false)
   const [inView, setInView] = useState(false)
 
-  useEffect(() => {
-    if (inView
-      && isScrollable
-      && (index >= currentIndex - updateGranularity * 3.5)
-      && (index <= currentIndex + updateGranularity * 1.5)
-      && index % updateGranularity === 0) {
-      isViewed(index)
-    }
-  }, [inView, isViewed, isScrollable, index, currentIndex, updateGranularity])
+  // useEffect(() => {
+  //   if (inView
+  //     && isScrollable
+  //     && (index >= currentIndex - updateGranularity * 3.5)
+  //     && (index <= currentIndex + updateGranularity * 1.5)
+  //     && index % updateGranularity === 0) {
+  //     isViewed(index)
+  //   }
+
+  //   if (inView) {
+  //     isViewed(index)
+  //     console.log(index)
+  //   }
+  // }, [inView, isViewed, isScrollable, index, currentIndex, updateGranularity])
+  useEffect(() => firstRender && isViewedNg(index), [inView, index, firstRender])
+  useEffect(() => !firstRender && inView && setFirstRender(true), [inView, firstRender])
 
   return <>
-    {(isScrollable
+
+    <InView
+      as='div'
+      threshold={0.2}
+        onChange={setInView}
+        style={{
+          padding: '20px'
+        }}
+        key={index}
+        {...{ onClick }}
+        data-index={index}
+      >
+      text {inView ? 'viewed' : 'not viewed'} {index}
+    </InView>
+
+    {/* {(isScrollable
       ? !((index >= currentIndex + updateGranularity * 1.5) || (index <= Math.max(-1, currentIndex - updateGranularity * 4)))
       : true)
       && <InView
@@ -82,7 +106,11 @@ const ObservableRow = ({
         data-index={index}
       >
         {(inView || isScrollable) && children && cloneElement(children, { inView, index })}
-      </InView>}
+      </InView>} */}
+
+
+
+
     {/* {(isScrollable
       ? !((index >= currentIndex + updateGranularity * 1.5) || (index <= Math.max(-1, currentIndex - updateGranularity * 4)))
       : true)

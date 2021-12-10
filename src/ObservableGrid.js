@@ -37,9 +37,13 @@ const ObservableGrid =  ({
   const [sortedRows, setSortedRows] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0) // TODO: fix index to be bound to rows
 
+  const [viewedRows, setViewedRows] = useState([])
+  const [lowerLimit, setLowerLimit] = useState(-1)
+  const [higherLimit, setHigherLimit] = useState(-1)
+
   const updateGranularity = 10
   const minRows = 10
-  const throttleLimit = 500
+  const throttleLimit = 30
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
 
   const naturalSort = createNewSortInstance({
@@ -64,6 +68,8 @@ const ObservableGrid =  ({
       setSortedRows(order === 'asc'
         ? naturalSort(rows).asc([r => r[orderBy]])
         : naturalSort(rows).desc([r => r[orderBy]]))
+      setThrottling(rows.length >= throttleLimit)
+      console.log('useEffect: sortingRows')
     }
   }, [rows, order, orderBy])
 
@@ -90,13 +96,20 @@ const ObservableGrid =  ({
       </ObservableDebugging>}
 
       <ObservableHeader {...{ gridTemplateColumns, headers, order, orderBy, handleRequestSort, handleResetSort, rowOptions }} />
+      {JSON.stringify(viewedRows)} {viewedRows.length}
       <ObservableContainer {...{ isScrollable, isAlternating }}>
         {sortedRows.map((row, index) => <ObservableRow
-          {...{ gridSpacing: gridTemplateColumns, updateGranularity, index, rowOptions, currentIndex, isScrollable }}
+          {...{ gridSpacing: gridTemplateColumns, updateGranularity: viewedRows.length, index, rowOptions, currentIndex, isScrollable }}
           key={callbackKeyPattern(row)}
           isSelected={isSelectable && selectedIndex === index}
           onClick={() => isSelectable && setSelectedIndex(selectedIndex === index ? null : index)}
-          isViewed={(vIndex) => Math.max(minRows, setCurrentIndex(vIndex))}
+          // isViewed={(vIndex) => Math.max(minRows, setCurrentIndex(vIndex))}
+          isViewedNg={(viewedIndex) => {
+            const newViewedRows = (viewedRows.some(vr => vr === viewedIndex)
+              ? [...viewedRows.filter(vr => vr !== viewedIndex)]
+              : [...viewedRows, viewedIndex]).sort((a, b) => a - b)
+            setViewedRows(newViewedRows)
+          }}
         >
           {rowRenderer(row, index)}
         </ObservableRow>)}
