@@ -102,8 +102,8 @@ const ObservableGrid =  ({
       </ObservableDebugging>}
 
       <ObservableHeader {...{ gridTemplateColumns, headers, order, orderBy, handleRequestSort, handleResetSort, rowOptions }} />
-      {JSON.stringify(viewedRows)} {viewedRows.length}
-      {JSON.stringify(initialViewedRows)} {initialViewedRows.length}
+      {/* {JSON.stringify(viewedRows)} {viewedRows.length} */}
+      {/* {JSON.stringify(initialViewedRows)} {initialViewedRows.length} */}
       <ObservableContainer {...{ isScrollable, isAlternating }}>
         {sortedRows.map((row, index) => <ObservableRow
           {...{ gridSpacing: gridTemplateColumns, minRows, updateGranularity: viewedRows.length, index, rowOptions, currentIndex, isScrollable }}
@@ -120,14 +120,6 @@ const ObservableGrid =  ({
             setViewedRows(newViewedRows)
           }}
           setLimit={(index, visible) => visible ? setUpperLimit(index) : setLowerLimit(index)}
-
-          isViewedInitial={(viewedIndex) => {
-            const newViewedRows = viewedRows.some(vr => vr === viewedIndex)
-              ? [...viewedRows.filter(vr => vr !== viewedIndex)]
-              : [...viewedRows, viewedIndex]
-            // setInitialViewedRows(newViewedRows)
-            setGranularity(newViewedRows.length)
-          }}
         >
           {rowRenderer(row, index)}
         </ObservableRow>)}

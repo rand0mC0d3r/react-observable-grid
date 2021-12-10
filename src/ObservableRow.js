@@ -130,14 +130,14 @@ const ObservableRow = ({
 
 
   useEffect(() => {
-    if (inView && index % 5 === 0) {
+    if (inView && index % 10 === 0) {
       setLimit(index, true)
       setWasRendered(true)
     }
   }, [inView, index])
 
   useEffect(() => {
-    if (wasRendered && !inView && index % 5 === 0) {
+    if (wasRendered && !inView && index % 10 === 0) {
       setLimit(index, false)
     }
   }, [inView, index, wasRendered])
@@ -151,18 +151,17 @@ const ObservableRow = ({
       && */}
     <InView
       as='div'
-      threshold={0.2}
-        onChange={setInView}
-        style={{
-          padding: '20px'
-        }}
-        key={index}
-        {...{ onClick }}
-        data-index={index}
-      >
+      onChange={setInView}
+      style={{
+        padding: '20px'
+      }}
+      key={index}
+      {...{ onClick }}
+      data-index={index}
+    >
         {/* text */}
         {/* {inView ? 'viewed' : 'not viewed'} */}
-        {index}
+      {index}
         {/* start {startVisibleIndex} end {endVisibleIndex} */}
     </InView>
     {/* } */}
