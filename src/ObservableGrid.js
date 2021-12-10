@@ -37,12 +37,14 @@ const ObservableGrid =  ({
   const [sortedRows, setSortedRows] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0) // TODO: fix index to be bound to rows
 
+  const [initialViewedRows, setInitialViewedRows] = useState([])
   const [viewedRows, setViewedRows] = useState([])
   const [lowerLimit, setLowerLimit] = useState(-1)
-  const [higherLimit, setHigherLimit] = useState(-1)
-
+  const [upperLimit, setUpperLimit] = useState(-1)
+  const [granularity, setGranularity] = useState(0)
   const updateGranularity = 10
-  const minRows = 10
+
+  const minRows = 25
   const throttleLimit = 30
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
 
@@ -90,6 +92,10 @@ const ObservableGrid =  ({
         { label: 'orderBy', value: orderBy },
         { label: 'selectedIndex', value: selectedIndex },
         { label: 'sortedRows', value: sortedRows.length },
+        { label: 'granularity', value: granularity },
+        { label: 'lowerLimit', value: lowerLimit },
+        { label: 'upperLimit', value: upperLimit },
+        { label: 'direction', value: upperLimit > lowerLimit ? 'down' : 'up' },
       ]}>
         <div>{throttling ? 'throttling' : 'not throttling'}</div>
         <div>selectedIndex: {selectedIndex} {JSON.stringify(rowOptions)}</div>
@@ -97,18 +103,30 @@ const ObservableGrid =  ({
 
       <ObservableHeader {...{ gridTemplateColumns, headers, order, orderBy, handleRequestSort, handleResetSort, rowOptions }} />
       {JSON.stringify(viewedRows)} {viewedRows.length}
+      {JSON.stringify(initialViewedRows)} {initialViewedRows.length}
       <ObservableContainer {...{ isScrollable, isAlternating }}>
         {sortedRows.map((row, index) => <ObservableRow
-          {...{ gridSpacing: gridTemplateColumns, updateGranularity: viewedRows.length, index, rowOptions, currentIndex, isScrollable }}
+          {...{ gridSpacing: gridTemplateColumns, minRows, updateGranularity: viewedRows.length, index, rowOptions, currentIndex, isScrollable }}
           key={callbackKeyPattern(row)}
           isSelected={isSelectable && selectedIndex === index}
           onClick={() => isSelectable && setSelectedIndex(selectedIndex === index ? null : index)}
           // isViewed={(vIndex) => Math.max(minRows, setCurrentIndex(vIndex))}
+          startVisibleIndex={viewedRows[0]}
+          endVisibleIndex={viewedRows[viewedRows.length - 1]}
           isViewedNg={(viewedIndex) => {
             const newViewedRows = (viewedRows.some(vr => vr === viewedIndex)
               ? [...viewedRows.filter(vr => vr !== viewedIndex)]
               : [...viewedRows, viewedIndex]).sort((a, b) => a - b)
             setViewedRows(newViewedRows)
+          }}
+          setLimit={(index, visible) => visible ? setUpperLimit(index) : setLowerLimit(index)}
+
+          isViewedInitial={(viewedIndex) => {
+            const newViewedRows = viewedRows.some(vr => vr === viewedIndex)
+              ? [...viewedRows.filter(vr => vr !== viewedIndex)]
+              : [...viewedRows, viewedIndex]
+            // setInitialViewedRows(newViewedRows)
+            setGranularity(newViewedRows.length)
           }}
         >
           {rowRenderer(row, index)}
