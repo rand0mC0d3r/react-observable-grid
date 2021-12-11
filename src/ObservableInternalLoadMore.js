@@ -2,25 +2,18 @@ import throttle from 'lodash/throttle'
 import { useCallback } from 'react'
 import { InView } from 'react-intersection-observer'
 
-function useLoadMore(callback, delay) {
-  return useCallback(throttle((...args) => callback(...args), delay), [delay])
-}
+const useLoadMore = (callback, delay) => (useCallback(throttle((...args) => callback(...args), delay), [delay]))
 
-const ObservableInternalLoadMore = ({ onLoadMore = () => { } }) => {
+const ObservableInternalLoadMore = ({ onLoadMore = () => { }, isPointing = false }) => {
   const throttledLoadMore = useLoadMore(() => onLoadMore(), 750)
   return <InView
     as="div"
     style={{
       position: 'relative',
-      top: '-33%',
+      top: isPointing ? '25%' : '-25%',
       opacity: '0',
     }}
-    onChange={(inView) => {
-      if (inView) {
-        console.log("ddd")
-        throttledLoadMore()
-      }
-    }}
+    onChange={(inView) => inView && throttledLoadMore()}
   >.</InView>
 }
 

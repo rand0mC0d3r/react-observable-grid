@@ -38,7 +38,7 @@ const ObservableGrid =  ({
   const [sortedRows, setSortedRows] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0) // TODO: fix index to be bound to rows
 
-  const [pageSize, setPageSize] = useState(25)
+  const [pageSize, setPageSize] = useState(30)
   const [page, setPage] = useState(0)
 
   const [initialViewedRows, setInitialViewedRows] = useState([])
@@ -89,6 +89,9 @@ const ObservableGrid =  ({
   const advanceStartEnd = () => {
     setStartEnd((startEnd) => ({ start: startEnd.start + 1, end: startEnd.end + 1 }))
   }
+  const regressStartEnd = () => {
+    setStartEnd((startEnd) => ({ start: startEnd.start - 1, end: startEnd.end  }))
+  }
 
   return isEmpty
     ? <ObservableEmpty>{emptyElement ? emptyElement : 'No data'}</ObservableEmpty>
@@ -117,15 +120,15 @@ const ObservableGrid =  ({
       {/* {JSON.stringify(initialViewedRows)} {initialViewedRows.length} */}
 
       <ObservableContainer {...{ isScrollable, isAlternating }}>
-        {startEnd.start > 0 && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
+        {startEnd.start > 0 && <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
         {sortedRows
           // .filter(row => row.__index <= startEnd.end * pageSize && row.__index >= startEnd.start  * pageSize)
-          .filter(row => row.__index <= startEnd.end * pageSize)
+          // .filter(row => row.__index <= startEnd.end * pageSize)
           .map((row, index) => <ObservableRow
           {...{ gridSpacing: gridTemplateColumns, minRows, updateGranularity: viewedRows.length, index, rowOptions, currentIndex, isScrollable }}
             key={callbackKeyPattern(row)}
             innerIndex={row.__index}
-            isRelevant={row.__index >= startEnd.start  * pageSize}
+            isRelevant={row.__index >= startEnd.start  * pageSize && row.__index <= startEnd.end * pageSize}
           isSelected={isSelectable && selectedIndex === index}
           onClick={() => isSelectable && setSelectedIndex(selectedIndex === index ? null : index)}
         >
