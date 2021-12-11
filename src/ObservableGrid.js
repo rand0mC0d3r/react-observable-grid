@@ -117,6 +117,7 @@ const ObservableGrid =  ({
       {/* {JSON.stringify(initialViewedRows)} {initialViewedRows.length} */}
 
       <ObservableContainer {...{ isScrollable, isAlternating }}>
+        {startEnd.start > 0 && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
         {sortedRows
           // .filter(row => row.__index <= startEnd.end * pageSize && row.__index >= startEnd.start  * pageSize)
           .filter(row => row.__index <= startEnd.end * pageSize)
@@ -130,8 +131,7 @@ const ObservableGrid =  ({
         >
           {rowRenderer(row, index)}
         </ObservableRow>)}
-        <ObservableInternalLoadMore onLoadMore={advanceStartEnd}
-          />
+        <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />
         {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
       </ObservableContainer>
     </>
