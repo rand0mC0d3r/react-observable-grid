@@ -7,8 +7,21 @@ function useLoadMore(callback, delay) {
 }
 
 const ObservableInternalLoadMore = ({ onLoadMore = () => { } }) => {
-  const throttledLoadMore = useLoadMore(() => onLoadMore(), 500)
-  return <InView as="p" onChange={(inView) => inView && throttledLoadMore()}>.</InView>
+  const throttledLoadMore = useLoadMore(() => onLoadMore(), 750)
+  return <InView
+    as="div"
+    style={{
+      position: 'relative',
+      top: '-33%',
+      opacity: '0',
+    }}
+    onChange={(inView) => {
+      if (inView) {
+        console.log("ddd")
+        throttledLoadMore()
+      }
+    }}
+  >.</InView>
 }
 
 export default ObservableInternalLoadMore

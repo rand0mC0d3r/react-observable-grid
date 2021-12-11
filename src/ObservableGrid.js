@@ -108,8 +108,8 @@ const ObservableGrid =  ({
       </ObservableDebugging>}
 
       <ObservableHeader {...{ gridTemplateColumns, headers, order, orderBy, handleRequestSort, handleResetSort, rowOptions }} />
-       {rows.length}
-       {sortedRows.length}
+       {/* {rows.length}
+       {sortedRows.length} */}
       {/* {JSON.stringify(viewedRows)} {viewedRows.length} */}
       {/* {JSON.stringify(initialViewedRows)} {initialViewedRows.length} */}
 
