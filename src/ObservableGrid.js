@@ -1,5 +1,6 @@
 import { createNewSortInstance } from 'fast-sort'
 import { useCallback, useEffect, useState } from 'react'
+import { ObservableInternalLoadMore } from '.'
 import ObservableContainer from './ObservableContainer'
 import ObservableDebugging from './ObservableDebugging'
 import ObservableEmpty from './ObservableEmpty'
@@ -37,10 +38,13 @@ const ObservableGrid =  ({
   const [sortedRows, setSortedRows] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0) // TODO: fix index to be bound to rows
 
+  const [pageSize, setPageSize] = useState(20)
+  const [page, setPage] = useState(0)
+
   const [initialViewedRows, setInitialViewedRows] = useState([])
   const [viewedRows, setViewedRows] = useState([])
-  const [lowerLimit, setLowerLimit] = useState(-1)
-  const [upperLimit, setUpperLimit] = useState(-1)
+  const [lowerLimit, setLowerLimit] = useState(0)
+  const [upperLimit, setUpperLimit] = useState(1)
   const [granularity, setGranularity] = useState(0)
   const updateGranularity = 10
 
@@ -93,9 +97,8 @@ const ObservableGrid =  ({
         { label: 'selectedIndex', value: selectedIndex },
         { label: 'sortedRows', value: sortedRows.length },
         { label: 'granularity', value: granularity },
-        { label: 'lowerLimit', value: lowerLimit },
         { label: 'upperLimit', value: upperLimit },
-        { label: 'direction', value: upperLimit > lowerLimit ? 'down' : 'up' },
+        // { label: 'direction', value: upperLimit > lowerLimit ? 'down' : 'up' },
       ]}>
         <div>{throttling ? 'throttling' : 'not throttling'}</div>
         <div>selectedIndex: {selectedIndex} {JSON.stringify(rowOptions)}</div>
@@ -104,26 +107,23 @@ const ObservableGrid =  ({
       <ObservableHeader {...{ gridTemplateColumns, headers, order, orderBy, handleRequestSort, handleResetSort, rowOptions }} />
       {/* {JSON.stringify(viewedRows)} {viewedRows.length} */}
       {/* {JSON.stringify(initialViewedRows)} {initialViewedRows.length} */}
+
       <ObservableContainer {...{ isScrollable, isAlternating }}>
-        {sortedRows.map((row, index) => <ObservableRow
+        {sortedRows
+          .filter((_, index) => index <= upperLimit * pageSize)
+          .map((row, index) => <ObservableRow
           {...{ gridSpacing: gridTemplateColumns, minRows, updateGranularity: viewedRows.length, index, rowOptions, currentIndex, isScrollable }}
           key={callbackKeyPattern(row)}
           isSelected={isSelectable && selectedIndex === index}
           onClick={() => isSelectable && setSelectedIndex(selectedIndex === index ? null : index)}
-          // isViewed={(vIndex) => Math.max(minRows, setCurrentIndex(vIndex))}
-          startVisibleIndex={viewedRows[0]}
-          endVisibleIndex={viewedRows[viewedRows.length - 1]}
-          isViewedNg={(viewedIndex) => {
-            const newViewedRows = (viewedRows.some(vr => vr === viewedIndex)
-              ? [...viewedRows.filter(vr => vr !== viewedIndex)]
-              : [...viewedRows, viewedIndex]).sort((a, b) => a - b)
-            setViewedRows(newViewedRows)
-          }}
-          setLimit={(index, visible) => visible ? setUpperLimit(index) : setLowerLimit(index)}
         >
           {rowRenderer(row, index)}
         </ObservableRow>)}
-        {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />}
+        <ObservableInternalLoadMore onLoadMore={() => {
+            setUpperLimit((upperLimit) => Math.min(upperLimit + 1, rows.length / pageSize))
+        }}
+          />
+        {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
       </ObservableContainer>
     </>
 }

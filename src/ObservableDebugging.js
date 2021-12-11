@@ -8,15 +8,17 @@ import PropTypes from 'prop-types'
 const ObservableDebugging = ({ items }) => <div style={{
   flex: '1 0 auto',
   display: 'flex',
-  justifyContent: 'center',
+  justifyContent: 'flex-end',
+  flexWrap: 'wrap',
   alignItems: 'center',
   position: 'absolute',
   bottom: '20px',
   gap: '4px',
   right: '20px',
   zIndex: '1',
+  width: '300px'
 }}>
-  {items.map(({ label, value }) => <Chip color="default" size='small' label={`${label.toUpperCase()}: ${value}`} key={`${label}: ${value}`} />)}
+  {items.map(({ label, value }) => <Chip color="primary" size='small' label={`${label.toUpperCase()}: ${value}`} key={`${label}: ${value}`} />)}
 </div>
 
 ObservableDebugging.defaultProps = {
