@@ -72,8 +72,8 @@ const ObservableGrid =  ({
   useEffect(() => {
     if (rows.length > 0) {
       setSortedRows(order === 'asc'
-        ? naturalSort(rows).asc([r => r[orderBy]])
-        : naturalSort(rows).desc([r => r[orderBy]]))
+        ? naturalSort(rows).asc([r => r[orderBy]]).map((r, index) => { r.__index = index; return r })
+        : naturalSort(rows).desc([r => r[orderBy]]).map((r, index) => { r.__index = index; return r }))
       setThrottling(rows.length >= throttleLimit)
       console.log('useEffect: sortingRows')
     }
@@ -115,7 +115,7 @@ const ObservableGrid =  ({
 
       <ObservableContainer {...{ isScrollable, isAlternating }}>
         {sortedRows
-          .filter((_, index) => index <= upperLimit * pageSize)
+          .filter(r => r.__index <= upperLimit * pageSize)
           .map((row, index) => <ObservableRow
           {...{ gridSpacing: gridTemplateColumns, minRows, updateGranularity: viewedRows.length, index, rowOptions, currentIndex, isScrollable }}
           key={callbackKeyPattern(row)}
