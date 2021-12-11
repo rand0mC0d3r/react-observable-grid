@@ -96,8 +96,11 @@ const ObservableGrid =  ({
         { label: 'orderBy', value: orderBy },
         { label: 'selectedIndex', value: selectedIndex },
         { label: 'sortedRows', value: sortedRows.length },
+        { label: 'rows', value: rows.length },
         { label: 'granularity', value: granularity },
         { label: 'upperLimit', value: upperLimit },
+        { label: 'pageSize', value: pageSize },
+        { label: 'MAX SIZE', value: rows.length / pageSize },
         // { label: 'direction', value: upperLimit > lowerLimit ? 'down' : 'up' },
       ]}>
         <div>{throttling ? 'throttling' : 'not throttling'}</div>
@@ -105,6 +108,8 @@ const ObservableGrid =  ({
       </ObservableDebugging>}
 
       <ObservableHeader {...{ gridTemplateColumns, headers, order, orderBy, handleRequestSort, handleResetSort, rowOptions }} />
+       {rows.length}
+       {sortedRows.length}
       {/* {JSON.stringify(viewedRows)} {viewedRows.length} */}
       {/* {JSON.stringify(initialViewedRows)} {initialViewedRows.length} */}
 
@@ -119,9 +124,7 @@ const ObservableGrid =  ({
         >
           {rowRenderer(row, index)}
         </ObservableRow>)}
-        <ObservableInternalLoadMore onLoadMore={() => {
-            setUpperLimit((upperLimit) => Math.min(upperLimit + 1, rows.length / pageSize))
-        }}
+        <ObservableInternalLoadMore onLoadMore={() => setUpperLimit((currentLimit) => currentLimit + 1)}
           />
         {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
       </ObservableContainer>
