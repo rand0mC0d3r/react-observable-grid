@@ -38,32 +38,23 @@ const useStyles = makeStyles(theme => ({
 
 const ObservableRow = ({
   index,
-  currentIndex,
+  innerIndex,
   isScrollable = true,
   isSelected = false,
   gridSpacing,
   onClick,
-  updateGranularity,
   children,
-  isViewed = () => { },
-  isViewedNg = () => { },
-  isViewedInitial = () => { },
+  isRelevant = true,
   rowOptions = {
     padding: '4px 8px',
   },
-  minRows,
-  startVisibleIndex = 0,
-  endVisibleIndex = 0,
-  initialVisible = () => { },
-  initialHidden = () => { },
-  setLimit = () => { },
 }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
   const [inView, setInView] = useState(false)
 
   return <>
-    <InView
+    {isRelevant && <InView
       as='div'
       onChange={setInView}
       style={{
@@ -76,11 +67,10 @@ const ObservableRow = ({
         gridTemplateColumns: gridSpacing
       }}
       {...{ onClick }}
-      data-index={index+1}
+      data-index={innerIndex}
     >
-      {/* {index+1} */}
       {(inView || isScrollable) && children && cloneElement(children, { inView, index })}
-    </InView>
+    </InView>}
   </>
 }
 
