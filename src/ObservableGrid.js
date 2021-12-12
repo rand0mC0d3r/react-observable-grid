@@ -123,6 +123,13 @@ const ObservableGrid =  ({
 
       <ObservableContainer {...{ isScrollable, isAlternating }}>
         {rows.length > pageSize && startEnd.start > 0 && <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
+        <style>{`
+          .observableGrid {
+            display: grid;
+            padding: ${rowOptions.padding};
+            grid-template-columns: ${gridTemplateColumns};
+          }
+        `}</style>
         {sortedRows
           // .filter(row => row.__index <= startEnd.end * pageSize && row.__index >= startEnd.start  * pageSize)
           // .filter(row => row.__index <= startEnd.end * pageSize)
@@ -137,7 +144,8 @@ const ObservableGrid =  ({
             onClick={() => isSelectable && setSelectedIndex(selectedIndex === row.__origIndex ? null : row.__origIndex)}
         >
           {rowRenderer(row, row.__index)}
-        </ObservableRow>)}
+          </ObservableRow>)}
+
         {rows.length > pageSize && pageSize * startEnd.end -1 <  rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
         {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
       </ObservableContainer>

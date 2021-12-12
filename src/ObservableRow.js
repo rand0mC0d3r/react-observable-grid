@@ -2,21 +2,8 @@ import { makeStyles, useTheme } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import { cloneElement, useEffect, useState } from 'react'
 import { InView, useInView } from 'react-intersection-observer'
-// import { Wrapper } from './styles'
 
-// export const Wrapper = withTheme(styled.div.attrs(props => ({
-//   style: {
-//     backgroundColor: props['data-is-selected'] && props.theme.palette.augmentColor({ main: props.theme.palette.primary.light }).main,
-//     cursor: props['data-on-click'] || props['data-on-double-click'] ? 'pointer' : 'default',
-//   },
-// }))`
-//     padding: ${props => props['data-padding']};
-//     grid-template-columns: ${props => props['data-grid']};
-//     border-bottom: 1px solid ${props => props.theme.palette.divider};
-
-// `)
-
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   wrapper: {
     alignSelf: 'stretch',
     breakInside: 'avoid',
@@ -32,7 +19,7 @@ const useStyles = makeStyles(theme => ({
   },
   isSelected: {
     backgroundColor: `${theme.palette.augmentColor({ main: theme.palette.divider }).main} !important`,
-  }
+  },
 }))
 
 const ObservableRow = ({
@@ -52,36 +39,44 @@ const ObservableRow = ({
   const classes = useStyles(theme)
   const [inView, setInView] = useState(false)
 
-  return <>
-    {isRelevant && <InView
+  return isRelevant
+    ? <InView
       as='div'
       threshold={0}
       onChange={setInView}
       className={[
         classes.wrapper,
-        (inView && isSelected) ? classes.isSelected : '',
-      ].join(' ').trim()}
+        (inView && isSelected) ? classes.isSelected : false,
+        inView ? 'observableGrid' : false,
+      ].filter(c => c !== false).join(' ')}
       key={innerIndex}
       {...{
         ...inView
           ? {
-            style: {
-              display: 'grid',
-              padding: rowOptions.padding,
-              gridTemplateColumns: gridSpacing
-            },
+            // style: {
+            //   display: 'grid',
+            //   padding: rowOptions.padding,
+            //   gridTemplateColumns: gridSpacing
+            // },
             'data-i': innerIndex,
             'data-o': innerOriginalIndex,
           }
           : {
-            style: {}
           },
         onClick
       }}
+
     >
+      <style>{`
+        .grid: {
+          display: 'grid',
+          padding: ${rowOptions.padding},
+          gridTemplateColumns: ${gridSpacing}
+        }
+      `}</style>
       {(inView || isScrollable) && children && cloneElement(children, { inView })}
-    </InView>}
-  </>
+    </InView>
+    : null
 }
 
 ObservableRow.defaultProps = {
