@@ -1,3 +1,4 @@
+import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { createNewSortInstance } from 'fast-sort'
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { ObservableInternalLoadMore } from '.'
@@ -30,6 +31,7 @@ const ObservableGrid =  ({
   isScrollable = true,
   isAlternating = true,
 }) => {
+  const theme = useTheme()
 
   const [order, setOrder] = useState('asc')
   const [orderBy, setOrderBy] = useState('')
@@ -40,7 +42,7 @@ const ObservableGrid =  ({
   const [sortedRows, setSortedRows] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0) // TODO: fix index to be bound to rows
 
-  const [pageSize, setPageSize] = useState(30)
+  const [pageSize, setPageSize] = useState(40)
   const [page, setPage] = useState(0)
 
   const [initialViewedRows, setInitialViewedRows] = useState([])
@@ -124,10 +126,12 @@ const ObservableGrid =  ({
       <ObservableContainer {...{ isScrollable, isAlternating }}>
         {rows.length > pageSize && startEnd.start > 0 && <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
         <style>{`
+          .observableGrid-base {
+            min-height: 44px;
+          }
           .observableGrid {
             align-self: stretch;
             break-inside: avoid;
-            min-height: 44px;
             font-size: 12px;
             align-items: center;
             grid-column-gap: 16px;
@@ -135,6 +139,12 @@ const ObservableGrid =  ({
             display: grid;
             padding: ${rowOptions.padding};
             grid-template-columns: ${gridTemplateColumns};
+          }
+          .observableGrid:hover {
+            backgroundColor: ${theme.palette.augmentColor({ main: theme.palette.divider }).light};
+          }
+          .observableGrid-selected {
+            backgroundColor: ${theme.palette.augmentColor({ main: theme.palette.divider }).main} !important;
           }
         `}</style>
         {sortedRows
