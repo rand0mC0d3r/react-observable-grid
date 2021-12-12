@@ -42,7 +42,7 @@ const ObservableGrid =  ({
   const [sortedRows, setSortedRows] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0) // TODO: fix index to be bound to rows
 
-  const [pageSize, setPageSize] = useState(40)
+  const [pageSize, setPageSize] = useState(25)
   const [page, setPage] = useState(0)
 
   const [initialViewedRows, setInitialViewedRows] = useState([])
