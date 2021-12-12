@@ -29,6 +29,7 @@ const ObservableGrid =  ({
   isScrollable = true,
   isAlternating = true,
 }) => {
+
   const [order, setOrder] = useState('asc')
   const [orderBy, setOrderBy] = useState('')
   const [throttling, setThrottling] = useState(false)
@@ -69,10 +70,13 @@ const ObservableGrid =  ({
   const callbackKeyPattern = useCallback(keyPattern, [keyPattern])
 
   useLayoutEffect(() => {
+
+    function sortSort(order, rows) {
+      return order === 'asc' ? naturalSort(rows).asc([r => r[orderBy]]) : naturalSort(rows).desc([r => r[orderBy]])
+    }
+
     if (rows.length > 0) {
-      setSortedRows(order === 'asc'
-        ? naturalSort(rows).asc([r => r[orderBy]]).map((r, index) => { r.__index = index; return r })
-        : naturalSort(rows).desc([r => r[orderBy]]).map((r, index) => { r.__index = index; return r }))
+      setSortedRows(sortSort(order, rows.map((r, index) => { r.__origIndex = index; return r })).map((r, index) => { r.__index = index; return r }))
       setThrottling(rows.length >= throttleLimit)
       console.log('useEffect: sortingRows')
     }
@@ -90,7 +94,8 @@ const ObservableGrid =  ({
     setStartEnd((startEnd) => ({ start: startEnd.start + 1, end: startEnd.end + 1 }))
   }
   const regressStartEnd = () => {
-    setStartEnd((startEnd) => ({ start: startEnd.start - 1, end: startEnd.end  }))
+    console.log("dddss")
+    setStartEnd((startEnd) => ({ start: startEnd.start - 1, end: startEnd.end - 1  }))
   }
 
   return isEmpty
@@ -106,7 +111,7 @@ const ObservableGrid =  ({
         { label: 'granularity', value: granularity },
         { label: 'startEnd', value: JSON.stringify(startEnd) },
         { label: 'pageSize', value: pageSize },
-        { label: 'MAX SIZE', value: rows.length / pageSize },
+        // { label: 'MAX SIZE', value: rows.length / pageSize },
         // { label: 'direction', value: upperLimit > lowerLimit ? 'down' : 'up' },
       ]}>
         <div>{throttling ? 'throttling' : 'not throttling'}</div>
@@ -114,27 +119,25 @@ const ObservableGrid =  ({
       </ObservableDebugging>}
 
       <ObservableHeader {...{ gridTemplateColumns, headers, order, orderBy, handleRequestSort, handleResetSort, rowOptions }} />
-       {/* {rows.length}
-       {sortedRows.length} */}
-      {/* {JSON.stringify(viewedRows)} {viewedRows.length} */}
-      {/* {JSON.stringify(initialViewedRows)} {initialViewedRows.length} */}
 
       <ObservableContainer {...{ isScrollable, isAlternating }}>
-        {startEnd.start > 0 && <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
+        {rows.length > pageSize && startEnd.start > 0 && <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
         {sortedRows
           // .filter(row => row.__index <= startEnd.end * pageSize && row.__index >= startEnd.start  * pageSize)
           // .filter(row => row.__index <= startEnd.end * pageSize)
-          .map((row, index) => <ObservableRow
-          {...{ gridSpacing: gridTemplateColumns, minRows, updateGranularity: viewedRows.length, index, rowOptions, currentIndex, isScrollable }}
+          .map(row => <ObservableRow
+            {...{ gridSpacing: gridTemplateColumns, minRows, updateGranularity: viewedRows.length, rowOptions, currentIndex, isScrollable }}
             key={callbackKeyPattern(row)}
             innerIndex={row.__index}
-            isRelevant={row.__index >= startEnd.start  * pageSize && row.__index <= startEnd.end * pageSize}
-          isSelected={isSelectable && selectedIndex === index}
-          onClick={() => isSelectable && setSelectedIndex(selectedIndex === index ? null : index)}
+            innerOriginalIndex={row.__origIndex}
+            isRelevant={row.__index <= startEnd.end * pageSize && row.__index >= startEnd.start  * pageSize}
+            // isRelevant={row.__index >= startEnd.start  * pageSize}
+            isSelected={isSelectable && selectedIndex === row.__origIndex}
+            onClick={() => isSelectable && setSelectedIndex(selectedIndex === row.__origIndex ? null : row.__origIndex)}
         >
-          {rowRenderer(row, index)}
+          {rowRenderer(row, row.__index)}
         </ObservableRow>)}
-        <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />
+        {rows.length > pageSize && pageSize * startEnd.end -1 <  rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
         {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
       </ObservableContainer>
     </>

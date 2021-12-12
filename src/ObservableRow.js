@@ -37,8 +37,8 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const ObservableRow = ({
-  index,
   innerIndex,
+  innerOriginalIndex,
   isScrollable = true,
   isSelected = false,
   gridSpacing,
@@ -56,20 +56,25 @@ const ObservableRow = ({
   return <>
     {isRelevant && <InView
       as='div'
+      threshold={0}
       onChange={setInView}
-      style={{
-        padding: '20px'
+      className={[
+        classes.wrapper,
+        isSelected ? classes.isSelected : ''].join(' ').trim()}
+      key={innerIndex}
+      {...{
+        ...inView ? {
+          style: {
+            padding: rowOptions.padding,
+            gridTemplateColumns: gridSpacing
+          }
+        } : {},
+        onClick
       }}
-      className={`${classes.wrapper} ${isSelected && classes.isSelected}`}
-      key={index}
-      style={{
-        padding: rowOptions.padding,
-        gridTemplateColumns: gridSpacing
-      }}
-      {...{ onClick }}
-      data-index={innerIndex}
+      data-i={innerIndex}
+      data-o={innerOriginalIndex}
     >
-      {(inView || isScrollable) && children && cloneElement(children, { inView, index })}
+      {(inView || isScrollable) && children && cloneElement(children, { inView })}
     </InView>}
   </>
 }

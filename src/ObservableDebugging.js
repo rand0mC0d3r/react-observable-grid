@@ -16,7 +16,7 @@ const ObservableDebugging = ({ items }) => <div style={{
   gap: '4px',
   right: '20px',
   zIndex: '1',
-  width: '300px'
+  width: '500px'
 }}>
   {items.map(({ label, value }) => <Chip color="primary" size='small' label={`${label.toUpperCase()}: ${value}`} key={`${label}: ${value}`} />)}
 </div>
