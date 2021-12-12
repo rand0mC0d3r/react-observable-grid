@@ -125,7 +125,6 @@ const ObservableGrid =  ({
         {rows.length > pageSize && startEnd.start > 0 && <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
         <style>{`
           .observableGrid {
-            display: grid;
             padding: ${rowOptions.padding};
             grid-template-columns: ${gridTemplateColumns};
           }
