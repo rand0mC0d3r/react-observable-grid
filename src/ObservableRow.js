@@ -5,15 +5,6 @@ import { InView, useInView } from 'react-intersection-observer'
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
-    alignSelf: 'stretch',
-    breakInside: 'avoid',
-    minHeight: '44px',
-    fontSize: '12px',
-    alignItems: 'center',
-    gridColumnGap: '16px',
-    gridRowGap: '16px',
-    display: 'grid',
-
     '&:hover': {
       backgroundColor: theme.palette.augmentColor({ main: theme.palette.divider }).light,
     }
