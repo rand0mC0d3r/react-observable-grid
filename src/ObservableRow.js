@@ -21,7 +21,6 @@ const useStyles = makeStyles(theme => ({
     alignSelf: 'stretch',
     breakInside: 'avoid',
     minHeight: '44px',
-    display: 'grid',
     fontSize: '12px',
     alignItems: 'center',
     gridColumnGap: '16px',
@@ -60,19 +59,25 @@ const ObservableRow = ({
       onChange={setInView}
       className={[
         classes.wrapper,
-        isSelected ? classes.isSelected : ''].join(' ').trim()}
+        (inView && isSelected) ? classes.isSelected : '',
+      ].join(' ').trim()}
       key={innerIndex}
       {...{
-        ...inView ? {
-          style: {
-            padding: rowOptions.padding,
-            gridTemplateColumns: gridSpacing
+        ...inView
+          ? {
+            style: {
+              display: 'grid',
+              padding: rowOptions.padding,
+              gridTemplateColumns: gridSpacing
+            },
+            'data-i': innerIndex,
+            'data-o': innerOriginalIndex,
           }
-        } : {},
+          : {
+            style: {}
+          },
         onClick
       }}
-      data-i={innerIndex}
-      data-o={innerOriginalIndex}
     >
       {(inView || isScrollable) && children && cloneElement(children, { inView })}
     </InView>}
