@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types'
-import { cloneElement, useEffect, useState } from 'react'
-import { InView } from 'react-intersection-observer'
+import PropTypes from 'prop-types';
+import { cloneElement, useEffect, useState } from 'react';
+import { InView } from 'react-intersection-observer';
 
 const ObservableRow = ({
   innerIndex,
@@ -11,8 +11,14 @@ const ObservableRow = ({
   isScrollable,
   isSelected,
 }) => {
-  const [renderedChildren, setRenderedChildren] = useState()
-  useEffect(() => isRelevant && renderedChildren === undefined && setRenderedChildren(cloneElement(children)), [renderedChildren, children, isRelevant])
+  let renderedChildren;
+
+  useEffect(() => {
+    if (isRelevant && renderedChildren === undefined) {
+      console.log('rendering');
+      renderedChildren = cloneElement(children)
+    }
+  }, [renderedChildren, children, isRelevant])
 
   return isRelevant && children
   ? <InView>
