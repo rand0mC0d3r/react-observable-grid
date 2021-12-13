@@ -137,10 +137,10 @@ const ObservableGrid =  ({
             grid-template-columns: ${gridTemplateColumns};
           }
           .observableGrid:hover {
-            backgroundColor: ${theme.palette.augmentColor({ main: theme.palette.divider }).light};
+            background-color: ${theme.palette.augmentColor({ main: theme.palette.divider }).light};
           }
           .observableGrid-selected {
-            backgroundColor: ${theme.palette.augmentColor({ main: theme.palette.divider }).main} !important;
+            background-color: ${theme.palette.augmentColor({ main: theme.palette.divider }).main} !important;
           }
         `}</style>
         {sortedRows
