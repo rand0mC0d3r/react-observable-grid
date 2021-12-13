@@ -40,16 +40,12 @@ const ObservableGrid =  ({
 
   const [selectedIndex, setSelectedIndex] = useState(null)
   const [sortedRows, setSortedRows] = useState([])
-  const [currentIndex, setCurrentIndex] = useState(0) // TODO: fix index to be bound to rows
 
-  const [pageSize, setPageSize] = useState(25)
-  const [page, setPage] = useState(0)
+  const [pageSize, setPageSize] = useState(35)
 
-  const [initialViewedRows, setInitialViewedRows] = useState([])
   const [viewedRows, setViewedRows] = useState([])
   const [startEnd, setStartEnd] = useState({ start: -1, end: 1 })
   const [granularity, setGranularity] = useState(0)
-  const updateGranularity = 10
 
   const minRows = 25
   const throttleLimit = 30
@@ -151,7 +147,7 @@ const ObservableGrid =  ({
           // .filter(row => row.__index <= startEnd.end * pageSize && row.__index >= startEnd.start  * pageSize)
           // .filter(row => row.__index <= startEnd.end * pageSize)
           .map(row => <ObservableRow
-            {...{ gridSpacing: gridTemplateColumns, minRows, updateGranularity: viewedRows.length, rowOptions, currentIndex, isScrollable }}
+            {...{ gridSpacing: gridTemplateColumns, minRows, updateGranularity: viewedRows.length, rowOptions, isScrollable }}
             key={callbackKeyPattern(row)}
             innerIndex={row.__index}
             innerOriginalIndex={row.__origIndex}

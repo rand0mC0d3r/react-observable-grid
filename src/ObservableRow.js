@@ -20,16 +20,11 @@ const ObservableRow = ({
         as: 'div',
         key: innerIndex,
         onChange: setInView,
-        ...inView
-          ? {
-            'data-i': innerIndex,
-            'data-o': innerOriginalIndex,
-          }
-          : {},
-      className: [
-          'observableGrid-base',
+          'data-i': innerIndex,
+          'data-o': innerOriginalIndex,
+        className: [
+          'observableGrid-base observableGrid',
           (inView && isSelected) ? 'observableGrid-selected': false,
-          inView ? 'observableGrid' : false,
         ].filter(c => c !== false).join(' ')
     }}>
       {(inView || isScrollable) && cloneElement(children, { inView })}
