@@ -27,7 +27,7 @@ const ObservableRow = ({
           (inView && isSelected) ? 'observableGrid-selected': false,
         ].filter(c => c !== false).join(' ')
     }}>
-      {(inView || isScrollable) && cloneElement(children, { inView })}
+      {(inView || isScrollable) && cloneElement(children)}
     </InView>
     : null
 }

@@ -1,6 +1,6 @@
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { createNewSortInstance } from 'fast-sort'
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { ObservableInternalLoadMore } from '.'
 import ObservableContainer from './ObservableContainer'
 import ObservableDebugging from './ObservableDebugging'

@@ -19,7 +19,7 @@ const useStyles = makeStyles(() => ({
 }))
 
 const SampleRow = ({
-  inView = false,
+  inView = true,
   setSelected = () => { },
   row: { name, surname, description, price, tiles, currency, nickname, streetname } }) => {
   const theme = useTheme()
