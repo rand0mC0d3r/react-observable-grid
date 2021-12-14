@@ -11,34 +11,38 @@ const ObservableRow = ({
   isScrollable,
   isSelected,
 }) => {
-  let renderedChildren;
-  let delayedRenderer;
+  const [renderedChildren, setRenderedChildren] = useState();
+  const [inView, setInView] = useState()
+  let delayedRenderer = null
 
-  const renderChildren = (children, inView) => {
-    if (inView) {
+  const renderChildren = (children) => {
       if (!renderedChildren) {
         const freshRenderer = cloneElement(children)
-        renderedChildren = freshRenderer;
+        setRenderedChildren(freshRenderer)
         return freshRenderer
       } else {
         return renderedChildren;
       }
-    }
   }
 
   useEffect(() => {
-    if (delayedRenderer) {
-      return
+    if (inView && !renderedChildren) {
+        clearTimeout(delayedRenderer);
+    } else if (inView  === false && isRelevant && !renderedChildren) {
+      delayedRenderer = setTimeout((renderedChildren) => {
+        const freshRenderer = cloneElement(children)
+        setRenderedChildren(freshRenderer)
+      },  Math.floor(Math.random() *  1500 + 250));
     }
-    if (isRelevant) {
-      delayedRenderer = setTimeout(() => {
-        if (!renderedChildren) {
-          const freshRenderer = cloneElement(children)
-          renderedChildren = freshRenderer;
-        }
-      }, 1500);
+
+  }, [isRelevant, inView, renderedChildren, children]);
+
+  useEffect(() => {
+    if (inView) {
+      renderChildren(children)
     }
-  }, [isRelevant, renderedChildren, children]);
+
+  }, [children, inView]);
 
   useEffect(() => {
     return () => {
@@ -46,22 +50,21 @@ const ObservableRow = ({
     }
   }, [])
 
-  return isRelevant && children
-  ? <InView>
-    {({ inView, ref }) => <div {...{
-      ref,
-      onClick,
-      key: innerIndex,
-      'data-i': innerIndex,
-      'data-o': innerOriginalIndex,
-      className: [
-        'observableGrid',
-        (inView && isSelected) ? 'observableGrid-selected' : false,
-      ].filter(c => c !== false).join(' ')
-    }}>
-      {inView && isScrollable && renderChildren(children, inView)}
-    </div>}
-  </InView>
+  return (isRelevant && children)
+    ? <InView {...{
+        as: 'div',
+        onClick,
+        onChange: setInView,
+        key: innerIndex,
+        'data-i': innerIndex,
+        'data-o': innerOriginalIndex,
+        className: [
+          'observableGrid',
+          (inView && isSelected) ? 'observableGrid-selected' : false,
+        ].filter(c => c !== false).join(' ')
+      }}>
+      {inView && isScrollable && renderedChildren}
+    </InView>
   : null
 }
 

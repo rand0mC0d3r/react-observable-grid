@@ -76,6 +76,7 @@ const ObservableGrid =  ({
 
     if (rows.length > 0) {
       setSortedRows(sortSort(order, rows.map((r, index) => { r.__origIndex = index; return r })).map((r, index) => { r.__index = index; return r }))
+      setStartEnd({ start: -1, end: 1 })
       setThrottling(rows.length >= throttleLimit)
       console.log('useEffect: sortingRows')
     }
@@ -93,8 +94,7 @@ const ObservableGrid =  ({
     setStartEnd((startEnd) => ({ start: startEnd.start + 1, end: startEnd.end + 1 }))
   }
   const regressStartEnd = () => {
-    console.log("dddss")
-    setStartEnd((startEnd) => ({ start: startEnd.start - 1, end: startEnd.end - 1  }))
+    setStartEnd(() => ({ start: - 1, end:  1  }))
   }
 
   return isEmpty
@@ -146,10 +146,10 @@ const ObservableGrid =  ({
           // .filter(row => row.__index <= startEnd.end * pageSize)
           .map(row => <ObservableRow
             {...{ gridSpacing: gridTemplateColumns, minRows, updateGranularity: viewedRows.length, rowOptions, isScrollable }}
-            key={callbackKeyPattern(row)}
+            key={row.__index}
             innerIndex={row.__index}
             innerOriginalIndex={row.__origIndex}
-            isRelevant={row.__index <= startEnd.end * pageSize && row.__index >= startEnd.start  * pageSize}
+            isRelevant={row.__index <= startEnd.end * pageSize}
             // isRelevant={row.__index >= startEnd.start  * pageSize}
             isSelected={isSelectable && selectedIndex === row.__origIndex}
             onClick={() => isSelectable && setSelectedIndex(selectedIndex === row.__origIndex ? null : row.__origIndex)}

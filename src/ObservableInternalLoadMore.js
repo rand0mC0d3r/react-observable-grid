@@ -10,7 +10,7 @@ const ObservableInternalLoadMore = ({ onLoadMore = () => { }, isPointing = false
     as="div"
     style={{
       position: 'relative',
-      top: isPointing ? '10%' : '-10%',
+      top: isPointing ? '50%' : '-10%',
       opacity: '0',
     }}
     onChange={(inView) => inView && throttledLoadMore()}
