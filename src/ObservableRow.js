@@ -17,16 +17,28 @@ const ObservableRow = ({
   const renderChildren = (children, inView) => {
     if (inView) {
       if (!renderedChildren) {
-        console.log('rendering children', innerIndex);
         const freshRenderer = cloneElement(children)
         renderedChildren = freshRenderer;
         return freshRenderer
       } else {
-        console.log('reusing children', innerIndex);
         return renderedChildren;
       }
     }
   }
+
+  useEffect(() => {
+    if (delayedRenderer) {
+      return
+    }
+    if (isRelevant) {
+      delayedRenderer = setTimeout(() => {
+        if (!renderedChildren) {
+          const freshRenderer = cloneElement(children)
+          renderedChildren = freshRenderer;
+        }
+      }, 1500);
+    }
+  }, [isRelevant, renderedChildren, children]);
 
   useEffect(() => {
     return () => {
