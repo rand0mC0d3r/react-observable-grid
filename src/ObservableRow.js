@@ -12,13 +12,27 @@ const ObservableRow = ({
   isSelected,
 }) => {
   let renderedChildren;
+  let delayedRenderer;
+
+  const renderChildren = (children, inView) => {
+    if (inView) {
+      if (!renderedChildren) {
+        console.log('rendering children', innerIndex);
+        const freshRenderer = cloneElement(children)
+        renderedChildren = freshRenderer;
+        return freshRenderer
+      } else {
+        console.log('reusing children', innerIndex);
+        return renderedChildren;
+      }
+    }
+  }
 
   useEffect(() => {
-    if (isRelevant && renderedChildren === undefined) {
-      console.log('rendering');
-      renderedChildren = cloneElement(children)
+    return () => {
+      !!delayedRenderer && clearTimeout(delayedRenderer)
     }
-  }, [renderedChildren, children, isRelevant])
+  }, [])
 
   return isRelevant && children
   ? <InView>
@@ -29,11 +43,11 @@ const ObservableRow = ({
       'data-i': innerIndex,
       'data-o': innerOriginalIndex,
       className: [
-        'observableGrid-base observableGrid',
+        'observableGrid',
         (inView && isSelected) ? 'observableGrid-selected' : false,
       ].filter(c => c !== false).join(' ')
     }}>
-      {inView && isScrollable && renderedChildren}
+      {inView && isScrollable && renderChildren(children, inView)}
     </div>}
   </InView>
   : null

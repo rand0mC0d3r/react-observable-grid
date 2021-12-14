@@ -122,10 +122,8 @@ const ObservableGrid =  ({
       <ObservableContainer {...{ isScrollable, isAlternating }}>
         {rows.length > pageSize && startEnd.start > 0 && <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
         <style>{`
-          .observableGrid-base {
-            min-height: 44px;
-          }
           .observableGrid {
+            min-height: 44px;
             align-self: stretch;
             break-inside: avoid;
             font-size: 12px;
