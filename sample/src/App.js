@@ -173,7 +173,7 @@ const App = () => {
   const [filteredRows, setFilteredRows] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const [isDebugging, setIsDebugging] = useState(true);
+  const [isDebugging, setIsDebugging] = useState(false);
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
 
@@ -247,12 +247,8 @@ const App = () => {
       </div>
       <div className={classes.container}>
         <div className={classes.wrapper2}>
+
           <ObservableGrid
-            // {...{ headers: [{ label: "aa", width: "minmax(100px, 1fr)"}, { label: "bb", width: "1fr"}], rows: []}}
-            // isEmpty={false}
-            // emptyElement={<div>No data found ...</div>}
-          />
-          {/* <ObservableGrid
             {...{ headers, rows: filteredRows, isDebugging }}
             isEmpty={filteredRows.length === 0}
             emptyElement={<div>No data found ...</div>}
@@ -262,7 +258,7 @@ const App = () => {
               padding: '4px 16px',
             }}
             rowRenderer={row => <SampleRow {...{ row }} />}
-          /> */}
+          />
         </div>
       </div>
     </div>

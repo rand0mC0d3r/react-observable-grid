@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types';
-import { useState } from 'react';
-import { InView } from 'react-intersection-observer';
+import PropTypes from 'prop-types'
+import { useState } from 'react'
+import { InView } from 'react-intersection-observer'
 
 const ObservableRow = ({
   innerIndex,
@@ -12,18 +12,19 @@ const ObservableRow = ({
   isSelected,
 }) => {
   const [inView, setInView] = useState()
+
   return (isRelevant && children)
     ? <InView {...{
-        as: 'div',
-        onClick,
-        onChange: setInView,
-        key: innerIndex,
-        // 'data-i': innerIndex,
-        // 'data-o': innerOriginalIndex,
-        className: [
-          'observableGrid',
+      as: 'div',
+      onClick,
+      onChange: setInView,
+      key: innerIndex,
+      // 'data-i': innerIndex,
+      // 'data-o': innerOriginalIndex,
+      className: [
+        'observableGrid',
           (inView && isSelected) ? 'observableGrid-selected' : false,
-        ].filter(c => c !== false).join(' ')
+      ].filter(c => c !== false).join(' ')
     }}>
       {inView && isScrollable && children}
     </InView>
