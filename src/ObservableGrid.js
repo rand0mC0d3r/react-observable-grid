@@ -67,11 +67,11 @@ const ObservableGrid =  ({
     setOrder('asc')
   }
 
-  const callbackKeyPattern = useCallback(keyPattern, [keyPattern])
-
   useEffect(() => {
     if (rows.length > 0 || cachedRows.length > 0 && rows.length === 0) {
-      setCachedRows(rows.map((r, index) => { r.__origIndex = index; return r }))
+      setCachedRows(rows.map((r, index) => { r.__origIndex = index
+
+        return r }))
     }
   }, [rows])
 
@@ -82,9 +82,13 @@ const ObservableGrid =  ({
 
     if (cachedRows.length > 0) {
       if (orderBy === '') {
-        setSortedRows(cachedRows.map((r, index) => { r.__index = index; return r }))
+        setSortedRows(cachedRows.map((r, index) => { r.__index = index
+
+          return r }))
       } else {
-        setSortedRows(sortSort(order, cachedRows).map((r, index) => { r.__index = index; return r }))
+        setSortedRows(sortSort(order, cachedRows).map((r, index) => { r.__index = index
+
+          return r }))
       }
       setStartEnd({ start: -1, end: 1 })
       setThrottling(cachedRows.length >= throttleLimit)
@@ -93,6 +97,7 @@ const ObservableGrid =  ({
   }, [cachedRows, order, orderBy])
 
   useEffect(() => {
+    if(!headers) return
     const gridTemplateString = headers.map(header => header.width).join(' ')
     setGridTemplateColumns(gridTemplateString)
     if (gridTemplateString.indexOf('minmax') === -1) {
@@ -103,6 +108,7 @@ const ObservableGrid =  ({
   const advanceStartEnd = () => {
     setStartEnd((startEnd) => ({ start: startEnd.start + 1, end: startEnd.end + 1 }))
   }
+
   const regressStartEnd = () => {
     setStartEnd(() => ({ start: - 1, end:  1  }))
   }
@@ -120,16 +126,12 @@ const ObservableGrid =  ({
         { label: 'granularity', value: granularity },
         { label: 'startEnd', value: JSON.stringify(startEnd) },
         { label: 'pageSize', value: pageSize },
-        // { label: 'MAX SIZE', value: rows.length / pageSize },
-        // { label: 'direction', value: upperLimit > lowerLimit ? 'down' : 'up' },
       ]}>
-        <div>{throttling ? 'throttling' : 'not throttling'}</div>
-        <div>selectedIndex: {selectedIndex} {JSON.stringify(rowOptions)}</div>
       </ObservableDebugging>}
 
-      <ObservableHeader {...{ gridTemplateColumns, headers, order, orderBy, handleRequestSort, handleResetSort, rowOptions }} />
+      {headers && <ObservableHeader {...{ gridTemplateColumns, headers, order, orderBy, handleRequestSort, handleResetSort, rowOptions }} />}
 
-      <ObservableContainer {...{ isScrollable, isAlternating }}>
+      {rows.length > 0 && <ObservableContainer {...{ isScrollable, isAlternating }}>
         {rows.length > pageSize && startEnd.end > 0 && <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
         <style>{`
           .observableGrid {
@@ -163,13 +165,13 @@ const ObservableGrid =  ({
             // isRelevant={row.__index >= startEnd.start  * pageSize}
             isSelected={isSelectable && selectedIndex === row.__origIndex}
             onClick={() => isSelectable && setSelectedIndex(selectedIndex === row.__origIndex ? null : row.__origIndex)}
-        >
-          {rowRenderer(row, row.__index)}
+          >
+            {rowRenderer(row, row.__index)}
           </ObservableRow>)}
 
         {rows.length > pageSize && pageSize * startEnd.end -1 <  rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
         {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
-      </ObservableContainer>
+      </ObservableContainer>}
     </>
 }
 
