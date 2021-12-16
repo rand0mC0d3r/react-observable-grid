@@ -211,7 +211,7 @@ const App = () => {
     }
   }));
 
-  useEffect(() => generateRows(150), [])
+  useEffect(() => generateRows(15000), [])
 
   useEffect(() => {
     setFilteredRows(rows.filter(({name, description}) => `${name}${description}`.toLowerCase().includes(searchTerm.toLowerCase())))

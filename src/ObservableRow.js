@@ -11,44 +11,11 @@ const ObservableRow = ({
   isScrollable,
   isSelected,
 }) => {
-  const [renderedChildren, setRenderedChildren] = useState();
   const [inView, setInView] = useState()
-  let delayedRenderer = null
-
-  const renderChildren = (children) => {
-      if (!renderedChildren) {
-        const freshRenderer = cloneElement(children)
-        setRenderedChildren(freshRenderer)
-        return freshRenderer
-      } else {
-        return renderedChildren;
-      }
-  }
 
   useEffect(() => {
-    if (inView && !renderedChildren) {
-        clearTimeout(delayedRenderer);
-    } else if (inView  === false && isRelevant && !renderedChildren) {
-      delayedRenderer = setTimeout((renderedChildren) => {
-        const freshRenderer = cloneElement(children)
-        setRenderedChildren(freshRenderer)
-      },  Math.floor(Math.random() *  1500 + 250));
-    }
-
-  }, [isRelevant, inView, renderedChildren, children]);
-
-  useEffect(() => {
-    if (inView) {
-      renderChildren(children)
-    }
-
-  }, [children, inView]);
-
-  useEffect(() => {
-    return () => {
-      !!delayedRenderer && clearTimeout(delayedRenderer)
-    }
-  }, [])
+    console.log('loaded', innerIndex, innerOriginalIndex)
+  }, [innerIndex, innerOriginalIndex])
 
   return (isRelevant && children)
     ? <InView {...{
@@ -63,7 +30,7 @@ const ObservableRow = ({
           (inView && isSelected) ? 'observableGrid-selected' : false,
         ].filter(c => c !== false).join(' ')
       }}>
-      {inView && isScrollable && renderedChildren}
+      {inView && isScrollable && children}
     </InView>
   : null
 }

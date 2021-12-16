@@ -120,7 +120,7 @@ const ObservableGrid =  ({
       <ObservableHeader {...{ gridTemplateColumns, headers, order, orderBy, handleRequestSort, handleResetSort, rowOptions }} />
 
       <ObservableContainer {...{ isScrollable, isAlternating }}>
-        {rows.length > pageSize && startEnd.start > 0 && <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
+        {rows.length > pageSize && startEnd.end > 0 && <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
         <style>{`
           .observableGrid {
             min-height: 44px;
@@ -143,7 +143,7 @@ const ObservableGrid =  ({
         `}</style>
         {sortedRows
           // .filter(row => row.__index <= startEnd.end * pageSize && row.__index >= startEnd.start  * pageSize)
-          // .filter(row => row.__index <= startEnd.end * pageSize)
+          .filter(row => row.__index <= startEnd.end * pageSize)
           .map(row => <ObservableRow
             {...{ gridSpacing: gridTemplateColumns, minRows, updateGranularity: viewedRows.length, rowOptions, isScrollable }}
             key={row.__index}
