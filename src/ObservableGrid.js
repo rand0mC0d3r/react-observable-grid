@@ -15,7 +15,6 @@ const ObservableGrid =  ({
   rows = [],
   keyPattern = () => { },
   onLoadMore,
-
   rowRenderer = () => { },
   rowOptions = {
     padding: '20px',
