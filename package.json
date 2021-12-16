@@ -44,7 +44,7 @@
   "license": "MIT",
   "scripts": {
     "wipe": "rm -rf package-lock.json && rm -rf ./node_modules && cd sample && rm -rf package-lock.json && rm -rf ./node_modules",
-    "postinstall": "npm audit fix && cd sample && npm install",
+    // "postinstall": "npm audit fix && cd sample && npm install",
     "dev": "concurrently \"npm run copy.component\" \"cd sample && npx react-scripts start\"",
     "start": "serve -s build",
     "prebuild": "npm install ./sample && npm run clone.component",
