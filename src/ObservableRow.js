@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import { cloneElement, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { InView } from 'react-intersection-observer';
 
 const ObservableRow = ({
   innerIndex,
-  innerOriginalIndex,
+  // innerOriginalIndex,
   onClick,
   children,
   isRelevant,
@@ -12,24 +12,19 @@ const ObservableRow = ({
   isSelected,
 }) => {
   const [inView, setInView] = useState()
-
-  useEffect(() => {
-    console.log('loaded', innerIndex, innerOriginalIndex)
-  }, [innerIndex, innerOriginalIndex])
-
   return (isRelevant && children)
     ? <InView {...{
         as: 'div',
         onClick,
         onChange: setInView,
         key: innerIndex,
-        'data-i': innerIndex,
-        'data-o': innerOriginalIndex,
+        // 'data-i': innerIndex,
+        // 'data-o': innerOriginalIndex,
         className: [
           'observableGrid',
           (inView && isSelected) ? 'observableGrid-selected' : false,
         ].filter(c => c !== false).join(' ')
-      }}>
+    }}>
       {inView && isScrollable && children}
     </InView>
   : null

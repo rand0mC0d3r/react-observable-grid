@@ -34,6 +34,7 @@ const ObservableGrid =  ({
   const theme = useTheme()
 
   const [order, setOrder] = useState('asc')
+  const [cachedRows, setCachedRows] = useState([])
   const [orderBy, setOrderBy] = useState('')
   const [throttling, setThrottling] = useState(false)
   const [gridTemplateColumns, setGridTemplateColumns] = useState('')
@@ -68,21 +69,30 @@ const ObservableGrid =  ({
 
   const callbackKeyPattern = useCallback(keyPattern, [keyPattern])
 
-  useLayoutEffect(() => {
+  useEffect(() => {
+    if (rows.length > 0 || cachedRows.length > 0 && rows.length === 0) {
+      setCachedRows(rows.map((r, index) => { r.__origIndex = index; return r }))
+    }
+  }, [rows])
 
+  useEffect(() => {
     function sortSort(order, rows) {
       return order === 'asc' ? naturalSort(rows).asc([r => r[orderBy]]) : naturalSort(rows).desc([r => r[orderBy]])
     }
 
-    if (rows.length > 0) {
-      setSortedRows(sortSort(order, rows.map((r, index) => { r.__origIndex = index; return r })).map((r, index) => { r.__index = index; return r }))
+    if (cachedRows.length > 0) {
+      if (orderBy === '') {
+        setSortedRows(cachedRows.map((r, index) => { r.__index = index; return r }))
+      } else {
+        setSortedRows(sortSort(order, cachedRows).map((r, index) => { r.__index = index; return r }))
+      }
       setStartEnd({ start: -1, end: 1 })
-      setThrottling(rows.length >= throttleLimit)
-      console.log('useEffect: sortingRows')
-    }
-  }, [rows, order, orderBy])
+      setThrottling(cachedRows.length >= throttleLimit)
 
-  useLayoutEffect(() => {
+    }
+  }, [cachedRows, order, orderBy])
+
+  useEffect(() => {
     const gridTemplateString = headers.map(header => header.width).join(' ')
     setGridTemplateColumns(gridTemplateString)
     if (gridTemplateString.indexOf('minmax') === -1) {
@@ -148,7 +158,7 @@ const ObservableGrid =  ({
             {...{ gridSpacing: gridTemplateColumns, minRows, updateGranularity: viewedRows.length, rowOptions, isScrollable }}
             key={row.__index}
             innerIndex={row.__index}
-            innerOriginalIndex={row.__origIndex}
+            // innerOriginalIndex={row.__origIndex}
             isRelevant={row.__index <= startEnd.end * pageSize}
             // isRelevant={row.__index >= startEnd.start  * pageSize}
             isSelected={isSelectable && selectedIndex === row.__origIndex}

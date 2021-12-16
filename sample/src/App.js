@@ -1,7 +1,6 @@
 import { Button, Chip, IconButton, TextField, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import DashboardIcon from '@material-ui/icons/Dashboard';
-import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
@@ -185,7 +184,7 @@ const App = () => {
       name: `${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)}.${i + 1}`,
       surname: `${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)}.${i + 1}`,
       nickname: `n1_${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 3)}${i + 1}`,
-      streetname: `n2_${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 3)}${i + 1}`,
+      streetname: `n2_${i + 1}_${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 3)}`,
       description: `${[
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
         'Donec pulvinar nisi pulvinar metus cursus, eget malesuada nunc auctor.',
@@ -211,7 +210,7 @@ const App = () => {
     }
   }));
 
-  useEffect(() => generateRows(15000), [])
+  useEffect(() => generateRows(100), [])
 
   useEffect(() => {
     setFilteredRows(rows.filter(({name, description}) => `${name}${description}`.toLowerCase().includes(searchTerm.toLowerCase())))
@@ -242,7 +241,7 @@ const App = () => {
         </div>
 
         <div className={`${classes.actions} ${classes.smallActions}`}>
-          {[0, 10, 20, 50, 500, 5000].map(count => <Button style={{minWidth: 'unset'}} variant="outlined" key={count} onClick={() => generateRows(count)}>{count}</Button>)}
+          {[0, 10, 20, 50, 500, 500, 65000].map(count => <Button style={{minWidth: 'unset'}} variant="outlined" key={count} onClick={() => generateRows(count)}>{count}</Button>)}
         </div>
 
       </div>
