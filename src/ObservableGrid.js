@@ -22,6 +22,8 @@ const ObservableGrid =  ({
   },
 
   emptyElement,
+
+
   isEmpty = true,
   isInfinite = false,
   isDebugging = true,
