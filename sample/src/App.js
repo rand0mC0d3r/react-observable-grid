@@ -9,6 +9,7 @@ import SubjectIcon from '@material-ui/icons/Subject';
 import { useEffect, useMemo, useState } from 'react';
 import SampleRow from './parts/SampleRow';
 import { ObservableGrid } from 'react-observable-grid';
+import Carousel from 'react-material-ui-carousel'
 
 const useStyles = makeStyles(() => ({
   wrapper: {
@@ -53,7 +54,16 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-
+ const items = [
+        {
+            name: "Random Name #1",
+            description: "Probably the most random thing you have ever seen!"
+        },
+        {
+            name: "Random Name #2",
+            description: "Hello World!"
+        }
+    ]
 const headers = [
   {
     label: 'Name',
@@ -248,7 +258,11 @@ const App = () => {
       </div>
       <div className={classes.container}>
         <div className={classes.wrapper2}>
-          <ObservableGrid />
+          <Carousel>
+            {
+                items.map( (item, i) => <>{i}</> )
+            }
+        </Carousel>
           {/* <ObservableEmpty>x//#endregion</ObservableEmpty>
           <ObservableRow /> */}
           {/* <ObservableGrid
