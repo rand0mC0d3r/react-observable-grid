@@ -7,7 +7,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import PersonPinCircleIcon from '@material-ui/icons/PersonPinCircle';
 import SubjectIcon from '@material-ui/icons/Subject';
 import { useEffect, useMemo, useState } from 'react';
-import ObservableGrid from './components';
+import { ObservableGrid, ObservableEmpty } from 'react-observable-grid';
 import SampleRow from './parts/SampleRow';
 
 const useStyles = makeStyles(() => ({
@@ -247,6 +247,7 @@ const App = () => {
       </div>
       <div className={classes.container}>
         <div className={classes.wrapper2}>
+          <ObservableEmpty />
           {/* <ObservableGrid
             // {...{ headers: [{ label: "aa", width: "minmax(100px, 1fr)"}, { label: "bb", width: "1fr"}], rows: []}}
             // isEmpty={false}
