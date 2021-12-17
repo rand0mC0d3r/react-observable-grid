@@ -56,11 +56,11 @@
     "build": "rm -rf ./build && cd sample && npx react-scripts build && mv ./build ../",
     "build.lib": "rollup -c",
     "test": "react-scripts test",
-    "clone.component": "mkdir -p ./sample/src/components/ && cp -r dist/* sample/src/components/",
+    "clone.component": "clear && mkdir -p ./sample/src/components/ && cp -r src/* sample/src/components/ && echo 'Synchronized'",
     "copy.component": "npm run clone.component && copy-and-watch dist/* sample/src/components/ --watch",
     "tag": "npm run build.lib && git commit -am 'built next version' && npm version patch && git push && git push --tags && npm publish",
     "ship": "npm publish",
-    "build.watch": "chokidar \"src/**/*.js\" -c \"npm run build.lib && npm pack master 0 && cp 0-0.0.0.tgz master.tgz && cd sample && npm install --silent && echo 'DONE'\""
+    "build.watch": "chokidar \"src/**/*.js\" -c \"npm run clone.component\""
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -9,7 +9,7 @@ import SubjectIcon from '@material-ui/icons/Subject';
 import { useEffect, useMemo, useState } from 'react';
 import SampleRow from './parts/SampleRow';
 import { ObservableGrid } from 'react-observable-grid';
-import Carousel from 'react-material-ui-carousel'
+import LocalObservableGrid from './components/ObservableGrid';
 
 const useStyles = makeStyles(() => ({
   wrapper: {
@@ -252,6 +252,13 @@ const App = () => {
           {/* <ObservableEmpty>x//#endregion</ObservableEmpty>
           <ObservableRow /> */}
           <ObservableGrid
+            headers={headers}
+            rows={filteredRows}
+            isEmpty={filteredRows.length === 0}
+            emptyElement={<div>No data found ...</div>}
+            rowRenderer={row => <SampleRow {...{ row }} />}
+          />
+          <LocalObservableGrid
             headers={headers}
             rows={filteredRows}
             isEmpty={filteredRows.length === 0}
