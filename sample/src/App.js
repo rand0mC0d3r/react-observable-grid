@@ -54,16 +54,6 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
- const items = [
-        {
-            name: "Random Name #1",
-            description: "Probably the most random thing you have ever seen!"
-        },
-        {
-            name: "Random Name #2",
-            description: "Hello World!"
-        }
-    ]
 const headers = [
   {
     label: 'Name',
@@ -258,18 +248,15 @@ const App = () => {
       </div>
       <div className={classes.container}>
         <div className={classes.wrapper2}>
-          <Carousel>
-            {
-                items.map( (item, i) => <>{i}</> )
-            }
-        </Carousel>
         {/* <ObservableGrid /> */}
           {/* <ObservableEmpty>x//#endregion</ObservableEmpty>
           <ObservableRow /> */}
           <ObservableGrid
-            {...{ headers: [{ label: "aa", width: "minmax(100px, 1fr)"}, { label: "bb", width: "1fr"}], rows: []}}
-            isEmpty={false}
+            headers={headers}
+            rows={filteredRows}
+            isEmpty={filteredRows.length === 0}
             emptyElement={<div>No data found ...</div>}
+            rowRenderer={row => <SampleRow {...{ row }} />}
           />
           {/* <ObservableGrid
             {...{ headers, rows: filteredRows, isDebugging }}
