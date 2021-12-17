@@ -14,6 +14,7 @@ import ObservableRow from './ObservableRow'
 const ObservableGrid =  ({
   headers,
   rows = [],
+  uniqueId = 'test',
   // keyPattern = () => { },
   // onLoadMore,
   rowRenderer = () => { },
@@ -21,7 +22,11 @@ const ObservableGrid =  ({
     padding: '20px',
     template: 'repeat(1fr)'
   },
-
+  headerOptions = {
+    ascArrow: null,
+    descArrow: null,
+    padding: null,
+  },
   emptyElement,
 
 
@@ -127,7 +132,15 @@ const ObservableGrid =  ({
       ]}>
       </ObservableDebugging>}
 
-      {headers && <ObservableHeader {...{ gridTemplateColumns, headers, order, orderBy, handleRequestSort, handleResetSort, rowOptions }} />}
+      {headers && <ObservableHeader {...{
+        options: headerOptions,
+        gridTemplateColumns,
+        headers,
+        order,
+        orderBy,
+        handleRequestSort,
+        handleResetSort,
+        rowOptions }} />}
 
       {rows.length > 0 && <ObservableContainer {...{ isScrollable, isAlternating }}>
         {rows.length > pageSize && startEnd.end > 0 && <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}

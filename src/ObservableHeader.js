@@ -1,6 +1,5 @@
 import { Tooltip, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import PropTypes from 'prop-types';
 import React, { cloneElement, useCallback, useEffect, useState } from 'react';
 
@@ -51,9 +50,16 @@ const useStyles = makeStyles(theme => ({
 
 }))
 
+const defaultOptions = {
+  ascArrow: '▲',
+  descArrow: '▼',
+  padding: '10px 20px',
+}
+
 const ObservableHeader = ({
   gridTemplateColumns,
   headers,
+  options : {ascArrow, descArrow, padding },
   order,
   orderBy,
   handleRequestSort,
@@ -63,9 +69,25 @@ const ObservableHeader = ({
   const theme = useTheme()
   const classes = useStyles(theme)
   const evaluateOrderBy = ({ property, label }) => orderBy === (property || label?.toLowerCase())
-
+  const renderArrows = ({property, label, align, secondary = false}) => {
+    return evaluateOrderBy({ property, label }) && <div
+    style={{
+      transform: 'scaleY(0.75)',
+      order: align ? -1 : 1,
+      fontSize: '13px',
+      opacity: secondary ? 0.5 : 1,
+    }}>
+      {(ascArrow || descArrow) === null
+        ? order === 'asc' ? defaultOptions.ascArrow : defaultOptions.descArrow
+        : cloneElement(<>{order === 'asc' ? ascArrow : descArrow}</>)
+      }
+    </div>}
   const renderMainHeader = ({tooltip, noSort, property, label, icon, align}) => {
-    return <Tooltip key={`${property}_${label}_${align}_${tooltip}`} arrow placement="left" title={tooltip || (!noSort ? 'Click to toggle sorting direction for column' : '')}>
+    return <Tooltip
+      key={`${property}_${label}_${align}_${tooltip}`} arrow
+      placement="left"
+      title={tooltip || (!noSort ? 'Click to toggle sorting direction for this column' : '')}
+    >
       <div
         className={classes.flexbox}
         onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
@@ -88,29 +110,29 @@ const ObservableHeader = ({
         >
           {label}
         </Typography>
-        {evaluateOrderBy({ property, label }) && <ArrowDropDownIcon
-          className={order === 'asc' ? classes.flipped : null}
-            style={{
-              fontSize: 16,
-              order: align ? -1 : 1,
-            }}
-        />}
+
+        {renderArrows({property, label, align})}
       </div>
-    </Tooltip>
-  }
+    </Tooltip>}
 
   return <div className={classes.wrapper}>
-    <div className={classes.header} style={{ padding: rowOptions.padding, gridTemplateColumns: gridTemplateColumns}}>
+    <div
+    className={classes.header}
+    style={{
+      padding: padding || defaultOptions.padding,
+      gridTemplateColumns: gridTemplateColumns}}
+    >
       {headers?.map(({ align, label, icon, tooltip, property, secondaryHeaders, additionalHeaders, noSort }) =>
         <div key={`${label}`} className={classes.headers} style={{ alignItems: align ? 'flex-end' : 'flex-start' }}>
-
           <div className={`${classes.flexbox} ${classes.maxiFlexbox}`}>
             {renderMainHeader({tooltip, noSort, property, label, icon, align})}
             {additionalHeaders && <div className={classes.secondaryHeaders}>
-              {additionalHeaders.map(({ label, property, noSort, icon }) => renderMainHeader({tooltip, noSort, property, label, icon, align}))}
+              {additionalHeaders.map(({ label, property, noSort, icon }) =>
+                renderMainHeader({tooltip, noSort, property, label, icon, align}))
+              }
             </div>}
           </div>
-        {secondaryHeaders && <div className={classes.secondaryHeaders}>
+          {secondaryHeaders && <div className={classes.secondaryHeaders}>
             {secondaryHeaders.map(({ label, property, noSort }) => <div
               className={`${classes.flexbox} ${classes.miniFlexbox}`}
               style={{ cursor: noSort ? 'default' : 'pointer', }}
@@ -126,14 +148,11 @@ const ObservableHeader = ({
                 }}
                 onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
                 onDoubleClick={() => !noSort && handleResetSort()}
-                color="textSecondary">
+                color="textSecondary"
+              >
                 {label}
               </Typography>
-              {evaluateOrderBy({ label, property }) && <ArrowDropDownIcon
-                color="action"
-                className={order === 'asc' ? classes.flipped : null}
-                style={{ fontSize: 12, order: align ? -1 : 1, }}
-              />}
+              {renderArrows({property, label, align, secondary: true})}
             </div>)}
           </div>}
       </div>)}

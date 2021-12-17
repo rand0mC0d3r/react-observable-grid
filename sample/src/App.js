@@ -246,11 +246,9 @@ const App = () => {
         </div>
 
       </div>
-      <div className={classes.container}>
+      <Typography variant="caption" color="textSecondary">Released</Typography>
+      <div className={classes.container} style={{height: '350px'}}>
         <div className={classes.wrapper2}>
-        {/* <ObservableGrid /> */}
-          {/* <ObservableEmpty>x//#endregion</ObservableEmpty>
-          <ObservableRow /> */}
           <ObservableGrid
             headers={headers}
             rows={filteredRows}
@@ -258,8 +256,14 @@ const App = () => {
             emptyElement={<div>No data found ...</div>}
             rowRenderer={row => <SampleRow {...{ row }} />}
           />
+        </div>
+      </div>
+      <Typography variant="caption" color="textSecondary">Upcoming</Typography>
+      <div className={classes.container} style={{height: '650px'}}>
+        <div className={classes.wrapper2}>
           <LocalObservableGrid
             headers={headers}
+            uniqueId="fakeEntries"
             rows={filteredRows}
             isEmpty={filteredRows.length === 0}
             emptyElement={<div>No data found ...</div>}
