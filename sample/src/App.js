@@ -7,8 +7,8 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import PersonPinCircleIcon from '@material-ui/icons/PersonPinCircle';
 import SubjectIcon from '@material-ui/icons/Subject';
 import { useEffect, useMemo, useState } from 'react';
-import { ObservableGrid } from 'react-observable-grid';
 import SampleRow from './parts/SampleRow';
+import { ObservableGrid } from 'react-observable-grid';
 
 const useStyles = makeStyles(() => ({
   wrapper: {
@@ -52,6 +52,7 @@ const useStyles = makeStyles(() => ({
     height: '80%'
   }
 }))
+
 
 const headers = [
   {
@@ -247,6 +248,7 @@ const App = () => {
       </div>
       <div className={classes.container}>
         <div className={classes.wrapper2}>
+          <ObservableGrid />
           {/* <ObservableEmpty>x//#endregion</ObservableEmpty>
           <ObservableRow /> */}
           {/* <ObservableGrid

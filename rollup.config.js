@@ -28,7 +28,7 @@ export default [
       commonjs(),
       external(),
       generateDeclarations(),
-      terser(),
+      terser({ numWorkers: 4 }),
     ],
   },
 ]
