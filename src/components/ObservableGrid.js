@@ -1,20 +1,20 @@
-import { makeStyles, useTheme } from '@material-ui/core/styles'
+import { useTheme } from '@material-ui/core/styles'
 import { createNewSortInstance } from 'fast-sort'
-import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ObservableInternalLoadMore } from '.'
 import ObservableContainer from './ObservableContainer'
 import ObservableDebugging from './ObservableDebugging'
 import ObservableEmpty from './ObservableEmpty'
 import ObservableHeader from './ObservableHeader'
-import ObservableLoadMore from './ObservableLoadMore'
+// import ObservableLoadMore from './ObservableLoadMore'
 import ObservableRow from './ObservableRow'
 
 
 const ObservableGrid =  ({
   headers,
   rows = [],
-  keyPattern = () => { },
-  onLoadMore,
+  // keyPattern = () => { },
+  // onLoadMore,
   rowRenderer = () => { },
   rowOptions = {
     padding: '20px',
@@ -25,7 +25,7 @@ const ObservableGrid =  ({
 
 
   isEmpty = true,
-  isInfinite = false,
+  // isInfinite = false,
   isDebugging = true,
   isSelectable = true,
   isScrollable = true,

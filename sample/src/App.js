@@ -7,7 +7,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import PersonPinCircleIcon from '@material-ui/icons/PersonPinCircle';
 import SubjectIcon from '@material-ui/icons/Subject';
 import { useEffect, useMemo, useState } from 'react';
-import ObservableGrid from './components/ObservableGrid';
+import ObservableGrid from './components';
 import SampleRow from './parts/SampleRow';
 
 const useStyles = makeStyles(() => ({
@@ -173,7 +173,7 @@ const App = () => {
   const [filteredRows, setFilteredRows] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const [isDebugging, setIsDebugging] = useState(false);
+  const [isDebugging, setIsDebugging] = useState(true);
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
 
@@ -247,8 +247,12 @@ const App = () => {
       </div>
       <div className={classes.container}>
         <div className={classes.wrapper2}>
-
-          <ObservableGrid
+          {/* <ObservableGrid
+            // {...{ headers: [{ label: "aa", width: "minmax(100px, 1fr)"}, { label: "bb", width: "1fr"}], rows: []}}
+            // isEmpty={false}
+            // emptyElement={<div>No data found ...</div>}
+          /> */}
+          {/* <ObservableGrid
             {...{ headers, rows: filteredRows, isDebugging }}
             isEmpty={filteredRows.length === 0}
             emptyElement={<div>No data found ...</div>}
@@ -258,7 +262,7 @@ const App = () => {
               padding: '4px 16px',
             }}
             rowRenderer={row => <SampleRow {...{ row }} />}
-          />
+          /> */}
         </div>
       </div>
     </div>

@@ -39,8 +39,8 @@ const useStyles = makeStyles(theme => ({
  * @param { isAlternating } Boolean to determine if the list should be alternating
  * @param { isScrollable } Boolean to determine if the list should be scrollable
  */
-const ObservableContainer = ({ children, isAlternating, isScrollable }) => {
-  const theme = useTheme()
+const ObservableContainer = ({ theme, children, isAlternating, isScrollable }) => {
+  // const theme = useTheme()
   const classes = useStyles(theme)
 
   return <div className={classes.wrapper}>
