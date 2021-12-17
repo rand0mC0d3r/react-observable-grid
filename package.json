@@ -3,7 +3,7 @@
   "version": "0.0.8",
   "description": "±Infinite grid of React components",
   "main": "dist/index.js",
-  "module": "dist/index.js",
+  "module": "dist/index.es.js",
   "private": false,
   "devDependencies": {
     "concurrently": "^6.4.0",
