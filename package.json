@@ -6,16 +6,16 @@
   "module": "dist/index.es.js",
   "private": false,
   "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/preset-env": "^7.14.5",
+    "@babel/preset-react": "^7.14.5",
+    "@rollup/plugin-commonjs": "^19.0.1",
+    "@rollup/plugin-node-resolve": "^13.0.2",
+    "babel-loader": "^8.2.2",
     "concurrently": "^6.4.0",
     "copy-and-watch": "^0.1.6",
     "eslint-plugin-mui-unused-classes": "^1.0.3",
     "npm-check-updates": "12.0.2",
-    "@babel/core": "^7.14.6",
-    "@babel/preset-react": "^7.14.5",
-    "@babel/preset-env": "^7.14.5",
-    "@rollup/plugin-commonjs": "^19.0.1",
-    "@rollup/plugin-node-resolve": "^13.0.2",
-    "babel-loader": "^8.2.2",
     "rollup": "^2.53.3",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-generate-declarations": "^1.1.1",
@@ -23,14 +23,15 @@
     "rollup-plugin-terser": "^7.0.2"
   },
   "peerDependencies": {
-    "react": ">=16.8.4",
-    "react-dom": ">=16.8.4",
     "@material-ui/core": ">=4.12.3",
-    "@material-ui/icons": ">=4.11.2"
+    "@material-ui/icons": ">=4.11.2",
+    "react": ">=16.8.4",
+    "react-dom": ">=16.8.4"
   },
   "dependencies": {
     "@material-ui/core": ">=4.12.3",
     "@material-ui/icons": ">=4.11.2",
+    "chokidar-cli": "^3.0.0",
     "fast-sort": "^3.1.1",
     "prop-types": "^15.7.2",
     "react": ">=16.8.4",
@@ -53,7 +54,7 @@
   "license": "MIT",
   "scripts": {
     "wipe": "rm -rf package-lock.json && rm -rf ./node_modules && cd sample && rm -rf package-lock.json && rm -rf ./node_modules",
-    "dev": "concurrently \"npm run copy.component\" \"cd sample && export PORT=3339 && npx react-scripts start\"",
+    "dev": "concurrently \"npm run build.watch\" \"cd sample && export PORT=3339 && npx react-scripts start\"",
     "prestart": "npm audit fix && cd sample && npm install",
     "start": "serve -s build",
     "prebuild": "npm install ./sample && npm run clone.component",
@@ -63,7 +64,8 @@
     "clone.component": "mkdir -p ./sample/src/components/ && cp -r dist/* sample/src/components/",
     "copy.component": "npm run clone.component && copy-and-watch dist/* sample/src/components/ --watch",
     "tag": "npm run build.lib && git commit -am 'built next version' && npm version patch && git push && git push --tags",
-    "ship": "npm publish"
+    "ship": "npm publish",
+    "build.watch": "chokidar \"src/**/*.js\" -c \"npm run build.lib && cd sample && npm install --silent && echo 'DONE'\""
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -1,13 +1,14 @@
 import { useTheme } from '@material-ui/core/styles'
 import { createNewSortInstance } from 'fast-sort'
 import React, { useEffect, useState } from 'react'
-import { ObservableInternalLoadMore } from '.'
+import ObservableInternalLoadMore from './ObservableInternalLoadMore'
 import ObservableContainer from './ObservableContainer'
 import ObservableDebugging from './ObservableDebugging'
 import ObservableEmpty from './ObservableEmpty'
 import ObservableHeader from './ObservableHeader'
 // import ObservableLoadMore from './ObservableLoadMore'
 import ObservableRow from './ObservableRow'
+
 
 
 const ObservableGrid =  ({
