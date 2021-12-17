@@ -241,13 +241,13 @@ const App = () => {
         </div>
 
         <div className={`${classes.actions} ${classes.smallActions}`}>
-          {[0, 10, 20, 50, 500, 500, 65000].map(count => <Button style={{minWidth: 'unset'}} variant="outlined" key={count} onClick={() => generateRows(count)}>{count}</Button>)}
+          {[0, 10, 20, 50, 500, 1500, 65000].map(count => <Button style={{minWidth: 'unset'}} variant="outlined" key={count} onClick={() => generateRows(count)}>{count}</Button>)}
         </div>
 
       </div>
       <div className={classes.container}>
         <div className={classes.wrapper2}>
-          <ObservableEmpty />
+          <ObservableEmpty>x//#endregion</ObservableEmpty>
           {/* <ObservableGrid
             // {...{ headers: [{ label: "aa", width: "minmax(100px, 1fr)"}, { label: "bb", width: "1fr"}], rows: []}}
             // isEmpty={false}
