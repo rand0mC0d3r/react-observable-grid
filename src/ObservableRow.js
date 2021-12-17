@@ -3,8 +3,7 @@ import React, { useState } from 'react'
 import { InView } from 'react-intersection-observer'
 
 const ObservableRow = ({
-  innerIndex,
-  // innerOriginalIndex,
+  index,
   onClick,
   children,
   isRelevant,
@@ -18,9 +17,7 @@ const ObservableRow = ({
       as: 'div',
       onClick,
       onChange: setInView,
-      key: innerIndex,
-      // 'data-i': innerIndex,
-      // 'data-o': innerOriginalIndex,
+      key: index,
       className: [
         'observableGrid',
           (inView && isSelected) ? 'observableGrid-selected' : false,

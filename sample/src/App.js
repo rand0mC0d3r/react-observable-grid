@@ -263,13 +263,14 @@ const App = () => {
                 items.map( (item, i) => <>{i}</> )
             }
         </Carousel>
+        {/* <ObservableGrid /> */}
           {/* <ObservableEmpty>x//#endregion</ObservableEmpty>
           <ObservableRow /> */}
-          {/* <ObservableGrid
+          <ObservableGrid
             {...{ headers: [{ label: "aa", width: "minmax(100px, 1fr)"}, { label: "bb", width: "1fr"}], rows: []}}
             isEmpty={false}
             emptyElement={<div>No data found ...</div>}
-          /> */}
+          />
           {/* <ObservableGrid
             {...{ headers, rows: filteredRows, isDebugging }}
             isEmpty={filteredRows.length === 0}

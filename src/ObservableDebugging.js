@@ -1,5 +1,6 @@
 import { Chip } from '@material-ui/core'
 import PropTypes from 'prop-types'
+import React from 'react'
 
 /**
  * Adds a wrapper that allows to show debug information in the UI.

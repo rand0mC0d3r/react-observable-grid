@@ -2,6 +2,7 @@ import RotateLeftIcon from '@material-ui/icons/RotateLeft'
 import throttle from 'lodash/throttle'
 import { useCallback, useEffect } from 'react'
 import { useInView } from 'react-intersection-observer'
+import React from 'react'
 
 function useLoadMore(callback, delay) {
   const throttleFn = useCallback(

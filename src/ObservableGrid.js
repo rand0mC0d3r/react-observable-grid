@@ -9,8 +9,6 @@ import ObservableHeader from './ObservableHeader'
 // import ObservableLoadMore from './ObservableLoadMore'
 import ObservableRow from './ObservableRow'
 
-
-
 const ObservableGrid =  ({
   headers,
   rows = [],
@@ -27,7 +25,7 @@ const ObservableGrid =  ({
 
   isEmpty = true,
   // isInfinite = false,
-  isDebugging = true,
+  isDebugging = false,
   isSelectable = true,
   isScrollable = true,
   isAlternating = true,
@@ -42,13 +40,9 @@ const ObservableGrid =  ({
 
   const [selectedIndex, setSelectedIndex] = useState(null)
   const [sortedRows, setSortedRows] = useState([])
-
-  const [pageSize, setPageSize] = useState(35)
-
-  const [viewedRows, setViewedRows] = useState([])
   const [startEnd, setStartEnd] = useState({ start: -1, end: 1 })
-  const [granularity, setGranularity] = useState(0)
 
+  const pageSize = 35
   const minRows = 25
   const throttleLimit = 30
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
@@ -124,7 +118,6 @@ const ObservableGrid =  ({
         { label: 'selectedIndex', value: selectedIndex },
         { label: 'sortedRows', value: sortedRows.length },
         { label: 'rows', value: rows.length },
-        { label: 'granularity', value: granularity },
         { label: 'startEnd', value: JSON.stringify(startEnd) },
         { label: 'pageSize', value: pageSize },
       ]}>
@@ -158,9 +151,9 @@ const ObservableGrid =  ({
           // .filter(row => row.__index <= startEnd.end * pageSize && row.__index >= startEnd.start  * pageSize)
           .filter(row => row.__index <= startEnd.end * pageSize)
           .map(row => <ObservableRow
-            {...{ gridSpacing: gridTemplateColumns, minRows, updateGranularity: viewedRows.length, rowOptions, isScrollable }}
+            {...{ gridSpacing: gridTemplateColumns, minRows, rowOptions, isScrollable }}
             key={row.__index}
-            innerIndex={row.__index}
+            index={row.__index}
             // innerOriginalIndex={row.__origIndex}
             isRelevant={row.__index <= startEnd.end * pageSize}
             // isRelevant={row.__index >= startEnd.start  * pageSize}

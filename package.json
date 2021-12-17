@@ -1,6 +1,6 @@
 {
   "name": "react-observable-grid",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "±Infinite grid of React components",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
@@ -60,7 +60,7 @@
     "copy.component": "npm run clone.component && copy-and-watch dist/* sample/src/components/ --watch",
     "tag": "npm run build.lib && git commit -am 'built next version' && npm version patch && git push && git push --tags",
     "ship": "npm publish",
-    "build.watch": "chokidar \"src/**/*.js\" -c \"npm run build.lib && cd sample && npm install --silent && echo 'DONE'\""
+    "build.watch": "chokidar \"src/**/*.js\" -c \"npm run build.lib && npm pack master 0 && cp 0-0.0.0.tgz master.tgz && cd sample && npm install --silent && echo 'DONE'\""
   },
   "eslintConfig": {
     "extends": "react-app"
