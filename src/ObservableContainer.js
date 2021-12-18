@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
       minHeight: '44px',
     },
     '& > *:hover': {
-      backgroundColor: theme.palette.augmentColor({ main: theme.palette.divider }).light
+      backgroundColor: `${theme.palette.augmentColor({ main: theme.palette.divider }).light} !important`,
     }
   },
   alternatingItem: {

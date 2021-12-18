@@ -163,10 +163,10 @@ const ObservableGrid =  ({
               padding: rowOptions.padding,
               gridTemplateColumns: gridTemplateColumns,
               backgroundColor: (isSelectable && selectedIndex === row.__origIndex)
-                ? theme.palette.augmentColor({ main: theme.palette.divider }).main
+                ? theme.palette.augmentColor({ main: theme.palette.divider }).dark
                 : '',
             }}
-            className={classes.rowGrid}
+            className={classes.observableRow}
             index={row.__index}
             isRelevant={row.__index <= startEnd.end * pageSize}
             onClick={() => isSelectable && setSelectedIndex(selectedIndex === row.__origIndex ? null : row.__origIndex)}
@@ -183,7 +183,7 @@ const ObservableGrid =  ({
 }
 
 const useStyles = makeStyles(() => ({
-  rowGrid: {
+  observableRow: {
     alignSelf: 'stretch',
     breakInside: 'avoid',
     fontSize: '12px',

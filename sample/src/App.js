@@ -179,7 +179,7 @@ const App = () => {
   const [filteredRows, setFilteredRows] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const [isDebugging, setIsDebugging] = useState(true);
+  const [isDebugging, setIsDebugging] = useState(false);
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
 
@@ -216,7 +216,7 @@ const App = () => {
     }
   }));
 
-  useEffect(() => generateRows(100), [])
+  useEffect(() => generateRows(5), [])
 
   useEffect(() => {
     setFilteredRows(rows.filter(({name, description}) => `${name}${description}`.toLowerCase().includes(searchTerm.toLowerCase())))

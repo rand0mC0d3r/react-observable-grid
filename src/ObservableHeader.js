@@ -23,14 +23,12 @@ const ObservableHeader = ({
   const theme = useTheme()
   const classes = useStyles(theme)
   const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
 
   const handleClick = (event) => { setAnchorEl(event.currentTarget) };
   const handleClose = () => { setAnchorEl(null) };
   const evaluateOrderBy = ({ property, label }) => orderBy === (property || label?.toLowerCase())
-
-  const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
-
   const toggleHeader = (property, label) => {
     setHeaders(headers.map(header => {
       if (header.property === property) {
