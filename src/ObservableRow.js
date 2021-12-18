@@ -6,7 +6,7 @@ const ObservableRow = ({ index, className, style, onClick, children, isRelevant,
   const [inView, setInView] = useState()
 
   return (isRelevant && children) ?
-    <InView {...{ as: 'div', onChange: setInView, key: index, onClick, className, style }}>
+    <InView {...{ as: 'div', onChange: setInView, key: index, index, onClick, className, style }}>
       {inView && isScrollable && children}
     </InView>
     // <InView>{({ inView, ref }) => <div ref={ref} {...{ key: index, onClick, className, style }}>
