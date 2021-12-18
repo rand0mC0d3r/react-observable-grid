@@ -9,6 +9,9 @@ const ObservableRow = ({ index, className, style, onClick, children, isRelevant,
     <InView {...{ as: 'div', onChange: setInView, key: index, onClick, className, style }}>
       {inView && isScrollable && children}
     </InView>
+    // <InView>{({ inView, ref }) => <div ref={ref} {...{ key: index, onClick, className, style }}>
+    //   {inView && isScrollable && children}
+    // </div>}</InView>
     : null
 }
 
