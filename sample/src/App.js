@@ -251,7 +251,6 @@ const App = () => {
         </div>
 
       </div>
-      <Typography variant="caption" color="textSecondary">Released</Typography>
       <div className={classes.container} style={{height: '350px'}}>
         <div className={classes.wrapper2}>
           <ObservableGrid

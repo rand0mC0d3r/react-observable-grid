@@ -11,7 +11,7 @@ const ObservableInternalLoadMore = ({ onLoadMore = () => { }, isPointing = false
   return <InView
     as="div"
     style={{
-      position: 'relative',
+      position: 'absolute',
       height: '0px',
       top: isPointing ? '50%' : '-25%',
       opacity: '0',

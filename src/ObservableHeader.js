@@ -42,6 +42,29 @@ const ObservableHeader = ({
         return header
       }
     }))}
+  const renderPopover = () => {
+    return <Popover
+      id={id}
+      open={open}
+      anchorEl={anchorEl}
+      onClose={handleClose}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'center',
+      }}
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'center',
+      }}
+    >
+        <div>
+          {headers.map(header => <div key={`${header.property}_${header.label}`} style={{display: 'flex', alignItems: 'center', gap: '8px', padding: '4px 12px'}}>
+            <Checkbox color="primary" checked={header.visible} onChange={() => toggleHeader(header.property, header.label)}/>
+            {header.icon}
+            <Typography color="textSecondary">{header.label} (property: {header.property})</Typography>
+          </div>)}
+        </div>
+    </Popover>}
   const renderArrows = ({property, label, align, secondary = false}) => {
     return evaluateOrderBy({ property, label }) && <div
     style={{
@@ -90,29 +113,7 @@ const ObservableHeader = ({
     </Tooltip>}
 
   return <>
-    <Popover
-      id={id}
-      open={open}
-      anchorEl={anchorEl}
-      onClose={handleClose}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'center',
-      }}
-    >
-        <div>
-          {headers.map(header => <div key={`${header.property}_${header.label}`} style={{display: 'flex', alignItems: 'center', gap: '8px', padding: '4px 12px'}}>
-            <Checkbox color="primary" checked={header.visible} onChange={() => toggleHeader(header.property, header.label)}/>
-            {header.icon}
-            <Typography color="textSecondary">{header.label} (property: {header.property})</Typography>
-          </div>)}
-        </div>
-    </Popover>
-
+    {renderPopover()}
     <div className={classes.wrapper}>
       <div
       onContextMenu={(e) => { e.preventDefault(); handleClick(e) }}

@@ -14,7 +14,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-material-ui-carousel": "^2.3.8",
-    "react-observable-grid": "0.0.13",
+    "react-observable-grid": "0.0.14",
     "react-scripts": "^4.0.3",
     "web-vitals": "^2.1.2",
     "workbox-background-sync": "^5.1.3",

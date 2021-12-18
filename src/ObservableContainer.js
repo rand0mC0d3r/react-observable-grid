@@ -7,7 +7,12 @@ const ObservableContainer = ({ children, isAlternating, isScrollable }) => {
   const classes = useStyles(theme)
 
   return <div className={classes.wrapper}>
-    <div className={`${classes.list} ${isAlternating && classes.alternatingItem} ${isScrollable && classes.isScrollable}`}>
+    <div className={`
+      ${classes.list}
+      ${classes.minHeight}
+      ${isAlternating && classes.alternatingItem}
+      ${isScrollable && classes.isScrollable}
+    `}>
       {children}
     </div>
   </div>
@@ -34,6 +39,11 @@ const useStyles = makeStyles(theme => ({
       overflow: 'auto',
       position: 'initial',
     },
+  },
+  minHeight: {
+    '& > *': {
+      minHeight: '44px',
+    }
   },
   alternatingItem: {
     '& > *:nth-child(even)': {

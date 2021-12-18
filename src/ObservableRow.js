@@ -11,10 +11,7 @@ const ObservableRow = ({ index, onClick, children, isRelevant, isScrollable, isS
       onClick,
       onChange: setInView,
       key: index,
-      className: [
-        'observableGrid',
-          (inView && isSelected) ? 'observableGrid-selected' : false,
-      ].filter(c => c !== false).join(' ')
+      className: (inView ? ['observableGrid', isSelected ? ' observableGrid-selected' : ''].join(' ').trim() : undefined)
     }}>
       {inView && isScrollable && children}
     </InView>
