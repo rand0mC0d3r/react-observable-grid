@@ -1,4 +1,4 @@
-import { useTheme } from '@material-ui/core/styles'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { createNewSortInstance } from 'fast-sort'
 import React, { useEffect, useState } from 'react'
 import ObservableInternalLoadMore from './ObservableInternalLoadMore'
@@ -38,6 +38,7 @@ const ObservableGrid =  ({
   isAlternating = true,
 }) => {
   const theme = useTheme()
+  const classes = useStyles()
 
   const [order, setOrder] = useState('asc')
   const [cachedRows, setCachedRows] = useState([])
@@ -153,35 +154,21 @@ const ObservableGrid =  ({
 
       {rows.length > 0 && <ObservableContainer {...{ isScrollable, isAlternating }}>
         {rows.length > pageSize && startEnd.end > 0 && <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
-        <style>{`
-          .observableGrid {
-            min-height: 44px;
-            align-self: stretch;
-            break-inside: avoid;
-            font-size: 12px;
-            align-items: center;
-            grid-column-gap: 16px;
-            grid-row-gap: 16px;
-            display: grid;
-            padding: ${rowOptions.padding};
-            grid-template-columns: ${gridTemplateColumns};
-          }
-          .observableGrid:hover {
-            background-color: ${theme.palette.augmentColor({ main: theme.palette.divider }).light};
-          }
-          .observableGrid-selected {
-            background-color: ${theme.palette.augmentColor({ main: theme.palette.divider }).main} !important;
-          }import ObservableDebugging from '../sample/src/components/components/ObservableDebugging';
-
-        `}</style>
         {sortedRows
           .filter(row => row.__index <= startEnd.end * pageSize)
           .map(row => <ObservableRow
             {...{ gridSpacing: gridTemplateColumns, minRows, rowOptions, isScrollable }}
             key={row.__index}
+            style={{
+              padding: rowOptions.padding,
+              gridTemplateColumns: gridTemplateColumns,
+              backgroundColor: (isSelectable && selectedIndex === row.__origIndex)
+                ? theme.palette.augmentColor({ main: theme.palette.divider }).main
+                : '',
+            }}
+            className={classes.rowGrid}
             index={row.__index}
             isRelevant={row.__index <= startEnd.end * pageSize}
-            isSelected={isSelectable && selectedIndex === row.__origIndex}
             onClick={() => isSelectable && setSelectedIndex(selectedIndex === row.__origIndex ? null : row.__origIndex)}
           >
             {innerHeaders.filter(header => header.visible).map(header =>
@@ -194,5 +181,18 @@ const ObservableGrid =  ({
       </ObservableContainer>}
     </>
 }
+
+const useStyles = makeStyles(() => ({
+  rowGrid: {
+    alignSelf: 'stretch',
+    breakInside: 'avoid',
+    fontSize: '12px',
+    alignItems: 'center',
+    gridColumnGap: '16px',
+    gridRowGap: '16px',
+    display: 'grid',
+  },
+}))
+
 
 export default ObservableGrid

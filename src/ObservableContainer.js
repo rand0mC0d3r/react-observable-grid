@@ -9,7 +9,7 @@ const ObservableContainer = ({ children, isAlternating, isScrollable }) => {
   return <div className={classes.wrapper}>
     <div className={`
       ${classes.list}
-      ${classes.minHeight}
+      ${classes.anyItem}
       ${isAlternating && classes.alternatingItem}
       ${isScrollable && classes.isScrollable}
     `}>
@@ -40,9 +40,12 @@ const useStyles = makeStyles(theme => ({
       position: 'initial',
     },
   },
-  minHeight: {
+  anyItem: {
     '& > *': {
       minHeight: '44px',
+    },
+    '& > *:hover': {
+      backgroundColor: theme.palette.augmentColor({ main: theme.palette.divider }).light
     }
   },
   alternatingItem: {

@@ -2,20 +2,14 @@ import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import { InView } from 'react-intersection-observer'
 
-const ObservableRow = ({ index, onClick, children, isRelevant, isScrollable, isSelected }) => {
+const ObservableRow = ({ index, className, style, onClick, children, isRelevant, isScrollable }) => {
   const [inView, setInView] = useState()
 
-  return (isRelevant && children)
-    ? <InView {...{
-      as: 'div',
-      onClick,
-      onChange: setInView,
-      key: index,
-      className: (inView ? ['observableGrid', isSelected ? ' observableGrid-selected' : ''].join(' ').trim() : undefined)
-    }}>
+  return (isRelevant && children) ?
+    <InView {...{ as: 'div', onChange: setInView, key: index, onClick, className, style }}>
       {inView && isScrollable && children}
     </InView>
-  : null
+    : null
 }
 
 ObservableRow.defaultProps = { isScrollable: true, isSelected: false, isRelevant: false }
