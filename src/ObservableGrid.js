@@ -189,7 +189,6 @@ const ObservableGrid =  ({
                 {header.row(row)}
               </React.Fragment>)}
           </ObservableRow>)}
-
         {rows.length > pageSize && pageSize * startEnd.end -1 <  rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
         {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
       </ObservableContainer>}
