@@ -1,11 +1,11 @@
 import throttle from 'lodash/throttle'
+import PropTypes from 'prop-types'
+import React from 'react'
 import { useCallback } from 'react'
 import { InView } from 'react-intersection-observer'
-import React from 'react'
-
-const useLoadMore = (callback, delay) => (useCallback(throttle((...args) => callback(...args), delay), [delay]))
 
 const ObservableInternalLoadMore = ({ onLoadMore = () => { }, isPointing = false }) => {
+  const useLoadMore = (callback, delay) => (useCallback(throttle((...args) => callback(...args), delay), [delay]))
   const throttledLoadMore = useLoadMore(() => onLoadMore(), 750)
 
   return <InView
@@ -19,5 +19,8 @@ const ObservableInternalLoadMore = ({ onLoadMore = () => { }, isPointing = false
     onChange={(inView) => inView && throttledLoadMore()}
   >.</InView>
 }
+
+ObservableInternalLoadMore.defaultProps = { onLoadMore: () => {}, isPointing: false }
+ObservableInternalLoadMore.propTypes = { onLoadMore: PropTypes.func }
 
 export default ObservableInternalLoadMore

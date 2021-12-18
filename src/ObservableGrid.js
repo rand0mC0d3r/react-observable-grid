@@ -41,6 +41,7 @@ const ObservableGrid =  ({
 
   const [order, setOrder] = useState('asc')
   const [cachedRows, setCachedRows] = useState([])
+  const [innerHeaders, setInnerHeaders] = useState([])
   const [orderBy, setOrderBy] = useState('')
   const [throttling, setThrottling] = useState(false)
   const [gridTemplateColumns, setGridTemplateColumns] = useState('')
@@ -68,6 +69,10 @@ const ObservableGrid =  ({
     setOrderBy('')
     setOrder('asc')
   }
+
+  useEffect(() => {
+    setInnerHeaders(headers.map(header => ({ ...header, visible: header.visible || true })))
+  }, [headers])
 
   useEffect(() => {
     if (rows.length > 0 || cachedRows.length > 0 && rows.length === 0) {
@@ -107,6 +112,11 @@ const ObservableGrid =  ({
     }
   }, [headers])
 
+  useEffect(() => {
+    const gridTemplateString = innerHeaders.filter(header => header.visible).map(header => header.width).join(' ')
+    setGridTemplateColumns(gridTemplateString)
+  }, [innerHeaders])
+
   const advanceStartEnd = () => {
     setStartEnd((startEnd) => ({ start: startEnd.start + 1, end: startEnd.end + 1 }))
   }
@@ -114,8 +124,6 @@ const ObservableGrid =  ({
   const regressStartEnd = () => {
     setStartEnd(() => ({ start: - 1, end:  1  }))
   }
-
-
 
   return isEmpty
     ? <ObservableEmpty>{emptyElement ? emptyElement : 'No data'}</ObservableEmpty>
@@ -135,7 +143,8 @@ const ObservableGrid =  ({
       {headers && <ObservableHeader {...{
         options: headerOptions,
         gridTemplateColumns,
-        headers,
+        setHeaders: setInnerHeaders,
+        headers: innerHeaders,
         order,
         orderBy,
         handleRequestSort,
@@ -162,22 +171,23 @@ const ObservableGrid =  ({
           }
           .observableGrid-selected {
             background-color: ${theme.palette.augmentColor({ main: theme.palette.divider }).main} !important;
-          }
+          }import ObservableDebugging from '../sample/src/components/components/ObservableDebugging';
+
         `}</style>
         {sortedRows
-          // .filter(row => row.__index <= startEnd.end * pageSize && row.__index >= startEnd.start  * pageSize)
           .filter(row => row.__index <= startEnd.end * pageSize)
           .map(row => <ObservableRow
             {...{ gridSpacing: gridTemplateColumns, minRows, rowOptions, isScrollable }}
             key={row.__index}
             index={row.__index}
-            // innerOriginalIndex={row.__origIndex}
             isRelevant={row.__index <= startEnd.end * pageSize}
-            // isRelevant={row.__index >= startEnd.start  * pageSize}
             isSelected={isSelectable && selectedIndex === row.__origIndex}
             onClick={() => isSelectable && setSelectedIndex(selectedIndex === row.__origIndex ? null : row.__origIndex)}
           >
-            {rowRenderer(row, row.__index)}
+            {innerHeaders.filter(header => header.visible).map(header =>
+              <React.Fragment key={`${header.property}_${header.label}_${header.tooltip}_${header.width}`}>
+                {header.row(row)}
+              </React.Fragment>)}
           </ObservableRow>)}
 
         {rows.length > pageSize && pageSize * startEnd.end -1 <  rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}

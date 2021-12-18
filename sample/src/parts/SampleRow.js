@@ -25,7 +25,6 @@ const SampleRow = ({
   const theme = useTheme()
   const classes = useStyles(theme)
   return <>
-    {inView && <>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <Typography
           style={{ cursor: 'pointer' }}
@@ -61,8 +60,62 @@ const SampleRow = ({
         <Button variant="outlined" size="small" color="primary"><TuneIcon /></Button>
         <Button variant="outlined" size="small" color="secondary"><DeleteOutlineIcon /></Button>
       </div>
-    </>}
   </>
 }
 
-export default SampleRow;
+const NamesRow = ({
+  row: { name, surname, nickname, streetname } }) => {
+  return <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <Typography
+      style={{ cursor: 'pointer' }}
+      variant='subtitle2'>
+      {name} {surname}
+    </Typography>
+    <div style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
+      <Typography
+        style={{ cursor: 'pointer' }}
+        variant='caption'
+        color="textSecondary"
+      >
+        {nickname}
+      </Typography>
+      <Typography
+        style={{ cursor: 'pointer' }}
+        variant='caption'
+        color="textSecondary"
+      >
+        {streetname}
+      </Typography>
+    </div>
+  </div>
+}
+
+const DescriptionRow = ({
+  row: { description } }) => {
+  return <Typography variant='body2'>{description}</Typography>
+}
+
+const TilesRow = ({
+  row: { tiles } }) => {
+  return <div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row', gap: '8px 4px', padding: '4px 0px' }}>
+        {tiles.map(({ name }) => <Chip variant="outlined" size="small" key={name} label={name} />)}
+      </div>
+}
+
+const CurrencyRow = ({
+  row: { price, currency } }) => {
+  return <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+    <Typography variant='subtitle2'>{price} {currency}</Typography>
+  </div>
+}
+
+const ActionsRow = () => {
+  const theme = useTheme()
+  const classes = useStyles(theme)
+  return <div className={classes.actionContainer}>
+    <Button variant="outlined" size="small" color="primary"><TuneIcon /></Button>
+    <Button variant="outlined" size="small" color="secondary"><DeleteOutlineIcon /></Button>
+  </div>
+}
+
+export { SampleRow as default, ActionsRow, CurrencyRow, TilesRow, DescriptionRow, NamesRow };

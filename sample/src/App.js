@@ -7,7 +7,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import PersonPinCircleIcon from '@material-ui/icons/PersonPinCircle';
 import SubjectIcon from '@material-ui/icons/Subject';
 import { useEffect, useMemo, useState } from 'react';
-import SampleRow from './parts/SampleRow';
+import SampleRow, { ActionsRow, CurrencyRow, TilesRow, DescriptionRow, NamesRow } from './parts/SampleRow';
 import { ObservableGrid } from 'react-observable-grid';
 import LocalObservableGrid from './components/ObservableGrid';
 
@@ -61,6 +61,7 @@ const headers = [
     icon: <GitHubIcon />,
     property: 'name',
     width: 'minmax(200px, 1fr)',
+    row: (row) => <NamesRow row={row} />,
     additionalHeaders: [
       {
         label: 'Surname',
@@ -84,6 +85,7 @@ const headers = [
     label: 'Description',
     icon: <SubjectIcon />,
     property: 'description',
+    row: (row) => <DescriptionRow row={row} />,
     width: '2fr',
   },
   {
@@ -91,6 +93,7 @@ const headers = [
     icon: <DashboardIcon />,
     property: 'tilesHash',
     width: 'minmax(100px, 2fr)',
+    row: (row) => <TilesRow row={row} />,
     secondaryHeaders: [
       {
         label: 'Tiles Count',
@@ -104,6 +107,7 @@ const headers = [
     property: 'price',
     align: 'flex-end',
     width: '110px',
+    row: (row) => <CurrencyRow row={row} />,
     secondaryHeaders: [
       {
         label: 'Currency',
@@ -116,6 +120,7 @@ const headers = [
     align: 'flex-end',
     tooltip: "Actions for entries",
     noSort: true,
+    row: (row) => <ActionsRow row={row} />,
     width: '1fr',
   },
 ]
@@ -262,6 +267,7 @@ const App = () => {
       <div className={classes.container} style={{height: '650px'}}>
         <div className={classes.wrapper2}>
           <LocalObservableGrid
+            isDebugging={isDebugging}
             headers={headers}
             uniqueId="fakeEntries"
             rows={filteredRows}

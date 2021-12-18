@@ -1,4 +1,4 @@
-import { Tooltip, Typography } from '@material-ui/core';
+import { Tooltip, Typography, Popover, Checkbox } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import React, { cloneElement, useCallback, useEffect, useState } from 'react';
@@ -58,7 +58,8 @@ const defaultOptions = {
 
 const ObservableHeader = ({
   gridTemplateColumns,
-  headers,
+  headers = [],
+  setHeaders,
   options : {ascArrow, descArrow, padding },
   order,
   orderBy,
@@ -68,7 +69,33 @@ const ObservableHeader = ({
 }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
+
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
+
   const evaluateOrderBy = ({ property, label }) => orderBy === (property || label?.toLowerCase())
+  const toggleHeader = (property, label) => {
+    setHeaders(headers.map(header => {
+      if (header.property === property) {
+        return {
+          ...header,
+          visible: !header.visible
+        }
+      } else {
+        return header
+      }
+    }))
+  }
   const renderArrows = ({property, label, align, secondary = false}) => {
     return evaluateOrderBy({ property, label }) && <div
     style={{
@@ -92,6 +119,7 @@ const ObservableHeader = ({
         className={classes.flexbox}
         onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
         onDoubleClick={() => !noSort && handleResetSort()}
+
         style={{
           cursor: noSort ? 'default' : 'pointer',
           justifyContent: align ? 'flex-end' : 'flex-start',
@@ -115,49 +143,75 @@ const ObservableHeader = ({
       </div>
     </Tooltip>}
 
-  return <div className={classes.wrapper}>
-    <div
-    className={classes.header}
-    style={{
-      padding: padding || defaultOptions.padding,
-      gridTemplateColumns: gridTemplateColumns}}
+  return <>
+    <Popover
+      id={id}
+      open={open}
+      anchorEl={anchorEl}
+      onClose={handleClose}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'center',
+      }}
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'center',
+      }}
     >
-      {headers?.map(({ align, label, icon, tooltip, property, secondaryHeaders, additionalHeaders, noSort }) =>
-        <div key={`${label}`} className={classes.headers} style={{ alignItems: align ? 'flex-end' : 'flex-start' }}>
-          <div className={`${classes.flexbox} ${classes.maxiFlexbox}`}>
-            {renderMainHeader({tooltip, noSort, property, label, icon, align})}
-            {additionalHeaders && <div className={classes.secondaryHeaders}>
-              {additionalHeaders.map(({ label, property, noSort, icon }) =>
-                renderMainHeader({tooltip, noSort, property, label, icon, align}))
-              }
-            </div>}
-          </div>
-          {secondaryHeaders && <div className={classes.secondaryHeaders}>
-            {secondaryHeaders.map(({ label, property, noSort }) => <div
-              className={`${classes.flexbox} ${classes.miniFlexbox}`}
-              style={{ cursor: noSort ? 'default' : 'pointer', }}
-              key={`${label}_subHeader`}
-            >
-              <Typography
-                variant='caption'
-                style={{
-                  flexOrder: 0,
-                  lineHeight: '1.5',
-                  userSelect: 'none',
-                  fontWeight: evaluateOrderBy({property, label}) ? 'bold' : 'normal'
-                }}
-                onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
-                onDoubleClick={() => !noSort && handleResetSort()}
-                color="textSecondary"
+        <div>
+          {headers.map(header => <div key={`${header.property}_${header.label}`} style={{display: 'flex', alignItems: 'center', gap: '8px', padding: '4px 12px'}}>
+            <Checkbox color="primary" checked={header.visible} onChange={() => toggleHeader(header.property, header.label)}/>
+            {header.icon}
+            <Typography color="textSecondary">{header.label} (property: {header.property})</Typography>
+          </div>)}
+        </div>
+    </Popover>
+
+    <div className={classes.wrapper}>
+      <div
+      onContextMenu={(e) => { e.preventDefault(); handleClick(e) }}
+      className={classes.header}
+      style={{
+        padding: padding || defaultOptions.padding,
+        gridTemplateColumns: gridTemplateColumns}}
+      >
+        {headers?.filter(header => header.visible).map(({ align, label, icon, tooltip, property, secondaryHeaders, additionalHeaders, noSort }) =>
+          <div key={`${label}`} className={classes.headers} style={{ alignItems: align ? 'flex-end' : 'flex-start' }}>
+            <div className={`${classes.flexbox} ${classes.maxiFlexbox}`}>
+              {renderMainHeader({tooltip, noSort, property, label, icon, align})}
+              {additionalHeaders && <div className={classes.secondaryHeaders}>
+                {additionalHeaders.map(({ label, property, noSort, icon }) =>
+                  renderMainHeader({tooltip, noSort, property, label, icon, align}))
+                }
+              </div>}
+            </div>
+            {secondaryHeaders && <div className={classes.secondaryHeaders}>
+              {secondaryHeaders.map(({ label, property, noSort }) => <div
+                className={`${classes.flexbox} ${classes.miniFlexbox}`}
+                style={{ cursor: noSort ? 'default' : 'pointer', }}
+                key={`${label}_subHeader`}
               >
-                {label}
-              </Typography>
-              {renderArrows({property, label, align, secondary: true})}
-            </div>)}
-          </div>}
-      </div>)}
+                <Typography
+                  variant='caption'
+                  style={{
+                    flexOrder: 0,
+                    lineHeight: '1.5',
+                    userSelect: 'none',
+                    fontWeight: evaluateOrderBy({property, label}) ? 'bold' : 'normal'
+                  }}
+                  onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
+                  onDoubleClick={() => !noSort && handleResetSort()}
+                  color="textSecondary"
+                >
+                  {label}
+                </Typography>
+                {renderArrows({property, label, align, secondary: true})}
+              </div>)}
+            </div>}
+        </div>)}
+      </div>
     </div>
-  </div>
+  </>
 }
 
 ObservableHeader.propTypes = {

@@ -18,5 +18,50 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <style>
+      body {
+        overscroll-behavior-y: none;
+        overscroll-behavior-x: none;
+        letter-spacing: 0px;
+        font-kerning: normal;
+        font-variant: proportional-width;
+        user-select: none;
+      }
+      body::-webkit-scrollbar {
+        display: none;
+      }
+      .MuiAccordion-root.Mui-expanded {
+        margin: 4px 0px !important;
+      }
+      .MuiAccordionDetails-root {
+        padding: 8px 8px 16px;
+      }
+      .MuiButton-root,
+      .MuiMenu-paper,
+      .MuiPopover-paper,
+      .MuiTooltip-tooltip,
+      .MuiSelect-root,
+      .MuiInputBase-input,
+      .MuiAccordion-root:before,
+      .MuiAccordionSummary-content,
+      .MuiCollapse-container,
+      .MuiInput-underline:before,
+      .MuiInput-underline:after,
+      .MuiChip-root,
+      .MuiChip-clickable,
+      .MuiPaper-root,
+      .MuiTouchRipple-root,
+      .MuiTouchRipple-ripple,
+      .MuiTouchRipple-rippleVisible,
+      .MuiAccordionSummary-root {
+        animation: none;
+        transition: 0s !important;
+      }
+      .MuiBackdrop-root {
+        background-color: rgba(151,167,191,0.35);
+        backdrop-filter: blur(4px);
+        transition: 0s !important;
+      }
+    </style>
   </body>
 </html>

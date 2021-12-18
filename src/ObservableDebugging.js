@@ -1,4 +1,3 @@
-import { Chip } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React from 'react'
 
@@ -19,19 +18,20 @@ const ObservableDebugging = ({ items }) => <div style={{
   zIndex: '1',
   width: '500px'
 }}>
-  {items.map(({ label, value }) => <Chip
-    color="primary"
-    size='small'
-    label={`${label.toUpperCase()}: ${value}`}
+  {items.map(({ label, value }) => <div
+    style={{
+      color: 'white',
+      backgroundColor: '#777',
+      borderRadius: '4px',
+      padding: '4px 8px',
+    }}
     key={`${label}: ${value}`}
-  />)}
+  >
+    {`${label.toUpperCase()}: ${value}`}
+  </div>)}
 </div>
 
-ObservableDebugging.defaultProps = {
-  items: [],
-}
-ObservableDebugging.propTypes = {
-  items: PropTypes.array.isRequired,
-}
+ObservableDebugging.defaultProps = { items: [] }
+ObservableDebugging.propTypes = { items: PropTypes.array.isRequired }
 
 export default ObservableDebugging
