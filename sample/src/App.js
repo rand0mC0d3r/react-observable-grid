@@ -269,6 +269,9 @@ const App = () => {
             isDebugging={isDebugging}
             headers={headers}
             uniqueId="fakeEntries"
+            rowOptions={{
+              padding: '10px 20px'
+            }}
             rows={filteredRows}
             isEmpty={filteredRows.length === 0}
             emptyElement={<div>No data found ...</div>}
