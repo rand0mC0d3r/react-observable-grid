@@ -72,7 +72,7 @@ const ObservableGrid =  ({
   }
 
   useEffect(() => {
-    setInnerHeaders(headers.map(header => ({ ...header, visible: header.visible || true })))
+    setInnerHeaders(headers.map(header => ({ ...header, selected: false, visible: header.visible || true })))
   }, [headers])
 
   useEffect(() => {
@@ -126,6 +126,10 @@ const ObservableGrid =  ({
     setStartEnd(() => ({ start: - 1, end:  1  }))
   }
 
+  const onSelect = (label) => {
+    setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: header.label === label })))
+  }
+
   return isEmpty
     ? <ObservableEmpty>{emptyElement ? emptyElement : 'No data'}</ObservableEmpty>
     : <>
@@ -148,6 +152,7 @@ const ObservableGrid =  ({
         headers: innerHeaders,
         order,
         orderBy,
+        onSelect,
         handleRequestSort,
         handleResetSort,
         rowOptions }} />}

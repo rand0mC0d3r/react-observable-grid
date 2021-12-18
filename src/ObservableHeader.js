@@ -15,7 +15,9 @@ const ObservableHeader = ({
   setHeaders,
   options : {ascArrow, descArrow, padding },
   order,
+  onSelect = () => { },
   orderBy,
+
   handleRequestSort,
   handleResetSort,
   rowOptions
@@ -118,12 +120,24 @@ const ObservableHeader = ({
       className={classes.header}
       style={{
         padding: padding || defaultOptions.padding,
+        paddingTop: '0px',
+        paddingBottom: '0px',
         gridTemplateColumns: gridTemplateColumns}}
       >
-        {headers?.filter(header => header.visible).map(({ align, label, icon, tooltip, property, secondaryHeaders, additionalHeaders, noSort }) =>
-          <div key={`${label}`} className={classes.headers} style={{ alignItems: align ? 'flex-end' : 'flex-start' }}>
+        {headers?.filter(header => header.visible).map(({ align, selected, label, icon, tooltip, property, secondaryHeaders, additionalHeaders, noSort }) =>
+          <div
+            onClick={() => onSelect(label)}
+            key={`${label}`}
+            className={classes.headers}
+            style={{
+              alignItems: align ? 'flex-end' : 'flex-start',
+              padding: padding || defaultOptions.padding,
+              paddingLeft: '4px',
+              paddingRight: '4px',
+            }}>
             <div className={`${classes.flexbox} ${classes.maxiFlexbox}`}>
               {renderMainHeader({tooltip, noSort, property, label, icon, align})}
+              {selected ? 'sel' :''}
               {additionalHeaders && <div className={classes.secondaryHeaders}>
                 {additionalHeaders.map(({ label, property, noSort, icon }) =>
                   renderMainHeader({tooltip, noSort, property, label, icon, align}))
@@ -166,9 +180,9 @@ const useStyles = makeStyles(theme => ({
   header: {
     display: 'grid',
     fontSize: '12px',
-    minHeight: '50px',
-    alignItems: 'center',
-    gridColumnGap: '16px',
+    minHeight: '48px',
+    alignItems: 'stretch',
+    gridColumnGap: '8px',
     gridRowGap: '16px',
 
     boxShadow: '0px 0px 1px 0px rgba(0,0,0,0.2)',
@@ -197,7 +211,12 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     flexWrap: 'nowrap',
     flexDirection: 'column',
-    gap: '4px'
+    alignSelf: 'stretch',
+    gap: '4px',
+
+    '&:hover': {
+      backgroundColor: 'rgba(0,0,0,0.1)',
+    },
   },
 
   flipped: {

@@ -43,6 +43,8 @@ const useStyles = makeStyles(theme => ({
   anyItem: {
     '& > *': {
       minHeight: '44px',
+      paddingLeft: '2px',
+      paddingRight: '2px'
     },
     '& > *:hover': {
       backgroundColor: `${theme.palette.augmentColor({ main: theme.palette.divider }).light} !important`,
