@@ -1,10 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 
-/**
- * Adds a wrapper that allows to show debug information in the UI.
- * @param { children } The React Node to be rendered
- */
 const ObservableDebugging = ({ items }) => <div style={{
   flex: '1 0 auto',
   display: 'flex',

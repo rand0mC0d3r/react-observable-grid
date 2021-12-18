@@ -3,53 +3,6 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import React, { cloneElement, useCallback, useEffect, useState } from 'react';
 
-const useStyles = makeStyles(theme => ({
-  wrapper: {
-    width: '100%',
-  },
-  header: {
-    display: 'grid',
-    fontSize: '12px',
-    minHeight: '50px',
-    alignItems: 'center',
-    gridColumnGap: '16px',
-    gridRowGap: '16px',
-
-    boxShadow: '0px 0px 1px 0px rgba(0,0,0,0.2)',
-    borderBottom: `2px solid ${theme.palette.divider}`,
-  },
-  flexbox: {
-    display: 'flex',
-    alignItems: 'center',
-    flexWrap: 'nowrap',
-    gap: '4px'
-  },
-  miniFlexbox: {
-    gap: '2px',
-  },
-  maxiFlexbox: {
-    gap: '8px',
-  },
-  secondaryHeaders: {
-    display: 'flex',
-    alignItems: 'center',
-    flexWrap: 'nowrap',
-    gap: '8px'
-  },
-  headers: {
-    display: 'flex',
-    alignItems: 'center',
-    flexWrap: 'nowrap',
-    flexDirection: 'column',
-    gap: '4px'
-  },
-
-  flipped: {
-    transform: 'rotate(180deg)'
-  }
-
-}))
-
 const defaultOptions = {
   ascArrow: '▲',
   descArrow: '▼',
@@ -69,21 +22,15 @@ const ObservableHeader = ({
 }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
-
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const handleClick = (event) => { setAnchorEl(event.currentTarget) };
+  const handleClose = () => { setAnchorEl(null) };
+  const evaluateOrderBy = ({ property, label }) => orderBy === (property || label?.toLowerCase())
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
-  const evaluateOrderBy = ({ property, label }) => orderBy === (property || label?.toLowerCase())
   const toggleHeader = (property, label) => {
     setHeaders(headers.map(header => {
       if (header.property === property) {
@@ -94,8 +41,7 @@ const ObservableHeader = ({
       } else {
         return header
       }
-    }))
-  }
+    }))}
   const renderArrows = ({property, label, align, secondary = false}) => {
     return evaluateOrderBy({ property, label }) && <div
     style={{
@@ -213,6 +159,53 @@ const ObservableHeader = ({
     </div>
   </>
 }
+
+const useStyles = makeStyles(theme => ({
+  wrapper: {
+    width: '100%',
+  },
+  header: {
+    display: 'grid',
+    fontSize: '12px',
+    minHeight: '50px',
+    alignItems: 'center',
+    gridColumnGap: '16px',
+    gridRowGap: '16px',
+
+    boxShadow: '0px 0px 1px 0px rgba(0,0,0,0.2)',
+    borderBottom: `2px solid ${theme.palette.divider}`,
+  },
+  flexbox: {
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'nowrap',
+    gap: '4px'
+  },
+  miniFlexbox: {
+    gap: '2px',
+  },
+  maxiFlexbox: {
+    gap: '8px',
+  },
+  secondaryHeaders: {
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'nowrap',
+    gap: '8px'
+  },
+  headers: {
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'nowrap',
+    flexDirection: 'column',
+    gap: '4px'
+  },
+
+  flipped: {
+    transform: 'rotate(180deg)'
+  }
+}))
+
 
 ObservableHeader.propTypes = {
   gridTemplateColumns: PropTypes.string.isRequired,
