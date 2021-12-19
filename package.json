@@ -52,7 +52,7 @@
     "dev": "concurrently \"npm run build.watch\" \"cd sample && export PORT=3339 && npx react-scripts start\"",
     "prestart": "npm audit fix && cd sample && npm install",
     "start": "cd sample && npm run serve",
-    "prebuild": "npm install ./sample && npm run clone.component",
+    "prebuild": "npm run clone.component",
     "build": "rm -rf ./build && cd sample && npx react-scripts build && mv ./build ../",
     "build.lib": "rollup -c",
     "test": "react-scripts test",
