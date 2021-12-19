@@ -50,7 +50,7 @@
   "scripts": {
     "wipe": "rm -rf package-lock.json && rm -rf ./node_modules && cd sample && rm -rf package-lock.json && rm -rf ./node_modules",
     "dev": "concurrently \"npm run build.watch\" \"cd sample && export PORT=3339 && npx react-scripts start\"",
-    "prestart": "npm audit fix && cd sample && npm install",
+    "prestart": "cd sample && npm install",
     "start": "cd sample && npm run serve",
     "prebuild": "npm run clone.component",
     "build": "rm -rf ./build && cd sample && npx react-scripts build && mv ./build ../",
