@@ -127,6 +127,17 @@ const ObservableGrid =  ({
     setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: header.label === label ? !header.selected : false })))
   }
 
+  const idValue = (index) => {
+    let result = null
+    if(index === 0) {
+      result = 'first'
+    } else if(index === selectedIndex) {
+      result = 'selected'
+    }
+
+    return result
+  }
+
   return rows.length === 0
     ? <ObservableEmpty>{emptyElement ? emptyElement : 'No data'}</ObservableEmpty>
     : <div
@@ -165,10 +176,11 @@ const ObservableGrid =  ({
       {rows.length > 0 && <ObservableContainer {...{ isScrollable, isAlternating }}>
         {rows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1 && <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
         {sortedRows
-          .filter(row => row.__index <= startEnd.end * pageSize)
+          .filter(row => row.__index <= selectedIndex || startEnd.end * pageSize)
           .map(row => <ObservableRow
             {...{ gridSpacing: gridTemplateColumns, minRows, rowOptions, isScrollable }}
             key={row.__index}
+            id={idValue(row.__index)}
             style={{
               padding: rowOptions.padding,
               gridTemplateColumns: gridTemplateColumns,
@@ -178,7 +190,7 @@ const ObservableGrid =  ({
             }}
             className={classes.observableRow}
             index={row.__index}
-            isRelevant={row.__index <= startEnd.end * pageSize}
+            isRelevant={row.__index <= selectedIndex || startEnd.end * pageSize}
             onClick={() => isSelectable && setSelectedIndex(selectedIndex === row.__origIndex ? null : row.__origIndex)}
           >
             {innerHeaders.filter(header => header.visible).map(header =>
@@ -191,7 +203,7 @@ const ObservableGrid =  ({
 
       </ObservableContainer>}
 
-      <ObservableScrollTop />
+      <ObservableScrollTop selectedIndex={selectedIndex} />
 
       {(innerHeaders.findIndex(header => header.selected) !== -1) && <div
         className={`${classes.observableRow} ${classes.selectedColumn}`}
