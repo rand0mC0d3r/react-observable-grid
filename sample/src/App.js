@@ -22,6 +22,7 @@ const App = () => {
   const [rows, setRows] = useState([]);
   const [searchedRows, setSearchedRows] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
+  const [performance, setPerformance] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [isCaseSensitive, setIsCaseSensitive] = useState(false);
   const [selectedTiles, setSelectedTiles] = useState([]);
@@ -115,7 +116,10 @@ const App = () => {
   ]
 
   const generateRows = (count) => {
+    const t0 = Date.now()
     const rowsGenerated = dataGenerator(count);
+    const t1 = Date.now();
+    setPerformance(Math.round(t1 - t0));
     if(rowsGenerated) {
       setRows(rowsGenerated)
     }
@@ -165,6 +169,7 @@ const App = () => {
         <div className={`${classes.actions} ${classes.smallActions}`}>
           <Chip variant="outlined" label={`Search Rows: ${filteredRows.length}`} />
           <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debugging: ${isDebugging ? 'ON' : 'OFF'}`} />
+          <Chip variant="outlined" label={`Performance: ${performance}ms`} />
           <Chip onClick={() => setCanvasDrawing(!canvasDrawing)} variant="outlined" label={`🧪 Canvas Items: ${canvasDrawing ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setSeeLive(!seeLive)} variant="outlined" label={`Env: ${seeLive ? 'PROD' : 'DEV'}`} />
         </div>
