@@ -40,12 +40,12 @@ const useStyles = makeStyles(theme => ({
       paddingRight: '2px'
     },
     '& > *:hover': {
-      backgroundColor: `${theme.palette.augmentColor({ main: theme.palette.divider }).light} !important`,
+      backgroundColor: '#88888844 !important',
     }
   },
   alternatingItem: {
     '& > *:nth-child(even)': {
-      backgroundColor: `${theme.palette.background.default}88`,
+      backgroundColor: '#88888811',
     }
   },
   isScrollable: {

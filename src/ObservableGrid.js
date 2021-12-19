@@ -185,7 +185,7 @@ const ObservableGrid =  ({
               padding: rowOptions.padding,
               gridTemplateColumns: gridTemplateColumns,
               backgroundColor: (isSelectable && selectedIndex === row.__origIndex)
-                ? theme.palette.augmentColor({ main: theme.palette.divider }).dark
+                ? '#44444422'
                 : '',
             }}
             className={classes.observableRow}

@@ -123,7 +123,7 @@ const ObservableHeader = ({
       >
         {headers?.filter(header => header.visible).map(({ noHightlight, align, selected, label, icon, tooltip, property, secondaryHeaders, additionalHeaders, noSort }) =>
           <div
-            onMouseEnter={() => !noHightlight && onSelect(label)}
+            onDoubleClick={() => !noHightlight && onSelect(label)}
             key={`${label}`}
             className={`${classes.headers} ${!noHightlight ? classes.headersSelectable : ''}`}
             style={{
@@ -135,7 +135,6 @@ const ObservableHeader = ({
             }}>
             <div className={`${classes.flexbox} ${classes.maxiFlexbox}`}>
               {renderMainHeader({tooltip, noSort, property, label, icon, align})}
-              {/* {selected ? 'sel' :''} */}
               {additionalHeaders && <div className={classes.secondaryHeaders}>
                 {additionalHeaders.map(({ label, property, noSort, icon }) =>
                   renderMainHeader({tooltip, noSort, property, label, icon, align}))

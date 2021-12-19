@@ -247,7 +247,7 @@ const App = () => {
             padding: '8px 16px'
           }}
           headerOptions={{
-            padding: '8px 16px'
+            padding: '16px 16px'
           }}
           rows={filteredRows}
           emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
