@@ -1,6 +1,7 @@
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { createNewSortInstance } from 'fast-sort'
-import React, { useEffect, useState } from 'react'
+import throttle from 'lodash/throttle'
+import React, { useEffect, useLayoutEffect, useCallback, useState } from 'react'
 import ObservableInternalLoadMore from './ObservableInternalLoadMore'
 import ObservableContainer from './ObservableContainer'
 import ObservableDebugging from './ObservableDebugging'
@@ -9,6 +10,8 @@ import ObservableHeader from './ObservableHeader'
 // import ObservableLoadMore from './ObservableLoadMore'
 import ObservableRow from './ObservableRow'
 import ObservableScrollTop from './ObservableScrollTop'
+
+const computeItems = (callback, delay) => (useCallback(throttle((...args) => callback(...args), delay), [delay]))
 
 const ObservableGrid =  ({
   headers,
@@ -50,9 +53,15 @@ const ObservableGrid =  ({
   const throttleLimit = 50
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
 
+  const throttledLoadMore = computeItems(() => calculateTotalElements(), 5050)
+
   const naturalSort = createNewSortInstance({
     comparer: collator.compare,
   })
+
+  const calculateTotalElements = () => {
+    return document.getElementsByTagName('*').length
+  }
 
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && order === 'asc'
@@ -70,10 +79,8 @@ const ObservableGrid =  ({
   }, [headers])
 
   useEffect(() => {
-    if (rows.length > 0 || cachedRows.length > 0 && rows.length === 0) {
-      setCachedRows(rows.map((row, index) => ({ ...row, __origIndex: index })))
-      setSelectedIndex(null)
-    }
+    setCachedRows(rows.map((row, index) => ({ ...row, __origIndex: index })))
+    setSelectedIndex(null)
   }, [rows])
 
   useEffect(() => {
@@ -96,6 +103,12 @@ const ObservableGrid =  ({
 
     }
   }, [cachedRows, order, orderBy])
+
+  // useLayoutEffect(( ) => {
+  //   // if (cachedRows.length > 0) {
+  //   console.log(throttledLoadMore())
+  //   // }
+  // }, [])
 
   useEffect(() => {
     if(!headers) return
