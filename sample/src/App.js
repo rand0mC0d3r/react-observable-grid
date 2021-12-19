@@ -62,6 +62,7 @@ const App = () => {
     },
     {
       label: 'Description',
+      canCanvas: true,
       icon: <SubjectIcon />,
       property: 'description',
       row: (row) => <DescriptionRow row={row} />,
@@ -242,7 +243,7 @@ const App = () => {
       <div className={classes.container} style={{height: '850px'}}>
           {seeLive ? <ObservableGrid
             headers={headers}
-
+            isDebugging={isDebugging}
             rows={filteredRows}
             isEmpty={filteredRows.length === 0}
             emptyElement={<div>No data found ...</div>}

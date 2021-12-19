@@ -233,7 +233,7 @@ const ObservableGrid =  ({
             {innerHeaders.filter(header => header.visible).map(header =>
               <React.Fragment key={`${header.property}_${header.label}_${header.tooltip}_${header.width}`}>
                 {(canvasDrawing && header.canCanvas)
-                ? <ObservableSnapshot id={`${row.__index}_${header.property}_${header.label}`}>
+                ? <ObservableSnapshot origIndex={row.__origIndex} index={row.__index} id={`${row.__origIndex}_${header.property}_${header.label}`}>
                   {header.row(row)}
                 </ObservableSnapshot>
                 : header.row(row)}
