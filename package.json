@@ -60,7 +60,7 @@
     "test": "react-scripts test",
     "clone.component": "clear && mkdir -p ./sample/src/components/ && cp -r src/* sample/src/components/ && echo 'Synchronized'",
     "copy.component": "npm run clone.component && copy-and-watch dist/* sample/src/components/ --watch",
-    "tag": "npm run build.lib && git commit -am 'built next version' && npm version patch && git push && git push --tags && npm publish",
+    "tag": "npm run build.all && git commit -am 'built next version' && npm version patch && git push && git push --tags && npm publish",
     "ship": "npm publish",
     "build.watch": "chokidar \"src/**/*.js\" -c \"npm run clone.component\""
   },
