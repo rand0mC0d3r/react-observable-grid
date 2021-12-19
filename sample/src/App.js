@@ -241,23 +241,21 @@ const App = () => {
 
       </div>
       <div className={classes.container} style={{height: '850px'}}>
-          {seeLive ? <ObservableGrid
-            headers={headers}
-            isDebugging={isDebugging}
+        {seeLive
+          ? <ObservableGrid {...{isDebugging, headers, canvasDrawing }}
+            uniqueId="fakeEntries"
+            rowOptions={{ padding: '8px 16px' }}
+            headerOptions={{ padding: '16px 16px' }}
             rows={filteredRows}
             isEmpty={filteredRows.length === 0}
-            emptyElement={<div>No data found ...</div>}
-          /> : <LocalObservableGrid
-        {...{isDebugging, headers, canvasDrawing }}
-          uniqueId="fakeEntries"
-          rowOptions={{
-            padding: '8px 16px'
-          }}
-          headerOptions={{
-            padding: '16px 16px'
-          }}
-          rows={filteredRows}
-          emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
+            emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
+          />
+          : <LocalObservableGrid {...{isDebugging, headers, canvasDrawing }}
+            uniqueId="fakeEntries"
+            rowOptions={{ padding: '8px 16px' }}
+            headerOptions={{ padding: '16px 16px' }}
+            rows={filteredRows}
+            emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
         />}
       </div>
     </div>
