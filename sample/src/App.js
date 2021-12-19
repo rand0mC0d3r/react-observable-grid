@@ -20,6 +20,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 const App = () => {
   const [rows, setRows] = useState([]);
+  const [searchedRows, setSearchedRows] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isCaseSensitive, setIsCaseSensitive] = useState(false);
@@ -69,8 +70,7 @@ const App = () => {
       icon: <DashboardIcon />,
       property: 'tilesHash',
       width: 'minmax(100px, 2fr)',
-      row: (row) => <TilesRow row={row} onSelectTile={(tile) => {
-        console.log(tile)
+      row: (row) => <TilesRow row={row} selectedTiles={selectedTiles} onSelectTile={(tile) => {
         setSelectedTiles(selectedTiles => selectedTiles.some(st => st === tile)
         ? selectedTiles.filter(st => st !== tile)
         : [...selectedTiles, tile]
@@ -115,7 +115,7 @@ const App = () => {
 
   useEffect(() => {
     searchTerm.length > 0
-    ? setFilteredRows(rows.filter((row) => {
+    ? setSearchedRows(rows => rows.filter((row) => {
       return searchInField.length > 0
       ? searchInField.some((field) => {
         return isCaseSensitive
@@ -124,8 +124,14 @@ const App = () => {
       })
       : true
     }))
-    : setFilteredRows(rows)
+    : setSearchedRows(rows)
   }, [searchTerm, rows, searchInField, isCaseSensitive])
+
+  useEffect(() => {
+    selectedTiles.length > 0
+    ? setFilteredRows(searchedRows.filter((row) => selectedTiles.filter(st => row.tiles.some(t => t.id === st)).length === selectedTiles.length))
+    : setFilteredRows(searchedRows)
+  }, [selectedTiles, searchedRows])
 
   return <ThemeProvider {...{ theme }} >
     <div className={classes.wrapper}>

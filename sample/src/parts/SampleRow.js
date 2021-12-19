@@ -25,11 +25,15 @@ const DescriptionRow = ({ row: { description } }) => {
   return <Typography variant='body2'>{description}</Typography>
 }
 
-const TilesRow = ({ row: { tiles }, onSelectTile = () => {} }) => {
+const TilesRow = ({ row: { tiles }, selectedTiles, onSelectTile = () => {} }) => {
   const theme = useTheme()
   const classes = tileStyles(theme)
   return <div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row', gap: '8px 8px', padding: '4px 0px' }}>
-    {tiles.map(({ name }) => <div onClick={() => onSelectTile(name)} className={classes.tile} key={name}>{name}</div>)}
+    {tiles.map(({ id, name }) => <div
+      onClick={() => onSelectTile(id)}
+      className={[classes.tile, selectedTiles.some(st => st === id) && classes.selectedTile].join(' ')}
+      key={name}
+    >{name}</div>)}
   </div>
 }
 
@@ -68,6 +72,10 @@ const tileStyles = makeStyles((theme) => ({
     borderRadius: '12px',
     padding: '4px 8px',
   },
+  selectedTile: {
+    backgroundColor: theme.palette.primary.main,
+    color: "white",
+  }
 }))
 
 export { ActionsRow, CurrencyRow, TilesRow, DescriptionRow, NamesRow };
