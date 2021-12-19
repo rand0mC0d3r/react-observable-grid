@@ -71,9 +71,8 @@ const ObservableGrid =  ({
 
   useEffect(() => {
     if (rows.length > 0 || cachedRows.length > 0 && rows.length === 0) {
-      setCachedRows(rows.map((r, index) => { r.__origIndex = index
-
-        return r }))
+      setCachedRows(rows.map((row, index) => ({ ...row, __origIndex: index })))
+      setSelectedIndex(null)
     }
   }, [rows])
 
