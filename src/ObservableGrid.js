@@ -176,7 +176,7 @@ const ObservableGrid =  ({
       {rows.length > 0 && <ObservableContainer {...{ isScrollable, isAlternating }}>
         {rows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1 && <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
         {sortedRows
-          .filter(row => row.__index <= selectedIndex || startEnd.end * pageSize)
+          .filter(row => row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize)))
           .map(row => <ObservableRow
             {...{ gridSpacing: gridTemplateColumns, minRows, rowOptions, isScrollable }}
             key={row.__index}
@@ -190,7 +190,7 @@ const ObservableGrid =  ({
             }}
             className={classes.observableRow}
             index={row.__index}
-            isRelevant={row.__index <= selectedIndex || startEnd.end * pageSize}
+            isRelevant={row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize))}
             onClick={() => isSelectable && setSelectedIndex(selectedIndex === row.__origIndex ? null : row.__origIndex)}
           >
             {innerHeaders.filter(header => header.visible).map(header =>
@@ -203,7 +203,7 @@ const ObservableGrid =  ({
 
       </ObservableContainer>}
 
-      <ObservableScrollTop selectedIndex={selectedIndex} />
+      {rows.length > pageSize && startEnd.end > 3 && <ObservableScrollTop {...{ selectedIndex }} />}
 
       {(innerHeaders.findIndex(header => header.selected) !== -1) && <div
         className={`${classes.observableRow} ${classes.selectedColumn}`}

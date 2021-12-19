@@ -7,13 +7,7 @@ const ObservableContainer = ({ children, isAlternating, isScrollable }) => {
   const classes = useStyles(theme)
 
   return <div className={classes.wrapper}>
-    <div className={`
-        ${classes.list}
-        ${classes.anyItem}
-        ${isAlternating && classes.alternatingItem}
-        ${isScrollable && classes.isScrollable}
-      `}
-    >
+    <div className={[classes.container, classes.anyItem, isAlternating && classes.alternatingItem, isScrollable && classes.isScrollable].join(' ')}>
       {children}
     </div>
   </div>
@@ -24,17 +18,15 @@ const useStyles = makeStyles(theme => ({
     flex: '1 0 auto',
     position: 'relative',
     alignSelf: 'stretch',
-
     '@media print' : {
       height: 'auto',
       overflow: 'auto',
     }
   },
-  list: {
+  container: {
     '&::-webkit-scrollbar': {
       display: 'none',
     },
-
     '@media print' : {
       height: 'auto',
       overflow: 'auto',

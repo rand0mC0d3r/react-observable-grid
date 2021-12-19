@@ -12,22 +12,25 @@ const ObservableScrollTop = ({ selectedIndex }) => {
     }
   }
 
-  return <>
-    {selectedIndex && <div onClick={() => focusElement('selected')} className={classes.container}style={{ right: '80px' }}>
-      selected {selectedIndex}
-    </div>}
-    <div onClick={() => focusElement('first')} className={classes.container} style={{ right: '20px' }}>
-      UP
-    </div>
-  </>
+  return <div className={classes.wrapper}>
+    {[ selectedIndex ? { id: 'selected', label: `→ [${selectedIndex + 1}]` } : false, { id: 'first', label: '↑' }]
+      .filter(item => item !== false)
+      .map(({ id, label }) => <div key={id} onClick={() => focusElement(id)} className={classes.container}>{label}</div>)}
+  </div>
 }
 
 const useStyles = makeStyles(theme => ({
-  container: {
+  wrapper: {
     position: 'absolute',
     bottom: '20px',
+    right: '20px',
+    display: 'flex',
+    gap: '8px',
     zIndex: '1',
-    border: `1px solid ${theme.palette.divider}`,
+  },
+  container: {
+    fontWeight: 'bold',
+    border: `1px solid ${theme.palette.augmentColor({ main: theme.palette.divider }).dark}`,
     backgroundColor: `${theme.palette.background.default}`,
     padding: '10px',
     borderRadius: '8px',

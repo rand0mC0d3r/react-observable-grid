@@ -181,6 +181,7 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const [isDebugging, setIsDebugging] = useState(false);
+  const [seeLive, setSeeLive] = useState(false);
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
 
@@ -217,7 +218,7 @@ const App = () => {
     }
   }));
 
-  useEffect(() => generateRows(40), [])
+  useEffect(() => generateRows(250), [])
 
   useEffect(() => {
     setFilteredRows(rows.filter(({name, description}) => `${name}${description}`.toLowerCase().includes(searchTerm.toLowerCase())))
@@ -245,27 +246,22 @@ const App = () => {
         <div className={classes.actions}>
           <Chip variant="outlined" label={`Rows: ${rows.length}`} />
           <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debugging: ${isDebugging ? 'ON' : 'OFF'}`} />
+          <Chip onClick={() => setSeeLive(!seeLive)} variant="outlined" label={`Env: ${seeLive ? 'PROD' : 'DEV'}`} />
         </div>
 
         <div className={`${classes.actions} ${classes.smallActions}`}>
-          {[0, 2, 10, 20, 50, 500, 1500, 65000].map(count => <Button style={{minWidth: 'unset'}} variant="outlined" key={count} onClick={() => generateRows(count)}>{count}</Button>)}
+          {[0, 2, 50, 1500, 65000].map(count => <Button style={{minWidth: 'unset'}} variant="outlined" key={count} onClick={() => generateRows(count)}>{count}</Button>)}
         </div>
 
       </div>
-      <div className={classes.container} style={{height: '350px'}}>
-        <div className={classes.wrapper2}>
-          <ObservableGrid
+      <div className={classes.container} style={{height: '850px'}}>
+          {seeLive ? <ObservableGrid
             headers={headers}
             rows={filteredRows}
             isEmpty={filteredRows.length === 0}
             emptyElement={<div>No data found ...</div>}
             rowRenderer={row => <SampleRow {...{ row }} />}
-          />
-        </div>
-      </div>
-      <Typography variant="caption" color="textSecondary">Upcoming</Typography>
-      <div className={classes.container} style={{height: '650px'}}>
-        <LocalObservableGrid
+          /> : <LocalObservableGrid
         {...{isDebugging, headers}}
           uniqueId="fakeEntries"
           rowOptions={{
@@ -276,7 +272,7 @@ const App = () => {
           }}
           rows={filteredRows}
           emptyElement={<div>No data found ...</div>}
-        />
+        />}
       </div>
     </div>
   </ThemeProvider>
