@@ -21,7 +21,8 @@
     "rollup-plugin-generate-declarations": "^1.1.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "chokidar-cli": "^3.0.0",
-    "rollup-plugin-terser": "^7.0.2"
+    "rollup-plugin-terser": "^7.0.2",
+    "serve": "13.0.2"
   },
   "peerDependencies": {
     "@material-ui/core": ">=4.12.3",
@@ -50,7 +51,7 @@
   "scripts": {
     "wipe": "rm -rf package-lock.json && rm -rf ./node_modules && cd sample && rm -rf package-lock.json && rm -rf ./node_modules",
     "dev": "concurrently \"npm run build.watch\" \"cd sample && export PORT=3339 && npx react-scripts start\"",
-    "start": "cd sample && npm run serve",
+    "start": "serve -s build",
     "prebuild": "cd sample && npm install",
     "build": "rm -rf ./build && cd sample && npx react-scripts build && mv ./build ../",
     "build.lib": "rollup -c",
