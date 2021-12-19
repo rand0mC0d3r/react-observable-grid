@@ -27,6 +27,7 @@ const App = () => {
   const [selectedTiles, setSelectedTiles] = useState([]);
   const [searchInField, setSearchInField] = useState(['name', 'description']);
   const [isDebugging, setIsDebugging] = useState(true);
+  const [canvasDrawing, setCanvasDrawing] = useState(true);
   const [seeLive, setSeeLive] = useState(false);
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
@@ -37,6 +38,7 @@ const App = () => {
       tooltip: "Filter users by name",
       icon: <GitHubIcon />,
       property: 'name',
+      canCanvas: true,
       width: 'minmax(200px, 1fr)',
       row: (row) => <NamesRow row={row} />,
       additionalHeaders: [
@@ -155,6 +157,7 @@ const App = () => {
         <div className={classes.actions}>
           <Chip variant="outlined" label={`Search Rows: ${filteredRows.length}`} />
           <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debugging: ${isDebugging ? 'ON' : 'OFF'}`} />
+          <Chip onClick={() => setCanvasDrawing(!canvasDrawing)} variant="outlined" label={`Canvas Items: ${canvasDrawing ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setSeeLive(!seeLive)} variant="outlined" label={`Env: ${seeLive ? 'PROD' : 'DEV'}`} />
         </div>
 
@@ -237,11 +240,12 @@ const App = () => {
       <div className={classes.container} style={{height: '850px'}}>
           {seeLive ? <ObservableGrid
             headers={headers}
+
             rows={filteredRows}
             isEmpty={filteredRows.length === 0}
             emptyElement={<div>No data found ...</div>}
           /> : <LocalObservableGrid
-        {...{isDebugging, headers}}
+        {...{isDebugging, headers, canvasDrawing }}
           uniqueId="fakeEntries"
           rowOptions={{
             padding: '8px 16px'

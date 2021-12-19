@@ -1,12 +1,13 @@
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { createNewSortInstance } from 'fast-sort'
 import throttle from 'lodash/throttle'
-import React, { useEffect, useLayoutEffect, useCallback, useState } from 'react'
+import React, { useEffect, useCallback, useState } from 'react'
 import ObservableInternalLoadMore from './ObservableInternalLoadMore'
 import ObservableContainer from './ObservableContainer'
 import ObservableDebugging from './ObservableDebugging'
 import ObservableEmpty from './ObservableEmpty'
 import ObservableHeader from './ObservableHeader'
+import ObservableSnapshot from './ObservableSnapshot'
 // import ObservableLoadMore from './ObservableLoadMore'
 import ObservableRow from './ObservableRow'
 import ObservableScrollTop from './ObservableScrollTop'
@@ -26,6 +27,7 @@ const ObservableGrid =  ({
   },
   headerOptions = { },
   emptyElement,
+  canvasDrawing = false,
 
   // isInfinite = false,
   isUpdatingUrl = false,
@@ -44,7 +46,7 @@ const ObservableGrid =  ({
   const [throttling, setThrottling] = useState(false)
   const [totalElements, setTotalElements] = useState(null)
   const [gridTemplateColumns, setGridTemplateColumns] = useState('')
-
+  const [canvasDrawings, setCanvasDrawings] = useState([])
   const [selectedIndex, setSelectedIndex] = useState(null)
   const [sortedRows, setSortedRows] = useState([])
   const [startEnd, setStartEnd] = useState({ start: -1, end: 1 })
@@ -150,6 +152,20 @@ const ObservableGrid =  ({
     return result
   }
 
+  // const generateImage = (id) => {
+  //   console.log(id)
+  //   var node = document.getElementById(id)
+  //   if (node) {
+  //     domtoimage.toPng(node, { width: node.offsetWidth, height: node.offsetHeight })
+  //       .then(function (dataUrl) {
+  //         // setCanvasDrawings(canvasDrawings => [...canvasDrawings.filter(cd => cd.id !== id), { id, dataUrl }])
+  //       })
+  //       .catch(function (error) {
+  //         console.error('oops, something went wrong!', error)
+  //       })
+  //   }
+  // }
+
   return <div
     onMouseLeave={() => setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: false })))}
     style={{
@@ -216,7 +232,11 @@ const ObservableGrid =  ({
           >
             {innerHeaders.filter(header => header.visible).map(header =>
               <React.Fragment key={`${header.property}_${header.label}_${header.tooltip}_${header.width}`}>
-                {header.row(row)}
+                {(canvasDrawing && header.canCanvas)
+                ? <ObservableSnapshot id={`${row.__index}_${header.property}_${header.label}`}>
+                  {header.row(row)}
+                </ObservableSnapshot>
+                : header.row(row)}
               </React.Fragment>)}
           </ObservableRow>)}
         {throttling && rows.length > pageSize && pageSize * startEnd.end -1 <  rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
