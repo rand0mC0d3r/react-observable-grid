@@ -114,7 +114,12 @@ const App = () => {
     },
   ]
 
-  const generateRows = (count) => setRows(dataGenerator(count));
+  const generateRows = (count) => {
+    const rowsGenerated = dataGenerator(count);
+    if(rowsGenerated) {
+      setRows(rowsGenerated)
+    }
+  }
 
   useEffect(() => generateRows(30), [])
 
@@ -165,7 +170,7 @@ const App = () => {
         </div>
 
         <div className={`${classes.actions} ${classes.smallActions}`}>
-          {[0, 2, 30, 40, 50, 100, 1500, 65000].map(count => <Button
+          {[0, 2, 30, 40, 50, 100, 1500, 65000, 1000000].map(count => <Button
             disableElevation
             style={{minWidth: 'unset', padding: '5px 12px'}}
             color={count === rows.length ? 'primary' : 'default'}

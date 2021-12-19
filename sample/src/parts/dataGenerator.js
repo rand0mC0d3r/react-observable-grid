@@ -1,4 +1,3 @@
-
 const currencies = [
   "USD",
   "EUR",
@@ -48,14 +47,27 @@ const flavorsList = [
   color: colorList[index % colorList.length],
 }))
 
-export const dataGenerator = (count) => count === 0 ? [] : new Array(count).fill().map((_, i) => {
+export const simpleGenerator = (count) => {
+  return internal_dataGenerator(count)
+}
+
+export const dataGenerator = (count) => {
+  const t0 = performance.now()
+  const generateDate = simpleGenerator(count)
+  const t1 = performance.now()
+  console.log(`Generated ${count} rows in ${t1 - t0} ms`)
+  return generateDate
+}
+
+export const internal_dataGenerator = (count) => count === 0 ? [] : new Array(count).fill().map((_, i) => {
   const randomFlavors = flavorsList.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 10 + 2));
+  const randomString = `${Math.random().toString(36).substr(0, 8)}.${i + 1}`
   return {
     uuid: `uuid_${i}`,
-    name: `${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)}.${i + 1}`,
-    surname: `${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)}.${i + 1}`,
-    nickname: `n1_${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 3)}${i + 1}`,
-    streetname: `n2_${i + 1}_${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 3)}`,
+    name: randomString,
+    surname: randomString.split("").reverse().join(""),
+    nickname: `n1_${randomString.substr(4,8)}`,
+    streetname: `n2_${i + 1}`,
     description: `${[
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       'Donec pulvinar nisi pulvinar metus cursus, eget malesuada nunc auctor.',
@@ -72,7 +84,7 @@ export const dataGenerator = (count) => count === 0 ? [] : new Array(count).fill
       'Praesent et nunc eget ipsum blandit venenatis et et est.',
       'Sed bibendum auctor ullamcorper.',
       'Integer at ligula ac neque accumsan tincidunt.',
-    ][Math.floor(Math.random() * 14)]} ${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 3)}`
+    ][Math.floor(Math.random() * 14)]}`
     ,
     tiles: randomFlavors,
     tilesHash: randomFlavors.map(({ name }) => name).sort().join(''),
