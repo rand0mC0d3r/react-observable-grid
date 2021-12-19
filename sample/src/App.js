@@ -17,78 +17,6 @@ import { dataGenerator } from './parts/dataGenerator';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 
-const headers = [
-  {
-    label: 'Name',
-    tooltip: "Filter users by name",
-    icon: <GitHubIcon />,
-    property: 'name',
-    width: 'minmax(200px, 1fr)',
-    row: (row) => <NamesRow row={row} />,
-    additionalHeaders: [
-      {
-        label: 'Surname',
-        icon: <PersonPinCircleIcon />,
-        property: 'surname'
-      }
-    ],
-    secondaryHeaders: [
-      {
-        label: 'Name1',
-        property: 'nickname',
-        // noSort: true
-      },
-      {
-        label: 'Name2',
-        property: 'streetname'
-      }
-    ]
-  },
-  {
-    label: 'Description',
-    icon: <SubjectIcon />,
-    property: 'description',
-    row: (row) => <DescriptionRow row={row} />,
-    width: '2fr',
-  },
-  {
-    label: 'Tiles',
-    icon: <DashboardIcon />,
-    property: 'tilesHash',
-    width: 'minmax(100px, 2fr)',
-    row: (row) => <TilesRow row={row} />,
-    secondaryHeaders: [
-      {
-        label: 'Tiles Count',
-        property: 'tiles',
-      },
-    ]
-  },
-  {
-    label: 'Price',
-    icon: <MonetizationOnIcon />,
-    property: 'price',
-    align: 'flex-end',
-    width: '110px',
-    row: (row) => <CurrencyRow row={row} />,
-    secondaryHeaders: [
-      {
-        label: 'Currency',
-        property: 'currency',
-      },
-    ]
-  },
-  {
-    icon: <MoreHorizIcon />,
-    align: 'flex-end',
-    tooltip: "Actions for entries",
-    noSort: true,
-    noSearch: true,
-    row: (row) => <ActionsRow row={row} />,
-    width: '1fr',
-    noHightlight: true,
-  },
-]
 
 const App = () => {
   const [rows, setRows] = useState([]);
@@ -102,17 +30,101 @@ const App = () => {
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
 
+  const headers = [
+    {
+      label: 'Name',
+      tooltip: "Filter users by name",
+      icon: <GitHubIcon />,
+      property: 'name',
+      width: 'minmax(200px, 1fr)',
+      row: (row) => <NamesRow row={row} />,
+      additionalHeaders: [
+        {
+          label: 'Surname',
+          icon: <PersonPinCircleIcon />,
+          property: 'surname'
+        }
+      ],
+      secondaryHeaders: [
+        {
+          label: 'Name1',
+          property: 'nickname',
+          // noSort: true
+        },
+        {
+          label: 'Name2',
+          property: 'streetname'
+        }
+      ]
+    },
+    {
+      label: 'Description',
+      icon: <SubjectIcon />,
+      property: 'description',
+      row: (row) => <DescriptionRow row={row} />,
+      width: '2fr',
+    },
+    {
+      label: 'Tiles',
+      icon: <DashboardIcon />,
+      property: 'tilesHash',
+      width: 'minmax(100px, 2fr)',
+      row: (row) => <TilesRow row={row} onSelectTile={(tile) => {
+        console.log(tile)
+        setSelectedTiles(selectedTiles => selectedTiles.some(st => st === tile)
+        ? selectedTiles.filter(st => st !== tile)
+        : [...selectedTiles, tile]
+        )
+      }}  />,
+      secondaryHeaders: [
+        {
+          label: 'Tiles Count',
+          property: 'tiles',
+        },
+      ]
+    },
+    {
+      label: 'Price',
+      icon: <MonetizationOnIcon />,
+      property: 'price',
+      align: 'flex-end',
+      width: '110px',
+      row: (row) => <CurrencyRow row={row} />,
+      secondaryHeaders: [
+        {
+          label: 'Currency',
+          property: 'currency',
+        },
+      ]
+    },
+    {
+      icon: <MoreHorizIcon />,
+      align: 'flex-end',
+      tooltip: "Actions for entries",
+      noSort: true,
+      noSearch: true,
+      row: (row) => <ActionsRow row={row} />,
+      width: '1fr',
+      noHightlight: true,
+    },
+  ]
+
   const generateRows = (count) => setRows(dataGenerator(count));
 
   useEffect(() => generateRows(50), [])
+
   useEffect(() => {
-    setFilteredRows(rows.filter((row) => {
-      return (searchTerm.length > 0 && searchInField.length > 0) ? searchInField.some((field) => {
+    searchTerm.length > 0
+    ? setFilteredRows(rows.filter((row) => {
+      return searchInField.length > 0
+      ? searchInField.some((field) => {
         return isCaseSensitive
           ? row[field].includes(searchTerm)
           : row[field].toLowerCase().includes(searchTerm.toLowerCase())
-      }) : true
+      })
+      : true
     }))
+    : setFilteredRows(rows)
   }, [searchTerm, rows, searchInField, isCaseSensitive])
 
   return <ThemeProvider {...{ theme }} >
@@ -165,57 +177,55 @@ const App = () => {
       </div>
       <div className={`${classes.actions} ${classes.bigContainer}`}>
 
-        <div className={classes.actions}>
-          <TextField
-            placeholder={`Search in ${searchInField.join(', ')}...`}
-            value={searchTerm}
-            disabled={searchInField.length === 0}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            variant="outlined"
-            InputProps={{
-              startAdornment: <InputAdornment position="start">🔍</InputAdornment>,
-              endAdornment: <>
-                <TextFieldsIcon
-                  style={{cursor: 'pointer'}}
-                  onClick={() => setIsCaseSensitive(!isCaseSensitive)}
-                  color={isCaseSensitive ? 'primary' : 'disabled'}
-                />
-                {searchTerm.length > 0 && <InputAdornment onClick={() => setSearchTerm('')} position="end"><DeleteOutlineIcon style={{cursor: 'pointer'}} /></InputAdornment>}
-
-              </>,
-            }}
-            style={{ width: '400px' }}
-            size="small" />
-
-            <div className={`${classes.actions} ${classes.smallActions}`}>
-            {headers.filter(header => !header.noSearch).map((header) => {
-              const isField = searchInField.some(field => field === header.property)
-              return <Chip
-                color={isField ? 'primary' : 'default'}
-                key={header.property}
-                variant="outlined"
-                onClick={() => {
-                  if (searchInField.includes(header.property)) {
-                    setSearchInField(searchInField.filter(field => field !== header.property))
-                  } else {
-                    setSearchInField([...searchInField, header.property])
-                  }
-                }}
-                icon={isField ? undefined : <AddCircleIcon />}
-                onDelete={isField ? () => {
-                  setSearchInField(searchInField.filter(field => field !== header.property))
-                } : undefined}
-                label={header.label}
+      <div className={classes.actions}>
+        <TextField
+          placeholder={`Search in ${searchInField.join(', ')}...`}
+          value={searchTerm}
+          disabled={searchInField.length === 0}
+          onChange={(event) => setSearchTerm(event.target.value)}
+          variant="outlined"
+          InputProps={{
+            startAdornment: <InputAdornment position="start">🔍</InputAdornment>,
+            endAdornment: <>
+              <TextFieldsIcon
+                style={{cursor: 'pointer'}}
+                onClick={() => setIsCaseSensitive(!isCaseSensitive)}
+                color={isCaseSensitive ? 'primary' : 'disabled'}
               />
-            })}
-            </div>
-        </div>
+              {searchTerm.length > 0 && <InputAdornment onClick={() => setSearchTerm('')} position="end"><DeleteOutlineIcon style={{cursor: 'pointer'}} /></InputAdornment>}
 
-        <div className={classes.actions}>
-          {selectedTiles.map((tile) => <Chip key={tile} label={tile} />)}
-        </div>
+            </>,
+          }}
+          style={{ width: '400px' }}
+          size="small" />
 
+          <div className={`${classes.actions} ${classes.smallActions}`}>
+          {headers.filter(header => !header.noSearch).map((header) => {
+            const isField = searchInField.some(field => field === header.property)
+            return <Chip
+              color={isField ? 'primary' : 'default'}
+              key={header.property}
+              variant="outlined"
+              onClick={() => {
+                if (searchInField.includes(header.property)) {
+                  setSearchInField(searchInField.filter(field => field !== header.property))
+                } else {
+                  setSearchInField([...searchInField, header.property])
+                }
+              }}
+              icon={isField ? undefined : <AddCircleIcon />}
+              onDelete={isField ? () => {
+                setSearchInField(searchInField.filter(field => field !== header.property))
+              } : undefined}
+              label={header.label}
+            />
+          })}
+          </div>
+      </div>
 
+      <div className={`${classes.actions} ${classes.smallActions}`}>
+        {selectedTiles.map((tile) => <Chip key={tile} label={tile} />)}
+      </div>
 
       </div>
       <div className={classes.container} style={{height: '850px'}}>

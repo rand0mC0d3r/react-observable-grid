@@ -190,6 +190,7 @@ const ObservableGrid =  ({
             }}
             className={classes.observableRow}
             index={row.__index}
+            forceRender={!throttling}
             isRelevant={throttling
                 ? row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize))
                 : true

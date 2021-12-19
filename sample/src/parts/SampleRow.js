@@ -25,11 +25,11 @@ const DescriptionRow = ({ row: { description } }) => {
   return <Typography variant='body2'>{description}</Typography>
 }
 
-const TilesRow = ({ row: { tiles } }) => {
+const TilesRow = ({ row: { tiles }, onSelectTile = () => {} }) => {
   const theme = useTheme()
   const classes = tileStyles(theme)
   return <div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row', gap: '8px 8px', padding: '4px 0px' }}>
-    {tiles.map(({ name }) => <div className={classes.tile} key={name}>{name}</div>)}
+    {tiles.map(({ name }) => <div onClick={() => onSelectTile(name)} className={classes.tile} key={name}>{name}</div>)}
   </div>
 }
 
