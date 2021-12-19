@@ -116,7 +116,7 @@ const App = () => {
 
   const generateRows = (count) => setRows(dataGenerator(count));
 
-  useEffect(() => generateRows(10), [])
+  useEffect(() => generateRows(30), [])
 
   useEffect(() => {
     searchTerm.length > 0
@@ -157,10 +157,10 @@ const App = () => {
 
         </div>
 
-        <div className={classes.actions}>
+        <div className={`${classes.actions} ${classes.smallActions}`}>
           <Chip variant="outlined" label={`Search Rows: ${filteredRows.length}`} />
           <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debugging: ${isDebugging ? 'ON' : 'OFF'}`} />
-          <Chip onClick={() => setCanvasDrawing(!canvasDrawing)} variant="outlined" label={`Canvas Items: ${canvasDrawing ? 'ON' : 'OFF'}`} />
+          <Chip onClick={() => setCanvasDrawing(!canvasDrawing)} variant="outlined" label={`🧪 Canvas Items: ${canvasDrawing ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setSeeLive(!seeLive)} variant="outlined" label={`Env: ${seeLive ? 'PROD' : 'DEV'}`} />
         </div>
 

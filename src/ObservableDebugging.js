@@ -4,15 +4,15 @@ import React from 'react'
 const ObservableDebugging = ({ items }) => <div style={{
   flex: '1 0 auto',
   display: 'flex',
-  justifyContent: 'flex-end',
+  justifyContent: 'flex-start',
   flexWrap: 'wrap',
   alignItems: 'center',
   position: 'absolute',
-  top: '90px',
+  bottom: '20px',
   gap: '4px',
-  right: '20px',
+  left: '20px',
   zIndex: '1',
-  width: '500px'
+  width: '1000px'
 }}>
   {items.map(({ label, value }) => <div
     style={{

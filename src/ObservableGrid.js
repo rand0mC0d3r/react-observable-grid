@@ -12,8 +12,6 @@ import ObservableSnapshot from './ObservableSnapshot'
 import ObservableRow from './ObservableRow'
 import ObservableScrollTop from './ObservableScrollTop'
 
-const computeItems = (callback, delay) => (useCallback(throttle((...args) => callback(...args), delay), [delay]))
-
 const ObservableGrid =  ({
   headers,
   rows = [],
@@ -46,7 +44,6 @@ const ObservableGrid =  ({
   const [throttling, setThrottling] = useState(false)
   const [totalElements, setTotalElements] = useState(null)
   const [gridTemplateColumns, setGridTemplateColumns] = useState('')
-  const [canvasDrawings, setCanvasDrawings] = useState([])
   const [selectedIndex, setSelectedIndex] = useState(null)
   const [sortedRows, setSortedRows] = useState([])
   const [startEnd, setStartEnd] = useState({ start: -1, end: 1 })
@@ -56,8 +53,6 @@ const ObservableGrid =  ({
   const minRows = 25
 
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
-
-  const throttledLoadMore = computeItems(() => calculateTotalElements(), 5050)
 
   const naturalSort = createNewSortInstance({
     comparer: collator.compare,
@@ -152,20 +147,6 @@ const ObservableGrid =  ({
     return result
   }
 
-  // const generateImage = (id) => {
-  //   console.log(id)
-  //   var node = document.getElementById(id)
-  //   if (node) {
-  //     domtoimage.toPng(node, { width: node.offsetWidth, height: node.offsetHeight })
-  //       .then(function (dataUrl) {
-  //         // setCanvasDrawings(canvasDrawings => [...canvasDrawings.filter(cd => cd.id !== id), { id, dataUrl }])
-  //       })
-  //       .catch(function (error) {
-  //         console.error('oops, something went wrong!', error)
-  //       })
-  //   }
-  // }
-
   return <div
     onMouseLeave={() => setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: false })))}
     style={{
@@ -182,6 +163,7 @@ const ObservableGrid =  ({
       { label: 'orderBy', value: orderBy },
       { label: 'selectedIndex', value: selectedIndex },
       { label: 'sortedRows', value: sortedRows.length },
+      { label: 'canvasDrawing', value: !throttling && canvasDrawing },
       { label: 'rows', value: rows.length },
       { label: 'startEnd', value: JSON.stringify(startEnd) },
       { label: 'pageSize', value: pageSize },
@@ -232,7 +214,7 @@ const ObservableGrid =  ({
           >
             {innerHeaders.filter(header => header.visible).map(header =>
               <React.Fragment key={`${header.property}_${header.label}_${header.tooltip}_${header.width}`}>
-                {(canvasDrawing && header.canCanvas)
+                {(!throttling && canvasDrawing && header.canCanvas)
                 ? <ObservableSnapshot origIndex={row.__origIndex} index={row.__index} id={`${row.__origIndex}_${header.property}_${header.label}`}>
                   {header.row(row)}
                 </ObservableSnapshot>

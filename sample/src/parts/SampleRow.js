@@ -70,6 +70,9 @@ const tileStyles = makeStyles((theme) => ({
     border: `2px solid ${theme.palette.divider}`,
     borderRadius: '12px',
     padding: '4px 8px',
+    '&:hover': {
+      border: `2px solid ${theme.palette.primary.main}`,
+    }
   },
   selectedTile: {
     backgroundColor: theme.palette.primary.main,
