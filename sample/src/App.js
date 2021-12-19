@@ -11,9 +11,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { ActionsRow, CurrencyRow, TilesRow, DescriptionRow, NamesRow } from './parts/SampleRow';
 import { ObservableGrid } from 'react-observable-grid';
 import LocalObservableGrid from './components/ObservableGrid';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import TextFieldsIcon from '@material-ui/icons/TextFields';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import { dataGenerator } from './parts/dataGenerator';
-import DoneIcon from '@material-ui/icons/Done';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 
@@ -94,6 +94,7 @@ const App = () => {
   const [rows, setRows] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isCaseSensitive, setIsCaseSensitive] = useState(false);
   const [selectedTiles, setSelectedTiles] = useState([]);
   const [searchInField, setSearchInField] = useState(['name', 'description']);
   const [isDebugging, setIsDebugging] = useState(false);
@@ -107,10 +108,12 @@ const App = () => {
   useEffect(() => {
     setFilteredRows(rows.filter((row) => {
       return (searchTerm.length > 0 && searchInField.length > 0) ? searchInField.some((field) => {
-        return row[field].toLowerCase().includes(searchTerm.toLowerCase())
+        return isCaseSensitive
+          ? row[field].includes(searchTerm)
+          : row[field].toLowerCase().includes(searchTerm.toLowerCase())
       }) : true
     }))
-  }, [searchTerm, rows, searchInField])
+  }, [searchTerm, rows, searchInField, isCaseSensitive])
 
   return <ThemeProvider {...{ theme }} >
     <div className={classes.wrapper}>
@@ -128,9 +131,7 @@ const App = () => {
             }}
             variant="h6"
           >npm i react-observable-grid</Typography>
-          <IconButton onClick={() => window.open('https://github.com/rand0mC0d3r/react-observable-grid')}>
-            <GitHubIcon />
-          </IconButton>
+
         </div>
 
         <div className={classes.actions}>
@@ -152,6 +153,15 @@ const App = () => {
             </Button>)}
         </div>
 
+        <div className={`${classes.actions} ${classes.smallActions}`}>
+          <IconButton title="Open NPM link ..." onClick={() => window.open('https://www.npmjs.com/package/react-observable-grid')}>
+            <OpenInNewIcon />
+          </IconButton>
+
+          <IconButton title="Open Github link ..." onClick={() => window.open('https://github.com/rand0mC0d3r/react-observable-grid')}>
+            <GitHubIcon />
+          </IconButton>
+        </div>
       </div>
       <div className={`${classes.actions} ${classes.bigContainer}`}>
 
@@ -164,7 +174,15 @@ const App = () => {
             variant="outlined"
             InputProps={{
               startAdornment: <InputAdornment position="start">🔍</InputAdornment>,
-              endAdornment: searchTerm.length > 0 && <InputAdornment onClick={() => setSearchTerm('')} position="end"><DeleteOutlineIcon style={{cursor: 'pointer'}} /></InputAdornment>,
+              endAdornment: <>
+                <TextFieldsIcon
+                  style={{cursor: 'pointer'}}
+                  onClick={() => setIsCaseSensitive(!isCaseSensitive)}
+                  color={isCaseSensitive ? 'primary' : 'disabled'}
+                />
+                {searchTerm.length > 0 && <InputAdornment onClick={() => setSearchTerm('')} position="end"><DeleteOutlineIcon style={{cursor: 'pointer'}} /></InputAdornment>}
+
+              </>,
             }}
             style={{ width: '400px' }}
             size="small" />

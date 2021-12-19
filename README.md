@@ -1,6 +1,16 @@
-# react-observable-grid
+# 👀 🗞️ react-observable-grid
 
-## TODO
+A grid component for React. Works with the intersection observer API. It requires React min 16.8.4 and currently works only with Material UI 4.0.0.
+
+
+## 📚 Installation
+
+```
+npm i react-observable-grid
+```
+
+
+## Sample usage
 
 ```
 const headers = [

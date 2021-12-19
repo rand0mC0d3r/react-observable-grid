@@ -10,8 +10,6 @@ import ObservableHeader from './ObservableHeader'
 import ObservableRow from './ObservableRow'
 import ObservableScrollTop from './ObservableScrollTop'
 
-
-
 const ObservableGrid =  ({
   headers,
   rows = [],
@@ -25,7 +23,6 @@ const ObservableGrid =  ({
   },
   headerOptions = { },
   emptyElement,
-
 
   // isInfinite = false,
   isUpdatingUrl = false,
@@ -138,100 +135,99 @@ const ObservableGrid =  ({
     return result
   }
 
-  return <>
-    {/* {rows.length === 0
-    ? <ObservableEmpty>{emptyElement ? emptyElement : 'No data'}</ObservableEmpty>
-    :  */}
-    <div
-      onMouseLeave={() => setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: false })))}
-      style={{
-        display: 'flex',
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
-        flexDirection: 'column',
-      }}>
-      {isDebugging && <ObservableDebugging items={[
-        { label: 'throttling', value: throttling },
-        { label: 'throttleLimit', value: throttleLimit },
-        { label: 'order', value: order },
-        { label: 'orderBy', value: orderBy },
-        { label: 'selectedIndex', value: selectedIndex },
-        { label: 'sortedRows', value: sortedRows.length },
-        { label: 'rows', value: rows.length },
-        { label: 'startEnd', value: JSON.stringify(startEnd) },
-        { label: 'pageSize', value: pageSize },
-      ]}>
-      </ObservableDebugging>}
+  return <div
+    onMouseLeave={() => setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: false })))}
+    style={{
+      display: 'flex',
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      flexDirection: 'column',
+    }}>
+    {isDebugging && <ObservableDebugging items={[
+      { label: 'throttling', value: throttling },
+      { label: 'throttleLimit', value: throttleLimit },
+      { label: 'order', value: order },
+      { label: 'orderBy', value: orderBy },
+      { label: 'selectedIndex', value: selectedIndex },
+      { label: 'sortedRows', value: sortedRows.length },
+      { label: 'rows', value: rows.length },
+      { label: 'startEnd', value: JSON.stringify(startEnd) },
+      { label: 'pageSize', value: pageSize },
+    ]}>
+    </ObservableDebugging>}
 
-      {headers && <ObservableHeader {...{
-        options: headerOptions,
-        gridTemplateColumns,
-        setHeaders: setInnerHeaders,
-        headers: innerHeaders,
-        order,
-        orderBy,
-        onSelect,
-        handleRequestSort,
-        handleResetSort,
-        rowOptions }} />}
+    {headers && <ObservableHeader {...{
+      options: headerOptions,
+      gridTemplateColumns,
+      setHeaders: setInnerHeaders,
+      headers: innerHeaders,
+      order,
+      orderBy,
+      onSelect,
+      handleRequestSort,
+      handleResetSort,
+      rowOptions }} />}
 
-      {rows.length > 0 ? <>
-        <ObservableContainer {...{ isScrollable, isAlternating }}>
-          {rows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1 && <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
-          {sortedRows
-            .filter(row => row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize)))
-            .map(row => <ObservableRow
-              {...{ gridSpacing: gridTemplateColumns, minRows, rowOptions, isScrollable }}
-              key={row.__index}
-              id={idValue(row.__index)}
-              style={{
-                padding: rowOptions.padding,
-                gridTemplateColumns: gridTemplateColumns,
-                backgroundColor: (isSelectable && selectedIndex === row.__origIndex)
+    {rows.length > 0 ? <>
+      <ObservableContainer {...{ isScrollable, isAlternating }}>
+        {(throttling && rows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1) &&
+            <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
+        {sortedRows
+          .filter(row => throttling
+              ? row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize))
+              : true
+          )
+          .map(row => <ObservableRow
+            {...{ gridSpacing: gridTemplateColumns, minRows, rowOptions, isScrollable }}
+            key={row.__index}
+            id={idValue(row.__index)}
+            style={{
+              padding: rowOptions.padding,
+              gridTemplateColumns: gridTemplateColumns,
+              backgroundColor: (isSelectable && selectedIndex === row.__origIndex)
                 ? theme.palette.augmentColor({ main: theme.palette.divider }).dark
                 : '',
-              }}
-              className={classes.observableRow}
-              index={row.__index}
-              isRelevant={row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize))}
-              onClick={() => isSelectable && setSelectedIndex(selectedIndex === row.__origIndex ? null : row.__origIndex)}
-            >
-              {innerHeaders.filter(header => header.visible).map(header =>
-                <React.Fragment key={`${header.property}_${header.label}_${header.tooltip}_${header.width}`}>
-                  {header.row(row)}
-                </React.Fragment>)}
-            </ObservableRow>)}
-          {rows.length > pageSize && pageSize * startEnd.end -1 <  rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
-          {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
+            }}
+            className={classes.observableRow}
+            index={row.__index}
+            isRelevant={throttling
+                ? row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize))
+                : true
+            }
+            onClick={() => isSelectable && setSelectedIndex(selectedIndex === row.__origIndex ? null : row.__origIndex)}
+          >
+            {innerHeaders.filter(header => header.visible).map(header =>
+              <React.Fragment key={`${header.property}_${header.label}_${header.tooltip}_${header.width}`}>
+                {header.row(row)}
+              </React.Fragment>)}
+          </ObservableRow>)}
+        {throttling && rows.length > pageSize && pageSize * startEnd.end -1 <  rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
+        {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
 
-        </ObservableContainer>
-
-        {rows.length > pageSize && startEnd.end > 3 && <ObservableScrollTop {...{ selectedIndex }} />}
-
-        {(innerHeaders.findIndex(header => header.selected) !== -1) && <div
-          className={`${classes.observableRow} ${classes.selectedColumn}`}
-          style={{
-            alignItems: 'unset',
-            display: 'grid',
-            padding: rowOptions.padding,
-            paddingTop: 0,
-            paddingBottom: 0,
-            gap: '16px',
-            zIndex: -1,
-            gridTemplateColumns: gridTemplateColumns,
-          }}>
-          <div style={{
-            gridColumnStart: innerHeaders.findIndex(header => header.selected) + 1,
-            backgroundColor: '#EEE',
-            margin: '0px -4px',
-          }}/>
-        </div>}
-      </>
-      : <ObservableEmpty>{emptyElement}</ObservableEmpty>}
-    </div>
-    {/* } */}
-  </>
+      </ObservableContainer>
+      {rows.length > pageSize && startEnd.end > 3 && <ObservableScrollTop {...{ selectedIndex }} />}
+      {(innerHeaders.findIndex(header => header.selected) !== -1) && <div
+        className={`${classes.observableRow} ${classes.selectedColumn}`}
+        style={{
+          alignItems: 'unset',
+          display: 'grid',
+          padding: rowOptions.padding,
+          paddingTop: 0,
+          paddingBottom: 0,
+          gap: '16px',
+          zIndex: -1,
+          gridTemplateColumns: gridTemplateColumns,
+        }}>
+        <div style={{
+          gridColumnStart: innerHeaders.findIndex(header => header.selected) + 1,
+          backgroundColor: '#EEE',
+          margin: '0px -4px',
+        }}/>
+      </div>}
+    </>
+    : <ObservableEmpty>{emptyElement}</ObservableEmpty>}
+  </div>
 }
 
 const useStyles = makeStyles(() => ({
