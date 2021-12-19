@@ -67,8 +67,7 @@ const actionStyles = makeStyles(() => ({
 
 const tileStyles = makeStyles((theme) => ({
   tile: {
-    border: `1px solid ${theme.palette.divider}`,
-    boxShadow: '0px 0px 0px 0.5px rgba(0,0,0,0.5)',
+    border: `2px solid ${theme.palette.divider}`,
     borderRadius: '12px',
     padding: '4px 8px',
   },

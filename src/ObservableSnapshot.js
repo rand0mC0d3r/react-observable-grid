@@ -10,7 +10,7 @@ const ObservableSnapshot =  ({
   useEffect(() => {
     const node = document.getElementById(id)
     if (node) {
-      domtoimage.toPng(node, { width: node.offsetWidth, height: node.offsetHeight })
+      domtoimage.toPng(node)
         .then(function (dataUrl) { setSnapshot(dataUrl) })
         .catch(function (error) { console.error('oops, something went wrong!', error)})
     }

@@ -69,6 +69,7 @@ const App = () => {
     },
     {
       label: 'Tiles',
+      canCanvas: true,
       icon: <DashboardIcon />,
       property: 'tilesHash',
       width: 'minmax(100px, 2fr)',
@@ -87,6 +88,7 @@ const App = () => {
     },
     {
       label: 'Price',
+      canCanvas: true,
       icon: <MonetizationOnIcon />,
       property: 'price',
       align: 'flex-end',
@@ -113,7 +115,7 @@ const App = () => {
 
   const generateRows = (count) => setRows(dataGenerator(count));
 
-  useEffect(() => generateRows(50), [])
+  useEffect(() => generateRows(10), [])
 
   useEffect(() => {
     searchTerm.length > 0
