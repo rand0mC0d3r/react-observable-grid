@@ -1,7 +1,7 @@
 import React from 'react'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 
-const ObservableScrollTop = ({ selectedIndex }) => {
+const ObservableScrollTop = ({ selectedIndex, isAtTop }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
 
@@ -13,7 +13,10 @@ const ObservableScrollTop = ({ selectedIndex }) => {
   }
 
   return <div className={classes.wrapper}>
-    {[ selectedIndex ? { id: 'selected', label: `→ [${selectedIndex + 1}]` } : false, { id: 'first', label: '↑' }]
+    {[
+      selectedIndex ? { id: 'selected', label: `→ ${selectedIndex + 1}` } : false,
+      isAtTop ? { id: 'first', label: '↑' } : false
+    ]
       .filter(item => item !== false)
       .map(({ id, label }) => <div key={id} onClick={() => focusElement(id)} className={classes.container}>{label}</div>)}
   </div>
@@ -32,11 +35,11 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 'bold',
     border: `1px solid ${theme.palette.augmentColor({ main: theme.palette.divider }).dark}`,
     backgroundColor: `${theme.palette.background.default}`,
-    padding: '10px',
+    padding: '10px 16px',
     borderRadius: '8px',
 
     '&:hover': {
-      backgroundColor: `${theme.palette.divider} !important`,
+      backgroundColor: '#CCC !important',
     }
   },
 }))

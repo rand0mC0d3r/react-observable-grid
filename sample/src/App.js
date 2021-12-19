@@ -26,7 +26,7 @@ const App = () => {
   const [isCaseSensitive, setIsCaseSensitive] = useState(false);
   const [selectedTiles, setSelectedTiles] = useState([]);
   const [searchInField, setSearchInField] = useState(['name', 'description']);
-  const [isDebugging, setIsDebugging] = useState(false);
+  const [isDebugging, setIsDebugging] = useState(true);
   const [seeLive, setSeeLive] = useState(false);
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
@@ -159,7 +159,7 @@ const App = () => {
         </div>
 
         <div className={`${classes.actions} ${classes.smallActions}`}>
-          {[0, 2, 50, 100, 1500, 65000].map(count => <Button
+          {[0, 2, 30, 40, 50, 100, 1500, 65000].map(count => <Button
             disableElevation
             style={{minWidth: 'unset', padding: '5px 12px'}}
             color={count === rows.length ? 'primary' : 'default'}

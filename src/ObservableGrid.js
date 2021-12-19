@@ -42,15 +42,17 @@ const ObservableGrid =  ({
   const [innerHeaders, setInnerHeaders] = useState([])
   const [orderBy, setOrderBy] = useState('')
   const [throttling, setThrottling] = useState(false)
+  const [totalElements, setTotalElements] = useState(null)
   const [gridTemplateColumns, setGridTemplateColumns] = useState('')
 
   const [selectedIndex, setSelectedIndex] = useState(null)
   const [sortedRows, setSortedRows] = useState([])
   const [startEnd, setStartEnd] = useState({ start: -1, end: 1 })
+  const [throttleLimit, setThrottleLimit] = useState(50)
 
   const pageSize = 25
   const minRows = 25
-  const throttleLimit = 50
+
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
 
   const throttledLoadMore = computeItems(() => calculateTotalElements(), 5050)
@@ -85,30 +87,31 @@ const ObservableGrid =  ({
 
   useEffect(() => {
     function sortSort(order, rows) {
-      return order === 'asc' ? naturalSort(rows).asc([r => r[orderBy]]) : naturalSort(rows).desc([r => r[orderBy]])
+      return order === 'asc'
+        ? naturalSort(rows).asc([r => r[orderBy]])
+        : naturalSort(rows).desc([r => r[orderBy]])
     }
-
     if (cachedRows.length > 0) {
-      if (orderBy === '') {
-        setSortedRows(cachedRows.map((r, index) => { r.__index = index
-
-          return r }))
-      } else {
-        setSortedRows(sortSort(order, cachedRows).map((r, index) => { r.__index = index
-
-          return r }))
-      }
+      orderBy === ''
+        ? setSortedRows(cachedRows.map((r, index) => ({ ...r, __index:  index })))
+        : setSortedRows(sortSort(order, cachedRows).map((r, index) => ({ ...r, __index:  index })))
       setStartEnd({ start: -1, end: 1 })
       setThrottling(cachedRows.length -1 >= throttleLimit)
-
     }
   }, [cachedRows, order, orderBy])
 
-  // useLayoutEffect(( ) => {
-  //   // if (cachedRows.length > 0) {
-  //   console.log(throttledLoadMore())
-  //   // }
-  // }, [])
+  useEffect(( ) => {
+    const interval = setInterval(() => {
+      const currentElements = Number(calculateTotalElements())
+      if(currentElements >= 1000) {
+        setThrottleLimit(throttleLimit - 1/10 * throttleLimit)
+        setThrottling(true)
+      }
+      setTotalElements(currentElements)
+    }, 1500)
+
+    return () => clearInterval(interval)
+  }, [])
 
   useEffect(() => {
     if(!headers) return
@@ -166,6 +169,7 @@ const ObservableGrid =  ({
       { label: 'rows', value: rows.length },
       { label: 'startEnd', value: JSON.stringify(startEnd) },
       { label: 'pageSize', value: pageSize },
+      { label: 'totalElements', value: totalElements },
     ]}>
     </ObservableDebugging>}
 
@@ -219,7 +223,8 @@ const ObservableGrid =  ({
         {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
 
       </ObservableContainer>
-      {rows.length > pageSize && startEnd.end > 3 && <ObservableScrollTop {...{ selectedIndex }} />}
+      {(selectedIndex ? true : rows.length > pageSize && startEnd.end > 3) &&
+        <ObservableScrollTop {...{ selectedIndex, isAtTop: rows.length > pageSize && startEnd.end > 3 }} />}
       {(innerHeaders.findIndex(header => header.selected) !== -1) && <div
         className={`${classes.observableRow} ${classes.selectedColumn}`}
         style={{

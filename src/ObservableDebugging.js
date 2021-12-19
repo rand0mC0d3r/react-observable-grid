@@ -8,7 +8,7 @@ const ObservableDebugging = ({ items }) => <div style={{
   flexWrap: 'wrap',
   alignItems: 'center',
   position: 'absolute',
-  bottom: '20px',
+  top: '90px',
   gap: '4px',
   right: '20px',
   zIndex: '1',
