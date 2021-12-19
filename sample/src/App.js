@@ -122,6 +122,7 @@ const headers = [
     noSort: true,
     row: (row) => <ActionsRow row={row} />,
     width: '1fr',
+    noHightlight: true,
   },
 ]
 
@@ -216,7 +217,7 @@ const App = () => {
     }
   }));
 
-  useEffect(() => generateRows(5), [])
+  useEffect(() => generateRows(1), [])
 
   useEffect(() => {
     setFilteredRows(rows.filter(({name, description}) => `${name}${description}`.toLowerCase().includes(searchTerm.toLowerCase())))
@@ -247,7 +248,7 @@ const App = () => {
         </div>
 
         <div className={`${classes.actions} ${classes.smallActions}`}>
-          {[0, 10, 20, 50, 500, 1500, 65000].map(count => <Button style={{minWidth: 'unset'}} variant="outlined" key={count} onClick={() => generateRows(count)}>{count}</Button>)}
+          {[0, 2, 10, 20, 50, 500, 1500, 65000].map(count => <Button style={{minWidth: 'unset'}} variant="outlined" key={count} onClick={() => generateRows(count)}>{count}</Button>)}
         </div>
 
       </div>
@@ -264,31 +265,18 @@ const App = () => {
       </div>
       <Typography variant="caption" color="textSecondary">Upcoming</Typography>
       <div className={classes.container} style={{height: '650px'}}>
-        <div className={classes.wrapper2}>
-          <LocalObservableGrid
-            isDebugging={isDebugging}
-            headers={headers}
-            uniqueId="fakeEntries"
-            rowOptions={{
-              padding: '10px 20px'
-            }}
-            rows={filteredRows}
-            isEmpty={filteredRows.length === 0}
-            emptyElement={<div>No data found ...</div>}
-            rowRenderer={row => <SampleRow {...{ row }} />}
-          />
-          {/* <ObservableGrid
-            {...{ headers, rows: filteredRows, isDebugging }}
-            isEmpty={filteredRows.length === 0}
-            emptyElement={<div>No data found ...</div>}
-            keyPattern={row => row.uuid}
-            isSelectable={true}
-            rowOptions={{
-              padding: '4px 16px',
-            }}
-            rowRenderer={row => <SampleRow {...{ row }} />}
-          /> */}
-        </div>
+        <LocalObservableGrid
+        {...{isDebugging, headers}}
+          uniqueId="fakeEntries"
+          rowOptions={{
+            padding: '8px 16px'
+          }}
+          headerOptions={{
+            padding: '8px 16px'
+          }}
+          rows={filteredRows}
+          emptyElement={<div>No data found ...</div>}
+        />
       </div>
     </div>
   </ThemeProvider>

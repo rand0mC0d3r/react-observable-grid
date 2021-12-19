@@ -13,7 +13,7 @@ const ObservableHeader = ({
   gridTemplateColumns,
   headers = [],
   setHeaders,
-  options : {ascArrow, descArrow, padding },
+  options: {ascArrow, descArrow, padding },
   order,
   onSelect = () => { },
   orderBy,
@@ -67,24 +67,21 @@ const ObservableHeader = ({
     </Popover>}
   const renderArrows = ({property, label, align, secondary = false}) => {
     return evaluateOrderBy({ property, label }) && <div
+    className={classes.arrowColor}
     style={{
       transform: 'scaleY(0.75)',
       order: align ? -1 : 1,
       fontSize: '13px',
-      opacity: secondary ? 0.5 : 1,
+      opacity: secondary ? 0.75 : 1,
     }}>
-      {(ascArrow || descArrow) === null
+      {(ascArrow === undefined && descArrow === undefined)
         ? order === 'asc' ? defaultOptions.ascArrow : defaultOptions.descArrow
         : cloneElement(<>{order === 'asc' ? ascArrow : descArrow}</>)
       }
     </div>}
   const renderMainHeader = ({tooltip, noSort, property, label, icon, align}) => {
-    return <Tooltip
-      key={`${property}_${label}_${align}_${tooltip}`} arrow
-      placement="left"
-      title={tooltip || (!noSort ? 'Click to toggle sorting direction for this column' : '')}
-    >
-      <div
+    return <div
+        key={`${property}_${label}_${align}`}
         className={classes.flexbox}
         onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
         onDoubleClick={() => !noSort && handleResetSort()}
@@ -98,6 +95,7 @@ const ObservableHeader = ({
         {icon && cloneElement(icon, { style: { fontSize: 16 } })}
         <Typography
           variant='subtitle2'
+          color={evaluateOrderBy({ property, label }) ? 'primary' : 'textSecondary'}
           style={{
             lineHeight: '16px',
             flexOrder: 0,
@@ -109,8 +107,7 @@ const ObservableHeader = ({
         </Typography>
 
         {renderArrows({property, label, align})}
-      </div>
-    </Tooltip>}
+      </div>}
 
   return <>
     {renderPopover()}
@@ -124,11 +121,11 @@ const ObservableHeader = ({
         paddingBottom: '0px',
         gridTemplateColumns: gridTemplateColumns}}
       >
-        {headers?.filter(header => header.visible).map(({ align, selected, label, icon, tooltip, property, secondaryHeaders, additionalHeaders, noSort }) =>
+        {headers?.filter(header => header.visible).map(({ noHightlight, align, selected, label, icon, tooltip, property, secondaryHeaders, additionalHeaders, noSort }) =>
           <div
-            onMouseEnter={() => onSelect(label)}
+            onMouseEnter={() => !noHightlight && onSelect(label)}
             key={`${label}`}
-            className={classes.headers}
+            className={`${classes.headers} ${!noHightlight ? classes.headersSelectable : ''}`}
             style={{
               alignItems: align ? 'flex-end' : 'flex-start',
               padding: padding || defaultOptions.padding,
@@ -153,6 +150,7 @@ const ObservableHeader = ({
               >
                 <Typography
                   variant='caption'
+                  color={evaluateOrderBy({ property, label }) ? 'primary' : 'textSecondary'}
                   style={{
                     flexOrder: 0,
                     lineHeight: '1.5',
@@ -161,7 +159,6 @@ const ObservableHeader = ({
                   }}
                   onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
                   onDoubleClick={() => !noSort && handleResetSort()}
-                  color="textSecondary"
                 >
                   {label}
                 </Typography>
@@ -186,8 +183,11 @@ const useStyles = makeStyles(theme => ({
     gridColumnGap: '16px',
     gridRowGap: '16px',
 
-    boxShadow: '0px 0px 1px 0px rgba(0,0,0,0.2)',
-    borderBottom: `2px solid ${theme.palette.divider}`,
+    boxShadow: '0px 0px 4px 0px #00000029',
+    borderBottom: `1px solid ${theme.palette.divider}`,
+  },
+  arrowColor: {
+    color: theme.palette.primary.main
   },
   flexbox: {
     display: 'flex',
@@ -207,6 +207,11 @@ const useStyles = makeStyles(theme => ({
     flexWrap: 'nowrap',
     gap: '8px'
   },
+  headersSelectable: {
+    '&:hover': {
+      backgroundColor: 'rgba(0,0,0,0.1)',
+    },
+  },
   headers: {
     display: 'flex',
     alignItems: 'center',
@@ -214,12 +219,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     alignSelf: 'stretch',
     gap: '4px',
-
-    '&:hover': {
-      backgroundColor: 'rgba(0,0,0,0.1)',
-    },
   },
-
   flipped: {
     transform: 'rotate(180deg)'
   }

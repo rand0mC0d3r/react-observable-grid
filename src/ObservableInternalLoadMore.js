@@ -13,6 +13,9 @@ const ObservableInternalLoadMore = ({ onLoadMore = () => { }, isPointing = false
     style={{
       position: 'relative',
       height: '0px',
+      padding: '0px',
+      margin: '0px',
+      width: '0px',
       top: isPointing ? '50%' : '-25%',
       opacity: '0',
       float: 'left',

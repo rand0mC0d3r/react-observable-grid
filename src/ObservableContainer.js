@@ -15,11 +15,12 @@ const ObservableContainer = ({ children, isAlternating, isScrollable }) => {
 
   return <div className={classes.wrapper}>
     <div className={`
-      ${classes.list}
-      ${classes.anyItem}
-      ${isAlternating && classes.alternatingItem}
-      ${isScrollable && classes.isScrollable}
-    `}>
+        ${classes.list}
+        ${classes.anyItem}
+        ${isAlternating && classes.alternatingItem}
+        ${isScrollable && classes.isScrollable}
+      `}
+    >
       {children}
     </div>
   </div>
