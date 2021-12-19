@@ -1,9 +1,52 @@
-import { Button, Chip, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import TuneIcon from '@material-ui/icons/Tune';
 
-const useStyles = makeStyles(() => ({
+const NamesRow = ({
+  row: { name, surname, nickname, streetname } }) => {
+  return <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+    <Typography
+      style={{ cursor: 'pointer' }}
+      variant='subtitle2'>
+      {name} {surname}
+    </Typography>
+    <Typography
+      style={{ cursor: 'pointer' }}
+      variant='caption'
+      color="textSecondary"
+    >
+      {nickname} {streetname}
+    </Typography>
+  </div>
+}
+
+const DescriptionRow = ({ row: { description } }) => {
+  return <Typography variant='body2'>{description}</Typography>
+}
+
+const TilesRow = ({ row: { tiles } }) => {
+  const theme = useTheme()
+  const classes = tileStyles(theme)
+  return <div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row', gap: '8px 8px', padding: '4px 0px' }}>
+    {tiles.map(({ name }) => <div className={classes.tile} key={name}>{name}</div>)}
+  </div>
+}
+
+const CurrencyRow = ({ row: { price, currency } }) => {
+  return <Typography style={{ display: 'flex', justifyContent: 'flex-end' }} variant='subtitle2'>{price} {currency}</Typography>
+}
+
+const ActionsRow = () => {
+  const theme = useTheme()
+  const classes = actionStyles(theme)
+  return <div className={classes.actionContainer}>
+    <TuneIcon color="primary" />
+    <DeleteOutlineIcon color="secondary" />
+  </div>
+}
+
+const actionStyles = makeStyles(() => ({
   actionContainer: {
     display: 'flex',
     justifyContent: 'flex-end',
@@ -15,107 +58,16 @@ const useStyles = makeStyles(() => ({
       opacity: '1',
       filter: 'grayscale(0%)',
     }
-  }
+  },
 }))
 
-const SampleRow = ({
-  inView = true,
-  setSelected = () => { },
-  row: { name, surname, description, price, tiles, currency, nickname, streetname } }) => {
-  const theme = useTheme()
-  const classes = useStyles(theme)
-  return <>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <Typography
-          style={{ cursor: 'pointer' }}
-          onClick={setSelected}
-          variant='subtitle2'>
-          {name} {surname}
-        </Typography>
-        <div style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
-          <Typography
-            style={{ cursor: 'pointer' }}
-            variant='caption'
-            color="textSecondary"
-          >
-            {nickname}
-          </Typography>
-          <Typography
-            style={{ cursor: 'pointer' }}
-            variant='caption'
-            color="textSecondary"
-          >
-            {streetname}
-          </Typography>
-        </div>
-      </div>
-      <Typography variant='body2'>{description}</Typography>
-      <div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row', gap: '8px 4px', padding: '4px 0px' }}>
-        {tiles.map(({ name }) => <Chip variant="outlined" size="small" key={name} label={name} />)}
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Typography variant='subtitle2'>{price} {currency}</Typography>
-      </div>
-      <div className={classes.actionContainer}>
-        <Button variant="outlined" size="small" color="primary"><TuneIcon /></Button>
-        <Button variant="outlined" size="small" color="secondary"><DeleteOutlineIcon /></Button>
-      </div>
-  </>
-}
+const tileStyles = makeStyles((theme) => ({
+  tile: {
+    border: `1px solid ${theme.palette.divider}`,
+    boxShadow: '0px 0px 0px 0.5px rgba(0,0,0,0.5)',
+    borderRadius: '12px',
+    padding: '4px 8px',
+  },
+}))
 
-const NamesRow = ({
-  row: { name, surname, nickname, streetname } }) => {
-  return <div style={{ display: 'flex', flexDirection: 'column' }}>
-    <Typography
-      style={{ cursor: 'pointer' }}
-      variant='subtitle2'>
-      {name} {surname}
-    </Typography>
-    <div style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
-      <Typography
-        style={{ cursor: 'pointer' }}
-        variant='caption'
-        color="textSecondary"
-      >
-        {nickname}
-      </Typography>
-      <Typography
-        style={{ cursor: 'pointer' }}
-        variant='caption'
-        color="textSecondary"
-      >
-        {streetname}
-      </Typography>
-    </div>
-  </div>
-}
-
-const DescriptionRow = ({
-  row: { description } }) => {
-  return <Typography variant='body2'>{description}</Typography>
-}
-
-const TilesRow = ({
-  row: { tiles } }) => {
-  return <div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row', gap: '8px 4px', padding: '4px 0px' }}>
-        {tiles.map(({ name }) => <Chip variant="outlined" size="small" key={name} label={name} />)}
-      </div>
-}
-
-const CurrencyRow = ({
-  row: { price, currency } }) => {
-  return <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-    <Typography variant='subtitle2'>{price} {currency}</Typography>
-  </div>
-}
-
-const ActionsRow = () => {
-  const theme = useTheme()
-  const classes = useStyles(theme)
-  return <div className={classes.actionContainer}>
-    <Button variant="outlined" size="small" color="primary"><TuneIcon /></Button>
-    <Button variant="outlined" size="small" color="secondary"><DeleteOutlineIcon /></Button>
-  </div>
-}
-
-export { SampleRow as default, ActionsRow, CurrencyRow, TilesRow, DescriptionRow, NamesRow };
+export { ActionsRow, CurrencyRow, TilesRow, DescriptionRow, NamesRow };

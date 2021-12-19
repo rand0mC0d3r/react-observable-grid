@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import { Typography } from '@material-ui/core'
 
 const ObservableEmpty = ({ children }) => <div
   style={{
@@ -9,7 +10,7 @@ const ObservableEmpty = ({ children }) => <div
     justifyContent: 'center',
     alignItems: 'center'
   }}>
-  {children}
+  {children ? children : <Typography variant="caption" color="textSecondary">No rows ...</Typography>}
 </div>
 
 ObservableEmpty.propTypes = { children: PropTypes.node.isRequired }

@@ -7,52 +7,13 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import PersonPinCircleIcon from '@material-ui/icons/PersonPinCircle';
 import SubjectIcon from '@material-ui/icons/Subject';
 import { useEffect, useMemo, useState } from 'react';
-import SampleRow, { ActionsRow, CurrencyRow, TilesRow, DescriptionRow, NamesRow } from './parts/SampleRow';
+import { ActionsRow, CurrencyRow, TilesRow, DescriptionRow, NamesRow } from './parts/SampleRow';
 import { ObservableGrid } from 'react-observable-grid';
 import LocalObservableGrid from './components/ObservableGrid';
-
-const useStyles = makeStyles(() => ({
-  wrapper: {
-    display: 'flex',
-    width: '100%',
-    height: '100%',
-    minWidth: '850px',
-    gap: '16px',
-    flexDirection: 'column',
-    position: 'absolute',
-    alignContent: 'stretch',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  wrapper2: {
-    display: 'flex',
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    flexDirection: 'column',
-  },
-  actions: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    gap: '16px',
-    alignItems: 'center'
-  },
-  smallActions: {
-    gap: '8px',
-  },
-  bigContainer: {
-    width: '90%',
-  },
-  container: {
-    minWidth: '850px',
-    position: 'relative',
-    borderRadius: '4px',
-    maxWidth: '95%',
-    width: '90%',
-    border: '4px solid #333',
-    height: '80%'
-  }
-}))
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import { dataGenerator } from './parts/dataGenerator';
+import DoneIcon from '@material-ui/icons/Done';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 const headers = [
   {
@@ -120,127 +81,53 @@ const headers = [
     align: 'flex-end',
     tooltip: "Actions for entries",
     noSort: true,
+    noSearch: true,
     row: (row) => <ActionsRow row={row} />,
     width: '1fr',
     noHightlight: true,
   },
 ]
 
-const colorList = [
-  'pink',
-  'green',
-  'blue',
-  'yellow',
-  'orange',
-  'purple',
-  'brown',
-  'grey',
-  'black',
-  'white',
-]
-
-const flavorsList = [
-  'Chocolate',
-  'Vanilla',
-  'Strawberry',
-  'Mint',
-  'Coffee',
-  'Cinnamon',
-  'Peppermint',
-  'Lemon',
-  'Hazelnut',
-  'Coconut',
-  'Pistachio',
-  'Mocha',
-  'Toffee',
-  'Peanut',
-  'Almond',
-  'Honey',
-  'Cherry',
-].map((flavor, index) => ({
-  id: index,
-  name: flavor,
-  color: colorList[index % colorList.length],
-}))
-
-const currencies = [
-  "USD",
-  "EUR",
-  "GBP",
-  "JPY",
-  "CAD",
-  "AUD",
-  "CHF",
-  "SEK",
-  "NZD"
-];
-
 const App = () => {
   const [rows, setRows] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-
+  const [selectedTiles, setSelectedTiles] = useState([]);
+  const [searchInField, setSearchInField] = useState(['name', 'description']);
   const [isDebugging, setIsDebugging] = useState(false);
   const [seeLive, setSeeLive] = useState(false);
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
 
-  const generateRows = (count) => setRows(count === 0 ? [] : new Array(count).fill().map((_, i) => {
-    const randomFlavors = flavorsList.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 10 + 2));
-    return {
-      uuid: `uuid_${i}`,
-      name: `${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)}.${i + 1}`,
-      surname: `${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)}.${i + 1}`,
-      nickname: `n1_${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 3)}${i + 1}`,
-      streetname: `n2_${i + 1}_${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 3)}`,
-      description: `${[
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-        'Donec pulvinar nisi pulvinar metus cursus, eget malesuada nunc auctor.',
-        'Maecenas vitae suscipit elit, ut varius diam.',
-        'Duis consectetur a erat non tempus.',
-        'Sed molestie at nibh ut ullamcorper.',
-        'Mauris hendrerit egestas quam, vitae dictum tellus condimentum ut.',
-        'Suspendisse in lorem pharetra, ornare leo id, condimentum neque. ',
-        'Vestibulum odio justo, efficitur at dictum sed, pharetra ac nisi.',
-        'Vivamus vel eleifend massa.',
-        'Aenean est nunc, iaculis a maximus ut, blandit eget lorem.',
-        'Proin et porta arcu.',
-        'Curabitur ornare est nulla, in interdum dui lacinia id.',
-        'Praesent et nunc eget ipsum blandit venenatis et et est.',
-        'Sed bibendum auctor ullamcorper.',
-        'Integer at ligula ac neque accumsan tincidunt.',
-      ][Math.floor(Math.random() * 14)]} ${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 3)}`
-      ,
-      tiles: randomFlavors,
-      tilesHash: randomFlavors.map(({ name }) => name).sort().join(''),
-      price: `${i + 1}.0${Math.floor(Math.random() * 100)}`,
-      currency: currencies[Math.floor(Math.random() * currencies.length)],
-    }
-  }));
+  const generateRows = (count) => setRows(dataGenerator(count));
 
-  useEffect(() => generateRows(250), [])
-
+  useEffect(() => generateRows(5), [])
   useEffect(() => {
-    setFilteredRows(rows.filter(({name, description}) => `${name}${description}`.toLowerCase().includes(searchTerm.toLowerCase())))
-  }, [searchTerm, rows])
+    setFilteredRows(rows.filter((row) => {
+      return searchInField.some((field) => {
+        return row[field].toLowerCase().includes(searchTerm.toLowerCase())
+      })
+    }))
+  }, [searchTerm, rows, searchInField])
 
   return <ThemeProvider {...{ theme }} >
     <div className={classes.wrapper}>
       <div className={`${classes.actions} ${classes.bigContainer}`}>
         <div className={classes.actions}>
-          <Typography color="textPrimary" variant="h6">React Grid Observable</Typography>
+          <Typography color="textPrimary" variant="h3">🗞️👀</Typography>
+          <Typography
+            color="textPrimary"
+            style={{
+              border: '2px dotted #CCC',
+              padding: '4px 8px',
+              borderRadius: '8px',
+              userSelect: 'all',
+            }}
+            variant="h6"
+          >npm i react-observable-grid</Typography>
           <IconButton onClick={() => window.open('https://github.com/rand0mC0d3r/react-observable-grid')}>
             <GitHubIcon />
           </IconButton>
-        </div>
-
-        <div className={classes.actions}>
-          <TextField
-            placeholder="Search ..."
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            variant="outlined"
-            size="small" />
         </div>
 
         <div className={classes.actions}>
@@ -250,8 +137,43 @@ const App = () => {
         </div>
 
         <div className={`${classes.actions} ${classes.smallActions}`}>
-          {[0, 2, 50, 1500, 65000].map(count => <Button style={{minWidth: 'unset'}} variant="outlined" key={count} onClick={() => generateRows(count)}>{count}</Button>)}
+          {[0, 2, 50, 1500, 65000].map(count => <Button style={{minWidth: 'unset', padding: '5px 12px'}} variant="outlined" key={count} onClick={() => generateRows(count)}>{count}</Button>)}
         </div>
+
+      </div>
+      <div className={`${classes.actions} ${classes.bigContainer}`}>
+
+        <div className={classes.actions}>
+          <TextField
+            placeholder={`Search in ${searchInField.join(', ')}...`}
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            variant="outlined"
+            style={{ width: '500px' }}
+            size="small" />
+            {headers.filter(header => !header.noSearch).map((header) => <Chip
+              key={header.property}
+              onClick={() => {
+                if (searchInField.includes(header.property)) {
+                  setSearchInField(searchInField.filter(field => field !== header.property))
+                } else {
+                  setSearchInField([...searchInField, header.property])
+                }
+              }}
+              icon={searchInField.some(field => field === header.property) ? undefined : <AddCircleIcon />}
+              onDelete={searchInField.some(field => field === header.property) ? () => {
+                setSearchInField(searchInField.filter(field => field !== header.property))
+              } : undefined}
+              label={header.label}
+            />)}
+
+        </div>
+
+        <div className={classes.actions}>
+          {selectedTiles.map((tile) => <Chip key={tile} label={tile} />)}
+        </div>
+
+
 
       </div>
       <div className={classes.container} style={{height: '850px'}}>
@@ -260,7 +182,6 @@ const App = () => {
             rows={filteredRows}
             isEmpty={filteredRows.length === 0}
             emptyElement={<div>No data found ...</div>}
-            rowRenderer={row => <SampleRow {...{ row }} />}
           /> : <LocalObservableGrid
         {...{isDebugging, headers}}
           uniqueId="fakeEntries"
@@ -271,11 +192,54 @@ const App = () => {
             padding: '8px 16px'
           }}
           rows={filteredRows}
-          emptyElement={<div>No data found ...</div>}
+          emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
         />}
       </div>
     </div>
   </ThemeProvider>
 }
+
+const useStyles = makeStyles(() => ({
+  wrapper: {
+    display: 'flex',
+    width: '100%',
+    height: '100%',
+    minWidth: '850px',
+    gap: '16px',
+    flexDirection: 'column',
+    position: 'absolute',
+    alignContent: 'stretch',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  wrapper2: {
+    display: 'flex',
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    flexDirection: 'column',
+  },
+  actions: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    gap: '16px',
+    alignItems: 'center'
+  },
+  smallActions: {
+    gap: '4px',
+  },
+  bigContainer: {
+    width: '90%',
+  },
+  container: {
+    minWidth: '850px',
+    position: 'relative',
+    borderRadius: '4px',
+    maxWidth: '95%',
+    width: '90%',
+    border: '4px solid #333',
+    height: '80%'
+  }
+}))
 
 export default App;

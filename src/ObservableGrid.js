@@ -138,9 +138,11 @@ const ObservableGrid =  ({
     return result
   }
 
-  return rows.length === 0
+  return <>
+    {/* {rows.length === 0
     ? <ObservableEmpty>{emptyElement ? emptyElement : 'No data'}</ObservableEmpty>
-    : <div
+    :  */}
+    <div
       onMouseLeave={() => setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: false })))}
       style={{
         display: 'flex',
@@ -173,57 +175,62 @@ const ObservableGrid =  ({
         handleResetSort,
         rowOptions }} />}
 
-      {rows.length > 0 && <ObservableContainer {...{ isScrollable, isAlternating }}>
-        {rows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1 && <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
-        {sortedRows
-          .filter(row => row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize)))
-          .map(row => <ObservableRow
-            {...{ gridSpacing: gridTemplateColumns, minRows, rowOptions, isScrollable }}
-            key={row.__index}
-            id={idValue(row.__index)}
-            style={{
-              padding: rowOptions.padding,
-              gridTemplateColumns: gridTemplateColumns,
-              backgroundColor: (isSelectable && selectedIndex === row.__origIndex)
+      {rows.length > 0 ? <>
+        <ObservableContainer {...{ isScrollable, isAlternating }}>
+          {rows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1 && <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
+          {sortedRows
+            .filter(row => row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize)))
+            .map(row => <ObservableRow
+              {...{ gridSpacing: gridTemplateColumns, minRows, rowOptions, isScrollable }}
+              key={row.__index}
+              id={idValue(row.__index)}
+              style={{
+                padding: rowOptions.padding,
+                gridTemplateColumns: gridTemplateColumns,
+                backgroundColor: (isSelectable && selectedIndex === row.__origIndex)
                 ? theme.palette.augmentColor({ main: theme.palette.divider }).dark
                 : '',
-            }}
-            className={classes.observableRow}
-            index={row.__index}
-            isRelevant={row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize))}
-            onClick={() => isSelectable && setSelectedIndex(selectedIndex === row.__origIndex ? null : row.__origIndex)}
-          >
-            {innerHeaders.filter(header => header.visible).map(header =>
-              <React.Fragment key={`${header.property}_${header.label}_${header.tooltip}_${header.width}`}>
-                {header.row(row)}
-              </React.Fragment>)}
-          </ObservableRow>)}
-        {rows.length > pageSize && pageSize * startEnd.end -1 <  rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
-        {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
+              }}
+              className={classes.observableRow}
+              index={row.__index}
+              isRelevant={row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize))}
+              onClick={() => isSelectable && setSelectedIndex(selectedIndex === row.__origIndex ? null : row.__origIndex)}
+            >
+              {innerHeaders.filter(header => header.visible).map(header =>
+                <React.Fragment key={`${header.property}_${header.label}_${header.tooltip}_${header.width}`}>
+                  {header.row(row)}
+                </React.Fragment>)}
+            </ObservableRow>)}
+          {rows.length > pageSize && pageSize * startEnd.end -1 <  rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
+          {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
 
-      </ObservableContainer>}
+        </ObservableContainer>
 
-      {rows.length > pageSize && startEnd.end > 3 && <ObservableScrollTop {...{ selectedIndex }} />}
+        {rows.length > pageSize && startEnd.end > 3 && <ObservableScrollTop {...{ selectedIndex }} />}
 
-      {(innerHeaders.findIndex(header => header.selected) !== -1) && <div
-        className={`${classes.observableRow} ${classes.selectedColumn}`}
-        style={{
-          alignItems: 'unset',
-          display: 'grid',
-          padding: rowOptions.padding,
-          paddingTop: 0,
-          paddingBottom: 0,
-          gap: '16px',
-          zIndex: -1,
-          gridTemplateColumns: gridTemplateColumns,
-        }}>
-        <div style={{
-          gridColumnStart: innerHeaders.findIndex(header => header.selected) + 1,
-          backgroundColor: '#EEE',
-          margin: '0px -4px',
-        }}/>
-      </div>}
+        {(innerHeaders.findIndex(header => header.selected) !== -1) && <div
+          className={`${classes.observableRow} ${classes.selectedColumn}`}
+          style={{
+            alignItems: 'unset',
+            display: 'grid',
+            padding: rowOptions.padding,
+            paddingTop: 0,
+            paddingBottom: 0,
+            gap: '16px',
+            zIndex: -1,
+            gridTemplateColumns: gridTemplateColumns,
+          }}>
+          <div style={{
+            gridColumnStart: innerHeaders.findIndex(header => header.selected) + 1,
+            backgroundColor: '#EEE',
+            margin: '0px -4px',
+          }}/>
+        </div>}
+      </>
+      : <ObservableEmpty>{emptyElement}</ObservableEmpty>}
     </div>
+    {/* } */}
+  </>
 }
 
 const useStyles = makeStyles(() => ({
