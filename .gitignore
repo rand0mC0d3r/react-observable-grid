@@ -104,5 +104,3 @@ dist
 .tern-port
 sample/src/components
 .npmrc
-build
-./build

@@ -52,9 +52,12 @@
     "wipe": "rm -rf package-lock.json && rm -rf ./node_modules && cd sample && rm -rf package-lock.json && rm -rf ./node_modules",
     "dev": "concurrently \"npm run build.watch\" \"cd sample && export PORT=3339 && npx react-scripts start\"",
     "start": "serve -s build",
-    "prebuild": "cd sample && npm install",
-    "build": "rm -rf ./build && cd sample && npx react-scripts build && mv ./build ../",
+
+    "build": "echo 'building'",
+    "build.sample": "rm -rf ./build && cd sample && npm install && npx react-scripts build && mv ./build ../",
     "build.lib": "rollup -c",
+    "build.all": "concurrently \"npm run build.sample\" \"npm run build.lib\"",
+
     "test": "react-scripts test",
     "clone.component": "clear && mkdir -p ./sample/src/components/ && cp -r src/* sample/src/components/ && echo 'Synchronized'",
     "copy.component": "npm run clone.component && copy-and-watch dist/* sample/src/components/ --watch",
