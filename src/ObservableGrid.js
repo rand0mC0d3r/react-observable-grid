@@ -158,6 +158,7 @@ const ObservableGrid =  ({
         rowOptions }} />}
 
       {rows.length > 0 && <ObservableContainer {...{ isScrollable, isAlternating }}>
+
         {rows.length > pageSize && startEnd.end > 0 && <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
         {sortedRows
           .filter(row => row.__index <= startEnd.end * pageSize)
@@ -183,18 +184,42 @@ const ObservableGrid =  ({
           </ObservableRow>)}
         {rows.length > pageSize && pageSize * startEnd.end -1 <  rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
         {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
+        <div
+          className={`${classes.observableRow} ${classes.selectedColumn}`}
+          style={{
+            alignItems: 'unset',
+            display: 'grid',
+            padding: rowOptions.padding,
+            paddingTop: 0,
+            paddingBottom: 0,
+            gap: '16px',
+            zIndex: -1,
+            gridTemplateColumns: gridTemplateColumns,
+          }}>
+          <div style={{
+            gridColumnStart: innerHeaders.findIndex(header => header.selected) + 1,
+            backgroundColor: '#EEE',
+            margin: '0px -4px',
+          }}/>
+        </div>
       </ObservableContainer>}
     </>
 }
 
 const useStyles = makeStyles(() => ({
+  selectedColumn: {
+    top: '0px',
+    left: '0px',
+    bottom: '0px',
+    right: '0px',
+    position: 'absolute',
+  },
   observableRow: {
     alignSelf: 'stretch',
     breakInside: 'avoid',
     fontSize: '12px',
     alignItems: 'center',
     gridColumnGap: '16px',
-    gridRowGap: '16px',
     display: 'grid',
   },
 }))

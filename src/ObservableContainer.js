@@ -2,6 +2,13 @@ import { makeStyles, useTheme } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import React from 'react'
 
+const hexToRgb = hex => {
+  console.log(hex)
+
+  return hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i,(m, r, g, b) => '#' + r + r + g + g + b + b)
+    .substring(1).match(/.{2}/g).map(x => parseInt(x, 16))
+}
+
 const ObservableContainer = ({ children, isAlternating, isScrollable }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
@@ -52,7 +59,7 @@ const useStyles = makeStyles(theme => ({
   },
   alternatingItem: {
     '& > *:nth-child(even)': {
-      backgroundColor: theme.palette.augmentColor({ main: theme.palette.background.default }).main,
+      backgroundColor: `${theme.palette.background.default}88`,
     }
   },
   isScrollable: {

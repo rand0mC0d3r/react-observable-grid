@@ -126,7 +126,7 @@ const ObservableHeader = ({
       >
         {headers?.filter(header => header.visible).map(({ align, selected, label, icon, tooltip, property, secondaryHeaders, additionalHeaders, noSort }) =>
           <div
-            onClick={() => onSelect(label)}
+            onMouseEnter={() => onSelect(label)}
             key={`${label}`}
             className={classes.headers}
             style={{
@@ -134,10 +134,11 @@ const ObservableHeader = ({
               padding: padding || defaultOptions.padding,
               paddingLeft: '4px',
               paddingRight: '4px',
+              margin: '0px -4px',
             }}>
             <div className={`${classes.flexbox} ${classes.maxiFlexbox}`}>
               {renderMainHeader({tooltip, noSort, property, label, icon, align})}
-              {selected ? 'sel' :''}
+              {/* {selected ? 'sel' :''} */}
               {additionalHeaders && <div className={classes.secondaryHeaders}>
                 {additionalHeaders.map(({ label, property, noSort, icon }) =>
                   renderMainHeader({tooltip, noSort, property, label, icon, align}))
@@ -182,7 +183,7 @@ const useStyles = makeStyles(theme => ({
     fontSize: '12px',
     minHeight: '48px',
     alignItems: 'stretch',
-    gridColumnGap: '8px',
+    gridColumnGap: '16px',
     gridRowGap: '16px',
 
     boxShadow: '0px 0px 1px 0px rgba(0,0,0,0.2)',
