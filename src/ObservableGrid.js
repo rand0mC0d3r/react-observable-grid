@@ -50,7 +50,7 @@ const ObservableGrid =  ({
 
   const pageSize = 25
   const minRows = 25
-  const throttleLimit = 30
+  const throttleLimit = 50
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
 
   const naturalSort = createNewSortInstance({
@@ -96,7 +96,7 @@ const ObservableGrid =  ({
           return r }))
       }
       setStartEnd({ start: -1, end: 1 })
-      setThrottling(cachedRows.length >= throttleLimit)
+      setThrottling(cachedRows.length -1 >= throttleLimit)
 
     }
   }, [cachedRows, order, orderBy])
@@ -153,6 +153,7 @@ const ObservableGrid =  ({
       }}>
       {isDebugging && <ObservableDebugging items={[
         { label: 'throttling', value: throttling },
+        { label: 'throttleLimit', value: throttleLimit },
         { label: 'order', value: order },
         { label: 'orderBy', value: orderBy },
         { label: 'selectedIndex', value: selectedIndex },

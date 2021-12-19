@@ -1,5 +1,6 @@
 import { Button, Chip, IconButton, TextField, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
@@ -13,6 +14,7 @@ import LocalObservableGrid from './components/ObservableGrid';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { dataGenerator } from './parts/dataGenerator';
 import DoneIcon from '@material-ui/icons/Done';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 const headers = [
@@ -101,12 +103,12 @@ const App = () => {
 
   const generateRows = (count) => setRows(dataGenerator(count));
 
-  useEffect(() => generateRows(5), [])
+  useEffect(() => generateRows(50), [])
   useEffect(() => {
     setFilteredRows(rows.filter((row) => {
-      return searchInField.some((field) => {
+      return (searchTerm.length > 0 && searchInField.length > 0) ? searchInField.some((field) => {
         return row[field].toLowerCase().includes(searchTerm.toLowerCase())
-      })
+      }) : true
     }))
   }, [searchTerm, rows, searchInField])
 
@@ -114,14 +116,15 @@ const App = () => {
     <div className={classes.wrapper}>
       <div className={`${classes.actions} ${classes.bigContainer}`}>
         <div className={classes.actions}>
-          <Typography color="textPrimary" variant="h3">🗞️👀</Typography>
+          <Typography color="textPrimary" variant="h3">👀 🗞️</Typography>
           <Typography
             color="textPrimary"
             style={{
               border: '2px dotted #CCC',
-              padding: '4px 8px',
+              padding: '4px 12px',
               borderRadius: '8px',
               userSelect: 'all',
+              backgroundColor: "#effdef",
             }}
             variant="h6"
           >npm i react-observable-grid</Typography>
@@ -131,13 +134,22 @@ const App = () => {
         </div>
 
         <div className={classes.actions}>
-          <Chip variant="outlined" label={`Rows: ${rows.length}`} />
+          <Chip variant="outlined" label={`Search Rows: ${filteredRows.length}`} />
           <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debugging: ${isDebugging ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setSeeLive(!seeLive)} variant="outlined" label={`Env: ${seeLive ? 'PROD' : 'DEV'}`} />
         </div>
 
         <div className={`${classes.actions} ${classes.smallActions}`}>
-          {[0, 2, 50, 1500, 65000].map(count => <Button style={{minWidth: 'unset', padding: '5px 12px'}} variant="outlined" key={count} onClick={() => generateRows(count)}>{count}</Button>)}
+          {[0, 2, 50, 100, 1500, 65000].map(count => <Button
+            disableElevation
+            style={{minWidth: 'unset', padding: '5px 12px'}}
+            color={count === rows.length ? 'primary' : 'default'}
+            variant={count !== rows.length ? "outlined" : 'contained'}
+            key={count}
+            onClick={() => generateRows(count)}
+            >
+              {count}
+            </Button>)}
         </div>
 
       </div>
@@ -147,26 +159,38 @@ const App = () => {
           <TextField
             placeholder={`Search in ${searchInField.join(', ')}...`}
             value={searchTerm}
+            disabled={searchInField.length === 0}
             onChange={(event) => setSearchTerm(event.target.value)}
             variant="outlined"
-            style={{ width: '500px' }}
+            InputProps={{
+              startAdornment: <InputAdornment position="start">🔍</InputAdornment>,
+              endAdornment: searchTerm.length > 0 && <InputAdornment onClick={() => setSearchTerm('')} position="end"><DeleteOutlineIcon style={{cursor: 'pointer'}} /></InputAdornment>,
+            }}
+            style={{ width: '400px' }}
             size="small" />
-            {headers.filter(header => !header.noSearch).map((header) => <Chip
-              key={header.property}
-              onClick={() => {
-                if (searchInField.includes(header.property)) {
-                  setSearchInField(searchInField.filter(field => field !== header.property))
-                } else {
-                  setSearchInField([...searchInField, header.property])
-                }
-              }}
-              icon={searchInField.some(field => field === header.property) ? undefined : <AddCircleIcon />}
-              onDelete={searchInField.some(field => field === header.property) ? () => {
-                setSearchInField(searchInField.filter(field => field !== header.property))
-              } : undefined}
-              label={header.label}
-            />)}
 
+            <div className={`${classes.actions} ${classes.smallActions}`}>
+            {headers.filter(header => !header.noSearch).map((header) => {
+              const isField = searchInField.some(field => field === header.property)
+              return <Chip
+                color={isField ? 'primary' : 'default'}
+                key={header.property}
+                variant="outlined"
+                onClick={() => {
+                  if (searchInField.includes(header.property)) {
+                    setSearchInField(searchInField.filter(field => field !== header.property))
+                  } else {
+                    setSearchInField([...searchInField, header.property])
+                  }
+                }}
+                icon={isField ? undefined : <AddCircleIcon />}
+                onDelete={isField ? () => {
+                  setSearchInField(searchInField.filter(field => field !== header.property))
+                } : undefined}
+                label={header.label}
+              />
+            })}
+            </div>
         </div>
 
         <div className={classes.actions}>

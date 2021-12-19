@@ -17,9 +17,10 @@ const ObservableDebugging = ({ items }) => <div style={{
   {items.map(({ label, value }) => <div
     style={{
       color: 'white',
-      backgroundColor: '#777',
-      borderRadius: '4px',
-      padding: '4px 8px',
+      fontSize: '12px',
+      backgroundColor: '#333',
+      borderRadius: '8px',
+      padding: '8px 12px',
     }}
     key={`${label}: ${value}`}
   >
