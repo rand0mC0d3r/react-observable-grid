@@ -1,21 +1,21 @@
 import { Button, Chip, IconButton, TextField, Typography } from '@material-ui/core';
-import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import DashboardIcon from '@material-ui/icons/Dashboard';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import PersonPinCircleIcon from '@material-ui/icons/PersonPinCircle';
 import SubjectIcon from '@material-ui/icons/Subject';
+import TextFieldsIcon from '@material-ui/icons/TextFields';
 import { useEffect, useMemo, useState } from 'react';
-import { ActionsRow, CurrencyRow, TilesRow, DescriptionRow, NamesRow } from './parts/SampleRow';
 import { ObservableGrid } from 'react-observable-grid';
 import LocalObservableGrid from './components/ObservableGrid';
-import TextFieldsIcon from '@material-ui/icons/TextFields';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import { dataGenerator } from './parts/dataGenerator';
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
+import { ActionsRow, CurrencyRow, DescriptionRow, NamesRow, TilesRow } from './parts/SampleRow';
 
 
 const App = () => {
@@ -42,24 +42,24 @@ const App = () => {
       canCanvas: true,
       width: 'minmax(200px, 1fr)',
       row: (row) => <NamesRow row={row} />,
-      additionalHeaders: [
-        {
-          label: 'Surname',
-          icon: <PersonPinCircleIcon />,
-          property: 'surname'
-        }
-      ],
-      secondaryHeaders: [
-        {
-          label: 'Name1',
-          property: 'nickname',
-          // noSort: true
-        },
-        {
-          label: 'Name2',
-          property: 'streetname'
-        }
-      ]
+      // additionalHeaders: [
+      //   {
+      //     label: 'Surname',
+      //     icon: <PersonPinCircleIcon />,
+      //     property: 'surname'
+      //   }
+      // ],
+      // secondaryHeaders: [
+      //   {
+      //     label: 'Name1',
+      //     property: 'nickname',
+      //     // noSort: true
+      //   },
+      //   {
+      //     label: 'Name2',
+      //     property: 'streetname'
+      //   }
+      // ]
     },
     {
       label: 'Description',
@@ -81,12 +81,12 @@ const App = () => {
         : [...selectedTiles, tile]
         )
       }}  />,
-      secondaryHeaders: [
-        {
-          label: 'Tiles Count',
-          property: 'tiles',
-        },
-      ]
+      // secondaryHeaders: [
+      //   {
+      //     label: 'Tiles Count',
+      //     property: 'tiles',
+      //   },
+      // ]
     },
     {
       label: 'Price',
@@ -96,12 +96,12 @@ const App = () => {
       align: 'flex-end',
       width: '110px',
       row: (row) => <CurrencyRow row={row} />,
-      secondaryHeaders: [
-        {
-          label: 'Currency',
-          property: 'currency',
-        },
-      ]
+      // secondaryHeaders: [
+      //   {
+      //     label: 'Currency',
+      //     property: 'currency',
+      //   },
+      // ]
     },
     {
       icon: <MoreHorizIcon />,
@@ -310,7 +310,7 @@ const useStyles = makeStyles(() => ({
     borderRadius: '4px',
     maxWidth: '95%',
     width: '90%',
-    border: '4px solid #333',
+    border: '2px solid #333',
     height: '80%'
   }
 }))

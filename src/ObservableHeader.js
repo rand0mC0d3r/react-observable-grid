@@ -1,4 +1,4 @@
-import { Tooltip, Typography, Popover, Checkbox } from '@material-ui/core';
+import { Checkbox, Popover, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import React, { cloneElement, useCallback, useEffect, useState } from 'react';
@@ -182,7 +182,7 @@ const useStyles = makeStyles(theme => ({
     gridColumnGap: '16px',
     gridRowGap: '16px',
 
-    boxShadow: '0px 0px 4px 0px #00000029',
+    boxShadow: '0px 5px 3px -4px #00000029',
     borderBottom: `1px solid ${theme.palette.divider}`,
   },
   arrowColor: {
