@@ -25,6 +25,8 @@ const ObservableGrid =  ({
   },
   headerOptions = { },
   emptyElement,
+  pageSize = 25,
+  minRows = 25,
   canvasDrawing = false,
 
   isClearingOnBlur = true,
@@ -49,10 +51,6 @@ const ObservableGrid =  ({
   const [sortedRows, setSortedRows] = useState([])
   const [startEnd, setStartEnd] = useState({ start: -1, end: 1 })
   const [throttleLimit, setThrottleLimit] = useState(50)
-
-  const pageSize = 25
-  const minRows = 25
-
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
 
   const naturalSort = createNewSortInstance({
@@ -185,6 +183,26 @@ const ObservableGrid =  ({
       rowOptions }} />}
 
     {rows.length > 0 ? <>
+
+      {(innerHeaders.findIndex(header => header.selected) !== -1) && <div
+        className={`${classes.observableRow} ${classes.selectedColumn}`}
+        style={{
+          alignItems: 'unset',
+          display: 'grid',
+          padding: rowOptions.padding,
+          paddingTop: 0,
+          paddingBottom: 0,
+          gap: '16px',
+          zIndex: -1,
+          gridTemplateColumns: gridTemplateColumns,
+        }}>
+        <div style={{
+          gridColumnStart: innerHeaders.findIndex(header => header.selected) + 1,
+          backgroundColor: '#EEE',
+          margin: '0px -4px',
+        }}/>
+      </div>}
+
       <ObservableContainer {...{ isScrollable, isAlternating }}>
         {(throttling && rows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1) &&
             <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
@@ -228,24 +246,7 @@ const ObservableGrid =  ({
       </ObservableContainer>
       {(selectedIndex ? true : rows.length > pageSize && startEnd.end > 3) &&
         <ObservableScrollTop {...{ selectedIndex, isAtTop: rows.length > pageSize && startEnd.end > 3 }} />}
-      {(innerHeaders.findIndex(header => header.selected) !== -1) && <div
-        className={`${classes.observableRow} ${classes.selectedColumn}`}
-        style={{
-          alignItems: 'unset',
-          display: 'grid',
-          padding: rowOptions.padding,
-          paddingTop: 0,
-          paddingBottom: 0,
-          gap: '16px',
-          zIndex: -1,
-          gridTemplateColumns: gridTemplateColumns,
-        }}>
-        <div style={{
-          gridColumnStart: innerHeaders.findIndex(header => header.selected) + 1,
-          backgroundColor: '#EEE',
-          margin: '0px -4px',
-        }}/>
-      </div>}
+
     </>
     : <ObservableEmpty>{emptyElement}</ObservableEmpty>}
   </div>

@@ -262,6 +262,7 @@ const App = () => {
           />
           : <LocalObservableGrid {...{isDebugging, headers, canvasDrawing }}
             uniqueId="fakeEntries"
+            isClearingOnBlur={false}
             rowOptions={{ padding: '8px 16px' }}
             headerOptions={{ padding: '8px 16px' }}
             rows={filteredRows}
