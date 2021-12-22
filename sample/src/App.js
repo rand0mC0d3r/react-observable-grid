@@ -35,20 +35,27 @@ const App = () => {
 
   const headers = [
     {
-      label: 'Name',
+      label: 'Name2',
       tooltip: "Filter users by name",
       // icon: <GitHubIcon />,
       property: 'name',
       canCanvas: true,
       width: 'minmax(200px, 1fr)',
       row: (row) => <NamesRow row={row} />,
-      // additionalHeaders: [
-      //   {
-      //     label: 'Surname',
-      //     icon: <PersonPinCircleIcon />,
-      //     property: 'surname'
-      //   }
-      // ],
+      preHeaders: [
+        {
+          label: 'Surname',
+          icon: <PersonPinCircleIcon />,
+          property: 'surdname'
+        }
+      ],
+      postHeaders: [
+        {
+          label: 'Surneame',
+          icon: <PersonPinCircleIcon />,
+          property: 'swurname'
+        }
+      ],
       // secondaryHeaders: [
       //   {
       //     label: 'Name1',

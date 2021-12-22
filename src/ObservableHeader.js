@@ -69,7 +69,7 @@ const ObservableHeader = ({
     return evaluateOrderBy({ property, label }) && <div
     className={classes.arrowColor}
     style={{
-      transform: 'scaleY(0.75)',
+      transform: 'scaleY(0.5) scaleX(0.85)',
       order: align ? -1 : 1,
       fontSize: '13px',
       opacity: secondary ? 0.75 : 1,
@@ -78,36 +78,40 @@ const ObservableHeader = ({
         ? order === 'asc' ? defaultOptions.ascArrow : defaultOptions.descArrow
         : cloneElement(<>{order === 'asc' ? ascArrow : descArrow}</>)
       }
-    </div>}
-  const renderMainHeader = ({tooltip, noSort, property, label, icon, align}) => {
-    return <div
-        key={`${property}_${label}_${align}`}
-        className={classes.flexbox}
-        onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
-        onDoubleClick={() => !noSort && handleResetSort()}
+    </div>
+  }
+  const renderAdditionalHeader = (headers) => <div className={classes.secondaryHeaders}>
+      {headers.map(({ label, property, noSort, icon }) =>
+        renderMainHeader({ noSort, property, label, icon }))
+      }
+  </div>
+  const renderMainHeader = ({noSort, property, label, icon, align}) => <div
+    key={`${property}_${label}_${align}`}
+    className={classes.flexbox}
+    onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
+    onDoubleClick={() => !noSort && handleResetSort()}
+    style={{
+      cursor: noSort ? 'default' : 'pointer',
+      justifyContent: align ? 'flex-end' : 'flex-start',
+      flexDirection: align === 'right' ? 'row-reverse' : 'row',
+    }}
+  >
+    {icon && cloneElement(icon, { style: { fontSize: 16 } })}
+    <Typography
+      variant='subtitle2'
+      color={evaluateOrderBy({ property, label }) ? 'primary' : 'textSecondary'}
+      style={{
+        lineHeight: '16px',
+        flexOrder: 0,
+        userSelect: 'none',
+        fontWeight: evaluateOrderBy({property, label}) ? 'bold' : 'normal'
+      }}
+    >
+      {label}
+    </Typography>
 
-        style={{
-          cursor: noSort ? 'default' : 'pointer',
-          justifyContent: align ? 'flex-end' : 'flex-start',
-          flexDirection: align === 'right' ? 'row-reverse' : 'row',
-        }}
-      >
-        {icon && cloneElement(icon, { style: { fontSize: 16 } })}
-        <Typography
-          variant='subtitle2'
-          color={evaluateOrderBy({ property, label }) ? 'primary' : 'textSecondary'}
-          style={{
-            lineHeight: '16px',
-            flexOrder: 0,
-            userSelect: 'none',
-            fontWeight: evaluateOrderBy({property, label}) ? 'bold' : 'normal'
-          }}
-        >
-          {label}
-        </Typography>
-
-        {renderArrows({property, label, align})}
-      </div>}
+    {renderArrows({property, label, align})}
+  </div>
 
   return <>
     {renderPopover()}
@@ -123,9 +127,8 @@ const ObservableHeader = ({
           gridTemplateColumns: gridTemplateColumns}}
       >
         {headers?.filter(header => header.visible).map(({
-          noHightlight, align, label,
-          icon, tooltip, property,
-          secondaryHeaders, additionalHeaders, noSort
+          noHightlight, align, label, icon, property,
+          secondaryHeaders, preHeaders, postHeaders, noSort
         }) =>
           <div
             onDoubleClick={() => !noHightlight && onSelect(label)}
@@ -141,12 +144,9 @@ const ObservableHeader = ({
               justifyContent: 'center'
             }}>
             <div className={`${classes.flexbox} ${classes.maxiFlexbox}`}>
-              {renderMainHeader({tooltip, noSort, property, label, icon, align})}
-              {additionalHeaders && <div className={classes.secondaryHeaders}>
-                {additionalHeaders.map(({ label, property, noSort, icon }) =>
-                  renderMainHeader({tooltip, noSort, property, label, icon, align}))
-                }
-              </div>}
+              {preHeaders && <>{renderAdditionalHeader(preHeaders)}</>}
+              {renderMainHeader({ noSort, property, label, icon, align })}
+              {postHeaders && <>{renderAdditionalHeader(postHeaders)}</>}
             </div>
             {secondaryHeaders && <div className={classes.secondaryHeaders}>
               {secondaryHeaders.map(({ label, property, noSort }) => <div
