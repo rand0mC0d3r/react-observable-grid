@@ -184,7 +184,7 @@ const ObservableGrid =  ({
       handleResetSort,
       rowOptions }} />}
 
-    {rows.length > 0 ? <>
+    {sortedRows.length > 0 ? <>
 
       {(innerHeaders.findIndex(header => header.selected) !== -1) && <div
         className={`${classes.observableRow} ${classes.selectedColumn}`}
@@ -205,13 +205,13 @@ const ObservableGrid =  ({
         }}/>
       </div>}
 
-      <ObservableContainer {...{ isScrollable, isAlternating }}>
-        {(throttling && rows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1) &&
-            <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
+      {sortedRows && <ObservableContainer {...{ isScrollable, isAlternating }}>
+        {(throttling && sortedRows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1) &&
+          <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
         {sortedRows
           .filter(row => throttling
-              ? row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize))
-              : true
+            ? row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize))
+            : true
           )
           .map(row => <ObservableRow
             {...{ gridSpacing: gridTemplateColumns, minRows, rowOptions, isScrollable }}
@@ -220,32 +220,29 @@ const ObservableGrid =  ({
             style={{
               padding: rowOptions.padding,
               gridTemplateColumns: gridTemplateColumns,
-              backgroundColor: (isSelectable && selectedIndex === row.__origIndex)
-                ? '#44444422'
-                : '',
             }}
-            className={classes.observableRow}
+            className={`${classes.observableRow} ${(isSelectable && selectedIndex === row.__origIndex) ? `${classes.observableRowSelected} Row-isSelected` : ''}`}
             index={row.__index}
             forceRender={!throttling}
             isRelevant={throttling
-                ? row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize))
-                : true
+              ? row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize))
+              : true
             }
             onClick={() => isSelectable && setSelectedIndex(selectedIndex === row.__origIndex ? null : row.__origIndex)}
           >
             {innerHeaders.filter(header => header.visible).map(header =>
               <React.Fragment key={`${header.property}_${header.label}_${header.tooltip}_${header.width}`}>
                 {(!throttling && canvasDrawing && header.canCanvas)
-                ? <ObservableSnapshot origIndex={row.__origIndex} index={row.__index} id={`${row.__origIndex}_${header.property}_${header.label}`}>
-                  {header.row(row)}
-                </ObservableSnapshot>
-                : header.row(row)}
+                  ? <ObservableSnapshot origIndex={row.__origIndex} index={row.__index} id={`${row.__origIndex}_${header.property}_${header.label}`}>
+                    {header.row(row)}
+                  </ObservableSnapshot>
+                  : header.row(row)}
               </React.Fragment>)}
           </ObservableRow>)}
-        {throttling && rows.length > pageSize && pageSize * startEnd.end -1 <  rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
+        {throttling && rows.length > pageSize && pageSize * startEnd.end - 1 < rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
         {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
 
-      </ObservableContainer>
+      </ObservableContainer>}
       {(selectedIndex ? true : rows.length > pageSize && startEnd.end > 3) &&
         <ObservableScrollTop {...{ selectedIndex, isAtTop: rows.length > pageSize && startEnd.end > 3 }} />}
 
@@ -270,6 +267,9 @@ const useStyles = makeStyles(() => ({
     gridColumnGap: '16px',
     display: 'grid',
   },
+  observableRowSelected: {
+    backgroundColor: "#4442"
+  }
 }))
 
 

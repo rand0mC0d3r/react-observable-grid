@@ -285,6 +285,18 @@ const useStyles = makeStyles(() => ({
   observableGrid: {
     '& #Header-wrapper': {
       boxShadow: 'none',
+    },
+    '& #Row-root': {
+      borderBottom: '1px solid #CCC',
+    },
+    '& #Container-root > *': {
+      borderBottom: '1px solid #CCC'
+    },
+    '& #Container-root > *:hover': {
+      backgroundColor: '#e0f0ff',
+    },
+    '& #Container-root .Row-isSelected': {
+      backgroundColor: 'red',
     }
   },
   wrapper: {

@@ -3,14 +3,7 @@ import React from 'react'
 import { InView } from 'react-intersection-observer'
 
 const ObservableRow = ({ id, forceRender, index, className, style, onClick, children, isRelevant, isScrollable }) => (isRelevant && children)
-  ? <InView>{({ inView, ref }) => <div
-    {...{
-      ref,
-      onClick,
-      id,
-      key: index,
-      ...(forceRender ? true : inView) && { className, style }
-    }}>
+  ? <InView>{({ inView, ref }) => <div {...{ ref, onClick, id, key: index, ...(forceRender ? true : inView) && { className, style }}}>
     {(forceRender ? true : inView) && isScrollable && children}
   </div>}</InView>
   : null

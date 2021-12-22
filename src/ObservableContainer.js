@@ -7,7 +7,7 @@ const ObservableContainer = ({ children, isAlternating, isScrollable }) => {
   const classes = useStyles(theme)
 
   return <div className={classes.wrapper}>
-    <div className={[classes.container, classes.anyItem, isAlternating && classes.alternatingItem, isScrollable && classes.isScrollable].join(' ')}>
+    <div id="Container-root" className={[classes.container, classes.anyItem, isAlternating && classes.alternatingItem, isScrollable && classes.isScrollable].join(' ')}>
       {children}
     </div>
   </div>
@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
       paddingRight: '2px'
     },
     '& > *:hover': {
-      backgroundColor: '#88888844 !important',
+      backgroundColor: '#88888844',
     }
   },
   alternatingItem: {
