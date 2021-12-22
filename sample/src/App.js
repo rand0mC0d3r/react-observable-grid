@@ -37,7 +37,7 @@ const App = () => {
     {
       label: 'Name',
       tooltip: "Filter users by name",
-      icon: <GitHubIcon />,
+      // icon: <GitHubIcon />,
       property: 'name',
       canCanvas: true,
       width: 'minmax(200px, 1fr)',
@@ -64,7 +64,7 @@ const App = () => {
     {
       label: 'Description',
       canCanvas: true,
-      icon: <SubjectIcon />,
+      // icon: <SubjectIcon />,
       property: 'description',
       row: (row) => <DescriptionRow row={row} />,
       width: '2fr',
@@ -72,7 +72,7 @@ const App = () => {
     {
       label: 'Tiles',
       canCanvas: true,
-      icon: <DashboardIcon />,
+      // icon: <DashboardIcon />,
       property: 'tilesHash',
       width: 'minmax(100px, 2fr)',
       row: (row) => <TilesRow row={row} selectedTiles={selectedTiles} onSelectTile={(tile) => {
@@ -91,7 +91,7 @@ const App = () => {
     {
       label: 'Price',
       canCanvas: true,
-      icon: <MonetizationOnIcon />,
+      // icon: <MonetizationOnIcon />,
       property: 'price',
       align: 'flex-end',
       width: '110px',
@@ -104,7 +104,7 @@ const App = () => {
       // ]
     },
     {
-      icon: <MoreHorizIcon />,
+      // icon: <MoreHorizIcon />,
       align: 'flex-end',
       tooltip: "Actions for entries",
       noSort: true,
@@ -263,7 +263,7 @@ const App = () => {
           : <LocalObservableGrid {...{isDebugging, headers, canvasDrawing }}
             uniqueId="fakeEntries"
             rowOptions={{ padding: '8px 16px' }}
-            headerOptions={{ padding: '16px 16px' }}
+            headerOptions={{ padding: '8px 16px' }}
             rows={filteredRows}
             emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
         />}

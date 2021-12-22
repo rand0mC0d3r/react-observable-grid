@@ -1,16 +1,16 @@
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { createNewSortInstance } from 'fast-sort'
 import throttle from 'lodash/throttle'
-import React, { useEffect, useCallback, useState } from 'react'
-import ObservableInternalLoadMore from './ObservableInternalLoadMore'
+import React, { useCallback, useEffect, useState } from 'react'
 import ObservableContainer from './ObservableContainer'
 import ObservableDebugging from './ObservableDebugging'
 import ObservableEmpty from './ObservableEmpty'
 import ObservableHeader from './ObservableHeader'
-import ObservableSnapshot from './ObservableSnapshot'
+import ObservableInternalLoadMore from './ObservableInternalLoadMore'
 // import ObservableLoadMore from './ObservableLoadMore'
 import ObservableRow from './ObservableRow'
 import ObservableScrollTop from './ObservableScrollTop'
+import ObservableSnapshot from './ObservableSnapshot'
 
 const ObservableGrid =  ({
   headers,
@@ -27,6 +27,7 @@ const ObservableGrid =  ({
   emptyElement,
   canvasDrawing = false,
 
+  isClearingOnBlur = true,
   // isInfinite = false,
   isUpdatingUrl = false,
   isDebugging = false,
@@ -148,7 +149,7 @@ const ObservableGrid =  ({
   }
 
   return <div
-    onMouseLeave={() => setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: false })))}
+    onMouseLeave={() => isClearingOnBlur && setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: false })))}
     style={{
       display: 'flex',
       position: 'absolute',

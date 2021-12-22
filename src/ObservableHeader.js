@@ -115,11 +115,11 @@ const ObservableHeader = ({
       <div
       onContextMenu={(e) => { e.preventDefault(); handleClick(e) }}
       className={classes.header}
-      style={{
-        padding: padding || defaultOptions.padding,
-        paddingTop: '0px',
-        paddingBottom: '0px',
-        gridTemplateColumns: gridTemplateColumns}}
+        style={{
+          padding: padding || defaultOptions.padding,
+          paddingTop: '0px',
+          paddingBottom: '0px',
+          gridTemplateColumns: gridTemplateColumns}}
       >
         {headers?.filter(header => header.visible).map(({ noHightlight, align, selected, label, icon, tooltip, property, secondaryHeaders, additionalHeaders, noSort }) =>
           <div
@@ -128,10 +128,11 @@ const ObservableHeader = ({
             className={`${classes.headers} ${!noHightlight ? classes.headersSelectable : ''}`}
             style={{
               alignItems: align ? 'flex-end' : 'flex-start',
-              padding: padding || defaultOptions.padding,
-              paddingLeft: '4px',
-              paddingRight: '4px',
               margin: '0px -4px',
+              padding: '0px 4px',
+              alignSelf: 'center',
+              height: '100%',
+              justifyContent: 'center'
             }}>
             <div className={`${classes.flexbox} ${classes.maxiFlexbox}`}>
               {renderMainHeader({tooltip, noSort, property, label, icon, align})}
@@ -177,12 +178,12 @@ const useStyles = makeStyles(theme => ({
   header: {
     display: 'grid',
     fontSize: '12px',
-    minHeight: '48px',
+    minHeight: '56px',
     alignItems: 'stretch',
     gridColumnGap: '16px',
     gridRowGap: '16px',
 
-    boxShadow: '0px 5px 3px -4px #00000029',
+    boxShadow: '0px 5px 3px -5px #00000029',
     borderBottom: `1px solid ${theme.palette.divider}`,
   },
   arrowColor: {
