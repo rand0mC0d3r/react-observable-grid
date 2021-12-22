@@ -220,8 +220,11 @@ const ObservableGrid =  ({
             style={{
               padding: rowOptions.padding,
               gridTemplateColumns: gridTemplateColumns,
+              backgroundColor: (isSelectable && selectedIndex === row.__origIndex)
+                ? '#44444422'
+                : '',
             }}
-            className={`${classes.observableRow} ${(isSelectable && selectedIndex === row.__origIndex) ? `${classes.observableRowSelected} Row-isSelected` : ''}`}
+            className={`${classes.observableRow} ${(isSelectable && selectedIndex === row.__origIndex) ? 'Row-isSelected' : ''}`}
             index={row.__index}
             forceRender={!throttling}
             isRelevant={throttling

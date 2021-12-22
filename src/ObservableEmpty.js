@@ -1,6 +1,6 @@
+import { Typography } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Typography } from '@material-ui/core'
 
 const ObservableEmpty = ({ children }) => <div
   style={{
@@ -13,6 +13,6 @@ const ObservableEmpty = ({ children }) => <div
   {children ? children : <Typography variant="caption" color="textSecondary">No rows ...</Typography>}
 </div>
 
-ObservableEmpty.propTypes = { children: PropTypes.node.isRequired }
+ObservableEmpty.propTypes = { children: PropTypes.node }
 
 export default ObservableEmpty
