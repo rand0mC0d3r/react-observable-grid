@@ -1,6 +1,6 @@
 {
   "name": "react-observable-grid",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "description": "±Infinite grid of React components",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
