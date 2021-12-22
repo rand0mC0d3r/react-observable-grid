@@ -111,20 +111,26 @@ const ObservableHeader = ({
 
   return <>
     {renderPopover()}
-    <div className={classes.wrapper}>
+    <div id="Header-root" className={classes.root}>
       <div
-      onContextMenu={(e) => { e.preventDefault(); handleClick(e) }}
-      className={classes.header}
+        id="Header-wrapper"
+        onContextMenu={(e) => { e.preventDefault(); handleClick(e) }}
+        className={classes.wrapper}
         style={{
           padding: padding || defaultOptions.padding,
           paddingTop: '0px',
           paddingBottom: '0px',
           gridTemplateColumns: gridTemplateColumns}}
       >
-        {headers?.filter(header => header.visible).map(({ noHightlight, align, selected, label, icon, tooltip, property, secondaryHeaders, additionalHeaders, noSort }) =>
+        {headers?.filter(header => header.visible).map(({
+          noHightlight, align, label,
+          icon, tooltip, property,
+          secondaryHeaders, additionalHeaders, noSort
+        }) =>
           <div
             onDoubleClick={() => !noHightlight && onSelect(label)}
             key={`${label}`}
+            id="Header-header"
             className={`${classes.headers} ${!noHightlight ? classes.headersSelectable : ''}`}
             style={{
               alignItems: align ? 'flex-end' : 'flex-start',
@@ -172,10 +178,10 @@ const ObservableHeader = ({
 }
 
 const useStyles = makeStyles(theme => ({
-  wrapper: {
+  root: {
     width: '100%',
   },
-  header: {
+  wrapper: {
     display: 'grid',
     fontSize: '12px',
     minHeight: '56px',

@@ -19,6 +19,7 @@ const ObservableGrid =  ({
   // keyPattern = () => { },
   // onLoadMore,
   // rowRenderer = () => { },
+  className,
   rowOptions = {
     padding: '20px',
     template: 'repeat(1fr)'
@@ -147,6 +148,7 @@ const ObservableGrid =  ({
   }
 
   return <div
+    className={className}
     onMouseLeave={() => isClearingOnBlur && setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: false })))}
     style={{
       display: 'flex',

@@ -28,7 +28,7 @@ const App = () => {
   const [selectedTiles, setSelectedTiles] = useState([]);
   const [searchInField, setSearchInField] = useState(['name', 'description']);
   const [isDebugging, setIsDebugging] = useState(true);
-  const [canvasDrawing, setCanvasDrawing] = useState(true);
+  const [canvasDrawing, setCanvasDrawing] = useState(false);
   const [seeLive, setSeeLive] = useState(false);
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
@@ -262,6 +262,7 @@ const App = () => {
           />
           : <LocalObservableGrid {...{isDebugging, headers, canvasDrawing }}
             uniqueId="fakeEntries"
+            className={classes.observableGrid}
             isClearingOnBlur={false}
             rowOptions={{ padding: '8px 16px' }}
             headerOptions={{ padding: '8px 16px' }}
@@ -274,6 +275,11 @@ const App = () => {
 }
 
 const useStyles = makeStyles(() => ({
+  observableGrid: {
+    '& #Header-wrapper': {
+      boxShadow: 'none',
+    }
+  },
   wrapper: {
     display: 'flex',
     width: '100%',

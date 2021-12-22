@@ -2,6 +2,7 @@ import { Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import TuneIcon from '@material-ui/icons/Tune';
+import { ObservableGrid } from 'react-observable-grid';
 
 const NamesRow = ({
   row: { name, surname, nickname, streetname } }) => {
