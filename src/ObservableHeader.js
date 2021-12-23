@@ -96,7 +96,10 @@ const ObservableHeader = ({
       flexDirection: align === 'right' ? 'row-reverse' : 'row',
     }}
   >
-    {icon && cloneElement(icon, { style: { fontSize: 16 } })}
+    {icon && cloneElement(icon, {
+      style: { fontSize: 16 },
+      color: evaluateOrderBy({ property, label }) ? 'primary' : 'textSecondary'
+    })}
     <Typography
       variant='subtitle2'
       color={evaluateOrderBy({ property, label }) ? 'primary' : 'textSecondary'}
@@ -198,14 +201,14 @@ const useStyles = makeStyles(theme => ({
   flexbox: {
     display: 'flex',
     alignItems: 'center',
-    flexWrap: 'nowrap',
+    flexWrap: 'wrap',
     gap: '4px'
   },
   miniFlexbox: {
     gap: '2px',
   },
   maxiFlexbox: {
-    gap: '8px',
+    gap: '4px 12px',
   },
   secondaryHeaders: {
     display: 'flex',

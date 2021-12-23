@@ -173,26 +173,15 @@ const App = () => {
 
         </div>
 
-        <div className={`${classes.actions} ${classes.smallActions}`}>
-          <Chip variant="outlined" label={`Search Rows: ${filteredRows.length}`} />
-          <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debugging: ${isDebugging ? 'ON' : 'OFF'}`} />
-          <Chip variant="outlined" label={`Performance: ${performance}ms`} />
-          <Chip onClick={() => setCanvasDrawing(!canvasDrawing)} variant="outlined" label={`🧪 Canvas Items: ${canvasDrawing ? 'ON' : 'OFF'}`} />
-          <Chip onClick={() => setSeeLive(!seeLive)} variant="outlined" label={`Env: ${seeLive ? 'PROD' : 'DEV'}`} />
-        </div>
 
-        <div className={`${classes.actions} ${classes.smallActions}`}>
-          {[0, 2, 30, 40, 50, 100, 1500, 65000, 1000000].map(count => <Button
-            disableElevation
-            style={{minWidth: 'unset', padding: '5px 12px'}}
-            color={count === rows.length ? 'primary' : 'default'}
-            variant={count !== rows.length ? "outlined" : 'contained'}
-            key={count}
-            onClick={() => generateRows(count)}
-            >
-              {count}
-            </Button>)}
-        </div>
+          <div className={`${classes.actions} ${classes.smallActions}`}>
+            <Chip variant="outlined" label={`Search Rows: ${filteredRows.length}`} />
+            <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debugging: ${isDebugging ? 'ON' : 'OFF'}`} />
+            <Chip variant="outlined" label={`Performance: ${performance}ms`} />
+            <Chip onClick={() => setCanvasDrawing(!canvasDrawing)} variant="outlined" label={`🧪 Canvas Items: ${canvasDrawing ? 'ON' : 'OFF'}`} />
+            <Chip onClick={() => setSeeLive(!seeLive)} variant="outlined" label={`Env: ${seeLive ? 'PROD' : 'DEV'}`} />
+          </div>
+
 
         <div className={`${classes.actions} ${classes.smallActions}`}>
           <IconButton title="Open NPM link ..." onClick={() => window.open('https://www.npmjs.com/package/react-observable-grid')}>
@@ -225,7 +214,7 @@ const App = () => {
 
             </>,
           }}
-          style={{ width: '400px' }}
+          style={{ width: '300px' }}
           size="small" />
 
           <div className={`${classes.actions} ${classes.smallActions}`}>
@@ -250,6 +239,19 @@ const App = () => {
             />
           })}
           </div>
+
+          <div className={`${classes.actions} ${classes.smallActions}`}>
+          {[0, 2, 30, 40, 50, 100, 1500, 65000, 1000000].map(count => <Button
+            disableElevation
+            style={{minWidth: 'unset', padding: '5px 12px'}}
+            color={count === rows.length ? 'primary' : 'default'}
+            variant={count !== rows.length ? "outlined" : 'contained'}
+            key={count}
+            onClick={() => generateRows(count)}
+            >
+              {count}
+            </Button>)}
+        </div>
       </div>
 
       <div className={`${classes.actions} ${classes.smallActions}`}>
@@ -283,21 +285,21 @@ const App = () => {
 
 const useStyles = makeStyles(() => ({
   observableGrid: {
-    '& #Header-wrapper': {
-      boxShadow: 'none',
-    },
-    '& #Row-root': {
-      borderBottom: '1px solid #CCC',
-    },
-    '& #Container-root > *': {
-      borderBottom: '1px solid #CCC'
-    },
-    '& #Container-root > *:hover': {
-      backgroundColor: '#e0f0ff',
-    },
-    '& #Container-root .Row-isSelected': {
-      backgroundColor: 'red',
-    }
+    // '& #Header-wrapper': {
+    //   boxShadow: 'none',
+    // },
+    // '& #Row-root': {
+    //   borderBottom: '1px solid #CCC',
+    // },
+    // '& #Container-root > *': {
+    //   borderBottom: '1px solid #CCC'
+    // },
+    // '& #Container-root > *:hover': {
+    //   backgroundColor: '#e0f0ff',
+    // },
+    // '& #Container-root .Row-isSelected': {
+    //   backgroundColor: 'red',
+    // }
   },
   wrapper: {
     display: 'flex',
