@@ -152,42 +152,39 @@ const ObservableHeader = ({
               {preHeaders && <>{renderAdditionalHeader(preHeaders)}</>}
               {renderMainHeader({ noSort, property, label, icon, align })}
               {postHeaders && <>{renderAdditionalHeader(postHeaders)}</>}
-            </div>
-            {secondaryHeaders && <div className={classes.secondaryHeaders}>
-              {secondaryHeaders.map(({ label, property, noSort }) => <div
-                className={`${classes.flexbox} ${classes.miniFlexbox}`}
-                style={{ cursor: noSort ? 'default' : 'pointer', }}
-                key={`${label}_subHeader`}
-              >
-                <Typography
-                  variant='caption'
-                  color={evaluateOrderBy({ property, label }) ? 'primary' : 'textSecondary'}
-                  style={{
-                    flexOrder: 0,
-                    lineHeight: '1.5',
-                    userSelect: 'none',
-                    fontWeight: evaluateOrderBy({property, label}) ? 'bold' : 'normal'
-                  }}
-                  onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
-                  onDoubleClick={() => !noSort && handleResetSort()}
+              </div>
+              {secondaryHeaders && <div className={classes.secondaryHeaders}>
+                {secondaryHeaders.map(({ label, property, noSort }) => <div
+                  className={`${classes.flexbox} ${classes.miniFlexbox}`}
+                  style={{ cursor: noSort ? 'default' : 'pointer', }}
+                  key={`${label}_subHeader`}
                 >
-                  {label}
-                </Typography>
-                {!noSort && renderArrows({property, label, align, secondary: true})}
-              </div>)}
-            </div>}
-
-
+                  <Typography
+                    variant='caption'
+                    color={evaluateOrderBy({ property, label }) ? 'primary' : 'textSecondary'}
+                    style={{
+                      flexOrder: 0,
+                      lineHeight: '1.5',
+                      userSelect: 'none',
+                      fontWeight: evaluateOrderBy({property, label}) ? 'bold' : 'normal'
+                    }}
+                    onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
+                    onDoubleClick={() => !noSort && handleResetSort()}
+                  >
+                    {label}
+                  </Typography>
+                  {!noSort && renderArrows({property, label, align, secondary: true})}
+                </div>)}
+              </div>}
             </div>
+            <div style={{ display: 'flex', gap: '4px', flexWrap: 'nowrap', alignItems: 'center'}}>
             {extension && extension}
             <MoreVertIcon
               color="disabled"
               style={{
-                // position: 'absolute',
                 fontSize: '16px',
-                right: !align ? '8px' : 'unset',
-                left: align ? '8px' : 'unset'
-              }} />
+                }} />
+              </div>
           </div>)}
       </div>
     </div>

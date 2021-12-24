@@ -190,8 +190,6 @@ const ObservableGrid =  ({
       handleResetSort,
       rowOptions }} />}
 
-    {sortedRows.length > 0 ? <>
-
       {(isColumned || innerHeaders.some(header => header.selected)) && <div
         className={`${classes.observableRow} ${classes.selectedColumn}`}
         style={{
@@ -211,6 +209,8 @@ const ObservableGrid =  ({
           // borderRight: '1px solid #CCC',
         }}/>)}
       </div>}
+
+    {sortedRows.length > 0 ? <>
 
       {sortedRows && <ObservableContainer {...{ isScrollable, isAlternating, isGrid }}>
         {(throttling && sortedRows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1) &&

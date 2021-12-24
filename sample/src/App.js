@@ -26,6 +26,7 @@ const App = () => {
   const [performance, setPerformance] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [isCaseSensitive, setIsCaseSensitive] = useState(false);
+  const [isColumned, setIsColumned] = useState(false);
   const [selectedTiles, setSelectedTiles] = useState([]);
   const [selectedAvatars, setSelectedAvatars] = useState([]);
   const [searchInField, setSearchInField] = useState(['name', 'description']);
@@ -62,7 +63,7 @@ const App = () => {
       property: 'fullName',
       width: 'minmax(300px, 1fr)',
       extension: <>
-        foo
+        {selectedAvatars.length > 0 && <Chip onDelete={() => setSelectedAvatars([])} variant="outlined" size="small" label={`People: ${selectedAvatars.length}`} />}
       </>,
       row: (row) => <div style={{ display: 'flex', gap: '8px', flexWrap: 'nowrap'}}>
         <AvatarRow {...{ selectedAvatars, row }} onSelectAvatar={(fullName) => {
@@ -100,7 +101,7 @@ const App = () => {
       property: 'tilesHash',
       width: 'minmax(100px, 2fr)',
       extension: <>
-        foo
+        {selectedTiles.length > 0 && <Chip onDelete={() => setSelectedTiles([])} variant="outlined" size="small" label={`Tiles: ${selectedTiles.length}`} />}
       </>,
       row: (row) => <TilesRow row={row} selectedTiles={selectedTiles} onSelectTile={(tile) => {
         setSelectedTiles(selectedTiles => selectedTiles.some(st => st === tile)
@@ -134,7 +135,7 @@ const App = () => {
       noSort: true,
       noSearch: true,
       row: (row) => <ActionsRow row={row} />,
-      width: '1fr',
+      width: '100px',
       noHightlight: true,
     },
   ]
@@ -230,6 +231,7 @@ const App = () => {
           <Chip variant="outlined" label={`Filtered: ${filteredRows.length}`} />
           <Chip variant="outlined" label={`DOM (Grid): ${totalElements || '?'} (${gridElements || '?'})`} />
           <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debug ${isDebugging ? 'ON' : 'OFF'}`} />
+          <Chip onClick={() => setIsColumned(!isColumned)} variant="outlined" label={`Columns ${isColumned ? 'ON' : 'OFF'}`} />
           <Chip variant="outlined" label={`Perf: ${performance}ms`} />
           <Chip onClick={() => setCanvasDrawing(!canvasDrawing)} variant="outlined" label={`🧪 Canvas ${canvasDrawing ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setSeeLive(!seeLive)} variant="outlined" label={`Env ${seeLive ? 'PROD' : 'DEV'}`} />
@@ -288,7 +290,7 @@ const App = () => {
 
       <div className={`${classes.actions} ${classes.bigContainer}`}>
         <div className={`${classes.actions} ${classes.smallActions}`}>
-          {[0, 2, 30, 40, 50, 100, 1500, 65000, 1000000].map(count => <Button
+          {[0, 5, 30, 1500, 65000, 500000].map(count => <Button
             disableElevation
             style={{minWidth: 'unset', padding: '5px 12px'}}
             color={count === rows.length ? 'primary' : 'default'}
@@ -340,7 +342,7 @@ const App = () => {
               : <LocalObservableGrid {...{ isDebugging, headers, canvasDrawing }}
                 uniqueId="fakeEntries"
                 canvasDrawing={false}
-                isColumned={true}
+                isColumned={isColumned}
                 className={classes.observableGrid}
                 isClearingOnBlur={false}
                 rowOptions={{ padding: '8px 16px 8px 16px' }}
@@ -362,6 +364,7 @@ const useStyles = makeStyles(() => ({
     '& #Header-wrapper': {
       boxShadow: 'none',
       backgroundColor: "#3f51b514",
+      borderBottom: '1px solid #4052b5',
     },
     '& #Row-root': {
       borderBottom: '1px solid #CCC',
