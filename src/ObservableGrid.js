@@ -30,6 +30,7 @@ const ObservableGrid =  ({
   minRows = 25,
   canvasDrawing = false,
 
+  isColumned= false,
   isEmpty = false,
   isClearingOnBlur = true,
   // isInfinite = false,
@@ -191,7 +192,7 @@ const ObservableGrid =  ({
 
     {sortedRows.length > 0 ? <>
 
-      {(innerHeaders.findIndex(header => header.selected) !== -1) && <div
+      {(isColumned || innerHeaders.some(header => header.selected)) && <div
         className={`${classes.observableRow} ${classes.selectedColumn}`}
         style={{
           alignItems: 'unset',
@@ -199,15 +200,16 @@ const ObservableGrid =  ({
           padding: rowOptions.padding,
           paddingTop: 0,
           paddingBottom: 0,
-          gap: '16px',
+          gap: '4px',
           zIndex: -1,
           gridTemplateColumns: gridTemplateColumns,
         }}>
-        <div style={{
-          gridColumnStart: innerHeaders.findIndex(header => header.selected) + 1,
-          backgroundColor: '#EEE',
-          margin: '0px -4px',
-        }}/>
+        {innerHeaders.map((innerHeader, i) => <div className={classes.observableColumn} style={{
+          // gridColumnStart: i === innerHeaders.findIndex(header => header.selected) ? i : 0,
+          // backgroundColor: '#EEE',
+          // margin: '0px -4px',
+          // borderRight: '1px solid #CCC',
+        }}/>)}
       </div>}
 
       {sortedRows && <ObservableContainer {...{ isScrollable, isAlternating, isGrid }}>
@@ -285,6 +287,14 @@ const useStyles = makeStyles(() => ({
   },
   observableRowSelected: {
     backgroundColor: "#4442"
+  },
+  observableColumn: {
+    margin: '0px -4px',
+    borderRight: '1px solid #CCC',
+
+    '&:last-child': {
+      borderRight: '0px none'
+    },
   }
 }))
 

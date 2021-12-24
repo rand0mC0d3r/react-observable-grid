@@ -1,5 +1,6 @@
 import { Checkbox, Popover, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import PropTypes from 'prop-types';
 import React, { cloneElement, useCallback, useEffect, useState } from 'react';
 
@@ -112,8 +113,7 @@ const ObservableHeader = ({
     >
       {label}
     </Typography>
-
-    {renderArrows({property, label, align})}
+    {!noSort && renderArrows({property, label, align})}
   </div>
 
   return <>
@@ -140,7 +140,7 @@ const ObservableHeader = ({
             className={`${classes.headers} ${!noHightlight ? classes.headersSelectable : ''}`}
             style={{
               alignItems: align ? 'flex-end' : 'flex-start',
-            }}>
+          }}>
             <div className={`${classes.flexbox} ${classes.maxiFlexbox}`}>
               {preHeaders && <>{renderAdditionalHeader(preHeaders)}</>}
               {renderMainHeader({ noSort, property, label, icon, align })}
@@ -166,10 +166,18 @@ const ObservableHeader = ({
                 >
                   {label}
                 </Typography>
-                {renderArrows({property, label, align, secondary: true})}
+                {!noSort && renderArrows({property, label, align, secondary: true})}
               </div>)}
             </div>}
-        </div>)}
+            <MoreVertIcon
+              color="action"
+              style={{
+                position: 'absolute',
+                fontSize: '16px',
+                right: !align ? '8px' : 'unset',
+                left: align ? '8px' : 'unset'
+              }} />
+          </div>)}
       </div>
     </div>
   </>
@@ -183,6 +191,7 @@ const useStyles = makeStyles(theme => ({
     display: 'grid',
     fontSize: '12px',
     minHeight: '56px',
+
     alignItems: 'stretch',
     gridColumnGap: '16px',
     gridRowGap: '16px',
@@ -221,6 +230,7 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     flexWrap: 'nowrap',
     flexDirection: 'column',
+    position: 'relative',
     alignSelf: 'stretch',
     gap: theme.spacing(1),
 

@@ -27,6 +27,7 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isCaseSensitive, setIsCaseSensitive] = useState(false);
   const [selectedTiles, setSelectedTiles] = useState([]);
+  const [selectedAvatars, setSelectedAvatars] = useState([]);
   const [searchInField, setSearchInField] = useState(['name', 'description']);
   const [isDebugging, setIsDebugging] = useState(false);
   const [canvasDrawing, setCanvasDrawing] = useState(false);
@@ -39,12 +40,20 @@ const App = () => {
 
   const headers = [
     {
-      icon: <GitHubIcon />,
+      // icon: <GitHubIcon />,
       // canCanvas: true,
+      noSearch: true,
+      noSort: true,
       noHightlight: true,
-      width: '40px',
+      width: '60px',
       property: 'fullName',
-      row: (row) => <AvatarRow row={row} />,
+      row: (row) => <AvatarRow {...{ selectedAvatars, row }} onSelectAvatar={(fullName) => {
+        console.log('xxx', fullName)
+        setSelectedAvatars(selectedAvatars => selectedAvatars.some(sa => sa === fullName)
+          ? selectedAvatars.filter(sa => sa !== fullName)
+          : [...selectedAvatars, fullName]
+        )
+      }} />
     },
     {
       label: 'Name',
@@ -59,6 +68,12 @@ const App = () => {
           property: 'surname'
         }
       ],
+      secondaryHeaders: [
+        {
+          label: 'Full name',
+          property: 'fullName'
+        }
+      ]
     },
     {
       label: 'Description',
@@ -102,9 +117,6 @@ const App = () => {
       ]
     },
     {
-      // icon: <MoreHorizIcon />,
-      align: 'flex-end',
-      tooltip: "Actions for entries",
       noSort: true,
       noSearch: true,
       row: (row) => <ActionsRow row={row} />,
@@ -274,6 +286,17 @@ const App = () => {
           </Button>)}
         </div>
         {selectedTiles.map((tile) => <Chip key={tile} label={tile} />)}
+
+        {/* {JSON.stringify(selectedAvatars)} */}
+        <div className={`${classes.actions} ${classes.smallActions}`}>
+          {selectedAvatars.map((avatar) => <AvatarRow
+            row={{
+              fullName: avatar,
+              name: avatar.split(" ")[0],
+              surname: avatar.split(" ")[1]
+            }} />)}
+          {/* {Array.from(new Set(filteredRows.map(fr => fr.fullName))).map((fullName) => <AvatarRow key={fullName} row={{ fullName }} />)} */}
+        </div>
       </div>
 
       <div className={classes.container} style={{height: '850px'}}>
@@ -303,10 +326,11 @@ const App = () => {
               : <LocalObservableGrid {...{ isDebugging, headers, canvasDrawing }}
                 uniqueId="fakeEntries"
                 canvasDrawing={false}
+                isColumned={true}
                 className={classes.observableGrid}
                 isClearingOnBlur={false}
-                rowOptions={{ padding: '8px 20px' }}
-                headerOptions={{ padding: '8px 20px' }}
+                rowOptions={{ padding: '8px 8px' }}
+                headerOptions={{ padding: '8px 8px' }}
                 rows={filteredRows}
                 isEmpty={filteredRows.length === 0}
                 emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
