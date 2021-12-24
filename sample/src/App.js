@@ -16,7 +16,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ObservableGrid } from 'react-observable-grid';
 import LocalObservableGrid from './components/ObservableGrid';
 import { dataGenerator } from './parts/dataGenerator';
-import { ActionsRow, AvatarRow, Card, CurrencyRow, DescriptionRow, NamesRow, TilesRow } from './parts/SampleRow';
+import { ActionsRow, AvatarRow, Card, CurrencyRow, DescriptionRow, LastSeenRow, NamesRow, TilesRow } from './parts/SampleRow';
 
 
 const App = () => {
@@ -134,8 +134,9 @@ const App = () => {
     {
       noSort: true,
       noSearch: true,
-      row: (row) => <ActionsRow row={row} />,
-      width: '100px',
+      onHover: (row) => <ActionsRow {...{ row }} />,
+      row: (row) => <LastSeenRow {...{ row }} />,
+      width: '150px',
       noHightlight: true,
     },
   ]
@@ -178,14 +179,14 @@ const App = () => {
 
   useEffect(() => generateRows(35), [])
 
-  useEffect(( ) => {
-    const interval = setInterval(() => {
-      setTotalElements(Number(calculateTotalElements()))
-      setGridElements(Number(calculateGridElements()))
-    }, 1500)
+  // useEffect(( ) => {
+  //   const interval = setInterval(() => {
+  //     setTotalElements(Number(calculateTotalElements()))
+  //     setGridElements(Number(calculateGridElements()))
+  //   }, 1500)
 
-    return () => clearInterval(interval)
-  }, [])
+  //   return () => clearInterval(interval)
+  // }, [])
 
   useEffect(() => {
     searchTerm.length > 0
@@ -344,7 +345,7 @@ const App = () => {
                 canvasDrawing={false}
                 isColumned={isColumned}
                 className={classes.observableGrid}
-                isClearingOnBlur={false}
+                // isClearingOnBlur={false}
                 rowOptions={{ padding: '8px 16px 8px 16px' }}
                 headerOptions={{ padding: '4px 16px 4px 16px' }}
                 rows={filteredRows}

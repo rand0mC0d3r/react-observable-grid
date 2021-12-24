@@ -1,6 +1,7 @@
 import { Checkbox, Popover, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import SearchIcon from '@material-ui/icons/Search';
 import PropTypes from 'prop-types';
 import React, { cloneElement, useCallback, useEffect, useState } from 'react';
 
@@ -17,6 +18,7 @@ const ObservableHeader = ({
   options: {ascArrow, descArrow, padding },
   order,
   onSelect = () => { },
+  onDeSelect = () => { },
   orderBy,
 
   handleRequestSort,
@@ -117,6 +119,7 @@ const ObservableHeader = ({
   </div>
 
   return <>
+    {/* {JSON.stringify(headers.map(h => { return [ h.property, h.selected ] }))} */}
     {renderPopover()}
     <div id="Header-root" className={classes.root}>
       <div
@@ -131,17 +134,22 @@ const ObservableHeader = ({
       >
         {headers?.filter(header => header.visible).map(({
           noHightlight, align, label, icon, property, extension,
-          secondaryHeaders, preHeaders, postHeaders, noSort
+          secondaryHeaders, preHeaders, selected, postHeaders, noSort
         }) =>
-          <div style={{
+          <div
+            onMouseEnter={() => !noHightlight && onSelect(property)}
+            // onMouseLeave={() => !noHightlight && onDeSelect(property)}
+            className={classes.headersWrapper}
+            style={{
             display: 'flex',
             alignItems: 'center',
             flexWrap: 'nowrap',
+            // backgroundColor: selected ? "#888" : '#AAA',
             justifyContent: 'space-between',
             // alignItems: align ? 'flex-end' : 'flex-start',
           }}>
           <div
-            onDoubleClick={() => !noHightlight && onSelect(label)}
+
             key={`${label}_${property}`}
             id="Header-header"
             className={`${classes.headers} ${!noHightlight ? classes.headersSelectable : ''}`}
@@ -179,11 +187,11 @@ const ObservableHeader = ({
             </div>
             <div style={{ display: 'flex', gap: '4px', flexWrap: 'nowrap', alignItems: 'center'}}>
             {extension && extension}
-            <MoreVertIcon
+            {selected && <SearchIcon
               color="disabled"
               style={{
                 fontSize: '16px',
-                }} />
+              }} />}
               </div>
           </div>)}
       </div>
@@ -229,8 +237,11 @@ const useStyles = makeStyles(theme => ({
     gap: '8px'
   },
   headersSelectable: {
+    // backgroundColor: 'red',
+  },
+  headersWrapper: {
     // '&:hover': {
-    //   backgroundColor: 'rgba(0,0,0,0.1)',
+      // backgroundColor: 'rgba(0,0,0,0.1)',
     // },
   },
   headers: {
@@ -246,7 +257,9 @@ const useStyles = makeStyles(theme => ({
     padding: '0px 4px',
     alignSelf: 'center',
     height: '100%',
-    justifyContent: 'center'
+    justifyContent: 'center',
+
+
   },
   flipped: {
     transform: 'rotate(180deg)'

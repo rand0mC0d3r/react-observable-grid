@@ -26,7 +26,8 @@ const NamesRow = ({
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
       <Typography
         style={{ cursor: 'pointer' }}
-        variant='subtitle2'>
+        variant='subtitle2'
+      color="textSecondary">
         {name} {surname}
       </Typography>
     </div>
@@ -88,6 +89,12 @@ const ActionsRow = () => {
   </div>
 }
 
+const LastSeenRow = ({ row: { lastSeen }}) => {
+  const theme = useTheme()
+  const classes = actionStyles(theme)
+  return <div className={classes.actionContainer}>Last Seen: {lastSeen}</div>
+}
+
 const actionStyles = makeStyles(() => ({
   actionContainer: {
     display: 'flex',
@@ -136,4 +143,4 @@ const avatarStyles = makeStyles((theme) => ({
   }
 }))
 
-export { AvatarRow, ActionsRow, CurrencyRow, TilesRow, DescriptionRow, NamesRow, Card };
+export { AvatarRow, ActionsRow, CurrencyRow, TilesRow, DescriptionRow, NamesRow, Card, LastSeenRow };

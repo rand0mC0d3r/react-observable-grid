@@ -48,6 +48,7 @@ const ObservableGrid =  ({
   const [cachedRows, setCachedRows] = useState([])
   const [innerHeaders, setInnerHeaders] = useState([])
   const [orderBy, setOrderBy] = useState('')
+  const [currentRow, setCurrentRow] = useState(null)
   const [throttling, setThrottling] = useState(false)
   const [totalElements, setTotalElements] = useState(null)
   const [gridTemplateColumns, setGridTemplateColumns] = useState('')
@@ -137,8 +138,12 @@ const ObservableGrid =  ({
     setStartEnd(() => ({ start: - 1, end:  1  }))
   }
 
-  const onSelect = (label) => {
-    setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: header.label === label ? !header.selected : false })))
+  const onSelect = (property) => {
+    setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: header.property === property ? true : false })))
+  }
+
+  const onDeSelect = (property) => {
+    setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: header.property === property ? false : false })))
   }
 
   const idValue = (index) => {
@@ -155,7 +160,12 @@ const ObservableGrid =  ({
   return <div
     id={"observable-grid"}
     className={className}
-    onMouseLeave={() => isClearingOnBlur && setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: false })))}
+    onMouseLeave={() => {
+      if (isClearingOnBlur) {
+        setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: false })))
+        setCurrentRow(null)
+      }
+    }}
     style={{
       display: 'flex',
       position: 'absolute',
@@ -186,11 +196,12 @@ const ObservableGrid =  ({
       order,
       orderBy,
       onSelect,
+      onDeSelect,
       handleRequestSort,
       handleResetSort,
       rowOptions }} />}
 
-      {(isColumned || innerHeaders.some(header => header.selected)) && <div
+    <div
         className={`${classes.observableRow} ${classes.selectedColumn}`}
         style={{
           alignItems: 'unset',
@@ -202,13 +213,14 @@ const ObservableGrid =  ({
           zIndex: -1,
           gridTemplateColumns: gridTemplateColumns,
         }}>
-        {innerHeaders.map((innerHeader, i) => <div className={`${classes.observableColumn} ${innerHeader.align !== 'flex-end' ? classes.observableColumnRight : classes.observableColumnLeft}`} style={{
-          // gridColumnStart: i === innerHeaders.findIndex(header => header.selected) ? i : 0,
-          // backgroundColor: '#EEE',
-          // margin: '0px -4px',
-          // borderRight: '1px solid #CCC',
-        }}/>)}
-      </div>}
+    {innerHeaders.map((innerHeader, i) => <div
+      className={`
+      ${classes.observableColumn}
+      ${isColumned && classes.observableColumnRight}`}
+      style={{
+        backgroundColor: i === innerHeaders.findIndex(header => header.selected) ? "#EEEEEE80" : '',
+      }}/>)}
+    </div>
 
     {sortedRows.length > 0 ? <>
 
@@ -233,6 +245,7 @@ const ObservableGrid =  ({
             }}
             className={`${isGrid ? classes.observableGrid : classes.observableRow} ${(isSelectable && selectedIndex === row.__origIndex) ? 'Row-isSelected' : ''}`}
             index={row.__index}
+            onMouseEnter={() => setCurrentRow(row.__index)}
             forceRender={!throttling}
             isRelevant={throttling
               ? row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize))
@@ -240,13 +253,14 @@ const ObservableGrid =  ({
             }
             onClick={() => isSelectable && !isGrid && setSelectedIndex(selectedIndex === row.__origIndex ? null : row.__origIndex)}
           >
+            {/* {currentRow} */}
             {innerHeaders.filter(header => header.visible).map(header =>
               <React.Fragment key={`${header.property}_${header.label}_${header.tooltip}_${header.width}`}>
                 {(!throttling && canvasDrawing && header.canCanvas)
                   ? <ObservableSnapshot origIndex={row.__origIndex} index={row.__index} id={`${row.__origIndex}_${header.property}_${header.label}`}>
-                    {header.row(row)}
+                    {row.__index === currentRow && header.onHover ? header.onHover(row) : header.row(row)}
                   </ObservableSnapshot>
-                  : header.row(row)}
+                  : row.__index === currentRow && header.onHover ? header.onHover(row) : header.row(row)}
               </React.Fragment>)}
           </ObservableRow>)}
         {throttling && rows.length > pageSize && pageSize * startEnd.end - 1 < rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
@@ -287,7 +301,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#4442"
   },
   observableColumnRight: {
-    // borderRight: `1px solid ${theme.palette.divider}`,
+    borderRight: `1px solid ${theme.palette.divider}`,
     // borderRight: `1px solid blue`,
   },
   observableColumnLeft: {
@@ -296,7 +310,7 @@ const useStyles = makeStyles((theme) => ({
   },
   observableColumn: {
     margin: '0px -8px',
-    borderRight: `1px solid ${theme.palette.divider}`,
+    // borderRight: `1px solid ${theme.palette.divider}`,
 
     '&:last-child': {
       borderRight: '0px none'
