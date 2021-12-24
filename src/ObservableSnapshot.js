@@ -1,5 +1,5 @@
-import React, { useEffect, useCallback, useState } from 'react'
 import domtoimage from 'dom-to-image'
+import React, { useCallback, useEffect, useState } from 'react'
 
 const ObservableSnapshot =  ({
   id,
@@ -27,15 +27,13 @@ const ObservableSnapshot =  ({
     }
   }, [index, origIndex, getImage, id])
 
-  // useEffect(() => {
-  //   if(snapshot) {
-  //     console.log('children updated')
-  //   //   setSnapshot('')
-  //   }
-  // }, [children, snapshot])
 
   useEffect(() => {
-    getImage(id)
+    let timeout
+    timeout = setTimeout(() => {
+      getImage(id)
+    }, (Math.random() * 1000 + 250))
+    return () => clearTimeout(timeout)
   }, [id, getImage])
 
   return <React.Fragment>

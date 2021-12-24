@@ -70,7 +70,7 @@ const ObservableHeader = ({
     className={classes.arrowColor}
     style={{
       transform: 'scaleY(0.5) scaleX(0.85)',
-      order: align ? -1 : 1,
+      order: align === 'flex-end' ? -1 : 1,
       fontSize: '13px',
       opacity: secondary ? 0.75 : 1,
     }}>
@@ -98,7 +98,7 @@ const ObservableHeader = ({
   >
     {icon && cloneElement(icon, {
       style: { fontSize: 16 },
-      color: evaluateOrderBy({ property, label }) ? 'primary' : 'textSecondary'
+      color: evaluateOrderBy({ property, label }) ? 'primary' : 'action'
     })}
     <Typography
       variant='subtitle2'
@@ -135,16 +135,11 @@ const ObservableHeader = ({
         }) =>
           <div
             onDoubleClick={() => !noHightlight && onSelect(label)}
-            key={`${label}`}
+            key={`${label}_${property}`}
             id="Header-header"
             className={`${classes.headers} ${!noHightlight ? classes.headersSelectable : ''}`}
             style={{
               alignItems: align ? 'flex-end' : 'flex-start',
-              margin: '0px -4px',
-              padding: '0px 4px',
-              alignSelf: 'center',
-              height: '100%',
-              justifyContent: 'center'
             }}>
             <div className={`${classes.flexbox} ${classes.maxiFlexbox}`}>
               {preHeaders && <>{renderAdditionalHeader(preHeaders)}</>}
@@ -227,7 +222,13 @@ const useStyles = makeStyles(theme => ({
     flexWrap: 'nowrap',
     flexDirection: 'column',
     alignSelf: 'stretch',
-    gap: '4px',
+    gap: theme.spacing(1),
+
+    margin: '0px -4px',
+    padding: '0px 4px',
+    alignSelf: 'center',
+    height: '100%',
+    justifyContent: 'center'
   },
   flipped: {
     transform: 'rotate(180deg)'

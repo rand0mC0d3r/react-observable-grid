@@ -16,7 +16,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ObservableGrid } from 'react-observable-grid';
 import LocalObservableGrid from './components/ObservableGrid';
 import { dataGenerator } from './parts/dataGenerator';
-import { ActionsRow, Card, CurrencyRow, DescriptionRow, NamesRow, TilesRow } from './parts/SampleRow';
+import { ActionsRow, AvatarRow, Card, CurrencyRow, DescriptionRow, NamesRow, TilesRow } from './parts/SampleRow';
 
 
 const App = () => {
@@ -31,55 +31,44 @@ const App = () => {
   const [isDebugging, setIsDebugging] = useState(true);
   const [canvasDrawing, setCanvasDrawing] = useState(false);
   const [seeLive, setSeeLive] = useState(false);
-  const [asGrid, setAsGrid] = useState(true);
+  const [asGrid, setAsGrid] = useState(false);
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
 
   const headers = [
     {
-      label: 'Name2',
-      tooltip: "Filter users by name",
       icon: <GitHubIcon />,
+      canCache: true,
+      noHightlight: true,
+      width: '40px',
+      property: 'fullName',
+      row: (row) => <AvatarRow row={row} />,
+    },
+    {
+      label: 'Name',
+      tooltip: "Filter users by name",
       property: 'name',
-      canCanvas: true,
+      canCache: true,
       width: 'minmax(200px, 1fr)',
       row: (row) => <NamesRow row={row} />,
-      // preHeaders: [
-      //   {
-      //     label: 'Surname',
-      //     property: 'surdname'
-      //   }
-      // ],
-      // postHeaders: [
-      //   {
-      //     label: 'Surneame',
-      //     property: 'swurname'
-      //   }
-      // ],
-      secondaryHeaders: [
+      postHeaders: [
         {
-          label: 'Name1',
-          property: 'nickname',
-          // noSort: true
-        },
-        {
-          label: 'Name2',
-          property: 'streetname'
+          label: 'Surname',
+          property: 'surname'
         }
-      ]
+      ],
     },
     {
       label: 'Description',
       canCanvas: true,
-      // icon: <SubjectIcon />,
+      icon: <SubjectIcon />,
       property: 'description',
       row: (row) => <DescriptionRow row={row} />,
       width: '2fr',
     },
     {
       label: 'Tiles',
-      canCanvas: true,
-      // icon: <DashboardIcon />,
+      icon: <DashboardIcon />,
       property: 'tilesHash',
       width: 'minmax(100px, 2fr)',
       row: (row) => <TilesRow row={row} selectedTiles={selectedTiles} onSelectTile={(tile) => {
@@ -88,27 +77,27 @@ const App = () => {
         : [...selectedTiles, tile]
         )
       }}  />,
-      // secondaryHeaders: [
-      //   {
-      //     label: 'Tiles Count',
-      //     property: 'tiles',
-      //   },
-      // ]
+      secondaryHeaders: [
+        {
+          label: 'Tiles Count',
+          property: 'tiles',
+        },
+      ]
     },
     {
       label: 'Price',
-      canCanvas: true,
-      // icon: <MonetizationOnIcon />,
+      // canCanvas: true,
+      icon: <MonetizationOnIcon />,
       property: 'price',
       align: 'flex-end',
       width: '110px',
       row: (row) => <CurrencyRow row={row} />,
-      // secondaryHeaders: [
-      //   {
-      //     label: 'Currency',
-      //     property: 'currency',
-      //   },
-      // ]
+      secondaryHeaders: [
+        {
+          label: 'Currency',
+          property: 'currency',
+        },
+      ]
     },
     {
       // icon: <MoreHorizIcon />,
@@ -304,10 +293,11 @@ const App = () => {
               />
               : <LocalObservableGrid {...{ isDebugging, headers, canvasDrawing }}
                 uniqueId="fakeEntries"
+                canvasDrawing={true}
                 className={classes.observableGrid}
                 isClearingOnBlur={false}
-                rowOptions={{ padding: '8px 16px' }}
-                headerOptions={{ padding: '8px 16px' }}
+                rowOptions={{ padding: '8px 20px' }}
+                headerOptions={{ padding: '8px 20px' }}
                 rows={filteredRows}
                 emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
             />}
@@ -321,21 +311,22 @@ const App = () => {
 
 const useStyles = makeStyles(() => ({
   observableGrid: {
-    // '& #Header-wrapper': {
-    //   boxShadow: 'none',
-    // },
-    // '& #Row-root': {
-    //   borderBottom: '1px solid #CCC',
-    // },
-    // '& #Container-root > *': {
-    //   borderBottom: '1px solid #CCC'
-    // },
-    // '& #Container-root > *:hover': {
-    //   backgroundColor: '#e0f0ff',
-    // },
-    // '& #Container-root .Row-isSelected': {
-    //   backgroundColor: 'red',
-    // }
+    '& #Header-wrapper': {
+      boxShadow: 'none',
+      backgroundColor: "#3f51b514",
+    },
+    '& #Row-root': {
+      borderBottom: '1px solid #CCC',
+    },
+    '& #Container-root > *': {
+      borderBottom: '1px solid #CCC'
+    },
+    '& #Container-root > *:hover': {
+      backgroundColor: '#e0f0ff',
+    },
+    '& #Container-root .Row-isSelected': {
+      backgroundColor: 'red',
+    }
   },
   wrapper: {
     display: 'flex',

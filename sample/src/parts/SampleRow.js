@@ -1,24 +1,33 @@
-import { Typography } from '@material-ui/core';
+import { Avatar, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import TuneIcon from '@material-ui/icons/Tune';
-import { ObservableGrid } from 'react-observable-grid';
+import stringToColor from 'string-to-color';
 
+const AvatarRow = ({
+  row: { name, surname } }) => {
+  return <Avatar variant="rounded" style={{
+    fontSize: '16px',
+    backgroundColor: stringToColor(`${name}${surname}`)
+  }}>{name.substr(0, 1)}{surname.substr(0, 1)}</Avatar>
+}
 const NamesRow = ({
   row: { name, surname, nickname, streetname } }) => {
-  return <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-    <Typography
-      style={{ cursor: 'pointer' }}
-      variant='subtitle2'>
-      {name} {surname}
-    </Typography>
-    <Typography
-      style={{ cursor: 'pointer' }}
-      variant='caption'
-      color="textSecondary"
-    >
-      {nickname} {streetname}
-    </Typography>
+  return <div style={{ display: 'flex', flexDirection: 'row', gap: '8px', alignItems: 'center' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      <Typography
+        style={{ cursor: 'pointer' }}
+        variant='subtitle2'>
+        {name} {surname}
+      </Typography>
+      {/* <Typography
+        style={{ cursor: 'pointer' }}
+        variant='caption'
+        color="textSecondary"
+      >
+        {nickname} {streetname}
+      </Typography> */}
+    </div>
   </div>
 }
 
@@ -104,4 +113,4 @@ const tileStyles = makeStyles((theme) => ({
   }
 }))
 
-export { ActionsRow, CurrencyRow, TilesRow, DescriptionRow, NamesRow, Card };
+export { AvatarRow, ActionsRow, CurrencyRow, TilesRow, DescriptionRow, NamesRow, Card };

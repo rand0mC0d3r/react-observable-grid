@@ -62,10 +62,13 @@ export const dataGenerator = (count) => {
 export const internal_dataGenerator = (count) => count === 0 ? [] : new Array(count).fill().map((_, i) => {
   const randomFlavors = flavorsList.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 10 + 2));
   const randomString = `${Math.random().toString(36).substr(0, 8)}.${i + 1}`
+  const randomName = `${['Mary', 'John', 'Robert', 'Michael', 'William', 'David', 'Richard', 'Joseph', 'Thomas', 'Charles'][Math.floor(Math.random() * 10)]}`
+  const randomSurname = `${['Williams','Johnson','Jones','Brown','Davis','Miller','Wilson','Moore','Taylor','Anderson'][Math.floor(Math.random() * 10)]}`
   return {
     uuid: `uuid_${i}`,
-    name: randomString,
-    surname: randomString.split("").reverse().join(""),
+    name: randomName,
+    surname: randomSurname,
+    fullName: `${randomName} ${randomSurname}`,
     nickname: `n1_${randomString.substr(4,8)}`,
     streetname: `n2_${i + 1}`,
     description: `${[
