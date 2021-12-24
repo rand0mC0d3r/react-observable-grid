@@ -40,7 +40,7 @@ const App = () => {
   const headers = [
     {
       icon: <GitHubIcon />,
-      canCanvas: true,
+      // canCanvas: true,
       noHightlight: true,
       width: '40px',
       property: 'fullName',
@@ -50,7 +50,7 @@ const App = () => {
       label: 'Name',
       tooltip: "Filter users by name",
       property: 'name',
-      canCanvas: true,
+      // canCanvas: true,
       width: 'minmax(200px, 1fr)',
       row: (row) => <NamesRow row={row} />,
       postHeaders: [
@@ -180,6 +180,9 @@ const App = () => {
     : setFilteredRows(searchedRows)
   }, [selectedTiles, searchedRows])
 
+{/* TODO: add header children */}
+        {/* TODO: make grid support sub-columns */}
+
   return <ThemeProvider {...{ theme }} >
     <div className={classes.wrapper}>
       <div className={`${classes.actions} ${classes.bigContainer}`}>
@@ -187,44 +190,30 @@ const App = () => {
           <Typography color="textPrimary" variant="h3">👀 🗞️</Typography>
           <Typography
             color="textPrimary"
-            style={{
-              border: '2px dotted #CCC',
-              padding: '4px 12px',
-              borderRadius: '8px',
-              userSelect: 'all',
-              backgroundColor: "#effdef",
-            }}
+            style={{ border: '2px dotted #CCC', padding: '4px 12px', borderRadius: '8px', userSelect: 'all', backgroundColor: "#effdef" }}
             variant="h6"
           >npm i react-observable-grid</Typography>
-
-        </div>
-
-        {/* TODO: add header children */}
-        {/* TODO: make grid support sub-columns */}
-          <div className={`${classes.actions} ${classes.smallActions}`}>
-            <Chip variant="outlined" label={`Filtered: ${filteredRows.length}`} />
-            <Chip variant="outlined" label={`DOM (Grid): ${totalElements || '?'} (${gridElements || '?'})`} />
-            <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debug ${isDebugging ? 'ON' : 'OFF'}`} />
-            <Chip variant="outlined" label={`Perf: ${performance}ms`} />
-            <Chip onClick={() => setCanvasDrawing(!canvasDrawing)} variant="outlined" label={`🧪 Canvas ${canvasDrawing ? 'ON' : 'OFF'}`} />
-            <Chip onClick={() => setSeeLive(!seeLive)} variant="outlined" label={`Env ${seeLive ? 'PROD' : 'DEV'}`} />
-            {!seeLive && <Chip onClick={() => setAsGrid(!asGrid)} variant="outlined" label={`Grid ${asGrid ? 'GRID' : 'TABLE'}`} />}
-          </div>
-
-
-        <div className={`${classes.actions} ${classes.smallActions}`}>
           <IconButton title="Open NPM link ..." onClick={() => window.open('https://www.npmjs.com/package/react-observable-grid')}>
             <OpenInNewIcon />
           </IconButton>
-
           <IconButton title="Open Github link ..." onClick={() => window.open('https://github.com/rand0mC0d3r/react-observable-grid')}>
             <GitHubIcon />
           </IconButton>
         </div>
+        <div className={`${classes.actions} ${classes.smallActions}`}>
+          <Chip variant="outlined" label={`Filtered: ${filteredRows.length}`} />
+          <Chip variant="outlined" label={`DOM (Grid): ${totalElements || '?'} (${gridElements || '?'})`} />
+          <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debug ${isDebugging ? 'ON' : 'OFF'}`} />
+          <Chip variant="outlined" label={`Perf: ${performance}ms`} />
+          <Chip onClick={() => setCanvasDrawing(!canvasDrawing)} variant="outlined" label={`🧪 Canvas ${canvasDrawing ? 'ON' : 'OFF'}`} />
+          <Chip onClick={() => setSeeLive(!seeLive)} variant="outlined" label={`Env ${seeLive ? 'PROD' : 'DEV'}`} />
+          {!seeLive && <Chip onClick={() => setAsGrid(!asGrid)} variant="outlined" label={`Grid ${asGrid ? 'GRID' : 'TABLE'}`} />}
+        </div>
       </div>
-      <div className={`${classes.actions} ${classes.bigContainer}`}>
 
-      <div className={classes.actions}>
+
+      <div className={`${classes.actions} ${classes.bigContainer}`}>
+        <div className={classes.actions}>
           <TextField
             placeholder={`Search in ${searchInField.join(', ')}...`}
             value={searchTerm}
@@ -247,47 +236,46 @@ const App = () => {
             size="small" />
 
             <div className={`${classes.actions} ${classes.smallActions}`}>
-            {headers.filter(header => !header.noSearch).map((header) => {
-              const isField = searchInField.some(field => field === header.property)
-              return <Chip
-                color={isField ? 'primary' : 'default'}
-                key={header.property}
-                variant="outlined"
-                onClick={() => {
-                  if (searchInField.includes(header.property)) {
+              {headers.filter(header => !header.noSearch).map((header) => {
+                const isField = searchInField.some(field => field === header.property)
+                return <Chip
+                  color={isField ? 'primary' : 'default'}
+                  key={header.property}
+                  variant="outlined"
+                  onClick={() => {
+                    if (searchInField.includes(header.property)) {
+                      setSearchInField(searchInField.filter(field => field !== header.property))
+                    } else {
+                      setSearchInField([...searchInField, header.property])
+                    }
+                  }}
+                  icon={isField ? undefined : <AddCircleIcon />}
+                  onDelete={isField ? () => {
                     setSearchInField(searchInField.filter(field => field !== header.property))
-                  } else {
-                    setSearchInField([...searchInField, header.property])
-                  }
-                }}
-                icon={isField ? undefined : <AddCircleIcon />}
-                onDelete={isField ? () => {
-                  setSearchInField(searchInField.filter(field => field !== header.property))
-                } : undefined}
-                label={header.label}
-              />
-            })}
+                  } : undefined}
+                  label={header.label}
+                />
+              })}
             </div>
-
-            <div className={`${classes.actions} ${classes.smallActions}`}>
-            {[0, 2, 30, 40, 50, 100, 1500, 65000, 1000000].map(count => <Button
-              disableElevation
-              style={{minWidth: 'unset', padding: '5px 12px'}}
-              color={count === rows.length ? 'primary' : 'default'}
-              variant={count !== rows.length ? "outlined" : 'contained'}
-              key={count}
-              onClick={() => generateRows(count)}
-              >
-                {count}
-              </Button>)}
-          </div>
         </div>
+              </div>
 
+      <div className={`${classes.actions} ${classes.bigContainer}`}>
         <div className={`${classes.actions} ${classes.smallActions}`}>
-          {selectedTiles.map((tile) => <Chip key={tile} label={tile} />)}
+          {[0, 2, 30, 40, 50, 100, 1500, 65000, 1000000].map(count => <Button
+            disableElevation
+            style={{minWidth: 'unset', padding: '5px 12px'}}
+            color={count === rows.length ? 'primary' : 'default'}
+            variant={count !== rows.length ? "outlined" : 'contained'}
+            key={count}
+            onClick={() => generateRows(count)}
+            >
+              {count}
+          </Button>)}
         </div>
-
+        {selectedTiles.map((tile) => <Chip key={tile} label={tile} />)}
       </div>
+
       <div className={classes.container} style={{height: '850px'}}>
         {seeLive
           ? <ObservableGrid {...{isDebugging, headers, canvasDrawing }}
@@ -314,7 +302,7 @@ const App = () => {
               />
               : <LocalObservableGrid {...{ isDebugging, headers, canvasDrawing }}
                 uniqueId="fakeEntries"
-                canvasDrawing={true}
+                canvasDrawing={false}
                 className={classes.observableGrid}
                 isClearingOnBlur={false}
                 rowOptions={{ padding: '8px 20px' }}
@@ -372,7 +360,7 @@ const useStyles = makeStyles(() => ({
   actions: {
     display: 'flex',
     justifyContent: 'space-between',
-    gap: '16px',
+    gap: '8px',
     flexWrap: 'wrap',
     alignItems: 'center'
   },
