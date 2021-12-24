@@ -42,7 +42,7 @@ const ObservableGrid =  ({
   isAlternating = true,
 }) => {
   const theme = useTheme()
-  const classes = useStyles()
+  const classes = useStyles(theme)
 
   const [order, setOrder] = useState('asc')
   const [cachedRows, setCachedRows] = useState([])
@@ -200,11 +200,11 @@ const ObservableGrid =  ({
           padding: rowOptions.padding,
           paddingTop: 0,
           paddingBottom: 0,
-          gap: '4px',
+          gap: '16px',
           zIndex: -1,
           gridTemplateColumns: gridTemplateColumns,
         }}>
-        {innerHeaders.map((innerHeader, i) => <div className={classes.observableColumn} style={{
+        {innerHeaders.map((innerHeader, i) => <div className={`${classes.observableColumn} ${innerHeader.align !== 'flex-end' ? classes.observableColumnRight : classes.observableColumnLeft}`} style={{
           // gridColumnStart: i === innerHeaders.findIndex(header => header.selected) ? i : 0,
           // backgroundColor: '#EEE',
           // margin: '0px -4px',
@@ -261,7 +261,7 @@ const ObservableGrid =  ({
   </div>
 }
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   selectedColumn: {
     top: '0px',
     left: '0px',
@@ -278,19 +278,25 @@ const useStyles = makeStyles(() => ({
     display: 'grid',
   },
   observableGrid: {
-    // alignSelf: 'stretch',
     breakInside: 'avoid',
     fontSize: '12px',
-    // alignItems: 'center',
     gridColumnGap: '16px',
     display: 'grid',
   },
   observableRowSelected: {
     backgroundColor: "#4442"
   },
+  observableColumnRight: {
+    // borderRight: `1px solid ${theme.palette.divider}`,
+    // borderRight: `1px solid blue`,
+  },
+  observableColumnLeft: {
+    // borderLeft: `1px solid ${theme.palette.divider}`,
+    // borderLeft: `1px solid red`,
+  },
   observableColumn: {
-    margin: '0px -4px',
-    borderRight: '1px solid #CCC',
+    margin: '0px -8px',
+    borderRight: `1px solid ${theme.palette.divider}`,
 
     '&:last-child': {
       borderRight: '0px none'

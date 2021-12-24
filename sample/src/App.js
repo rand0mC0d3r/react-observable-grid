@@ -39,40 +39,51 @@ const App = () => {
   const classes = useStyles()
 
   const headers = [
+    // {
+    //   // icon: <GitHubIcon />,
+    //   // canCanvas: true,
+    //   noSearch: true,
+    //   noSort: true,
+    //   align: 'center',
+    //   noHightlight: true,
+    //   width: '70px',
+    //   property: 'fullName',
+    //   row: (row) => <AvatarRow {...{ selectedAvatars, row }} onSelectAvatar={(fullName) => {
+    //     console.log('xxx', fullName)
+    //     setSelectedAvatars(selectedAvatars => selectedAvatars.some(sa => sa === fullName)
+    //       ? selectedAvatars.filter(sa => sa !== fullName)
+    //       : [...selectedAvatars, fullName]
+    //     )
+    //   }} />
+    // },
     {
-      // icon: <GitHubIcon />,
-      // canCanvas: true,
-      noSearch: true,
-      noSort: true,
-      noHightlight: true,
-      width: '60px',
+      label: 'Full Name',
+      tooltip: "Filter users by name",
       property: 'fullName',
-      row: (row) => <AvatarRow {...{ selectedAvatars, row }} onSelectAvatar={(fullName) => {
+      width: 'minmax(300px, 1fr)',
+      extension: <>
+        foo
+      </>,
+      row: (row) => <div style={{ display: 'flex', gap: '8px', flexWrap: 'nowrap'}}>
+        <AvatarRow {...{ selectedAvatars, row }} onSelectAvatar={(fullName) => {
         console.log('xxx', fullName)
         setSelectedAvatars(selectedAvatars => selectedAvatars.some(sa => sa === fullName)
           ? selectedAvatars.filter(sa => sa !== fullName)
           : [...selectedAvatars, fullName]
         )
       }} />
-    },
-    {
-      label: 'Name',
-      tooltip: "Filter users by name",
-      property: 'name',
-      // canCanvas: true,
-      width: 'minmax(200px, 1fr)',
-      row: (row) => <NamesRow row={row} />,
-      postHeaders: [
+        <NamesRow row={row} />
+      </div>,
+      secondaryHeaders: [
+        {
+          label: 'Name',
+          property: 'name'
+        },
         {
           label: 'Surname',
           property: 'surname'
         }
-      ],
-      secondaryHeaders: [
-        {
-          label: 'Full name',
-          property: 'fullName'
-        }
+
       ]
     },
     {
@@ -88,6 +99,9 @@ const App = () => {
       icon: <DashboardIcon />,
       property: 'tilesHash',
       width: 'minmax(100px, 2fr)',
+      extension: <>
+        foo
+      </>,
       row: (row) => <TilesRow row={row} selectedTiles={selectedTiles} onSelectTile={(tile) => {
         setSelectedTiles(selectedTiles => selectedTiles.some(st => st === tile)
         ? selectedTiles.filter(st => st !== tile)
@@ -319,7 +333,7 @@ const App = () => {
                 className={classes.observableGrid}
                 isClearingOnBlur={false}
                 rowOptions={{ padding: '16px' }}
-                headerOptions={{ padding: '8px 16px' }}
+                headerOptions={{ padding: '16px 16px' }}
                 rows={filteredRows}
                 emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
               />
@@ -329,8 +343,8 @@ const App = () => {
                 isColumned={true}
                 className={classes.observableGrid}
                 isClearingOnBlur={false}
-                rowOptions={{ padding: '8px 8px' }}
-                headerOptions={{ padding: '8px 8px' }}
+                rowOptions={{ padding: '8px 16px 8px 16px' }}
+                headerOptions={{ padding: '4px 16px 4px 16px' }}
                 rows={filteredRows}
                 isEmpty={filteredRows.length === 0}
                 emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
@@ -356,7 +370,7 @@ const useStyles = makeStyles(() => ({
       borderBottom: '1px solid #CCC'
     },
     '& #Container-root > *:hover': {
-      backgroundColor: '#e0f0ff',
+      backgroundColor: '#e0f0ff88',
     },
     '& #Container-root .Row-isSelected': {
       backgroundColor: 'red',
@@ -393,6 +407,7 @@ const useStyles = makeStyles(() => ({
   },
   bigContainer: {
     width: '95%',
+    minHeight: '60px'
   },
   container: {
     minWidth: '850px',

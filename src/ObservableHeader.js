@@ -125,14 +125,21 @@ const ObservableHeader = ({
         className={classes.wrapper}
         style={{
           padding: padding || defaultOptions.padding,
-          paddingTop: '0px',
-          paddingBottom: '0px',
+          // paddingTop: '0px',
+          // paddingBottom: '0px',
           gridTemplateColumns: gridTemplateColumns}}
       >
         {headers?.filter(header => header.visible).map(({
-          noHightlight, align, label, icon, property,
+          noHightlight, align, label, icon, property, extension,
           secondaryHeaders, preHeaders, postHeaders, noSort
         }) =>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'nowrap',
+            justifyContent: 'space-between',
+            // alignItems: align ? 'flex-end' : 'flex-start',
+          }}>
           <div
             onDoubleClick={() => !noHightlight && onSelect(label)}
             key={`${label}_${property}`}
@@ -169,10 +176,14 @@ const ObservableHeader = ({
                 {!noSort && renderArrows({property, label, align, secondary: true})}
               </div>)}
             </div>}
+
+
+            </div>
+            {extension && extension}
             <MoreVertIcon
-              color="action"
+              color="disabled"
               style={{
-                position: 'absolute',
+                // position: 'absolute',
                 fontSize: '16px',
                 right: !align ? '8px' : 'unset',
                 left: align ? '8px' : 'unset'
@@ -221,9 +232,9 @@ const useStyles = makeStyles(theme => ({
     gap: '8px'
   },
   headersSelectable: {
-    '&:hover': {
-      backgroundColor: 'rgba(0,0,0,0.1)',
-    },
+    // '&:hover': {
+    //   backgroundColor: 'rgba(0,0,0,0.1)',
+    // },
   },
   headers: {
     display: 'flex',

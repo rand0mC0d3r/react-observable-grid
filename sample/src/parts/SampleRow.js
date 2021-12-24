@@ -7,8 +7,8 @@ import stringToColor from 'string-to-color';
 const AvatarRow = ({ row: { name, surname, fullName }, selectedAvatars, onSelectAvatar = () => { } }) => {
   const theme = useTheme()
   const classes = avatarStyles(theme)
-  return <div onClick={() => onSelectAvatar(fullName)}>
-    <Avatar
+  return <div style={{display:'flex', justifyContent: "center"}}><Avatar
+    onClick={() => onSelectAvatar(fullName)}
     variant="rounded"
     className={[classes.avatar, selectedAvatars?.some(sa => sa === fullName) && classes.selectedAvatar].join(' ')}
     style={{
@@ -17,7 +17,7 @@ const AvatarRow = ({ row: { name, surname, fullName }, selectedAvatars, onSelect
   }}>
     {name?.substr(0, 1)}{surname?.substr(0, 1)}
   </Avatar>
-    </div>
+  </div>
 }
 
 const NamesRow = ({
@@ -57,8 +57,9 @@ const Card = ({ row, selectedTiles, onSelectTile = () => {} }) => {
 }
 
 const DescriptionRow = ({ row: { description } }) => {
-  // console.log(description)
-  return <Typography variant='body2'>{description}</Typography>
+  const theme = useTheme()
+  const classes = descriptionStyles(theme)
+  return <Typography className={classes.description} style={{userSelect: 'text'}} variant='body2'>{description}</Typography>
 }
 
 const TilesRow = ({ row: { tiles }, selectedTiles, onSelectTile = () => {} }) => {
@@ -98,6 +99,15 @@ const actionStyles = makeStyles(() => ({
     '&:hover': {
       opacity: '1',
       filter: 'grayscale(0%)',
+    }
+  },
+}))
+
+const descriptionStyles = makeStyles(() => ({
+  description: {
+    '&::selection': {
+      background: '#d4ebffad',
+      color: 'black'
     }
   },
 }))
