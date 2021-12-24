@@ -28,17 +28,19 @@ const App = () => {
   const [isCaseSensitive, setIsCaseSensitive] = useState(false);
   const [selectedTiles, setSelectedTiles] = useState([]);
   const [searchInField, setSearchInField] = useState(['name', 'description']);
-  const [isDebugging, setIsDebugging] = useState(true);
+  const [isDebugging, setIsDebugging] = useState(false);
   const [canvasDrawing, setCanvasDrawing] = useState(false);
   const [seeLive, setSeeLive] = useState(false);
   const [asGrid, setAsGrid] = useState(false);
+  const [totalElements, setTotalElements] = useState(null)
+  const [gridElements, setGridElements] = useState(null)
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
 
   const headers = [
     {
       icon: <GitHubIcon />,
-      canCache: true,
+      canCanvas: true,
       noHightlight: true,
       width: '40px',
       property: 'fullName',
@@ -48,7 +50,7 @@ const App = () => {
       label: 'Name',
       tooltip: "Filter users by name",
       property: 'name',
-      canCache: true,
+      canCanvas: true,
       width: 'minmax(200px, 1fr)',
       row: (row) => <NamesRow row={row} />,
       postHeaders: [
@@ -60,7 +62,7 @@ const App = () => {
     },
     {
       label: 'Description',
-      canCanvas: true,
+      // canCanvas: true,
       icon: <SubjectIcon />,
       property: 'description',
       row: (row) => <DescriptionRow row={row} />,
@@ -128,6 +130,15 @@ const App = () => {
     },
   ]
 
+  const calculateTotalElements = () => {
+    return document.getElementsByTagName('*').length
+  }
+
+  const calculateGridElements = () => {
+    const gridElement = document.getElementById("observable-grid")
+    return gridElement ? gridElement.getElementsByTagName('*').length : 0
+  }
+
   const generateRows = (count) => {
     const t0 = Date.now()
     const rowsGenerated = dataGenerator(count);
@@ -138,7 +149,16 @@ const App = () => {
     }
   }
 
-  useEffect(() => generateRows(30), [])
+  useEffect(() => generateRows(35), [])
+
+  useEffect(( ) => {
+    const interval = setInterval(() => {
+      setTotalElements(Number(calculateTotalElements()))
+      setGridElements(Number(calculateGridElements()))
+    }, 1500)
+
+    return () => clearInterval(interval)
+  }, [])
 
   useEffect(() => {
     searchTerm.length > 0
@@ -182,12 +202,13 @@ const App = () => {
         {/* TODO: add header children */}
         {/* TODO: make grid support sub-columns */}
           <div className={`${classes.actions} ${classes.smallActions}`}>
-            <Chip variant="outlined" label={`Search Rows: ${filteredRows.length}`} />
-            <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debugging: ${isDebugging ? 'ON' : 'OFF'}`} />
-            <Chip variant="outlined" label={`Performance: ${performance}ms`} />
-            <Chip onClick={() => setCanvasDrawing(!canvasDrawing)} variant="outlined" label={`🧪 Canvas Items: ${canvasDrawing ? 'ON' : 'OFF'}`} />
-            <Chip onClick={() => setSeeLive(!seeLive)} variant="outlined" label={`Env: ${seeLive ? 'PROD' : 'DEV'}`} />
-            {!seeLive && <Chip onClick={() => setAsGrid(!asGrid)} variant="outlined" label={`Grid: ${asGrid ? 'GRID' : 'TABLE'}`} />}
+            <Chip variant="outlined" label={`Filtered: ${filteredRows.length}`} />
+            <Chip variant="outlined" label={`DOM (Grid): ${totalElements || '?'} (${gridElements || '?'})`} />
+            <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debug ${isDebugging ? 'ON' : 'OFF'}`} />
+            <Chip variant="outlined" label={`Perf: ${performance}ms`} />
+            <Chip onClick={() => setCanvasDrawing(!canvasDrawing)} variant="outlined" label={`🧪 Canvas ${canvasDrawing ? 'ON' : 'OFF'}`} />
+            <Chip onClick={() => setSeeLive(!seeLive)} variant="outlined" label={`Env ${seeLive ? 'PROD' : 'DEV'}`} />
+            {!seeLive && <Chip onClick={() => setAsGrid(!asGrid)} variant="outlined" label={`Grid ${asGrid ? 'GRID' : 'TABLE'}`} />}
           </div>
 
 
@@ -299,6 +320,7 @@ const App = () => {
                 rowOptions={{ padding: '8px 20px' }}
                 headerOptions={{ padding: '8px 20px' }}
                 rows={filteredRows}
+                isEmpty={filteredRows.length === 0}
                 emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
             />}
           </>}

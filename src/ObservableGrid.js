@@ -1,7 +1,7 @@
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { createNewSortInstance } from 'fast-sort'
 import throttle from 'lodash/throttle'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import ObservableContainer from './ObservableContainer'
 import ObservableDebugging from './ObservableDebugging'
 import ObservableEmpty from './ObservableEmpty'
@@ -15,7 +15,7 @@ import ObservableSnapshot from './ObservableSnapshot'
 const ObservableGrid =  ({
   headers,
   rows = [],
-  // uniqueId = 'test',
+  uniqueId = Math.random().toString(36).substr(0, 8),
   // keyPattern = () => { },
   // onLoadMore,
   // rowRenderer = () => { },
@@ -30,6 +30,7 @@ const ObservableGrid =  ({
   minRows = 25,
   canvasDrawing = false,
 
+  isEmpty = false,
   isClearingOnBlur = true,
   // isInfinite = false,
   isUpdatingUrl = false,
@@ -79,9 +80,11 @@ const ObservableGrid =  ({
   }, [headers])
 
   useEffect(() => {
-    setCachedRows(rows.map((row, index) => ({ ...row, __origIndex: index })))
-    setSelectedIndex(null)
-  }, [rows])
+    if (!isEmpty) {
+      setCachedRows(rows.map((row, index) => ({ ...row, __origIndex: index })))
+      setSelectedIndex(null)
+    }
+  }, [rows, isEmpty])
 
   useEffect(() => {
     function sortSort(order, rows) {
@@ -98,18 +101,18 @@ const ObservableGrid =  ({
     }
   }, [cachedRows, order, orderBy])
 
-  useEffect(( ) => {
-    const interval = setInterval(() => {
-      const currentElements = Number(calculateTotalElements())
-      if(currentElements >= 1000) {
-        setThrottleLimit(throttleLimit - 1/10 * throttleLimit)
-        setThrottling(true)
-      }
-      setTotalElements(currentElements)
-    }, 1500)
+  // useEffect(( ) => {
+  //   const interval = setInterval(() => {
+  //     const currentElements = Number(calculateTotalElements())
+  //     if(currentElements >= 1000) {
+  //       setThrottleLimit(throttleLimit - 1/10 * throttleLimit)
+  //       setThrottling(true)
+  //     }
+  //     setTotalElements(currentElements)
+  //   }, 1500)
 
-    return () => clearInterval(interval)
-  }, [])
+  //   return () => clearInterval(interval)
+  // }, [])
 
   useEffect(() => {
     if(!headers) return
@@ -149,6 +152,7 @@ const ObservableGrid =  ({
   }
 
   return <div
+    id={"observable-grid"}
     className={className}
     onMouseLeave={() => isClearingOnBlur && setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: false })))}
     style={{
@@ -169,7 +173,7 @@ const ObservableGrid =  ({
       { label: 'rows', value: rows.length },
       { label: 'startEnd', value: JSON.stringify(startEnd) },
       { label: 'pageSize', value: pageSize },
-      { label: 'totalElements', value: totalElements },
+      // { label: 'totalElements', value: totalElements },
     ]}>
     </ObservableDebugging>}
 

@@ -6,11 +6,16 @@ import stringToColor from 'string-to-color';
 
 const AvatarRow = ({
   row: { name, surname } }) => {
-  return <Avatar variant="rounded" style={{
-    fontSize: '16px',
-    backgroundColor: stringToColor(`${name}${surname}`)
-  }}>{name.substr(0, 1)}{surname.substr(0, 1)}</Avatar>
+  return <Avatar
+    variant="rounded"
+    style={{
+      fontSize: '16px',
+      backgroundColor: stringToColor(`${name}${surname}`)
+  }}>
+    {name.substr(0, 1)}{surname.substr(0, 1)}
+  </Avatar>
 }
+
 const NamesRow = ({
   row: { name, surname, nickname, streetname } }) => {
   return <div style={{ display: 'flex', flexDirection: 'row', gap: '8px', alignItems: 'center' }}>
@@ -20,13 +25,6 @@ const NamesRow = ({
         variant='subtitle2'>
         {name} {surname}
       </Typography>
-      {/* <Typography
-        style={{ cursor: 'pointer' }}
-        variant='caption'
-        color="textSecondary"
-      >
-        {nickname} {streetname}
-      </Typography> */}
     </div>
   </div>
 }
@@ -55,6 +53,7 @@ const Card = ({ row, selectedTiles, onSelectTile = () => {} }) => {
 }
 
 const DescriptionRow = ({ row: { description } }) => {
+  console.log(description)
   return <Typography variant='body2'>{description}</Typography>
 }
 
@@ -71,6 +70,7 @@ const TilesRow = ({ row: { tiles }, selectedTiles, onSelectTile = () => {} }) =>
 }
 
 const CurrencyRow = ({ row: { price, currency } }) => {
+  console.log(price)
   return <Typography style={{ display: 'flex', justifyContent: 'flex-end' }} variant='subtitle2'>{price} {currency}</Typography>
 }
 
