@@ -215,67 +215,67 @@ const App = () => {
       <div className={`${classes.actions} ${classes.bigContainer}`}>
 
       <div className={classes.actions}>
-        <TextField
-          placeholder={`Search in ${searchInField.join(', ')}...`}
-          value={searchTerm}
-          disabled={searchInField.length === 0}
-          onChange={(event) => setSearchTerm(event.target.value)}
-          variant="outlined"
-          InputProps={{
-            startAdornment: <InputAdornment position="start">🔍</InputAdornment>,
-            endAdornment: <>
-              <TextFieldsIcon
-                style={{cursor: 'pointer'}}
-                onClick={() => setIsCaseSensitive(!isCaseSensitive)}
-                color={isCaseSensitive ? 'primary' : 'disabled'}
-              />
-              {searchTerm.length > 0 && <InputAdornment onClick={() => setSearchTerm('')} position="end"><DeleteOutlineIcon style={{cursor: 'pointer'}} /></InputAdornment>}
+          <TextField
+            placeholder={`Search in ${searchInField.join(', ')}...`}
+            value={searchTerm}
+            disabled={searchInField.length === 0}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            variant="outlined"
+            InputProps={{
+              startAdornment: <InputAdornment position="start">🔍</InputAdornment>,
+              endAdornment: <>
+                <TextFieldsIcon
+                  style={{cursor: 'pointer'}}
+                  onClick={() => setIsCaseSensitive(!isCaseSensitive)}
+                  color={isCaseSensitive ? 'primary' : 'disabled'}
+                />
+                {searchTerm.length > 0 && <InputAdornment onClick={() => setSearchTerm('')} position="end"><DeleteOutlineIcon style={{cursor: 'pointer'}} /></InputAdornment>}
 
-            </>,
-          }}
-          style={{ width: '300px' }}
-          size="small" />
+              </>,
+            }}
+            style={{ width: '300px' }}
+            size="small" />
 
-          <div className={`${classes.actions} ${classes.smallActions}`}>
-          {headers.filter(header => !header.noSearch).map((header) => {
-            const isField = searchInField.some(field => field === header.property)
-            return <Chip
-              color={isField ? 'primary' : 'default'}
-              key={header.property}
-              variant="outlined"
-              onClick={() => {
-                if (searchInField.includes(header.property)) {
+            <div className={`${classes.actions} ${classes.smallActions}`}>
+            {headers.filter(header => !header.noSearch).map((header) => {
+              const isField = searchInField.some(field => field === header.property)
+              return <Chip
+                color={isField ? 'primary' : 'default'}
+                key={header.property}
+                variant="outlined"
+                onClick={() => {
+                  if (searchInField.includes(header.property)) {
+                    setSearchInField(searchInField.filter(field => field !== header.property))
+                  } else {
+                    setSearchInField([...searchInField, header.property])
+                  }
+                }}
+                icon={isField ? undefined : <AddCircleIcon />}
+                onDelete={isField ? () => {
                   setSearchInField(searchInField.filter(field => field !== header.property))
-                } else {
-                  setSearchInField([...searchInField, header.property])
-                }
-              }}
-              icon={isField ? undefined : <AddCircleIcon />}
-              onDelete={isField ? () => {
-                setSearchInField(searchInField.filter(field => field !== header.property))
-              } : undefined}
-              label={header.label}
-            />
-          })}
+                } : undefined}
+                label={header.label}
+              />
+            })}
+            </div>
+
+            <div className={`${classes.actions} ${classes.smallActions}`}>
+            {[0, 2, 30, 40, 50, 100, 1500, 65000, 1000000].map(count => <Button
+              disableElevation
+              style={{minWidth: 'unset', padding: '5px 12px'}}
+              color={count === rows.length ? 'primary' : 'default'}
+              variant={count !== rows.length ? "outlined" : 'contained'}
+              key={count}
+              onClick={() => generateRows(count)}
+              >
+                {count}
+              </Button>)}
           </div>
-
-          <div className={`${classes.actions} ${classes.smallActions}`}>
-          {[0, 2, 30, 40, 50, 100, 1500, 65000, 1000000].map(count => <Button
-            disableElevation
-            style={{minWidth: 'unset', padding: '5px 12px'}}
-            color={count === rows.length ? 'primary' : 'default'}
-            variant={count !== rows.length ? "outlined" : 'contained'}
-            key={count}
-            onClick={() => generateRows(count)}
-            >
-              {count}
-            </Button>)}
         </div>
-      </div>
 
-      <div className={`${classes.actions} ${classes.smallActions}`}>
-        {selectedTiles.map((tile) => <Chip key={tile} label={tile} />)}
-      </div>
+        <div className={`${classes.actions} ${classes.smallActions}`}>
+          {selectedTiles.map((tile) => <Chip key={tile} label={tile} />)}
+        </div>
 
       </div>
       <div className={classes.container} style={{height: '850px'}}>
@@ -313,6 +313,8 @@ const App = () => {
             />}
           </>}
       </div>
+
+
     </div>
   </ThemeProvider>
 }
@@ -358,20 +360,21 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     justifyContent: 'space-between',
     gap: '16px',
+    flexWrap: 'wrap',
     alignItems: 'center'
   },
   smallActions: {
     gap: '4px',
   },
   bigContainer: {
-    width: '90%',
+    width: '95%',
   },
   container: {
     minWidth: '850px',
     position: 'relative',
     borderRadius: '4px',
     maxWidth: '95%',
-    width: '90%',
+    width: '95%',
     border: '2px solid #333',
     height: '80%'
   }

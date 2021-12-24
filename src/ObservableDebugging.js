@@ -12,7 +12,7 @@ const ObservableDebugging = ({ items }) => <div style={{
   gap: '4px',
   left: '20px',
   zIndex: '1',
-  width: '1000px'
+  width: '80%'
 }}>
   {items.map(({ label, value }) => <div
     style={{
