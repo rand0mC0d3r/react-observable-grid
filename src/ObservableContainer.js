@@ -2,12 +2,19 @@ import { makeStyles, useTheme } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import React from 'react'
 
-const ObservableContainer = ({ children, isAlternating, isScrollable }) => {
+const ObservableContainer = ({ children, isAlternating, isGrid, isScrollable }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
 
   return <div className={classes.wrapper}>
-    <div id="Container-root" className={[classes.container, classes.anyItem, isAlternating && classes.alternatingItem, isScrollable && classes.isScrollable].join(' ')}>
+    <div
+      id="Container-root"
+      className={[
+        classes.container,
+        isGrid ? classes.grid : classes.anyItem,
+        isAlternating && classes.alternatingItem,
+        isScrollable && classes.isScrollable
+      ].join(' ')}>
       {children}
     </div>
   </div>
@@ -22,6 +29,10 @@ const useStyles = makeStyles(theme => ({
       height: 'auto',
       overflow: 'auto',
     }
+  },
+  grid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
   },
   container: {
     '&::-webkit-scrollbar': {

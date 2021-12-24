@@ -11,11 +11,12 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import PersonPinCircleIcon from '@material-ui/icons/PersonPinCircle';
 import SubjectIcon from '@material-ui/icons/Subject';
 import TextFieldsIcon from '@material-ui/icons/TextFields';
+import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
 import { useEffect, useMemo, useState } from 'react';
 import { ObservableGrid } from 'react-observable-grid';
 import LocalObservableGrid from './components/ObservableGrid';
 import { dataGenerator } from './parts/dataGenerator';
-import { ActionsRow, CurrencyRow, DescriptionRow, NamesRow, TilesRow } from './parts/SampleRow';
+import { ActionsRow, Card, CurrencyRow, DescriptionRow, NamesRow, TilesRow } from './parts/SampleRow';
 
 
 const App = () => {
@@ -30,6 +31,7 @@ const App = () => {
   const [isDebugging, setIsDebugging] = useState(true);
   const [canvasDrawing, setCanvasDrawing] = useState(false);
   const [seeLive, setSeeLive] = useState(false);
+  const [asGrid, setAsGrid] = useState(true);
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
 
@@ -37,36 +39,34 @@ const App = () => {
     {
       label: 'Name2',
       tooltip: "Filter users by name",
-      // icon: <GitHubIcon />,
+      icon: <GitHubIcon />,
       property: 'name',
       canCanvas: true,
       width: 'minmax(200px, 1fr)',
       row: (row) => <NamesRow row={row} />,
-      preHeaders: [
-        {
-          label: 'Surname',
-          icon: <PersonPinCircleIcon />,
-          property: 'surdname'
-        }
-      ],
-      postHeaders: [
-        {
-          label: 'Surneame',
-          icon: <PersonPinCircleIcon />,
-          property: 'swurname'
-        }
-      ],
-      // secondaryHeaders: [
+      // preHeaders: [
       //   {
-      //     label: 'Name1',
-      //     property: 'nickname',
-      //     // noSort: true
-      //   },
-      //   {
-      //     label: 'Name2',
-      //     property: 'streetname'
+      //     label: 'Surname',
+      //     property: 'surdname'
       //   }
-      // ]
+      // ],
+      // postHeaders: [
+      //   {
+      //     label: 'Surneame',
+      //     property: 'swurname'
+      //   }
+      // ],
+      secondaryHeaders: [
+        {
+          label: 'Name1',
+          property: 'nickname',
+          // noSort: true
+        },
+        {
+          label: 'Name2',
+          property: 'streetname'
+        }
+      ]
     },
     {
       label: 'Description',
@@ -122,6 +122,23 @@ const App = () => {
     },
   ]
 
+  const headersGrid = [
+    {
+      label: 'Entries',
+      tooltip: "Filter users by name",
+      icon: <ViewAgendaIcon />,
+      property: 'name',
+      canCanvas: true,
+      width: 'minmax(200px, 1fr)',
+      row: (row) => <Card row={row}  selectedTiles={selectedTiles} onSelectTile={(tile) => {
+        setSelectedTiles(selectedTiles => selectedTiles.some(st => st === tile)
+        ? selectedTiles.filter(st => st !== tile)
+        : [...selectedTiles, tile]
+        )
+      }} />,
+    },
+  ]
+
   const generateRows = (count) => {
     const t0 = Date.now()
     const rowsGenerated = dataGenerator(count);
@@ -173,13 +190,15 @@ const App = () => {
 
         </div>
 
-
+        {/* TODO: add header children */}
+        {/* TODO: make grid support sub-columns */}
           <div className={`${classes.actions} ${classes.smallActions}`}>
             <Chip variant="outlined" label={`Search Rows: ${filteredRows.length}`} />
             <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debugging: ${isDebugging ? 'ON' : 'OFF'}`} />
             <Chip variant="outlined" label={`Performance: ${performance}ms`} />
             <Chip onClick={() => setCanvasDrawing(!canvasDrawing)} variant="outlined" label={`🧪 Canvas Items: ${canvasDrawing ? 'ON' : 'OFF'}`} />
             <Chip onClick={() => setSeeLive(!seeLive)} variant="outlined" label={`Env: ${seeLive ? 'PROD' : 'DEV'}`} />
+            {!seeLive && <Chip onClick={() => setAsGrid(!asGrid)} variant="outlined" label={`Grid: ${asGrid ? 'GRID' : 'TABLE'}`} />}
           </div>
 
 
@@ -269,15 +288,30 @@ const App = () => {
             isEmpty={filteredRows.length === 0}
             emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
           />
-          : <LocalObservableGrid {...{isDebugging, headers, canvasDrawing }}
-            uniqueId="fakeEntries"
-            className={classes.observableGrid}
-            isClearingOnBlur={false}
-            rowOptions={{ padding: '8px 16px' }}
-            headerOptions={{ padding: '8px 16px' }}
-            rows={filteredRows}
-            emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
-        />}
+          : <>
+            {asGrid
+              ? <LocalObservableGrid {...{ isDebugging, headers: headersGrid, canvasDrawing }}
+                uniqueId="fakeEntries"
+                isGrid={4}
+                pageSize={100}
+                isAlternating={false}
+                className={classes.observableGrid}
+                isClearingOnBlur={false}
+                rowOptions={{ padding: '16px' }}
+                headerOptions={{ padding: '8px 16px' }}
+                rows={filteredRows}
+                emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
+              />
+              : <LocalObservableGrid {...{ isDebugging, headers, canvasDrawing }}
+                uniqueId="fakeEntries"
+                className={classes.observableGrid}
+                isClearingOnBlur={false}
+                rowOptions={{ padding: '8px 16px' }}
+                headerOptions={{ padding: '8px 16px' }}
+                rows={filteredRows}
+                emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
+            />}
+          </>}
       </div>
     </div>
   </ThemeProvider>

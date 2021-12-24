@@ -22,6 +22,29 @@ const NamesRow = ({
   </div>
 }
 
+const Card = ({ row, selectedTiles, onSelectTile = () => {} }) => {
+  return <div
+    style={{
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '8px',
+      border: '1px solid #CCC',
+      padding: '8px 12px',
+      borderRadius: '8px'
+    }}>
+    <div style={{display: 'flex', flexWrap: 'nowrap', justifyContent: 'space-between'}}>
+      <NamesRow row={row} />
+      <CurrencyRow row={row} />
+    </div>
+      <DescriptionRow row={row} />
+    <div style={{ display: 'flex', flexWrap: 'nowrap', justifyContent: 'space-between', alignItems: 'center' }}>
+      <TilesRow row={row} selectedTiles={selectedTiles} onSelectTile={onSelectTile}/>
+      <ActionsRow />
+    </div>
+
+  </div>
+}
+
 const DescriptionRow = ({ row: { description } }) => {
   return <Typography variant='body2'>{description}</Typography>
 }
@@ -32,7 +55,7 @@ const TilesRow = ({ row: { tiles }, selectedTiles, onSelectTile = () => {} }) =>
   return <div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row', gap: '8px 8px', padding: '4px 0px' }}>
     {tiles.map(({ id, name }) => <div
       onClick={() => onSelectTile(id)}
-      className={[classes.tile, selectedTiles.some(st => st === id) && classes.selectedTile].join(' ')}
+      className={[classes.tile, selectedTiles?.some(st => st === id) && classes.selectedTile].join(' ')}
       key={name}
     >{name}</div>)}
   </div>
@@ -56,7 +79,7 @@ const actionStyles = makeStyles(() => ({
     display: 'flex',
     justifyContent: 'flex-end',
     gap: "8px",
-    flexWrap: 'wrap',
+    flexWrap: 'nowrap',
     opacity: '0.3',
     filter: 'grayscale(70%)',
     '&:hover': {
@@ -81,4 +104,4 @@ const tileStyles = makeStyles((theme) => ({
   }
 }))
 
-export { ActionsRow, CurrencyRow, TilesRow, DescriptionRow, NamesRow };
+export { ActionsRow, CurrencyRow, TilesRow, DescriptionRow, NamesRow, Card };

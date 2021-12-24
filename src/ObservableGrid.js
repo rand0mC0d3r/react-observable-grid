@@ -33,6 +33,7 @@ const ObservableGrid =  ({
   isClearingOnBlur = true,
   // isInfinite = false,
   isUpdatingUrl = false,
+  isGrid = false,
   isDebugging = false,
   isSelectable = true,
   isScrollable = true,
@@ -205,7 +206,7 @@ const ObservableGrid =  ({
         }}/>
       </div>}
 
-      {sortedRows && <ObservableContainer {...{ isScrollable, isAlternating }}>
+      {sortedRows && <ObservableContainer {...{ isScrollable, isAlternating, isGrid }}>
         {(throttling && sortedRows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1) &&
           <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
         {sortedRows
@@ -220,18 +221,18 @@ const ObservableGrid =  ({
             style={{
               padding: rowOptions.padding,
               gridTemplateColumns: gridTemplateColumns,
-              backgroundColor: (isSelectable && selectedIndex === row.__origIndex)
+              backgroundColor: (isSelectable && !isGrid && selectedIndex === row.__origIndex)
                 ? '#44444422'
                 : '',
             }}
-            className={`${classes.observableRow} ${(isSelectable && selectedIndex === row.__origIndex) ? 'Row-isSelected' : ''}`}
+            className={`${isGrid ? classes.observableGrid : classes.observableRow} ${(isSelectable && selectedIndex === row.__origIndex) ? 'Row-isSelected' : ''}`}
             index={row.__index}
             forceRender={!throttling}
             isRelevant={throttling
               ? row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize))
               : true
             }
-            onClick={() => isSelectable && setSelectedIndex(selectedIndex === row.__origIndex ? null : row.__origIndex)}
+            onClick={() => isSelectable && !isGrid && setSelectedIndex(selectedIndex === row.__origIndex ? null : row.__origIndex)}
           >
             {innerHeaders.filter(header => header.visible).map(header =>
               <React.Fragment key={`${header.property}_${header.label}_${header.tooltip}_${header.width}`}>
@@ -267,6 +268,14 @@ const useStyles = makeStyles(() => ({
     breakInside: 'avoid',
     fontSize: '12px',
     alignItems: 'center',
+    gridColumnGap: '16px',
+    display: 'grid',
+  },
+  observableGrid: {
+    // alignSelf: 'stretch',
+    breakInside: 'avoid',
+    fontSize: '12px',
+    // alignItems: 'center',
     gridColumnGap: '16px',
     display: 'grid',
   },
