@@ -95,13 +95,11 @@ const ObservableGrid =  ({
 
   useEffect(() => {
     searchColumns.length > 0
-      ? setFilteredRows(cachedRows.filter(cr => searchColumns
-        .some(searchColumn => searchColumn.term.length > 0
-          ? cr[searchColumn.key].toLowerCase().includes(searchColumn?.term)
-          : true)
-        ? true
-        : false
-      ))
+      ? setFilteredRows(cachedRows.filter(cr => {
+        return searchColumns.some(searchColumn => searchColumn.term.length > 0
+            ? cr[searchColumn.key].toLowerCase().includes(searchColumn?.term)
+            : true)
+      }))
       : setFilteredRows(cachedRows)
   }, [cachedRows, searchColumns])
 
@@ -216,8 +214,12 @@ const ObservableGrid =  ({
       onDeSelect,
       handleRequestSort,
       handleSearchTerm: ({ key, term }) => {
-        // console.log(key, term)
-        setSearchColumns([...searchColumns.filter(sc => sc.key !== key), {key, term}])
+        console.log(key, term)
+        if (term === null) {
+          setSearchColumns([...searchColumns.filter(sc => sc.key !== key)])
+        } else {
+          setSearchColumns([...searchColumns.filter(sc => sc.key !== key), {key, term}])
+        }
       },
       handleResetSort,
       rowOptions }} />}
