@@ -31,8 +31,7 @@ const App = () => {
   const [canvasDrawing, setCanvasDrawing] = useState(false);
   const [seeLive, setSeeLive] = useState(false);
   const [asGrid, setAsGrid] = useState(false);
-  const [totalElements, setTotalElements] = useState(null)
-  const [gridElements, setGridElements] = useState(null)
+  const [elementsRendered, setElementsRendered] = useState([0,0])
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
 
@@ -164,8 +163,8 @@ const App = () => {
     setRows(() => [])
     const t0 = Date.now()
     const rowsGenerated = dataGenerator(count);
-    const t1 = Date.now();
     setRows(() => rowsGenerated)
+    const t1 = Date.now();
     setPerformance(Math.round(t1 - t0));
   }
 
@@ -173,8 +172,7 @@ const App = () => {
 
   useEffect(( ) => {
     const interval = setInterval(() => {
-      setTotalElements(document.getElementsByTagName('*').length)
-      setGridElements(Number(calculateGridElements()))
+      setElementsRendered(() => [document.getElementsByTagName('*').length, Number(calculateGridElements())])
     }, 1000)
 
     return () => clearInterval(interval)
@@ -219,7 +217,7 @@ const App = () => {
         </div>
         <div className={`${classes.actions} ${classes.smallActions}`}>
           <Chip variant="outlined" label={<div style={{ minWidth: '100px', textAlign: 'center' }}>{`Filtered: ${filteredRows.length}`}</div>} />
-          <Chip variant="outlined" label={<div style={{ minWidth: '150px', textAlign: 'center' }}>{`DOM (Grid): ${totalElements || '?'} (${gridElements || '?'})`}</div>} />
+          <Chip variant="outlined" label={<div style={{ minWidth: '150px', textAlign: 'center' }}>{`DOM (Grid): ${elementsRendered[0]} (${elementsRendered[1]})`}</div>} />
           <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debug ${isDebugging ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsColumned(!isColumned)} variant="outlined" label={`Columns ${isColumned ? 'ON' : 'OFF'}`} />
           <Chip variant="outlined" label={<div style={{ minWidth: '100px', textAlign: 'center' }}>{`Perf: ${performance}ms`}</div>} />
