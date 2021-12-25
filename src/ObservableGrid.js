@@ -88,21 +88,18 @@ const ObservableGrid =  ({
 
   useEffect(() => {
     if (!isEmpty) {
-      setCachedRows(rows.map((row, index) => ({ ...row, __origIndex: index })))
+      setCachedRows(() => rows.map((row, index) => ({ ...row, __origIndex: index })))
       setSelectedIndex(null)
     }
   }, [rows, isEmpty])
 
   useEffect(() => {
     searchColumns.length > 0
-      ? setFilteredRows(cachedRows.filter(cr => {
-        const searchedColumns = searchColumns
+      ? setFilteredRows(() => cachedRows.filter(cr => searchColumns
           .filter(sc => sc.term.length > 0)
-          .filter(searchColumn => cr[searchColumn.key].toLowerCase().includes(searchColumn?.term))
-        console.log(cr, searchedColumns, searchColumns, searchedColumns.length === searchColumns.length)
-        return searchedColumns.length === searchColumns.length;
-      }))
-      : setFilteredRows(cachedRows)
+          .filter(searchColumn => cr[searchColumn.key].toLowerCase().includes(searchColumn?.term)).length === searchColumns.length
+      ))
+      : setFilteredRows(() => cachedRows)
   }, [cachedRows, searchColumns])
 
   useEffect(() => {

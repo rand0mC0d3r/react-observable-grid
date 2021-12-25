@@ -226,11 +226,11 @@ const App = () => {
           </IconButton>
         </div>
         <div className={`${classes.actions} ${classes.smallActions}`}>
-          <Chip variant="outlined" label={`Filtered: ${filteredRows.length}`} />
-          <Chip variant="outlined" label={`DOM (Grid): ${totalElements || '?'} (${gridElements || '?'})`} />
+          <Chip variant="outlined" label={<div style={{ minWidth: '100px', textAlign: 'center' }}>{`Filtered: ${filteredRows.length}`}</div>} />
+          <Chip variant="outlined" label={<div style={{ minWidth: '100px', textAlign: 'center' }}>{`DOM (Grid): ${totalElements || '?'} (${gridElements || '?'})`}</div>} />
           <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debug ${isDebugging ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsColumned(!isColumned)} variant="outlined" label={`Columns ${isColumned ? 'ON' : 'OFF'}`} />
-          <Chip variant="outlined" label={`Perf: ${performance}ms`} />
+          <Chip variant="outlined" label={<div style={{ minWidth: '100px', textAlign: 'center' }}>{`Perf: ${performance}ms`}</div>} />
           <Chip onClick={() => setCanvasDrawing(!canvasDrawing)} variant="outlined" label={`🧪 Canvas ${canvasDrawing ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setSeeLive(!seeLive)} variant="outlined" label={`Env ${seeLive ? 'PROD' : 'DEV'}`} />
           {!seeLive && <Chip onClick={() => setAsGrid(!asGrid)} variant="outlined" label={`Grid ${asGrid ? 'GRID' : 'TABLE'}`} />}
