@@ -27,6 +27,7 @@ const ObservableHeaderItem = ({
   selected,
   handleResetSort,
   extension,
+  handleSearchTerm = () => { },
   options: {ascArrow, descArrow, padding },
   onSelect,
   secondaryHeaders,
@@ -56,7 +57,11 @@ const ObservableHeaderItem = ({
       }}
     >
       <div style={{ padding: '12px 16px'}}>
-        <TextField value={searchString} onChange={(e) => setSearchString(e.target.value)} id="outlined-basic" label="Search" variant="outlined" />
+        <TextField value={searchString} onChange={(e) => {
+          setSearchString(e.target.value)
+          handleSearchTerm({ key: property, term: e.target.value })
+        }
+        } id="outlined-basic" label="Search" variant="outlined" />
       </div>
     </Popover>}
   const evaluateOrderBy = ({ property, label }) => orderBy === (property || label?.toLowerCase())

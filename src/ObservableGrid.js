@@ -44,8 +44,9 @@ const ObservableGrid =  ({
   const theme = useTheme()
   const classes = useStyles(theme)
 
+  const [searchColumns, setSearchColumns] = useState([])
   const [order, setOrder] = useState('asc')
-  const [cachedRows, setCachedRows] = useState([])
+
   const [innerHeaders, setInnerHeaders] = useState([])
   const [orderBy, setOrderBy] = useState('')
   const [currentRow, setCurrentRow] = useState(null)
@@ -53,7 +54,11 @@ const ObservableGrid =  ({
   const [totalElements, setTotalElements] = useState(null)
   const [gridTemplateColumns, setGridTemplateColumns] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(null)
+
+  const [cachedRows, setCachedRows] = useState([])
+  const [filteredRows, setFilteredRows] = useState([])
   const [sortedRows, setSortedRows] = useState([])
+
   const [startEnd, setStartEnd] = useState({ start: -1, end: 1 })
   const [throttleLimit, setThrottleLimit] = useState(50)
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
@@ -89,19 +94,23 @@ const ObservableGrid =  ({
   }, [rows, isEmpty])
 
   useEffect(() => {
+    setFilteredRows(cachedRows)
+  }, [cachedRows])
+
+  useEffect(() => {
     function sortSort(order, rows) {
       return order === 'asc'
         ? naturalSort(rows).asc([r => r[orderBy]])
         : naturalSort(rows).desc([r => r[orderBy]])
     }
-    if (cachedRows.length > 0) {
+    if (filteredRows.length > 0) {
       orderBy === ''
-        ? setSortedRows(cachedRows.map((r, index) => ({ ...r, __index:  index })))
-        : setSortedRows(sortSort(order, cachedRows).map((r, index) => ({ ...r, __index:  index })))
+        ? setSortedRows(filteredRows.map((r, index) => ({ ...r, __index:  index })))
+        : setSortedRows(sortSort(order, filteredRows).map((r, index) => ({ ...r, __index:  index })))
       setStartEnd({ start: -1, end: 1 })
-      setThrottling(cachedRows.length -1 >= throttleLimit)
+      setThrottling(filteredRows.length -1 >= throttleLimit)
     }
-  }, [cachedRows, order, orderBy])
+  }, [filteredRows, order, orderBy])
 
   // useEffect(( ) => {
   //   const interval = setInterval(() => {
@@ -187,7 +196,7 @@ const ObservableGrid =  ({
       // { label: 'totalElements', value: totalElements },
     ]}>
     </ObservableDebugging>}
-
+    {JSON.stringify(searchColumns)}
     {headers && <ObservableHeader {...{
       options: headerOptions,
       gridTemplateColumns,
@@ -198,6 +207,10 @@ const ObservableGrid =  ({
       onSelect,
       onDeSelect,
       handleRequestSort,
+      handleSearchTerm: ({ key, term }) => {
+        // console.log(key, term)
+        setSearchColumns([...searchColumns.filter(sc => sc.key !== key), {key, term}])
+      },
       handleResetSort,
       rowOptions }} />}
 
