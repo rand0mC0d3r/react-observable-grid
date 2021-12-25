@@ -2,6 +2,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { createNewSortInstance } from 'fast-sort'
 import throttle from 'lodash/throttle'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { ObservableRowList } from '.'
 import ObservableContainer from './ObservableContainer'
 import ObservableDebugging from './ObservableDebugging'
 import ObservableEmpty from './ObservableEmpty'
@@ -252,7 +253,8 @@ const ObservableGrid =  ({
       {sortedRows && <ObservableContainer {...{ isScrollable, isAlternating, isGrid }}>
         {(throttling && sortedRows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1) &&
           <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
-        {sortedRows
+        <ObservableRowList {...{ rows: sortedRows, throttling, rowOptions, gridTemplateColumns, selectedIndex, startEnd, pageSize, innerHeaders}} />
+        {/* {sortedRows
           .filter(row => throttling
             ? row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize))
             : true
@@ -278,7 +280,6 @@ const ObservableGrid =  ({
             }
             onClick={() => isSelectable && !isGrid && setSelectedIndex(selectedIndex === row.__origIndex ? null : row.__origIndex)}
           >
-            {/* {currentRow} */}
             {innerHeaders.filter(header => header.visible).map(header =>
               <React.Fragment key={`${header.property}_${header.label}_${header.tooltip}_${header.width}`}>
                 {(!throttling && canvasDrawing && header.canCanvas)
@@ -287,7 +288,7 @@ const ObservableGrid =  ({
                   </ObservableSnapshot>
                   : row.__index === currentRow && header.onHover ? header.onHover(row) : header.row(row)}
               </React.Fragment>)}
-          </ObservableRow>)}
+          </ObservableRow>)} */}
         {throttling && rows.length > pageSize && pageSize * startEnd.end - 1 < rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
         {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
 
