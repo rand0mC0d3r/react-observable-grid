@@ -4,7 +4,6 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
 import PropTypes from 'prop-types';
 import React, { cloneElement, useCallback, useEffect, useState } from 'react';
-import { ObservableHeaderItem } from '.';
 
 const defaultOptions = {
   ascArrow: '▲',
@@ -12,20 +11,24 @@ const defaultOptions = {
   padding: '10px 20px',
 }
 
-const ObservableHeader = ({
-  gridTemplateColumns,
-  headers = [],
-  setHeaders,
-  options: { ascArrow, descArrow, padding },
-  options,
+const ObservableHeaderItem = ({
+  property,
+  label,
+  noHightlight,
+  align,
+  preHeaders,
   order,
-  onSelect = () => { },
-  onDeSelect = () => { },
   orderBy,
-
+  icon,
+  noSort,
+  postHeaders,
   handleRequestSort,
+  selected,
   handleResetSort,
-  rowOptions
+  extension,
+  options: {ascArrow, descArrow, padding },
+  onSelect,
+  secondaryHeaders,
 }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
@@ -33,8 +36,6 @@ const ObservableHeader = ({
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
-  const handleClick = (event) => { setAnchorEl(event.currentTarget) };
-  const handleClose = () => { setAnchorEl(null) };
   const evaluateOrderBy = ({ property, label }) => orderBy === (property || label?.toLowerCase())
   const toggleHeader = (property, label) => {
     setHeaders(headers.map(header => {
@@ -47,29 +48,6 @@ const ObservableHeader = ({
         return header
       }
     }))}
-  const renderPopover = () => {
-    return <Popover
-      id={id}
-      open={open}
-      anchorEl={anchorEl}
-      onClose={handleClose}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'center',
-      }}
-    >
-        <div>
-          {headers.map(header => <div key={`${header.property}_${header.label}`} style={{display: 'flex', alignItems: 'center', gap: '8px', padding: '4px 12px'}}>
-            <Checkbox color="primary" checked={header.visible} onChange={() => toggleHeader(header.property, header.label)}/>
-            {header.icon}
-            <Typography color="textSecondary">{header.label} (property: {header.property})</Typography>
-          </div>)}
-        </div>
-    </Popover>}
   const renderArrows = ({property, label, align, secondary = false}) => {
     return evaluateOrderBy({ property, label }) && <div
     className={classes.arrowColor}
@@ -120,29 +98,60 @@ const ObservableHeader = ({
     {!noSort && renderArrows({property, label, align})}
   </div>
 
-  return <>
-    {/* {JSON.stringify(headers.map(h => { return [ h.property, h.selected ] }))} */}
-    {renderPopover()}
-    <div id="Header-root" className={classes.root}>
-      <div
-        id="Header-wrapper"
-        onContextMenu={(e) => { e.preventDefault(); handleClick(e) }}
-        className={classes.wrapper}
-        style={{
-          padding: padding || defaultOptions.padding,
-          // paddingTop: '0px',
-          // paddingBottom: '0px',
-          gridTemplateColumns: gridTemplateColumns}}
-      >
-        {headers?.filter(header => header.visible).map(({
-          noHightlight, align, label, icon, property, extension,
-          secondaryHeaders, preHeaders, selected, postHeaders, noSort
-        }) => <>
-            <ObservableHeaderItem {...{property, handleRequestSort, onSelect, selected, extension, secondaryHeaders, order, options, orderBy, handleResetSort, preHeaders, icon, postHeaders, noSort, label, noHightlight, align}}  />
-        </>)}
+  return <div
+    onMouseEnter={() => !noHightlight && onSelect(property)}
+    className={classes.headersWrapper}
+    style={{
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'nowrap',
+    justifyContent: 'space-between',
+  }}>
+    <div
+      key={`${label}_${property}`}
+      id="Header-header"
+      className={`${classes.headers} ${!noHightlight ? classes.headersSelectable : ''}`}
+      style={{
+        alignItems: align ? 'flex-end' : 'flex-start',
+    }}>
+      <div className={`${classes.flexbox} ${classes.maxiFlexbox}`}>
+        {preHeaders && <>{renderAdditionalHeader(preHeaders)}</>}
+        {renderMainHeader({ noSort, property, label, icon, align })}
+        {postHeaders && <>{renderAdditionalHeader(postHeaders)}</>}
       </div>
+      {secondaryHeaders && <div className={classes.secondaryHeaders}>
+        {secondaryHeaders.map(({ label, property, noSort }) => <div
+          className={`${classes.flexbox} ${classes.miniFlexbox}`}
+          style={{ cursor: noSort ? 'default' : 'pointer', }}
+          key={`${label}_subHeader`}
+        >
+          <Typography
+            variant='caption'
+            color={evaluateOrderBy({ property, label }) ? 'primary' : 'textSecondary'}
+            style={{
+              flexOrder: 0,
+              lineHeight: '1.5',
+              userSelect: 'none',
+              fontWeight: evaluateOrderBy({property, label}) ? 'bold' : 'normal'
+            }}
+            onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
+            onDoubleClick={() => !noSort && handleResetSort()}
+          >
+            {label}
+          </Typography>
+          {!noSort && renderArrows({property, label, align, secondary: true})}
+        </div>)}
+      </div>}
     </div>
-  </>
+    <div style={{ display: 'flex', gap: '4px', flexWrap: 'nowrap', alignItems: 'center'}}>
+      {extension && extension}
+      {selected && <SearchIcon
+        color="disabled"
+        style={{
+          fontSize: '16px',
+        }} />}
+    </div>
+    </div>
 }
 
 const useStyles = makeStyles(theme => ({
@@ -213,14 +222,4 @@ const useStyles = makeStyles(theme => ({
 }))
 
 
-ObservableHeader.propTypes = {
-  gridTemplateColumns: PropTypes.string.isRequired,
-  headers: PropTypes.array.isRequired,
-  order: PropTypes.string.isRequired,
-  orderBy: PropTypes.string.isRequired,
-  handleRequestSort: PropTypes.func.isRequired,
-  handleResetSort: PropTypes.func.isRequired,
-  rowOptions: PropTypes.object
-}
-
-export default ObservableHeader
+export default ObservableHeaderItem
