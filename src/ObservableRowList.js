@@ -1,5 +1,5 @@
-import { makeStyles, useTheme } from '@material-ui/core/styles'
-import React, { useEffect, useState } from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import React, { useState } from 'react'
 import ObservableRow from './ObservableRow'
 import ObservableSnapshot from './ObservableSnapshot'
 
@@ -15,27 +15,12 @@ const ObservableRowList = ({
   gridTemplateColumns,
   isGrid = false,
   throttling,
+  setSelectedIndex,
   isSelectable = true,
   isScrollable = true,
 }) => {
-  const theme = useTheme()
-  const classes = useStyles(theme)
-
+  const classes = useStyles()
   const [currentRow, setCurrentRow] = useState(null)
-  const [chunks, setChunks] = useState([])
-  const chunksSize = 10
-
-  useEffect(() => {
-    if (rows.length > 0) {
-      setChunks(rows.reduce((all, one, i) => {
-        const ch = Math.floor(i / chunksSize);
-        all[ch] = [].concat((all[ch] || []), one);
-        return all
-      }, []))
-    } else {
-      setChunks([])
-    }
-  }, [rows])
 
   const idValue = (index) => {
     let result = null
@@ -44,10 +29,11 @@ const ObservableRowList = ({
     return result || null
   }
 
-  const renderRows = (inputRows = []) => {
-    return <>{inputRows
+  return (rows || [])
       .filter(row => throttling
-        ? row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize))
+        ? row.__index <= (selectedIndex === null
+          ? (startEnd.end * pageSize)
+          : Math.max(selectedIndex, startEnd.end * pageSize))
         : true)
       .map(row => <ObservableRow
         {...{ minRows, rowOptions, isScrollable }}
@@ -78,22 +64,10 @@ const ObservableRowList = ({
               </ObservableSnapshot>
               : row.__index === currentRow && header.onHover ? header.onHover(row) : header.row(row)}
           </React.Fragment>)}
-      </ObservableRow>)}</>
-  }
-
-  return <>
-    {renderRows(rows)}
-    {/* {console.log(chunks)} */}
-    {/* {chunks.length > 0 && <>
-      {renderRows(chunks[0])}
-      {renderRows(chunks[1])}
-      {renderRows(chunks[2])}
-      {renderRows(chunks[3])}
-    </>} */}
-  </>
+      </ObservableRow>)
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   observableRow: {
     alignSelf: 'stretch',
     breakInside: 'avoid',
@@ -108,25 +82,6 @@ const useStyles = makeStyles((theme) => ({
     gridColumnGap: '16px',
     display: 'grid',
   },
-  observableRowSelected: {
-    backgroundColor: "#4442"
-  },
-  observableColumnRight: {
-    borderRight: `1px solid ${theme.palette.divider}`,
-    // borderRight: `1px solid blue`,
-  },
-  observableColumnLeft: {
-    // borderLeft: `1px solid ${theme.palette.divider}`,
-    // borderLeft: `1px solid red`,
-  },
-  observableColumn: {
-    margin: '0px -8px',
-    // borderRight: `1px solid ${theme.palette.divider}`,
-
-    '&:last-child': {
-      borderRight: '0px none'
-    },
-  }
 }))
 
 

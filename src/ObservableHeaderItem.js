@@ -204,14 +204,14 @@ const ObservableHeaderItem = ({
     </div>
     <div style={{ display: 'flex', gap: '4px', flexWrap: 'nowrap', alignItems: 'center'}}>
         {extension && extension}
-        {!noSearch && (selected || searchString !== '' )  && <Tooltip arrow title="Search in column">
+        {!noSearch && (selected || searchString !== '') && <Tooltip arrow title={`Search in column: ${label}`}>
           <Chip
             onClick={(e) => { handleClick(e) }}
             icon={<SearchIcon color="action" />}
             label={searchString || 'Search'}
             size="small"
             variant="outlined"
-            onDelete={searchString.length === '' ? () => {
+            onDelete={searchString !== '' ? () => {
               handleSearchTerm({ key: property, term: null })
               setSearchString('')
             } : undefined}

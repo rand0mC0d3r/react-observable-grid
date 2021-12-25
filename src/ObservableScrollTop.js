@@ -1,5 +1,5 @@
-import React from 'react'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
+import React from 'react'
 
 const ObservableScrollTop = ({ selectedIndex, isAtTop }) => {
   const theme = useTheme()

@@ -110,8 +110,8 @@ const ObservableGrid =  ({
         : naturalSort(rows).desc([r => r[orderBy]])
     }
     orderBy === ''
-      ? setSortedRows(filteredRows.map((r, index) => ({ ...r, __index:  index })))
-      : setSortedRows(sortSort(order, filteredRows).map((r, index) => ({ ...r, __index:  index })))
+      ? setSortedRows(() => filteredRows.map((r, index) => ({ ...r, __index:  index })))
+      : setSortedRows(() => sortSort(order, filteredRows).map((r, index) => ({ ...r, __index:  index })))
     setStartEnd({ start: -1, end: 1 })
     setThrottling(filteredRows.length -1 >= throttleLimit)
   }, [filteredRows, order, orderBy])
@@ -152,6 +152,7 @@ const ObservableGrid =  ({
   }
 
   const onSelect = (property) => {
+    console.log(property)
     setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: header.property === property ? true : false })))
   }
 
@@ -224,34 +225,14 @@ const ObservableGrid =  ({
       handleResetSort,
       rowOptions }} />}
 
-    <div
-        className={`${classes.observableRow} ${classes.selectedColumn}`}
-        style={{
-          alignItems: 'unset',
-          display: 'grid',
-          padding: rowOptions.padding,
-          paddingTop: 0,
-          paddingBottom: 0,
-          gap: '16px',
-          zIndex: -1,
-          gridTemplateColumns: gridTemplateColumns,
-        }}>
-      {innerHeaders.map((innerHeader, i) => <div
-      key={`${innerHeader.property}-${innerHeader.label}`}
-      className={`
-      ${classes.observableColumn}
-      ${isColumned && classes.observableColumnRight}`}
-      style={{
-        backgroundColor: i === innerHeaders.findIndex(header => header.selected) ? "#EEEEEE80" : '',
-      }}/>)}
-    </div>
+
 
     {sortedRows.length > 0 ? <>
 
       {sortedRows && <ObservableContainer {...{ isScrollable, isAlternating, isGrid }}>
         {(throttling && sortedRows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1) &&
           <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
-        <ObservableRowList {...{ rows: sortedRows, throttling, rowOptions, gridTemplateColumns, selectedIndex, startEnd, pageSize, innerHeaders}} />
+        <ObservableRowList {...{ rows: sortedRows, throttling, setSelectedIndex, rowOptions, gridTemplateColumns, selectedIndex, startEnd, pageSize, innerHeaders}} />
         {throttling && rows.length > pageSize && pageSize * startEnd.end - 1 < rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
         {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
 
@@ -260,25 +241,40 @@ const ObservableGrid =  ({
         <ObservableScrollTop {...{ selectedIndex, isAtTop: rows.length > pageSize && startEnd.end > 3 }} />}
 
     </>
-    : <ObservableEmpty>{emptyElement}</ObservableEmpty>}
+      : <ObservableEmpty>{emptyElement}</ObservableEmpty>}
+
+
+    {sortedRows.length > 0 && <div
+      className={classes.observableRow}
+      style={{
+        padding: rowOptions.padding,
+        paddingTop: 0,
+        paddingBottom: 0,
+        gridTemplateColumns: gridTemplateColumns
+      }}>
+      {innerHeaders.map((innerHeader, i) => <div key={`${innerHeader.property}-${innerHeader.label}`}
+        className={`${classes.observableColumn} ${isColumned && classes.observableColumnRight}`}
+        style={{ backgroundColor: i === innerHeaders.findIndex(header => header.selected) ? "#EEEEEE80" : ''}}
+      />)}
+    </div>}
+
   </div>
 }
 
 const useStyles = makeStyles((theme) => ({
-  selectedColumn: {
+  observableRow: {
     top: '0px',
     left: '0px',
     bottom: '0px',
     right: '0px',
     position: 'absolute',
-  },
-  observableRow: {
     alignSelf: 'stretch',
     breakInside: 'avoid',
     fontSize: '12px',
-    alignItems: 'center',
-    gridColumnGap: '16px',
     display: 'grid',
+    alignItems: 'unset',
+    gap: '16px',
+    zIndex: -1,
   },
   observableGrid: {
     breakInside: 'avoid',
@@ -291,15 +287,11 @@ const useStyles = makeStyles((theme) => ({
   },
   observableColumnRight: {
     borderRight: `1px solid ${theme.palette.divider}`,
-    // borderRight: `1px solid blue`,
   },
   observableColumnLeft: {
-    // borderLeft: `1px solid ${theme.palette.divider}`,
-    // borderLeft: `1px solid red`,
   },
   observableColumn: {
     margin: '0px -8px',
-    // borderRight: `1px solid ${theme.palette.divider}`,
 
     '&:last-child': {
       borderRight: '0px none'
