@@ -98,6 +98,7 @@ const App = () => {
     {
       label: 'Tiles',
       icon: <DashboardIcon />,
+      noSearch: true,
       property: 'tilesHash',
       width: 'minmax(100px, 2fr)',
       extension: <>
@@ -118,7 +119,6 @@ const App = () => {
     },
     {
       label: 'Price',
-      // canCanvas: true,
       icon: <MonetizationOnIcon />,
       property: 'price',
       align: 'flex-end',

@@ -94,8 +94,16 @@ const ObservableGrid =  ({
   }, [rows, isEmpty])
 
   useEffect(() => {
-    setFilteredRows(cachedRows)
-  }, [cachedRows])
+    searchColumns.length > 0
+      ? setFilteredRows(cachedRows.filter(cr => searchColumns
+        .some(searchColumn => searchColumn.term.length > 0
+          ? cr[searchColumn.key].toLowerCase().includes(searchColumn?.term)
+          : true)
+        ? true
+        : false
+      ))
+      : setFilteredRows(cachedRows)
+  }, [cachedRows, searchColumns])
 
   useEffect(() => {
     function sortSort(order, rows) {

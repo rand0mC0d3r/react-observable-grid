@@ -57,9 +57,9 @@ const ObservableHeaderItem = ({
       }}
     >
       <div style={{ padding: '12px 16px'}}>
-        <TextField value={searchString} onChange={(e) => {
+        <TextField autoFocus value={searchString} onChange={(e) => {
           setSearchString(e.target.value)
-          handleSearchTerm({ key: property, term: e.target.value })
+          handleSearchTerm({ key: property, term: e.target.value.toLowerCase() })
         }
         } id="outlined-basic" label="Search" variant="outlined" />
       </div>

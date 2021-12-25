@@ -63,7 +63,9 @@ export const internal_dataGenerator = (count) => count === 0 ? [] : new Array(co
   const randomFlavors = flavorsList.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 10 + 2));
   const randomString = `${Math.random().toString(36).substr(0, 8)}.${i + 1}`
   const randomName = `${['Mary', 'John', 'Robert', 'Michael', 'William', 'David', 'Richard', 'Joseph', 'Thomas', 'Charles'][Math.floor(Math.random() * 10)]}`
-  const randomSurname = `${['Williams','Johnson','Jones','Brown','Davis','Miller','Wilson','Moore','Taylor','Anderson'][Math.floor(Math.random() * 10)]}`
+  const randomSurname = `${['Williams', 'Johnson', 'Jones', 'Brown', 'Davis', 'Miller', 'Wilson', 'Moore', 'Taylor', 'Anderson'][Math.floor(Math.random() * 10)]}`
+  const randomCurrency = currencies[Math.floor(Math.random() * currencies.length)]
+
   return {
     uuid: `uuid_${i}`,
     name: randomName,
@@ -102,7 +104,7 @@ export const internal_dataGenerator = (count) => count === 0 ? [] : new Array(co
     ][Math.floor(Math.random() * 10)]}`,
     tiles: randomFlavors,
     tilesHash: randomFlavors.map(({ name }) => name).sort().join(''),
-    price: `${i + 1}.0${Math.floor(Math.random() * 100)}`,
-    currency: currencies[Math.floor(Math.random() * currencies.length)],
+    price: `${i + 1}.0${Math.floor(Math.random() * 100)} ${randomCurrency}`,
+    currency: randomCurrency,
   }
 });

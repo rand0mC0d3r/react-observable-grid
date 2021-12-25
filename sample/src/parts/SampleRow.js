@@ -77,7 +77,7 @@ const TilesRow = ({ row: { tiles }, selectedTiles, onSelectTile = () => {} }) =>
 
 const CurrencyRow = ({ row: { price, currency } }) => {
   // console.log(price)
-  return <Typography style={{ display: 'flex', justifyContent: 'flex-end' }} variant='subtitle2'>{price} {currency}</Typography>
+  return <Typography style={{ display: 'flex', justifyContent: 'flex-end' }} variant='subtitle2'>{price}</Typography>
 }
 
 const ActionsRow = () => {
