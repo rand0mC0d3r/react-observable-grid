@@ -52,6 +52,7 @@ const ObservableGrid =  ({
   const [orderBy, setOrderBy] = useState('')
   const [currentRow, setCurrentRow] = useState(null)
   const [throttling, setThrottling] = useState(false)
+  const [isDirty, setIsDirty] = useState(false)
   const [totalElements, setTotalElements] = useState(null)
   const [gridTemplateColumns, setGridTemplateColumns] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(null)
@@ -111,10 +112,15 @@ const ObservableGrid =  ({
     }
     orderBy === ''
       ? setSortedRows(() => filteredRows.map((r, index) => ({ ...r, __index:  index })))
-      : setSortedRows(() => sortSort(order, filteredRows).map((r, index) => ({ ...r, __index:  index })))
+      : setSortedRows(() => sortSort(order, filteredRows).map((r, index) => ({ ...r, __index: index })))
+    setIsDirty(() => false)
     setStartEnd({ start: -1, end: 1 })
-    setThrottling(filteredRows.length -1 >= throttleLimit)
+    setThrottling(filteredRows.length - 1 >= throttleLimit)
   }, [filteredRows, order, orderBy])
+
+  useEffect(() => {
+    setIsDirty(() => true)
+  }, [searchColumns, order, orderBy])
 
   // useEffect(( ) => {
   //   const interval = setInterval(() => {
@@ -152,7 +158,7 @@ const ObservableGrid =  ({
   }
 
   const onSelect = (property) => {
-    console.log(property)
+    // console.log(property)
     setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: header.property === property ? true : false })))
   }
 
@@ -202,7 +208,7 @@ const ObservableGrid =  ({
     ]}>
     </ObservableDebugging>}
 
-    {/* {JSON.stringify(searchColumns)} */}
+    {/* {JSON.stringify(isDirty)} */}
 
     {headers && <ObservableHeader {...{
       options: headerOptions,
@@ -215,7 +221,7 @@ const ObservableGrid =  ({
       onDeSelect,
       handleRequestSort,
       handleSearchTerm: ({ key, term }) => {
-        console.log(key, term)
+        // console.log(key, term)
         if (term === null) {
           setSearchColumns([...searchColumns.filter(sc => sc.key !== key)])
         } else {
@@ -225,7 +231,19 @@ const ObservableGrid =  ({
       handleResetSort,
       rowOptions }} />}
 
-
+    {sortedRows.length > 0 && <div
+      className={classes.observableRow}
+      style={{
+        padding: rowOptions.padding,
+        paddingTop: 0,
+        paddingBottom: 0,
+        gridTemplateColumns: gridTemplateColumns
+      }}>
+      {innerHeaders.map((innerHeader, i) => <div key={`${innerHeader.property}-${innerHeader.label}`}
+        className={`${classes.observableColumn} ${isColumned && classes.observableColumnRight}`}
+        style={{ backgroundColor: i === innerHeaders.findIndex(header => header.selected) ? "#EEEEEE80" : ''}}
+      />)}
+    </div>}
 
     {sortedRows.length > 0 ? <>
 
@@ -244,19 +262,7 @@ const ObservableGrid =  ({
       : <ObservableEmpty>{emptyElement}</ObservableEmpty>}
 
 
-    {sortedRows.length > 0 && <div
-      className={classes.observableRow}
-      style={{
-        padding: rowOptions.padding,
-        paddingTop: 0,
-        paddingBottom: 0,
-        gridTemplateColumns: gridTemplateColumns
-      }}>
-      {innerHeaders.map((innerHeader, i) => <div key={`${innerHeader.property}-${innerHeader.label}`}
-        className={`${classes.observableColumn} ${isColumned && classes.observableColumnRight}`}
-        style={{ backgroundColor: i === innerHeaders.findIndex(header => header.selected) ? "#EEEEEE80" : ''}}
-      />)}
-    </div>}
+
 
   </div>
 }

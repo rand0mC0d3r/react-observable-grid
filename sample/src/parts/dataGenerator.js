@@ -1,67 +1,13 @@
-const currencies = [
-  "USD",
-  "EUR",
-  "GBP",
-  "JPY",
-  "CAD",
-  "AUD",
-  "CHF",
-  "SEK",
-  "NZD"
-];
-
-const colorList = [
-  'pink',
-  'green',
-  'blue',
-  'yellow',
-  'orange',
-  'purple',
-  'brown',
-  'grey',
-  'black',
-  'white',
-]
-
-const flavorsList = [
-  'Chocolate',
-  'Vanilla',
-  'Strawberry',
-  'Mint',
-  'Coffee',
-  'Cinnamon',
-  'Peppermint',
-  'Lemon',
-  'Hazelnut',
-  'Coconut',
-  'Pistachio',
-  'Mocha',
-  'Toffee',
-  'Peanut',
-  'Almond',
-  'Honey',
-  'Cherry',
-].map((flavor, index) => ({
+const currencies = ["USD","EUR","GBP","JPY","CAD","AUD","CHF","SEK","NZD"];
+const colorList = ['pink','green','blue','yellow','orange','purple','brown','grey','black','white']
+const flavorsList = ['Chocolate','Vanilla','Strawberry','Mint','Coffee','Cinnamon','Peppermint','Lemon','Hazelnut','Coconut'].map((flavor, index) => ({
   id: index,
   name: flavor,
   color: colorList[index % colorList.length],
 }))
 
-export const simpleGenerator = (count) => {
-  return internal_dataGenerator(count)
-}
-
-export const dataGenerator = (count) => {
-  const t0 = performance.now()
-  const generateDate = simpleGenerator(count)
-  const t1 = performance.now()
-  console.log(`Generated ${count} rows in ${t1 - t0} ms`)
-  return generateDate
-}
-
-export const internal_dataGenerator = (count) => count === 0 ? [] : new Array(count).fill().map((_, i) => {
+export const dataGenerator = (count) => count === 0 ? [] : new Array(count).fill().map((_, i) => {
   const randomFlavors = flavorsList.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 10 + 2));
-  const randomString = `${Math.random().toString(36).substr(0, 8)}.${i + 1}`
   const randomName = `${['Mary', 'John', 'Robert', 'Michael', 'William', 'David', 'Richard', 'Joseph', 'Thomas', 'Charles'][Math.floor(Math.random() * 10)]}`
   const randomSurname = `${['Williams', 'Johnson', 'Jones', 'Brown', 'Davis', 'Miller', 'Wilson', 'Moore', 'Taylor', 'Anderson'][Math.floor(Math.random() * 10)]}`
   const randomCurrency = currencies[Math.floor(Math.random() * currencies.length)]
@@ -71,7 +17,6 @@ export const internal_dataGenerator = (count) => count === 0 ? [] : new Array(co
     name: randomName,
     surname: randomSurname,
     fullName: `${randomName} ${randomSurname}`,
-    nickname: `n1_${randomString.substr(4,8)}`,
     streetname: `n2_${i + 1}`,
     description: `${[
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',

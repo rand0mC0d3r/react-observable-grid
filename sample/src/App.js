@@ -27,7 +27,7 @@ const App = () => {
   const [selectedTiles, setSelectedTiles] = useState([]);
   const [selectedAvatars, setSelectedAvatars] = useState([]);
   const [searchInField, setSearchInField] = useState(['name', 'description']);
-  const [isDebugging, setIsDebugging] = useState(true);
+  const [isDebugging, setIsDebugging] = useState(false);
   const [canvasDrawing, setCanvasDrawing] = useState(false);
   const [seeLive, setSeeLive] = useState(false);
   const [asGrid, setAsGrid] = useState(false);
@@ -131,7 +131,7 @@ const App = () => {
     {
       noSort: true,
       noSearch: true,
-      // onHover: (row) => <ActionsRow {...{ row }} />,
+      onHover: (row) => <ActionsRow {...{ row }} />,
       row: (row) => <LastSeenRow {...{ row }} />,
       width: '150px',
       noHightlight: true,
@@ -155,35 +155,30 @@ const App = () => {
     },
   ]
 
-  const calculateTotalElements = () => {
-    return document.getElementsByTagName('*').length
-  }
-
   const calculateGridElements = () => {
     const gridElement = document.getElementById("observable-grid")
     return gridElement ? gridElement.getElementsByTagName('*').length : 0
   }
 
   const generateRows = (count) => {
+    setRows(() => [])
     const t0 = Date.now()
     const rowsGenerated = dataGenerator(count);
     const t1 = Date.now();
+    setRows(() => rowsGenerated)
     setPerformance(Math.round(t1 - t0));
-    if(rowsGenerated) {
-      setRows(rowsGenerated)
-    }
   }
 
   useEffect(() => generateRows(35), [])
 
-  // useEffect(( ) => {
-  //   const interval = setInterval(() => {
-  //     setTotalElements(Number(calculateTotalElements()))
-  //     setGridElements(Number(calculateGridElements()))
-  //   }, 1500)
+  useEffect(( ) => {
+    const interval = setInterval(() => {
+      setTotalElements(document.getElementsByTagName('*').length)
+      setGridElements(Number(calculateGridElements()))
+    }, 1000)
 
-  //   return () => clearInterval(interval)
-  // }, [])
+    return () => clearInterval(interval)
+  }, [])
 
   useEffect(() => {
     searchTerm.length > 0
@@ -212,7 +207,7 @@ const App = () => {
           <Typography color="textPrimary" variant="h3">👀 🗞️</Typography>
           <Typography
             color="textPrimary"
-            style={{ border: '2px dotted #CCC', padding: '4px 12px', borderRadius: '8px', userSelect: 'all', backgroundColor: "#effdef" }}
+            style={{ border: '2px dotted #CCC', padding: '4px 12px', borderRadius: '8px', userSelect: 'all', backgroundColor: "#dbffdb" }}
             variant="h6"
           >npm i react-observable-grid</Typography>
           <IconButton title="Open NPM link ..." onClick={() => window.open('https://www.npmjs.com/package/react-observable-grid')}>
@@ -224,7 +219,7 @@ const App = () => {
         </div>
         <div className={`${classes.actions} ${classes.smallActions}`}>
           <Chip variant="outlined" label={<div style={{ minWidth: '100px', textAlign: 'center' }}>{`Filtered: ${filteredRows.length}`}</div>} />
-          <Chip variant="outlined" label={<div style={{ minWidth: '100px', textAlign: 'center' }}>{`DOM (Grid): ${totalElements || '?'} (${gridElements || '?'})`}</div>} />
+          <Chip variant="outlined" label={<div style={{ minWidth: '150px', textAlign: 'center' }}>{`DOM (Grid): ${totalElements || '?'} (${gridElements || '?'})`}</div>} />
           <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debug ${isDebugging ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsColumned(!isColumned)} variant="outlined" label={`Columns ${isColumned ? 'ON' : 'OFF'}`} />
           <Chip variant="outlined" label={<div style={{ minWidth: '100px', textAlign: 'center' }}>{`Perf: ${performance}ms`}</div>} />
@@ -285,12 +280,13 @@ const App = () => {
 
       <div className={`${classes.actions} ${classes.bigContainer}`}>
         <div className={`${classes.actions} ${classes.smallActions}`}>
-          {[0, 5, 30, 1500, 65000, 500000].map(count => <Button
+          {[5, 30, 1500, 65000, 500000, 1000000, 10000000].map(count => <Button
             disableElevation
             style={{minWidth: 'unset', padding: '5px 12px'}}
-            color={count === rows.length ? 'primary' : 'default'}
-            variant={count !== rows.length ? "outlined" : 'contained'}
+            color={count === rows?.length ? 'primary' : 'default'}
+            variant={count !== rows?.length ? "outlined" : 'contained'}
             key={count}
+            onMouseDown={() => setRows([])}
             onClick={() => generateRows(count)}
             >
               {count}
@@ -358,7 +354,7 @@ const useStyles = makeStyles(() => ({
   observableGrid: {
     '& #Header-wrapper': {
       boxShadow: 'none',
-      backgroundColor: "#3f51b514",
+      backgroundColor: "#dbffdb69",
       borderBottom: '1px solid #4052b5',
     },
     '& #Row-root': {
