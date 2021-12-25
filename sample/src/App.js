@@ -354,7 +354,7 @@ const useStyles = makeStyles(() => ({
   observableGrid: {
     '& #Header-wrapper': {
       boxShadow: 'none',
-      backgroundColor: "#dbffdb69",
+      backgroundColor: "#d6dbf67a",
       borderBottom: '1px solid #4052b5',
     },
     '& #Row-root': {
