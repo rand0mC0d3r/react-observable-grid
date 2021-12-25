@@ -122,7 +122,7 @@ const App = () => {
       icon: <MonetizationOnIcon />,
       property: 'price',
       align: 'flex-end',
-      width: '110px',
+      width: 'minmax(130px, 180px)',
       row: (row) => <CurrencyRow row={row} />,
       secondaryHeaders: [
         {

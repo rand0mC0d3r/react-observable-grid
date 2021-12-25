@@ -96,9 +96,10 @@ const ObservableGrid =  ({
   useEffect(() => {
     searchColumns.length > 0
       ? setFilteredRows(cachedRows.filter(cr => {
-        return searchColumns.some(searchColumn => searchColumn.term.length > 0
+        const searchedColumns =  searchColumns.filter(searchColumn => searchColumn.term.length > 0
             ? cr[searchColumn.key].toLowerCase().includes(searchColumn?.term)
-            : true)
+          : true)
+        return searchColumns.length === searchedColumns.length;
       }))
       : setFilteredRows(cachedRows)
   }, [cachedRows, searchColumns])
@@ -202,7 +203,7 @@ const ObservableGrid =  ({
       // { label: 'totalElements', value: totalElements },
     ]}>
     </ObservableDebugging>}
-    {JSON.stringify(searchColumns)}
+    {/* {JSON.stringify(searchColumns)} */}
     {headers && <ObservableHeader {...{
       options: headerOptions,
       gridTemplateColumns,
