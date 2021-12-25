@@ -1,9 +1,9 @@
 import { makeStyles, useTheme } from '@material-ui/core/styles'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ObservableRow from './ObservableRow'
 import ObservableSnapshot from './ObservableSnapshot'
 
-const ObservableRowList =  ({
+const ObservableRowList = ({
   rows = [],
   rowOptions,
   pageSize = 25,
@@ -22,6 +22,20 @@ const ObservableRowList =  ({
   const classes = useStyles(theme)
 
   const [currentRow, setCurrentRow] = useState(null)
+  const [chunks, setChunks] = useState([])
+  const chunksSize = 10
+
+  useEffect(() => {
+    if (rows.length > 0) {
+      setChunks(rows.reduce((all, one, i) => {
+        const ch = Math.floor(i / chunksSize);
+        all[ch] = [].concat((all[ch] || []), one);
+        return all
+      }, []))
+    } else {
+      setChunks([])
+    }
+  }, [rows])
 
   const idValue = (index) => {
     let result = null
@@ -30,8 +44,8 @@ const ObservableRowList =  ({
     return result || null
   }
 
-  return <>
-    {rows
+  const renderRows = (inputRows = []) => {
+    return <>{inputRows
       .filter(row => throttling
         ? row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize))
         : true)
@@ -64,7 +78,18 @@ const ObservableRowList =  ({
               </ObservableSnapshot>
               : row.__index === currentRow && header.onHover ? header.onHover(row) : header.row(row)}
           </React.Fragment>)}
-      </ObservableRow>)}
+      </ObservableRow>)}</>
+  }
+
+  return <>
+    {renderRows(rows)}
+    {/* {console.log(chunks)} */}
+    {/* {chunks.length > 0 && <>
+      {renderRows(chunks[0])}
+      {renderRows(chunks[1])}
+      {renderRows(chunks[2])}
+      {renderRows(chunks[3])}
+    </>} */}
   </>
 }
 

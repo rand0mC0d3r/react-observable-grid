@@ -27,7 +27,7 @@ const App = () => {
   const [selectedTiles, setSelectedTiles] = useState([]);
   const [selectedAvatars, setSelectedAvatars] = useState([]);
   const [searchInField, setSearchInField] = useState(['name', 'description']);
-  const [isDebugging, setIsDebugging] = useState(false);
+  const [isDebugging, setIsDebugging] = useState(true);
   const [canvasDrawing, setCanvasDrawing] = useState(false);
   const [seeLive, setSeeLive] = useState(false);
   const [asGrid, setAsGrid] = useState(false);
@@ -131,7 +131,7 @@ const App = () => {
     {
       noSort: true,
       noSearch: true,
-      onHover: (row) => <ActionsRow {...{ row }} />,
+      // onHover: (row) => <ActionsRow {...{ row }} />,
       row: (row) => <LastSeenRow {...{ row }} />,
       width: '150px',
       noHightlight: true,
@@ -204,9 +204,6 @@ const App = () => {
     ? setFilteredRows(searchedRows.filter((row) => selectedTiles.filter(st => row.tiles.some(t => t.id === st)).length === selectedTiles.length))
     : setFilteredRows(searchedRows)
   }, [selectedTiles, searchedRows])
-
-{/* TODO: add header children */}
-        {/* TODO: make grid support sub-columns */}
 
   return <ThemeProvider {...{ theme }} >
     <div className={classes.wrapper}>

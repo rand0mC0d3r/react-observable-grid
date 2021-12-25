@@ -88,10 +88,10 @@ const ObservableGrid =  ({
   }, [headers])
 
   useEffect(() => {
-    if (!isEmpty) {
-      setCachedRows(() => rows.map((row, index) => ({ ...row, __origIndex: index })))
-      setSelectedIndex(null)
-    }
+    isEmpty
+      ? setCachedRows([])
+      : setCachedRows(() => rows.map((row, index) => ({ ...row, __origIndex: index })))
+    setSelectedIndex(null)
   }, [rows, isEmpty])
 
   useEffect(() => {
@@ -109,13 +109,11 @@ const ObservableGrid =  ({
         ? naturalSort(rows).asc([r => r[orderBy]])
         : naturalSort(rows).desc([r => r[orderBy]])
     }
-    if (filteredRows.length > 0) {
-      orderBy === ''
-        ? setSortedRows(filteredRows.map((r, index) => ({ ...r, __index:  index })))
-        : setSortedRows(sortSort(order, filteredRows).map((r, index) => ({ ...r, __index:  index })))
-      setStartEnd({ start: -1, end: 1 })
-      setThrottling(filteredRows.length -1 >= throttleLimit)
-    }
+    orderBy === ''
+      ? setSortedRows(filteredRows.map((r, index) => ({ ...r, __index:  index })))
+      : setSortedRows(sortSort(order, filteredRows).map((r, index) => ({ ...r, __index:  index })))
+    setStartEnd({ start: -1, end: 1 })
+    setThrottling(filteredRows.length -1 >= throttleLimit)
   }, [filteredRows, order, orderBy])
 
   // useEffect(( ) => {
@@ -254,41 +252,6 @@ const ObservableGrid =  ({
         {(throttling && sortedRows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1) &&
           <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
         <ObservableRowList {...{ rows: sortedRows, throttling, rowOptions, gridTemplateColumns, selectedIndex, startEnd, pageSize, innerHeaders}} />
-        {/* {sortedRows
-          .filter(row => throttling
-            ? row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize))
-            : true
-          )
-          .map(row => <ObservableRow
-            {...{ gridSpacing: gridTemplateColumns, minRows, rowOptions, isScrollable }}
-            key={row.__index}
-            id={idValue(row.__index)}
-            style={{
-              padding: rowOptions.padding,
-              gridTemplateColumns: gridTemplateColumns,
-              backgroundColor: (isSelectable && !isGrid && selectedIndex === row.__origIndex)
-                ? '#44444422'
-                : '',
-            }}
-            className={`${isGrid ? classes.observableGrid : classes.observableRow} ${(isSelectable && selectedIndex === row.__origIndex) ? 'Row-isSelected' : ''}`}
-            index={row.__index}
-            onMouseEnter={() => setCurrentRow(row.__index)}
-            forceRender={!throttling}
-            isRelevant={throttling
-              ? row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize))
-              : true
-            }
-            onClick={() => isSelectable && !isGrid && setSelectedIndex(selectedIndex === row.__origIndex ? null : row.__origIndex)}
-          >
-            {innerHeaders.filter(header => header.visible).map(header =>
-              <React.Fragment key={`${header.property}_${header.label}_${header.tooltip}_${header.width}`}>
-                {(!throttling && canvasDrawing && header.canCanvas)
-                  ? <ObservableSnapshot origIndex={row.__origIndex} index={row.__index} id={`${row.__origIndex}_${header.property}_${header.label}`}>
-                    {row.__index === currentRow && header.onHover ? header.onHover(row) : header.row(row)}
-                  </ObservableSnapshot>
-                  : row.__index === currentRow && header.onHover ? header.onHover(row) : header.row(row)}
-              </React.Fragment>)}
-          </ObservableRow>)} */}
         {throttling && rows.length > pageSize && pageSize * startEnd.end - 1 < rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
         {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
 
