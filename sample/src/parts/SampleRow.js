@@ -19,7 +19,7 @@ const AvatarRow = memo(({ row: { name, surname, fullName }, selectedAvatars, onS
     {name?.substr(0, 1)}{surname?.substr(0, 1)}
   </Avatar>
   </div>
-}, [])
+})
 
 const NamesRow = ({
   row: { name, surname, nickname, streetname } }) => {

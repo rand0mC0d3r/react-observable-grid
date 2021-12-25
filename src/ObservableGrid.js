@@ -202,7 +202,7 @@ const ObservableGrid =  ({
     ]}>
     </ObservableDebugging>}
 
-    {JSON.stringify(searchColumns)}
+    {/* {JSON.stringify(searchColumns)} */}
 
     {headers && <ObservableHeader {...{
       options: headerOptions,
