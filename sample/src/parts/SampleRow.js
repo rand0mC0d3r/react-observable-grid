@@ -2,9 +2,10 @@ import { Avatar, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import TuneIcon from '@material-ui/icons/Tune';
+import { memo } from 'react';
 import stringToColor from 'string-to-color';
 
-const AvatarRow = ({ row: { name, surname, fullName }, selectedAvatars, onSelectAvatar = () => { } }) => {
+const AvatarRow = memo(({ row: { name, surname, fullName }, selectedAvatars, onSelectAvatar = () => { } }) =>  {
   const theme = useTheme()
   const classes = avatarStyles(theme)
   return <div style={{display:'flex', justifyContent: "center"}}><Avatar
@@ -18,7 +19,7 @@ const AvatarRow = ({ row: { name, surname, fullName }, selectedAvatars, onSelect
     {name?.substr(0, 1)}{surname?.substr(0, 1)}
   </Avatar>
   </div>
-}
+}, [])
 
 const NamesRow = ({
   row: { name, surname, nickname, streetname } }) => {
