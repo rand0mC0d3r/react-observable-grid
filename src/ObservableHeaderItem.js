@@ -1,4 +1,4 @@
-import { Checkbox, Popover, Tooltip, Typography } from '@material-ui/core';
+import { Checkbox, Chip, Popover, TextField, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
@@ -21,6 +21,7 @@ const ObservableHeaderItem = ({
   orderBy,
   icon,
   noSort,
+  noSearch,
   postHeaders,
   handleRequestSort,
   selected,
@@ -33,9 +34,31 @@ const ObservableHeaderItem = ({
   const theme = useTheme()
   const classes = useStyles(theme)
   const [anchorEl, setAnchorEl] = useState(null);
+  const [searchString, setSearchString] = useState('');
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
+  const handleClick = (event) => { setAnchorEl(event.currentTarget) };
+  const handleClose = () => { setAnchorEl(null) };
+  const renderPopover = () => {
+    return <Popover
+      id={id}
+      open={open}
+      anchorEl={anchorEl}
+      onClose={handleClose}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'center',
+      }}
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'center',
+      }}
+    >
+      <div style={{ padding: '12px 16px'}}>
+        <TextField value={searchString} onChange={(e) => setSearchString(e.target.value)} id="outlined-basic" label="Search" variant="outlined" />
+      </div>
+    </Popover>}
   const evaluateOrderBy = ({ property, label }) => orderBy === (property || label?.toLowerCase())
   const toggleHeader = (property, label) => {
     setHeaders(headers.map(header => {
@@ -98,14 +121,17 @@ const ObservableHeaderItem = ({
     {!noSort && renderArrows({property, label, align})}
   </div>
 
-  return <div
+  return <>
+    {renderPopover()}
+    <div
     onMouseEnter={() => !noHightlight && onSelect(property)}
     className={classes.headersWrapper}
     style={{
-    display: 'flex',
-    alignItems: 'center',
-    flexWrap: 'nowrap',
-    justifyContent: 'space-between',
+      display: 'flex',
+      alignItems: 'center',
+      flexWrap: 'nowrap',
+      justifyContent: 'space-between',
+      flexDirection: align === 'flex-end' ? 'row-reverse' : 'row',
   }}>
     <div
       key={`${label}_${property}`}
@@ -144,14 +170,18 @@ const ObservableHeaderItem = ({
       </div>}
     </div>
     <div style={{ display: 'flex', gap: '4px', flexWrap: 'nowrap', alignItems: 'center'}}>
-      {extension && extension}
-      {selected && <SearchIcon
-        color="disabled"
-        style={{
-          fontSize: '16px',
-        }} />}
+        {extension && extension}
+        {searchString.length > 0 && <Chip label={searchString} size="small" variant="outlined" onDelete={() => setSearchString('')} />}
+        {selected && !noSearch && <Tooltip arrow title="Search in column"><SearchIcon
+          onClick={(e) => { handleClick(e) }}
+          color="disabled"
+          style={{
+            cursor: 'pointer',
+            fontSize: '16px',
+          }} /></Tooltip>}
     </div>
     </div>
+  </>
 }
 
 const useStyles = makeStyles(theme => ({

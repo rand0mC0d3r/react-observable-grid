@@ -61,7 +61,7 @@ const App = () => {
       label: 'Full Name',
       tooltip: "Filter users by name",
       property: 'fullName',
-      width: 'minmax(300px, 1fr)',
+      width: 'minmax(200px, 1fr)',
       extension: <>
         {selectedAvatars.length > 0 && <Chip onDelete={() => setSelectedAvatars([])} variant="outlined" size="small" label={`People: ${selectedAvatars.length}`} />}
       </>,
@@ -93,7 +93,7 @@ const App = () => {
       icon: <SubjectIcon />,
       property: 'description',
       row: (row) => <DescriptionRow row={row} />,
-      width: '2fr',
+      width: '3fr',
     },
     {
       label: 'Tiles',

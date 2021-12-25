@@ -135,11 +135,9 @@ const ObservableHeader = ({
           gridTemplateColumns: gridTemplateColumns}}
       >
         {headers?.filter(header => header.visible).map(({
-          noHightlight, align, label, icon, property, extension,
+          noHightlight, align, label, noSearch, icon, property, extension,
           secondaryHeaders, preHeaders, selected, postHeaders, noSort
-        }) => <>
-            <ObservableHeaderItem {...{property, handleRequestSort, onSelect, selected, extension, secondaryHeaders, order, options, orderBy, handleResetSort, preHeaders, icon, postHeaders, noSort, label, noHightlight, align}}  />
-        </>)}
+        }) => <ObservableHeaderItem key={`${label}_${property}`} {...{noSearch, property, handleRequestSort, onSelect, selected, extension, secondaryHeaders, order, options, orderBy, handleResetSort, preHeaders, icon, postHeaders, noSort, label, noHightlight, align}} />)}
       </div>
     </div>
   </>

@@ -6,11 +6,9 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
-ReactDOM.render(<React.StrictMode>
-	<StylesProvider>
+ReactDOM.render(<StylesProvider>
 		<App />
-	</StylesProvider>
-</React.StrictMode>, document.getElementById('root'));
+	</StylesProvider>, document.getElementById('root'));
 
 serviceWorkerRegistration.register();
 reportWebVitals();

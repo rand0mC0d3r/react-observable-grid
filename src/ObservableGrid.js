@@ -213,7 +213,8 @@ const ObservableGrid =  ({
           zIndex: -1,
           gridTemplateColumns: gridTemplateColumns,
         }}>
-    {innerHeaders.map((innerHeader, i) => <div
+      {innerHeaders.map((innerHeader, i) => <div
+      key={`${innerHeader.property}-${innerHeader.label}`}
       className={`
       ${classes.observableColumn}
       ${isColumned && classes.observableColumnRight}`}
