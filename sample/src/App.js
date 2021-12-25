@@ -1,14 +1,11 @@
-import { Button, Chip, IconButton, TextField, Typography } from '@material-ui/core';
-import InputAdornment from '@material-ui/core/InputAdornment';
+import { Button, Chip, IconButton, InputAdornment, TextField, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import PersonPinCircleIcon from '@material-ui/icons/PersonPinCircle';
 import SubjectIcon from '@material-ui/icons/Subject';
 import TextFieldsIcon from '@material-ui/icons/TextFields';
 import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
@@ -345,7 +342,7 @@ const App = () => {
                 canvasDrawing={false}
                 isColumned={isColumned}
                 className={classes.observableGrid}
-                // isClearingOnBlur={false}
+                isClearingOnBlur={false}
                 rowOptions={{ padding: '8px 16px 8px 16px' }}
                 headerOptions={{ padding: '4px 16px 4px 16px' }}
                 rows={filteredRows}

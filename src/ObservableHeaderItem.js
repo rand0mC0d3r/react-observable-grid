@@ -1,7 +1,10 @@
-import { Checkbox, Chip, Popover, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Chip, InputAdornment, Popover, TextField, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import FunctionsIcon from '@material-ui/icons/Functions';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
+import TextFieldsIcon from '@material-ui/icons/TextFields';
 import PropTypes from 'prop-types';
 import React, { cloneElement, useCallback, useEffect, useState } from 'react';
 
@@ -36,8 +39,15 @@ const ObservableHeaderItem = ({
   const classes = useStyles(theme)
   const [anchorEl, setAnchorEl] = useState(null);
   const [searchString, setSearchString] = useState('');
+  const [isCaseSensitive, setIsCaseSensitive] = useState(false);
+  const [isRegex, setIsRegex] = useState(false);
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
+
+  const updateSearchString = ({ key, term }) => {
+    setSearchString(term)
+    handleSearchTerm({ key, term: term.toLowerCase() })
+  }
 
   const handleClick = (event) => { setAnchorEl(event.currentTarget) };
   const handleClose = () => { setAnchorEl(null) };
@@ -57,11 +67,29 @@ const ObservableHeaderItem = ({
       }}
     >
       <div style={{ padding: '12px 16px'}}>
-        <TextField autoFocus value={searchString} onChange={(e) => {
-          setSearchString(e.target.value)
-          handleSearchTerm({ key: property, term: e.target.value.toLowerCase() })
-        }
-        } id="outlined-basic" label="Search" variant="outlined" />
+        <TextField
+          autoFocus
+          value={searchString}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">🔍</InputAdornment>,
+            endAdornment: <>
+              <TextFieldsIcon
+                style={{cursor: 'pointer'}}
+                onClick={() => setIsCaseSensitive(!isCaseSensitive)}
+                color={isCaseSensitive ? 'primary' : 'disabled'}
+              />
+
+              <FunctionsIcon
+                style={{cursor: 'pointer'}}
+                onClick={() => setIsRegex(!isRegex)}
+                color={isRegex ? 'primary' : 'disabled'}
+              />
+              {searchString.length > 0 && <InputAdornment onClick={() => updateSearchString({ key: property, term: '' })} position="end"><DeleteOutlineIcon style={{cursor: 'pointer'}} /></InputAdornment>}
+
+            </>,
+          }}
+          onChange={(e) => updateSearchString({ key: property, term: e.target.value })}
+          id="outlined-basic" label="Search" variant="outlined" />
       </div>
     </Popover>}
   const evaluateOrderBy = ({ property, label }) => orderBy === (property || label?.toLowerCase())
@@ -176,17 +204,19 @@ const ObservableHeaderItem = ({
     </div>
     <div style={{ display: 'flex', gap: '4px', flexWrap: 'nowrap', alignItems: 'center'}}>
         {extension && extension}
-        {searchString.length > 0 && <Chip onClick={(e) => { handleClick(e) }} icon={<SearchIcon color="action" />} label={searchString} size="small" variant="outlined" onDelete={() => {
-          handleSearchTerm({ key: property, term: null })
-          setSearchString('')
-        }} />}
-        {(selected && !noSearch && searchString.length === 0) && <Tooltip arrow title="Search in column"><SearchIcon
-          onClick={(e) => { handleClick(e) }}
-          color="disabled"
-          style={{
-            cursor: 'pointer',
-            fontSize: '16px',
-          }} /></Tooltip>}
+        {!noSearch && (selected || searchString !== '' )  && <Tooltip arrow title="Search in column">
+          <Chip
+            onClick={(e) => { handleClick(e) }}
+            icon={<SearchIcon color="action" />}
+            label={searchString || 'Search'}
+            size="small"
+            variant="outlined"
+            onDelete={searchString.length === '' ? () => {
+              handleSearchTerm({ key: property, term: null })
+              setSearchString('')
+            } : undefined}
+          />
+        </Tooltip>}
     </div>
     </div>
   </>
