@@ -85,6 +85,32 @@ const ObservableGrid =  ({
     setOrder('asc')
   }
 
+  const calculateGridElements = () => {
+    const gridElement = document.getElementById("observable-grid")
+    return gridElement ? gridElement.getElementsByTagName('*').length : 0
+  }
+
+  const updateRenderedElements = () => {
+    setElementsRendered(() => [document.getElementsByTagName('*').length, Number(calculateGridElements())])
+  }
+
+  const advanceStartEnd = () => {
+    setStartEnd((startEnd) => ({ start: startEnd.start + 1, end: startEnd.end + 1 }))
+  }
+
+  const regressStartEnd = () => {
+    setStartEnd(() => ({ start: - 1, end:  1  }))
+  }
+
+  const onSelect = (property) => {
+    // console.log(property)
+    setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: header.property === property ? true : false })))
+  }
+
+  const onDeSelect = (property) => {
+    setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: header.property === property ? false : false })))
+  }
+
   useEffect(() => {
     setInnerHeaders(headers.map(header => ({ ...header, selected: false, visible: header.visible || true })))
   }, [headers])
@@ -121,16 +147,7 @@ const ObservableGrid =  ({
     updateRenderedElements()
   }, [filteredRows, order, orderBy])
 
-  const calculateGridElements = () => {
-    const gridElement = document.getElementById("observable-grid")
-    return gridElement ? gridElement.getElementsByTagName('*').length : 0
-  }
-
-  const updateRenderedElements = () => {
-    setElementsRendered(() => [document.getElementsByTagName('*').length, Number(calculateGridElements())])
-  }
-
-  useEffect(( ) => {
+  useEffect(() => {
     const interval = setInterval(() => {
       const currentElements = Number(calculateTotalElements())
       if(currentElements >= 1000) {
@@ -156,23 +173,6 @@ const ObservableGrid =  ({
     const gridTemplateString = innerHeaders.filter(header => header.visible).map(header => header.width).join(' ')
     setGridTemplateColumns(gridTemplateString)
   }, [innerHeaders])
-
-  const advanceStartEnd = () => {
-    setStartEnd((startEnd) => ({ start: startEnd.start + 1, end: startEnd.end + 1 }))
-  }
-
-  const regressStartEnd = () => {
-    setStartEnd(() => ({ start: - 1, end:  1  }))
-  }
-
-  const onSelect = (property) => {
-    // console.log(property)
-    setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: header.property === property ? true : false })))
-  }
-
-  const onDeSelect = (property) => {
-    setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: header.property === property ? false : false })))
-  }
 
   return <div
     id={"observable-grid"}
@@ -205,7 +205,7 @@ const ObservableGrid =  ({
     ]}>
     </ObservableDebugging>}
 
-    {headers && <ObservableHeader {...{
+    {headers.length > 0 && innerHeaders.length > 0 && <ObservableHeader {...{
       options: headerOptions,
       gridTemplateColumns,
       setHeaders: setInnerHeaders,
@@ -217,17 +217,15 @@ const ObservableGrid =  ({
       onDeSelect,
       handleRequestSort,
       handleSearchTerm: ({ key, term }) => {
-        // console.log(key, term)
-        if (term === null) {
-          setSearchColumns([...searchColumns.filter(sc => sc.key !== key)])
-        } else {
-          setSearchColumns([...searchColumns.filter(sc => sc.key !== key), {key, term}])
-        }
+        term === null
+          ? setSearchColumns([...searchColumns.filter(sc => sc.key !== key)])
+          : setSearchColumns([...searchColumns.filter(sc => sc.key !== key), { key, term }])
       },
       handleResetSort,
-      rowOptions }} />}
+      rowOptions
+    }} />}
 
-    {sortedRows.length > 0 && <div
+    {<div
       className={classes.observableRow}
       style={{
         padding: rowOptions.padding,
@@ -242,24 +240,17 @@ const ObservableGrid =  ({
     </div>}
 
     {sortedRows.length > 0 ? <>
-
       {sortedRows && <ObservableContainer {...{ isScrollable, isAlternating, isGrid }}>
         {(throttling && sortedRows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1) &&
           <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
         <ObservableRowList {...{ rows: sortedRows, setCurrentRow, currentRow, throttling, setSelectedIndex, rowOptions, gridTemplateColumns, selectedIndex, startEnd, pageSize, innerHeaders}} />
         {throttling && rows.length > pageSize && pageSize * startEnd.end - 1 < rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
         {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
-
       </ObservableContainer>}
       {(selectedIndex ? true : rows.length > pageSize && startEnd.end > 3) &&
         <ObservableScrollTop {...{ selectedIndex, isAtTop: rows.length > pageSize && startEnd.end > 3 }} />}
-
     </>
       : <ObservableEmpty>{emptyElement}</ObservableEmpty>}
-
-
-
-
   </div>
 }
 

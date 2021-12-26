@@ -156,6 +156,7 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     position: 'relative',
     overflow: 'hidden',
+    flex: '0 0 auto'
   },
   progress: {
     position: 'absolute',

@@ -1,5 +1,5 @@
 const currencies = ["USD","EUR","GBP","JPY","CAD","AUD","CHF","SEK","NZD"];
-const colorList = ['pink','green','blue','yellow','orange','purple','brown','grey','black','white']
+const colorList = ['pink','green','blue','deepblue','orange','purple','brown','grey','black','olive']
 const flavorsList = ['Chocolate','Vanilla','Strawberry','Mint','Coffee','Cinnamon','Peppermint','Lemon','Hazelnut','Coconut'].map((flavor, index) => ({
   id: index,
   name: flavor,

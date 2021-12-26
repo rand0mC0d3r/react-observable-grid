@@ -74,7 +74,11 @@ const TilesRow = ({ row: { tiles }, selectedTiles, onSelectTile = () => {} }) =>
       style={{
         textDecoration: 'underline',
         textDecorationColor: color,
-        textDecorationThickness: '2px'
+        textDecorationThickness: '2px',
+        backgroundColor: selectedTiles?.some(st => st === id)
+          ? `${color}`
+          : ``
+        ,
       }}
       key={name}
     >{name}</div>)}
@@ -127,11 +131,11 @@ const descriptionStyles = makeStyles(() => ({
 
 const tileStyles = makeStyles((theme) => ({
   tile: {
-    border: `2px solid ${theme.palette.divider}`,
+    border: `1px solid ${theme.palette.divider}`,
     borderRadius: '12px',
     padding: '4px 8px',
     '&:hover': {
-      border: `2px solid ${theme.palette.primary.main}`,
+      background: `${theme.palette.divider}`,
     }
   },
   selectedTile: {
