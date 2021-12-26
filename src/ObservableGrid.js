@@ -257,9 +257,22 @@ const ObservableGrid =  ({
       : <ObservableEmpty>{emptyElement}</ObservableEmpty>}
 
     <div className={classes.progress}>
-      <div style={{position: 'relative'}}>
+      <div style={{ position: 'relative' }}>
+        {/* {selectedIndex} */}
         <div style={{ width: '100%', backgroundColor: '#BBBBBB42', height: '4px' }}></div>
         <div style={{ position: 'absolute', borderRadius: '0px 8px 8px 0px', top: '0px', left: '0px', width: `${Math.round(currentRow * 100 / sortedRows.length) + 3}%`, backgroundColor: '#3f51b569', height: '4px' }}></div>
+        {selectedIndex && <div style={{
+          position: 'absolute',
+          borderRadius: '0px 8px 8px 0px',
+          top: '0px',
+          width: '10px',
+          left: `${Math.round(selectedIndex * 100 / sortedRows.length) + 3}%`,
+          height: '4px',
+          backgroundColor: '#7885cb',
+          border: '1px solid #FFF',
+          borderTop: '0px none',
+          borderBottom: '0px none',
+        }}></div>}
         {/* <RoomIcon style={{ fontSize: '11px' }} color={[0, 25, 50, 70, 100].some(v => v === Math.round(currentRow * 100 / sortedRows.length)) ? 'primary' : 'disabled'} /> */}
       </div>
     </div>
