@@ -57,6 +57,7 @@ const ObservableGrid =  ({
   const [gridTemplateColumns, setGridTemplateColumns] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(null)
 
+  const [elementsRendered, setElementsRendered] = useState([0,0])
   const [cachedRows, setCachedRows] = useState([])
   const [filteredRows, setFilteredRows] = useState([])
   const [sortedRows, setSortedRows] = useState([])
@@ -98,8 +99,10 @@ const ObservableGrid =  ({
   useEffect(() => {
     searchColumns.length > 0
       ? setFilteredRows(() => cachedRows.filter(cr => searchColumns
-          .filter(sc => sc.term.length > 0)
-          .filter(searchColumn => cr[searchColumn.key].toLowerCase().includes(searchColumn?.term)).length === searchColumns.length
+        .filter(searchColumn => searchColumn?.term.length > 0
+          ? cr[searchColumn.key].toLowerCase().includes(searchColumn?.term)
+          : true
+        ).length === searchColumns.length
       ))
       : setFilteredRows(() => cachedRows)
   }, [cachedRows, searchColumns])
@@ -113,27 +116,32 @@ const ObservableGrid =  ({
     orderBy === ''
       ? setSortedRows(() => filteredRows.map((r, index) => ({ ...r, __index:  index })))
       : setSortedRows(() => sortSort(order, filteredRows).map((r, index) => ({ ...r, __index: index })))
-    setIsDirty(() => false)
     setStartEnd({ start: -1, end: 1 })
     setThrottling(filteredRows.length - 1 >= throttleLimit)
+    updateRenderedElements()
   }, [filteredRows, order, orderBy])
 
-  useEffect(() => {
-    setIsDirty(() => true)
-  }, [searchColumns, order, orderBy])
+  const calculateGridElements = () => {
+    const gridElement = document.getElementById("observable-grid")
+    return gridElement ? gridElement.getElementsByTagName('*').length : 0
+  }
 
-  // useEffect(( ) => {
-  //   const interval = setInterval(() => {
-  //     const currentElements = Number(calculateTotalElements())
-  //     if(currentElements >= 1000) {
-  //       setThrottleLimit(throttleLimit - 1/10 * throttleLimit)
-  //       setThrottling(true)
-  //     }
-  //     setTotalElements(currentElements)
-  //   }, 1500)
+  const updateRenderedElements = () => {
+    setElementsRendered(() => [document.getElementsByTagName('*').length, Number(calculateGridElements())])
+  }
 
-  //   return () => clearInterval(interval)
-  // }, [])
+  useEffect(( ) => {
+    const interval = setInterval(() => {
+      const currentElements = Number(calculateTotalElements())
+      if(currentElements >= 1000) {
+        setThrottleLimit(throttleLimit - 1/10 * throttleLimit)
+        setThrottling(true)
+      }
+      updateRenderedElements()
+    }, 1500)
+
+    return () => clearInterval(interval)
+  }, [])
 
   useEffect(() => {
     if(!headers) return
@@ -166,17 +174,6 @@ const ObservableGrid =  ({
     setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: header.property === property ? false : false })))
   }
 
-  const idValue = (index) => {
-    let result = null
-    if(index === 0) {
-      result = 'first'
-    } else if(index === selectedIndex) {
-      result = 'selected'
-    }
-
-    return result
-  }
-
   return <div
     id={"observable-grid"}
     className={className}
@@ -204,17 +201,16 @@ const ObservableGrid =  ({
       { label: 'rows', value: rows.length },
       { label: 'startEnd', value: JSON.stringify(startEnd) },
       { label: 'pageSize', value: pageSize },
-      // { label: 'totalElements', value: totalElements },
+      { label: 'totalElements', value: `${elementsRendered[0]} (${elementsRendered[1]})` },
     ]}>
     </ObservableDebugging>}
-
-    {/* {JSON.stringify(isDirty)} */}
 
     {headers && <ObservableHeader {...{
       options: headerOptions,
       gridTemplateColumns,
       setHeaders: setInnerHeaders,
       headers: innerHeaders,
+      progress: Math.round(currentRow * 100 / sortedRows.length),
       order,
       orderBy,
       onSelect,
@@ -250,7 +246,7 @@ const ObservableGrid =  ({
       {sortedRows && <ObservableContainer {...{ isScrollable, isAlternating, isGrid }}>
         {(throttling && sortedRows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1) &&
           <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
-        <ObservableRowList {...{ rows: sortedRows, throttling, setSelectedIndex, rowOptions, gridTemplateColumns, selectedIndex, startEnd, pageSize, innerHeaders}} />
+        <ObservableRowList {...{ rows: sortedRows, setCurrentRow, currentRow, throttling, setSelectedIndex, rowOptions, gridTemplateColumns, selectedIndex, startEnd, pageSize, innerHeaders}} />
         {throttling && rows.length > pageSize && pageSize * startEnd.end - 1 < rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
         {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
 

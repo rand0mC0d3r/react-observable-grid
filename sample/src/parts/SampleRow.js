@@ -68,9 +68,14 @@ const TilesRow = ({ row: { tiles }, selectedTiles, onSelectTile = () => {} }) =>
   const theme = useTheme()
   const classes = tileStyles(theme)
   return <div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row', gap: '8px 8px', padding: '4px 0px' }}>
-    {tiles.map(({ id, name }) => <div
+    {tiles.map(({ id, name, color }) => <div
       onClick={() => onSelectTile(id)}
       className={[classes.tile, selectedTiles?.some(st => st === id) && classes.selectedTile].join(' ')}
+      style={{
+        textDecoration: 'underline',
+        textDecorationColor: color,
+        textDecorationThickness: '2px'
+      }}
       key={name}
     >{name}</div>)}
   </div>

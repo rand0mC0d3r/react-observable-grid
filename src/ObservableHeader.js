@@ -1,7 +1,9 @@
 import { Checkbox, Popover, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import RoomIcon from '@material-ui/icons/Room';
 import SearchIcon from '@material-ui/icons/Search';
+import SpaceBarIcon from '@material-ui/icons/SpaceBar';
 import PropTypes from 'prop-types';
 import React, { cloneElement, useCallback, useEffect, useState } from 'react';
 import { ObservableHeaderItem } from '.';
@@ -14,6 +16,7 @@ const defaultOptions = {
 
 const ObservableHeader = ({
   gridTemplateColumns,
+  progress,
   headers = [],
   setHeaders,
   options: { ascArrow, descArrow, padding },
@@ -37,7 +40,7 @@ const ObservableHeader = ({
   const handleClose = () => { setAnchorEl(null) };
   const evaluateOrderBy = ({ property, label }) => orderBy === (property || label?.toLowerCase())
   const toggleHeader = (property, label) => {
-    setHeaders(headers.map(header => {
+    setHeaders(() => headers.map(header => {
       if (header.property === property) {
         return {
           ...header,
@@ -121,7 +124,6 @@ const ObservableHeader = ({
   </div>
 
   return <>
-    {/* {JSON.stringify(headers.map(h => { return [ h.property, h.selected ] }))} */}
     {renderPopover()}
     <div id="Header-root" className={classes.root}>
       <div
@@ -144,6 +146,7 @@ const ObservableHeader = ({
           preHeaders, icon, postHeaders, noSort, label, noHightlight, align
         }} />)}
       </div>
+      <div className={classes.progress} style={{ left: `${progress}%` }}><RoomIcon style={{fontSize: '11px'}} color={[0, 25, 50, 70, 100].some(v => v === progress) ? 'primary' : 'disabled'} /></div>
     </div>
   </>
 }
@@ -151,6 +154,12 @@ const ObservableHeader = ({
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  progress: {
+    position: 'absolute',
+    top: '-9px',
   },
   wrapper: {
     display: 'grid',

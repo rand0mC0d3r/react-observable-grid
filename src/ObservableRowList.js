@@ -16,12 +16,12 @@ const ObservableRowList = ({
   isGrid = false,
   throttling,
   setSelectedIndex,
+  setCurrentRow,
+  currentRow,
   isSelectable = true,
   isScrollable = true,
 }) => {
   const classes = useStyles()
-  const [currentRow, setCurrentRow] = useState(null)
-
   const idValue = (index) => {
     let result = null
     if (index === 0) {

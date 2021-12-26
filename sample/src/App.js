@@ -94,7 +94,7 @@ const App = () => {
     {
       label: 'Tiles',
       icon: <DashboardIcon />,
-      noSearch: true,
+      // noSearch: true,
       property: 'tilesHash',
       width: 'minmax(100px, 2fr)',
       extension: <>
@@ -154,10 +154,10 @@ const App = () => {
     },
   ]
 
-  const calculateGridElements = () => {
-    const gridElement = document.getElementById("observable-grid")
-    return gridElement ? gridElement.getElementsByTagName('*').length : 0
-  }
+  // const calculateGridElements = () => {
+  //   const gridElement = document.getElementById("observable-grid")
+  //   return gridElement ? gridElement.getElementsByTagName('*').length : 0
+  // }
 
   const generateRows = (count) => {
     setRows(() => [])
@@ -170,13 +170,13 @@ const App = () => {
 
   useEffect(() => generateRows(35), [])
 
-  useEffect(( ) => {
-    const interval = setInterval(() => {
-      setElementsRendered(() => [document.getElementsByTagName('*').length, Number(calculateGridElements())])
-    }, 1000)
+  // useEffect(( ) => {
+  //   const interval = setInterval(() => {
+  //     setElementsRendered(() => [document.getElementsByTagName('*').length, Number(calculateGridElements())])
+  //   }, 1000)
 
-    return () => clearInterval(interval)
-  }, [])
+  //   return () => clearInterval(interval)
+  // }, [])
 
   useEffect(() => {
     searchTerm.length > 0
@@ -217,7 +217,7 @@ const App = () => {
         </div>
         <div className={`${classes.actions} ${classes.smallActions}`}>
           <Chip variant="outlined" label={<div style={{ minWidth: '100px', textAlign: 'center' }}>{`Filtered: ${filteredRows.length}`}</div>} />
-          <Chip variant="outlined" label={<div style={{ minWidth: '150px', textAlign: 'center' }}>{`DOM (Grid): ${elementsRendered[0]} (${elementsRendered[1]})`}</div>} />
+          {/* <Chip variant="outlined" label={<div style={{ minWidth: '150px', textAlign: 'center' }}>{`DOM (Grid): ${elementsRendered[0]} (${elementsRendered[1]})`}</div>} /> */}
           <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debug ${isDebugging ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsColumned(!isColumned)} variant="outlined" label={`Columns ${isColumned ? 'ON' : 'OFF'}`} />
           <Chip variant="outlined" label={<div style={{ minWidth: '100px', textAlign: 'center' }}>{`Perf: ${performance}ms`}</div>} />
@@ -290,7 +290,7 @@ const App = () => {
               {count}
           </Button>)}
         </div>
-        {selectedTiles.map((tile) => <Chip key={tile} label={tile} />)}
+        {/* {selectedTiles.map((tile) => <Chip key={tile} label={tile} />)} */}
 
         {/* {JSON.stringify(selectedAvatars)} */}
         <div className={`${classes.actions} ${classes.smallActions}`}>
@@ -352,7 +352,7 @@ const useStyles = makeStyles(() => ({
   observableGrid: {
     '& #Header-wrapper': {
       boxShadow: 'none',
-      backgroundColor: "#d6dbf67a",
+      backgroundColor: "#BBBBBB42",
       borderBottom: '1px solid #4052b5',
     },
     '& #Row-root': {
