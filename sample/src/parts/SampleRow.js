@@ -85,6 +85,50 @@ const TilesRow = ({ row: { tiles }, selectedTiles, onSelectTile = () => {} }) =>
   </div>
 }
 
+const RowTabs = ({ rows, setRows = () => { } }) => {
+  const theme = useTheme()
+  const classes = tileStyles(theme)
+  const tabs = [
+    {
+      label: 'All rows',
+      description: 'No filtering',
+    },
+    {
+      label: 'Seen last week',
+      description: 'Last seen under a week ago',
+    },
+  ]
+
+  return <div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row', gap: '8px 8px'}}>
+    {tabs.map(({ label, description }) => <div
+      style={{
+        border: '1px solid #b1b1b1',
+        padding: '12px 16px',
+        borderBottom: '0px none',
+        display: 'flex',
+        gap: '8px',
+        flexDirection: 'column'
+      }}>
+      <Typography color="textPrimary" variant='subtitle1'>{label}</Typography>
+      <Typography color="textSecondary" variant='caption'>{description}</Typography>
+    </div>)}
+    {/* {tiles.map(({ id, name, color }) => <div
+      onClick={() => onSelectTile(id)}
+      className={[classes.tile, selectedTiles?.some(st => st === id) && classes.selectedTile].join(' ')}
+      style={{
+        textDecoration: 'underline',
+        textDecorationColor: color,
+        textDecorationThickness: '2px',
+        backgroundColor: selectedTiles?.some(st => st === id)
+          ? `${color}`
+          : ``
+        ,
+      }}
+      key={name}
+    >{name}</div>)} */}
+  </div>
+}
+
 const CurrencyRow = ({ row: { price, currency } }) => {
   // console.log(price)
   return <Typography style={{ display: 'flex', justifyContent: 'flex-end' }} variant='subtitle2'>{price}</Typography>
@@ -153,4 +197,4 @@ const avatarStyles = makeStyles((theme) => ({
   }
 }))
 
-export { AvatarRow, ActionsRow, CurrencyRow, TilesRow, DescriptionRow, NamesRow, Card, LastSeenRow };
+export { AvatarRow, ActionsRow, RowTabs, CurrencyRow, TilesRow, DescriptionRow, NamesRow, Card, LastSeenRow };

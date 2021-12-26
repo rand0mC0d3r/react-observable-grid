@@ -172,6 +172,10 @@ const ObservableGrid =  ({
   }, [headers])
 
   useEffect(() => {
+    console.log(`?orderBy=${orderBy}&order=${order}`)
+  }, [orderBy, order])
+
+  useEffect(() => {
     const gridTemplateString = innerHeaders.filter(header => header.visible).map(header => header.width).join(' ')
     setGridTemplateColumns(gridTemplateString)
   }, [innerHeaders])

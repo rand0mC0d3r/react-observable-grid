@@ -19,6 +19,7 @@ const ObservableHeaderItem = ({
   label,
   noHightlight,
   align,
+  suggestions,
   preHeaders,
   order,
   orderBy,
@@ -66,7 +67,7 @@ const ObservableHeaderItem = ({
         horizontal: 'center',
       }}
     >
-      <div style={{ padding: '12px 16px'}}>
+      <div style={{ padding: '12px 16px', display: 'flex', gap: '8px', width: '250px', flexDirection: 'column'}}>
         <TextField
           autoFocus
           value={searchString}
@@ -90,6 +91,9 @@ const ObservableHeaderItem = ({
           }}
           onChange={(e) => updateSearchString({ key: property, term: e.target.value })}
           id="outlined-basic" label="Search" variant="outlined" />
+        <div style={{ display: 'flex', gap: '8px', justifyContent:'center', flexWrap: 'wrap'}}>
+          {!!suggestions && suggestions().map(suggestion => <Chip variant='outlined' onClick={() => updateSearchString({ key: property, term: suggestion }) }  key={suggestion} label={suggestion} />)}
+        </div>
       </div>
     </Popover>}
   const evaluateOrderBy = ({ property, label }) => orderBy === (property || label?.toLowerCase())
@@ -155,7 +159,7 @@ const ObservableHeaderItem = ({
   </div>
 
   return <>
-    {renderPopover()}
+    {open && renderPopover()}
     <div
     onMouseEnter={() => !noHightlight && onSelect(property)}
     className={classes.headersWrapper}
@@ -208,7 +212,7 @@ const ObservableHeaderItem = ({
           <Chip
             onClick={(e) => { handleClick(e) }}
             icon={searchString !== '' ? <SearchIcon color="action" /> : undefined}
-            label={searchString || <SearchIcon color="action" style={{ fontSize: '18px' }} />}
+            label={searchString || <SearchIcon color="action" style={{ fontSize: '18px', marginTop: '3px' }} />}
             size="small"
             variant="outlined"
             onDelete={searchString !== '' ? () => {

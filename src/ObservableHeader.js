@@ -1,4 +1,4 @@
-import { Checkbox, Popover, Tooltip, Typography } from '@material-ui/core';
+import { Checkbox, Popover, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import RoomIcon from '@material-ui/icons/Room';
@@ -16,19 +16,16 @@ const defaultOptions = {
 
 const ObservableHeader = ({
   gridTemplateColumns,
-  // progress,
   headers = [],
   setHeaders,
   options: { ascArrow, descArrow, padding },
   options,
   order,
   onSelect = () => { },
-  onDeSelect = () => { },
   orderBy,
   handleSearchTerm,
   handleRequestSort,
   handleResetSort,
-  rowOptions
 }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
@@ -88,11 +85,6 @@ const ObservableHeader = ({
       }
     </div>
   }
-  const renderAdditionalHeader = (headers) => <div className={classes.secondaryHeaders}>
-      {headers.map(({ label, property, noSort, icon }) =>
-        renderMainHeader({ noSort, property, label, icon }))
-      }
-  </div>
   const renderMainHeader = ({noSort, property, label, icon, align}) => <div
     key={`${property}_${label}_${align}`}
     className={classes.flexbox}
@@ -132,21 +124,18 @@ const ObservableHeader = ({
         className={classes.wrapper}
         style={{
           padding: padding || defaultOptions.padding,
-          // paddingTop: '0px',
-          // paddingBottom: '0px',
           gridTemplateColumns: gridTemplateColumns}}
       >
         {headers?.filter(header => header.visible).map(({
-          noHightlight, align, label, noSearch, icon, property, extension,
+          noHightlight, align, label, suggestions, noSearch, icon, property, extension,
           secondaryHeaders, preHeaders, selected, postHeaders, noSort
         }) => <ObservableHeaderItem key={`${label}_${property}`} {...{
-          noSearch, property, handleRequestSort,
+          noSearch, property, handleRequestSort, suggestions,
           onSelect, selected, extension, secondaryHeaders, handleSearchTerm,
           order, options, orderBy, handleResetSort,
           preHeaders, icon, postHeaders, noSort, label, noHightlight, align
         }} />)}
       </div>
-      {/* <div className={classes.progress} style={{ left: `${progress}%` }}><RoomIcon style={{fontSize: '11px'}} color={[0, 25, 50, 70, 100].some(v => v === progress) ? 'primary' : 'disabled'} /></div> */}
     </div>
   </>
 }
@@ -158,10 +147,6 @@ const useStyles = makeStyles(theme => ({
     overflow: 'hidden',
     flex: '0 0 auto'
   },
-  // progress: {
-  //   position: 'absolute',
-  //   top: '-9px',
-  // },
   wrapper: {
     display: 'grid',
     fontSize: '12px',

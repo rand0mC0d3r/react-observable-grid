@@ -1,29 +1,27 @@
 import { Button, Chip, IconButton, InputAdornment, TextField, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
 import DashboardIcon from '@material-ui/icons/Dashboard';
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import SubjectIcon from '@material-ui/icons/Subject';
-import TextFieldsIcon from '@material-ui/icons/TextFields';
 import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
 import { useEffect, useMemo, useState } from 'react';
 import { ObservableGrid } from 'react-observable-grid';
 import LocalObservableGrid from './components/ObservableGrid';
 import { dataGenerator } from './parts/dataGenerator';
-import { ActionsRow, AvatarRow, Card, CurrencyRow, DescriptionRow, LastSeenRow, NamesRow, TilesRow } from './parts/SampleRow';
+import { ActionsRow, AvatarRow, Card, CurrencyRow, DescriptionRow, LastSeenRow, NamesRow, RowTabs, TilesRow } from './parts/SampleRow';
 
 
 const App = () => {
   const [rows, setRows] = useState([]);
+  const [cachedRows, setCachedRows] = useState([]);
   const [searchedRows, setSearchedRows] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
   const [performance, setPerformance] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [isCaseSensitive, setIsCaseSensitive] = useState(false);
-  const [isColumned, setIsColumned] = useState(false);
+  const [isColumned, setIsColumned] = useState(true);
   const [selectedTiles, setSelectedTiles] = useState([]);
   const [selectedAvatars, setSelectedAvatars] = useState([]);
   const [searchInField, setSearchInField] = useState(['name', 'description']);
@@ -33,7 +31,6 @@ const App = () => {
   const [canvasDrawing, setCanvasDrawing] = useState(false);
   const [seeLive, setSeeLive] = useState(false);
   const [asGrid, setAsGrid] = useState(false);
-  const [elementsRendered, setElementsRendered] = useState([0,0])
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
 
@@ -59,6 +56,12 @@ const App = () => {
       label: 'Full Name',
       tooltip: "Filter users by name",
       property: 'fullName',
+      suggestions: () => {
+        const results = filteredRows.map(row => {
+          return row.fullName.split(" ")
+        })
+        return Array.from(new Set(results.flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10)
+      },
       width: 'minmax(200px, 1fr)',
       extension: <>
         {selectedAvatars.length > 0 && <Chip onDelete={() => setSelectedAvatars([])} variant="outlined" size="small" label={`People: ${selectedAvatars.length}`} />}
@@ -88,6 +91,12 @@ const App = () => {
     {
       label: 'Description',
       // canCanvas: true,
+      suggestions: () => {
+        const results = filteredRows.map(row => {
+          return row.description.split(" ")
+        })
+        return Array.from(new Set(results.flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10)
+      },
       icon: <SubjectIcon />,
       property: 'description',
       row: (row) => <DescriptionRow row={row} />,
@@ -96,6 +105,12 @@ const App = () => {
     {
       label: 'Tiles',
       icon: <DashboardIcon />,
+      suggestions: () => {
+        const results = filteredRows.map(row => {
+          return row.tiles.map(tile => tile.name)
+        })
+        return Array.from(new Set(results.flat()))
+      },
       // noSearch: true,
       property: 'tilesHash',
       width: 'minmax(100px, 2fr)',
@@ -119,6 +134,12 @@ const App = () => {
       label: 'Price',
       icon: <MonetizationOnIcon />,
       property: 'price',
+      suggestions: () => {
+        const results = filteredRows.map(row => {
+          return row.currency
+        })
+        return Array.from(new Set(results.flat()))
+      },
       align: 'flex-end',
       width: 'minmax(130px, 180px)',
       row: (row) => <CurrencyRow row={row} />,
@@ -156,11 +177,6 @@ const App = () => {
     },
   ]
 
-  // const calculateGridElements = () => {
-  //   const gridElement = document.getElementById("observable-grid")
-  //   return gridElement ? gridElement.getElementsByTagName('*').length : 0
-  // }
-
   const generateRows = (count) => {
     setRows(() => [])
     const t0 = Date.now()
@@ -172,17 +188,9 @@ const App = () => {
 
   useEffect(() => generateRows(35), [])
 
-  // useEffect(( ) => {
-  //   const interval = setInterval(() => {
-  //     setElementsRendered(() => [document.getElementsByTagName('*').length, Number(calculateGridElements())])
-  //   }, 1000)
-
-  //   return () => clearInterval(interval)
-  // }, [])
-
   useEffect(() => {
     searchTerm.length > 0
-    ? setSearchedRows(rows => rows.filter((row) => {
+    ? setSearchedRows(() => cachedRows.filter((row) => {
       return searchInField.length > 0
       ? searchInField.some((field) => {
         return isCaseSensitive
@@ -191,8 +199,12 @@ const App = () => {
       })
       : true
     }))
-    : setSearchedRows(rows)
-  }, [searchTerm, rows, searchInField, isCaseSensitive])
+    : setSearchedRows(() => cachedRows)
+  }, [searchTerm, cachedRows, searchInField, isCaseSensitive])
+
+  useEffect(() => {
+    setCachedRows(rows)
+  }, [rows])
 
   useEffect(() => {
     selectedTiles.length > 0
@@ -219,7 +231,6 @@ const App = () => {
         </div>
         <div className={`${classes.actions} ${classes.smallActions}`}>
           <Chip variant="outlined" label={<div style={{ minWidth: '100px', textAlign: 'center' }}>{`Filtered: ${filteredRows.length}`}</div>} />
-          {/* <Chip variant="outlined" label={<div style={{ minWidth: '150px', textAlign: 'center' }}>{`DOM (Grid): ${elementsRendered[0]} (${elementsRendered[1]})`}</div>} /> */}
           <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debug ${isDebugging ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsColumned(!isColumned)} variant="outlined" label={`Columns ${isColumned ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setCustomHeader(!customHeader)} variant="outlined" label={`Custom H ${customHeader ? 'ON' : 'OFF'}`} />
@@ -230,55 +241,6 @@ const App = () => {
           <Chip onClick={() => setAsGrid(!asGrid)} variant="outlined" label={`Grid ${asGrid ? 'GRID' : 'TABLE'}`} />
         </div>
       </div>
-
-
-      <div className={`${classes.actions} ${classes.bigContainer}`}>
-        <div className={classes.actions}>
-          <TextField
-            placeholder={`Search in ${searchInField.join(', ')}...`}
-            value={searchTerm}
-            disabled={searchInField.length === 0}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            variant="outlined"
-            InputProps={{
-              startAdornment: <InputAdornment position="start">🔍</InputAdornment>,
-              endAdornment: <>
-                <TextFieldsIcon
-                  style={{cursor: 'pointer'}}
-                  onClick={() => setIsCaseSensitive(!isCaseSensitive)}
-                  color={isCaseSensitive ? 'primary' : 'disabled'}
-                />
-                {searchTerm.length > 0 && <InputAdornment onClick={() => setSearchTerm('')} position="end"><DeleteOutlineIcon style={{cursor: 'pointer'}} /></InputAdornment>}
-
-              </>,
-            }}
-            style={{ width: '300px' }}
-            size="small" />
-
-            <div className={`${classes.actions} ${classes.smallActions}`}>
-              {headers.filter(header => !header.noSearch).map((header) => {
-                const isField = searchInField.some(field => field === header.property)
-                return <Chip
-                  color={isField ? 'primary' : 'default'}
-                  key={header.property}
-                  variant="outlined"
-                  onClick={() => {
-                    if (searchInField.includes(header.property)) {
-                      setSearchInField(searchInField.filter(field => field !== header.property))
-                    } else {
-                      setSearchInField([...searchInField, header.property])
-                    }
-                  }}
-                  icon={isField ? undefined : <AddCircleIcon />}
-                  onDelete={isField ? () => {
-                    setSearchInField(searchInField.filter(field => field !== header.property))
-                  } : undefined}
-                  label={header.label}
-                />
-              })}
-            </div>
-        </div>
-              </div>
 
       <div className={`${classes.actions} ${classes.bigContainer}`}>
         <div className={`${classes.actions} ${classes.smallActions}`}>
@@ -294,9 +256,6 @@ const App = () => {
               {count}
           </Button>)}
         </div>
-        {/* {selectedTiles.map((tile) => <Chip key={tile} label={tile} />)} */}
-
-        {/* {JSON.stringify(selectedAvatars)} */}
         <div className={`${classes.actions} ${classes.smallActions}`}>
           {selectedAvatars.map((avatar) => <AvatarRow
             row={{
@@ -304,59 +263,41 @@ const App = () => {
               name: avatar.split(" ")[0],
               surname: avatar.split(" ")[1]
             }} />)}
-          {/* {Array.from(new Set(filteredRows.map(fr => fr.fullName))).map((fullName) => <AvatarRow key={fullName} row={{ fullName }} />)} */}
         </div>
       </div>
 
-      <div className={classes.container} style={{height: '850px'}}>
-        {seeLive
-          ? <ObservableGrid {...{isDebugging, headers, canvasDrawing }}
-            uniqueId="fakeEntries"
-            rowOptions={{ padding: '8px 16px' }}
-            isColumned={isColumned}
-            headerOptions={{ padding: '16px 16px' }}
-            rows={filteredRows}
-            isEmpty={filteredRows.length === 0}
-            emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
-          />
-          : <>
-            {/* {asGrid
-              ? <LocalObservableGrid {...{ isDebugging, headers: headersGrid, canvasDrawing }}
-                uniqueId="fakeEntries"
-                isHeaderHidden={isHeaderHidden}
-                isGrid={4}
-                pageSize={100}
-                isAlternating={false}
-                className={classes.observableGrid}
-                isClearingOnBlur={false}
-                rowOptions={{ padding: '16px' }}
-                headerOptions={{ padding: '16px 16px' }}
-                rows={filteredRows}
-                emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
-              /> */}
-            {/* : */}
-            <LocalObservableGrid {...{ isDebugging, headers: asGrid ? headersGrid : headers, canvasDrawing }}
-                uniqueId="fakeEntries"
-                isGrid={asGrid ? 4 : undefined}
-                isAlternating={asGrid ? false : true}
-                pageSize={100}
-                isHeaderHidden={isHeaderHidden}
-                canvasDrawing={false}
-                isColumned={asGrid ? false : isColumned}
-                className={classes.observableGrid}
-                isClearingOnBlur={false}
-                rowOptions={{ padding: '8px 16px 8px 16px' }}
-                headerOptions={{ padding: '4px 16px 4px 16px' }}
-                rows={filteredRows}
-                isEmpty={filteredRows.length === 0}
-                emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
+      <div className={classes.containerWrapper}>
+        {/* <RowTabs rows={rows} setRows={(rows) => setCachedRows(rows)} /> */}
+        <div className={classes.container}>
+          {seeLive
+            ? <ObservableGrid {...{isDebugging, headers, canvasDrawing }}
+              uniqueId="fakeEntries"
+              rowOptions={{ padding: '8px 16px' }}
+              isColumned={isColumned}
+              headerOptions={{ padding: '16px 16px' }}
+              rows={filteredRows}
+              isEmpty={filteredRows.length === 0}
+              emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
             />
-            {/* } */}
-          </>}
+            : <LocalObservableGrid {...{ isDebugging, headers: asGrid ? headersGrid : headers, canvasDrawing }}
+                  uniqueId="fakeEntries"
+                  isGrid={asGrid ? 4 : undefined}
+                  isAlternating={asGrid ? false : true}
+                  pageSize={100}
+                  isHeaderHidden={isHeaderHidden}
+                  canvasDrawing={false}
+                  isColumned={asGrid ? false : isColumned}
+                  className={classes.observableGrid}
+                  isClearingOnBlur={false}
+                  rowOptions={{ padding: '8px 16px 8px 16px' }}
+                  headerOptions={{ padding: '4px 16px 4px 16px' }}
+                  rows={filteredRows}
+                  isEmpty={filteredRows.length === 0}
+                  emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
+              />}
+          </div>
+        </div>
       </div>
-
-
-    </div>
   </ThemeProvider>
 }
 
@@ -382,15 +323,16 @@ const useStyles = makeStyles(() => ({
   },
   wrapper: {
     display: 'flex',
-    width: '100%',
-    height: '100%',
-    minWidth: '850px',
     gap: '16px',
+    left: '24px',
+    right: '24px',
+    top: '24px',
+    bottom: '24px',
     flexDirection: 'column',
     position: 'absolute',
     alignContent: 'stretch',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'stretch',
   },
   wrapper2: {
     display: 'flex',
@@ -410,17 +352,18 @@ const useStyles = makeStyles(() => ({
     gap: '4px',
   },
   bigContainer: {
-    width: '95%',
     minHeight: '60px'
   },
+  containerWrapper: {
+    flex: '1 1 auto',
+    display: 'flex',
+    flexDirection: 'column'
+  },
   container: {
-    minWidth: '850px',
+    flex: '1 0 auto',
     position: 'relative',
-    borderRadius: '4px',
-    maxWidth: '95%',
-    width: '95%',
-    border: '2px solid #333',
-    height: '80%'
+    borderRadius: '0px 4px 4px 4px',
+    border: '1px solid #333',
   }
 }))
 
