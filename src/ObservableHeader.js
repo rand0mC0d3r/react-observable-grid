@@ -16,7 +16,7 @@ const defaultOptions = {
 
 const ObservableHeader = ({
   gridTemplateColumns,
-  progress,
+  // progress,
   headers = [],
   setHeaders,
   options: { ascArrow, descArrow, padding },
@@ -146,7 +146,7 @@ const ObservableHeader = ({
           preHeaders, icon, postHeaders, noSort, label, noHightlight, align
         }} />)}
       </div>
-      <div className={classes.progress} style={{ left: `${progress}%` }}><RoomIcon style={{fontSize: '11px'}} color={[0, 25, 50, 70, 100].some(v => v === progress) ? 'primary' : 'disabled'} /></div>
+      {/* <div className={classes.progress} style={{ left: `${progress}%` }}><RoomIcon style={{fontSize: '11px'}} color={[0, 25, 50, 70, 100].some(v => v === progress) ? 'primary' : 'disabled'} /></div> */}
     </div>
   </>
 }
@@ -158,10 +158,10 @@ const useStyles = makeStyles(theme => ({
     overflow: 'hidden',
     flex: '0 0 auto'
   },
-  progress: {
-    position: 'absolute',
-    top: '-9px',
-  },
+  // progress: {
+  //   position: 'absolute',
+  //   top: '-9px',
+  // },
   wrapper: {
     display: 'grid',
     fontSize: '12px',

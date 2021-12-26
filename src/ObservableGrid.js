@@ -1,4 +1,6 @@
 import { makeStyles, useTheme } from '@material-ui/core/styles'
+// import ObservableLoadMore from './ObservableLoadMore'
+import RoomIcon from '@material-ui/icons/Room'
 import { createNewSortInstance } from 'fast-sort'
 import throttle from 'lodash/throttle'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
@@ -8,7 +10,6 @@ import ObservableDebugging from './ObservableDebugging'
 import ObservableEmpty from './ObservableEmpty'
 import ObservableHeader from './ObservableHeader'
 import ObservableInternalLoadMore from './ObservableInternalLoadMore'
-// import ObservableLoadMore from './ObservableLoadMore'
 import ObservableRow from './ObservableRow'
 import ObservableScrollTop from './ObservableScrollTop'
 import ObservableSnapshot from './ObservableSnapshot'
@@ -40,6 +41,7 @@ const ObservableGrid =  ({
   isDebugging = false,
   isSelectable = true,
   isScrollable = true,
+  isHeaderHidden = false,
   isAlternating = true,
 }) => {
   const theme = useTheme()
@@ -161,7 +163,7 @@ const ObservableGrid =  ({
   }, [])
 
   useEffect(() => {
-    if(!headers) return
+    if (!headers) return
     const gridTemplateString = headers.map(header => header.width).join(' ')
     setGridTemplateColumns(gridTemplateString)
     if (gridTemplateString.indexOf('minmax') === -1) {
@@ -205,27 +207,28 @@ const ObservableGrid =  ({
     ]}>
     </ObservableDebugging>}
 
-    {headers.length > 0 && innerHeaders.length > 0 && <ObservableHeader {...{
-      options: headerOptions,
-      gridTemplateColumns,
-      setHeaders: setInnerHeaders,
-      headers: innerHeaders,
-      progress: Math.round(currentRow * 100 / sortedRows.length),
-      order,
-      orderBy,
-      onSelect,
-      onDeSelect,
-      handleRequestSort,
-      handleSearchTerm: ({ key, term }) => {
-        term === null
-          ? setSearchColumns([...searchColumns.filter(sc => sc.key !== key)])
-          : setSearchColumns([...searchColumns.filter(sc => sc.key !== key), { key, term }])
-      },
-      handleResetSort,
-      rowOptions
-    }} />}
+    {!isHeaderHidden && headers.length > 0 && innerHeaders.length > 0 && <ObservableHeader {...{
+        options: headerOptions,
+        gridTemplateColumns,
+        setHeaders: setInnerHeaders,
+        headers: innerHeaders,
+        progress: Math.round(currentRow * 100 / sortedRows.length),
+        order,
+        orderBy,
+        onSelect,
+        onDeSelect,
+        handleRequestSort,
+        handleSearchTerm: ({ key, term }) => {
+          term === null
+            ? setSearchColumns([...searchColumns.filter(sc => sc.key !== key)])
+            : setSearchColumns([...searchColumns.filter(sc => sc.key !== key), { key, term }])
+        },
+        handleResetSort,
+        rowOptions
+      }}
+    />}
 
-    {<div
+    {!isGrid && <div
       className={classes.observableRow}
       style={{
         padding: rowOptions.padding,
@@ -234,6 +237,7 @@ const ObservableGrid =  ({
         gridTemplateColumns: gridTemplateColumns
       }}>
       {innerHeaders.map((innerHeader, i) => <div key={`${innerHeader.property}-${innerHeader.label}`}
+        onClick={() => { console.log(innerHeader) }}
         className={`${classes.observableColumn} ${isColumned && classes.observableColumnRight}`}
         style={{ backgroundColor: i === innerHeaders.findIndex(header => header.selected) ? "#EEEEEE80" : ''}}
       />)}
@@ -251,10 +255,23 @@ const ObservableGrid =  ({
         <ObservableScrollTop {...{ selectedIndex, isAtTop: rows.length > pageSize && startEnd.end > 3 }} />}
     </>
       : <ObservableEmpty>{emptyElement}</ObservableEmpty>}
+
+    <div className={classes.progress}>
+      <div style={{position: 'relative'}}>
+        <div style={{ width: '100%', backgroundColor: '#BBBBBB42', height: '4px' }}></div>
+        <div style={{ position: 'absolute', borderRadius: '0px 8px 8px 0px', top: '0px', left: '0px', width: `${Math.round(currentRow * 100 / sortedRows.length) + 3}%`, backgroundColor: '#3f51b569', height: '4px' }}></div>
+        {/* <RoomIcon style={{ fontSize: '11px' }} color={[0, 25, 50, 70, 100].some(v => v === Math.round(currentRow * 100 / sortedRows.length)) ? 'primary' : 'disabled'} /> */}
+      </div>
+    </div>
   </div>
 }
 
 const useStyles = makeStyles((theme) => ({
+  progress: {
+    position: 'absolute',
+    bottom: '0px',
+    width: '100%',
+  },
   observableRow: {
     top: '0px',
     left: '0px',

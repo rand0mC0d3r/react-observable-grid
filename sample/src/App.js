@@ -28,6 +28,8 @@ const App = () => {
   const [selectedAvatars, setSelectedAvatars] = useState([]);
   const [searchInField, setSearchInField] = useState(['name', 'description']);
   const [isDebugging, setIsDebugging] = useState(false);
+  const [isHeaderHidden, setIsHeaderHidden] = useState(false);
+  const [customHeader, setCustomHeader] = useState(false);
   const [canvasDrawing, setCanvasDrawing] = useState(false);
   const [seeLive, setSeeLive] = useState(false);
   const [asGrid, setAsGrid] = useState(false);
@@ -220,6 +222,8 @@ const App = () => {
           {/* <Chip variant="outlined" label={<div style={{ minWidth: '150px', textAlign: 'center' }}>{`DOM (Grid): ${elementsRendered[0]} (${elementsRendered[1]})`}</div>} /> */}
           <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debug ${isDebugging ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsColumned(!isColumned)} variant="outlined" label={`Columns ${isColumned ? 'ON' : 'OFF'}`} />
+          <Chip onClick={() => setCustomHeader(!customHeader)} variant="outlined" label={`Custom H ${customHeader ? 'ON' : 'OFF'}`} />
+          <Chip onClick={() => setIsHeaderHidden(!isHeaderHidden)} variant="outlined" label={`Hide H ${isHeaderHidden ? 'ON' : 'OFF'}`} />
           <Chip variant="outlined" label={<div style={{ minWidth: '100px', textAlign: 'center' }}>{`Perf: ${performance}ms`}</div>} />
           <Chip onClick={() => setCanvasDrawing(!canvasDrawing)} variant="outlined" label={`🧪 Canvas ${canvasDrawing ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setSeeLive(!seeLive)} variant="outlined" label={`Env ${seeLive ? 'PROD' : 'DEV'}`} />
@@ -278,7 +282,7 @@ const App = () => {
 
       <div className={`${classes.actions} ${classes.bigContainer}`}>
         <div className={`${classes.actions} ${classes.smallActions}`}>
-          {[5, 30, 1500, 65000, 500000, 1000000, 10000000].map(count => <Button
+          {[5, 30, 1500, 65000, 1000000].map(count => <Button
             disableElevation
             style={{minWidth: 'unset', padding: '5px 12px'}}
             color={count === rows?.length ? 'primary' : 'default'}
@@ -316,9 +320,10 @@ const App = () => {
             emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
           />
           : <>
-            {asGrid
+            {/* {asGrid
               ? <LocalObservableGrid {...{ isDebugging, headers: headersGrid, canvasDrawing }}
                 uniqueId="fakeEntries"
+                isHeaderHidden={isHeaderHidden}
                 isGrid={4}
                 pageSize={100}
                 isAlternating={false}
@@ -328,11 +333,16 @@ const App = () => {
                 headerOptions={{ padding: '16px 16px' }}
                 rows={filteredRows}
                 emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
-              />
-              : <LocalObservableGrid {...{ isDebugging, headers, canvasDrawing }}
+              /> */}
+            {/* : */}
+            <LocalObservableGrid {...{ isDebugging, headers: asGrid ? headersGrid : headers, canvasDrawing }}
                 uniqueId="fakeEntries"
+                isGrid={asGrid ? 4 : undefined}
+                isAlternating={asGrid ? false : true}
+                pageSize={100}
+                isHeaderHidden={isHeaderHidden}
                 canvasDrawing={false}
-                isColumned={isColumned}
+                isColumned={asGrid ? false : isColumned}
                 className={classes.observableGrid}
                 isClearingOnBlur={false}
                 rowOptions={{ padding: '8px 16px 8px 16px' }}
@@ -340,7 +350,8 @@ const App = () => {
                 rows={filteredRows}
                 isEmpty={filteredRows.length === 0}
                 emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
-            />}
+            />
+            {/* } */}
           </>}
       </div>
 
@@ -359,9 +370,9 @@ const useStyles = makeStyles(() => ({
     '& #Row-root': {
       borderBottom: '1px solid #CCC',
     },
-    '& #Container-root > *': {
-      borderBottom: '1px solid #CCC'
-    },
+    // '& #Container-root > *': {
+    //   borderBottom: '1px solid #CCC'
+    // },
     '& #Container-root > *:hover': {
       backgroundColor: '#e0f0ff88',
     },

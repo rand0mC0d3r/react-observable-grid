@@ -48,7 +48,8 @@ const useStyles = makeStyles(theme => ({
     '& > *': {
       minHeight: '44px',
       paddingLeft: '2px',
-      paddingRight: '2px'
+      paddingRight: '2px',
+      borderBottom: `1px solid ${theme.palette.divider}`,
     },
     '& > *:hover': {
       backgroundColor: '#88888844',
