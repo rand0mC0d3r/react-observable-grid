@@ -223,7 +223,7 @@ const App = () => {
           <Chip variant="outlined" label={<div style={{ minWidth: '100px', textAlign: 'center' }}>{`Perf: ${performance}ms`}</div>} />
           <Chip onClick={() => setCanvasDrawing(!canvasDrawing)} variant="outlined" label={`🧪 Canvas ${canvasDrawing ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setSeeLive(!seeLive)} variant="outlined" label={`Env ${seeLive ? 'PROD' : 'DEV'}`} />
-          {!seeLive && <Chip onClick={() => setAsGrid(!asGrid)} variant="outlined" label={`Grid ${asGrid ? 'GRID' : 'TABLE'}`} />}
+          <Chip onClick={() => setAsGrid(!asGrid)} variant="outlined" label={`Grid ${asGrid ? 'GRID' : 'TABLE'}`} />
         </div>
       </div>
 
@@ -309,6 +309,7 @@ const App = () => {
           ? <ObservableGrid {...{isDebugging, headers, canvasDrawing }}
             uniqueId="fakeEntries"
             rowOptions={{ padding: '8px 16px' }}
+            isColumned={isColumned}
             headerOptions={{ padding: '16px 16px' }}
             rows={filteredRows}
             isEmpty={filteredRows.length === 0}
