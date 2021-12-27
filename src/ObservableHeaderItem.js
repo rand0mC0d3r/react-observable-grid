@@ -17,6 +17,7 @@ const defaultOptions = {
 const ObservableHeaderItem = ({
   property,
   label,
+  rows,
   noHightlight,
   align,
   suggestions,
@@ -45,10 +46,17 @@ const ObservableHeaderItem = ({
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
-  const updateSearchString = ({ key, term }) => {
+  const updateSearchString = ({ term }) => {
     setSearchString(term)
-    handleSearchTerm({ key, term: term.toLowerCase() })
+    handleSearchTerm({ key: property, term: term, isRegex, isCaseSensitive })
   }
+
+  useEffect(() => {
+    console.log(isRegex, isCaseSensitive)
+    if (property) {
+      // handleSearchTerm({ key: property, term: searchString, isRegex, isCaseSensitive })
+    }
+  }, [isCaseSensitive, isRegex])
 
   const handleClick = (event) => { setAnchorEl(event.currentTarget) };
   const handleClose = () => { setAnchorEl(null) };
@@ -76,23 +84,29 @@ const ObservableHeaderItem = ({
             endAdornment: <>
               <TextFieldsIcon
                 style={{cursor: 'pointer'}}
-                onClick={() => setIsCaseSensitive(!isCaseSensitive)}
+                onClick={() => {
+                  setIsCaseSensitive(!isCaseSensitive)
+                  handleSearchTerm({ key: property, term: searchString, isRegex, isCaseSensitive: !isCaseSensitive })
+                }}
                 color={isCaseSensitive ? 'primary' : 'disabled'}
               />
 
               <FunctionsIcon
                 style={{cursor: 'pointer'}}
-                onClick={() => setIsRegex(!isRegex)}
+                onClick={() => {
+                  setIsRegex(!isRegex)
+                  handleSearchTerm({ key: property, term: searchString, isRegex: !isRegex, isCaseSensitive })
+                }}
                 color={isRegex ? 'primary' : 'disabled'}
               />
-              {searchString.length > 0 && <InputAdornment onClick={() => updateSearchString({ key: property, term: '' })} position="end"><DeleteOutlineIcon style={{cursor: 'pointer'}} /></InputAdornment>}
+              {searchString.length > 0 && <InputAdornment onClick={() => updateSearchString({ term: '' })} position="end"><DeleteOutlineIcon style={{cursor: 'pointer'}} /></InputAdornment>}
 
             </>,
           }}
-          onChange={(e) => updateSearchString({ key: property, term: e.target.value })}
+          onChange={(e) => updateSearchString({ term: e.target.value })}
           id="outlined-basic" label="Search" variant="outlined" />
         <div style={{ display: 'flex', gap: '8px', justifyContent:'center', flexWrap: 'wrap'}}>
-          {!!suggestions && suggestions().map(suggestion => <Chip variant='outlined' onClick={() => updateSearchString({ key: property, term: suggestion }) }  key={suggestion} label={suggestion} />)}
+          {!!suggestions && suggestions(rows).map(suggestion => <Chip variant='outlined' onClick={() => updateSearchString({ term: suggestion }) }  key={suggestion} label={suggestion} />)}
         </div>
       </div>
     </Popover>}

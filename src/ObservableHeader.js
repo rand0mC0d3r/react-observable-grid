@@ -16,6 +16,7 @@ const defaultOptions = {
 
 const ObservableHeader = ({
   gridTemplateColumns,
+  rows,
   headers = [],
   setHeaders,
   options: { ascArrow, descArrow, padding },
@@ -130,7 +131,7 @@ const ObservableHeader = ({
           noHightlight, align, label, suggestions, noSearch, icon, property, extension,
           secondaryHeaders, preHeaders, selected, postHeaders, noSort
         }) => <ObservableHeaderItem key={`${label}_${property}`} {...{
-          noSearch, property, handleRequestSort, suggestions,
+          noSearch, property, handleRequestSort, suggestions, rows,
           onSelect, selected, extension, secondaryHeaders, handleSearchTerm,
           order, options, orderBy, handleResetSort,
           preHeaders, icon, postHeaders, noSort, label, noHightlight, align

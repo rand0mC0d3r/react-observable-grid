@@ -105,7 +105,6 @@ const ObservableGrid =  ({
   }
 
   const onSelect = (property) => {
-    // console.log(property)
     setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: header.property === property ? true : false })))
   }
 
@@ -125,10 +124,13 @@ const ObservableGrid =  ({
   }, [rows, isEmpty])
 
   useEffect(() => {
+    console.log('useEffect', searchColumns)
     searchColumns.length > 0
       ? setFilteredRows(() => cachedRows.filter(cr => searchColumns
         .filter(searchColumn => searchColumn?.term.length > 0
-          ? cr[searchColumn.key].toLowerCase().includes(searchColumn?.term)
+          ? searchColumn.isCaseSensitive
+            ? cr[searchColumn.key].includes(searchColumn?.term)
+            : cr[searchColumn.key].toLowerCase().includes(searchColumn?.term.toLowerCase())
           : true
         ).length === searchColumns.length
       ))
@@ -214,6 +216,7 @@ const ObservableGrid =  ({
     {!isHeaderHidden && headers.length > 0 && innerHeaders.length > 0 && <ObservableHeader {...{
         options: headerOptions,
         gridTemplateColumns,
+        rows: sortedRows,
         setHeaders: setInnerHeaders,
         headers: innerHeaders,
         progress: Math.round(currentRow * 100 / sortedRows.length),
@@ -222,15 +225,16 @@ const ObservableGrid =  ({
         onSelect,
         onDeSelect,
         handleRequestSort,
-        handleSearchTerm: ({ key, term }) => {
+        handleSearchTerm: ({ key, term, isRegex, isCaseSensitive }) => {
           term === null
             ? setSearchColumns([...searchColumns.filter(sc => sc.key !== key)])
-            : setSearchColumns([...searchColumns.filter(sc => sc.key !== key), { key, term }])
+            : setSearchColumns([...searchColumns.filter(sc => sc.key !== key), { key, term, isRegex, isCaseSensitive }])
         },
         handleResetSort,
         rowOptions
       }}
     />}
+    {JSON.stringify(searchColumns)}
 
     {!isGrid && <div
       className={classes.observableRow}

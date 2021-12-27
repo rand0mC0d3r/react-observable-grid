@@ -56,12 +56,7 @@ const App = () => {
       label: 'Full Name',
       tooltip: "Filter users by name",
       property: 'fullName',
-      suggestions: () => {
-        const results = filteredRows.map(row => {
-          return row.fullName.split(" ")
-        })
-        return Array.from(new Set(results.flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10)
-      },
+      suggestions: (rows) => Array.from(new Set(rows.map(row => row.fullName.split(" ")).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
       width: 'minmax(200px, 1fr)',
       extension: <>
         {selectedAvatars.length > 0 && <Chip onDelete={() => setSelectedAvatars([])} variant="outlined" size="small" label={`People: ${selectedAvatars.length}`} />}
@@ -91,12 +86,7 @@ const App = () => {
     {
       label: 'Description',
       // canCanvas: true,
-      suggestions: () => {
-        const results = filteredRows.map(row => {
-          return row.description.split(" ")
-        })
-        return Array.from(new Set(results.flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10)
-      },
+      suggestions: (rows) => Array.from(new Set(rows.map(row => row.description.split(" ")).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
       icon: <SubjectIcon />,
       property: 'description',
       row: (row) => <DescriptionRow row={row} />,
@@ -105,12 +95,7 @@ const App = () => {
     {
       label: 'Tiles',
       icon: <DashboardIcon />,
-      suggestions: () => {
-        const results = filteredRows.map(row => {
-          return row.tiles.map(tile => tile.name)
-        })
-        return Array.from(new Set(results.flat()))
-      },
+      suggestions: (rows) => Array.from(new Set(rows.map(row => row.tiles.map(tile => tile.name)).flat())),
       // noSearch: true,
       property: 'tilesHash',
       width: 'minmax(100px, 2fr)',
@@ -134,12 +119,7 @@ const App = () => {
       label: 'Price',
       icon: <MonetizationOnIcon />,
       property: 'price',
-      suggestions: () => {
-        const results = filteredRows.map(row => {
-          return row.currency
-        })
-        return Array.from(new Set(results.flat()))
-      },
+      suggestions: (rows) => Array.from(new Set(rows.map(row => row.currency).flat())),
       align: 'flex-end',
       width: 'minmax(130px, 180px)',
       row: (row) => <CurrencyRow row={row} />,
