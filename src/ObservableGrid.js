@@ -234,7 +234,6 @@ const ObservableGrid =  ({
         rowOptions
       }}
     />}
-    {JSON.stringify(searchColumns)}
 
     {!isGrid && <div
       className={classes.observableRow}

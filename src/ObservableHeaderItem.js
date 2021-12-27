@@ -51,13 +51,6 @@ const ObservableHeaderItem = ({
     handleSearchTerm({ key: property, term: term, isRegex, isCaseSensitive })
   }
 
-  useEffect(() => {
-    console.log(isRegex, isCaseSensitive)
-    if (property) {
-      // handleSearchTerm({ key: property, term: searchString, isRegex, isCaseSensitive })
-    }
-  }, [isCaseSensitive, isRegex])
-
   const handleClick = (event) => { setAnchorEl(event.currentTarget) };
   const handleClose = () => { setAnchorEl(null) };
   const renderPopover = () => {
@@ -104,10 +97,11 @@ const ObservableHeaderItem = ({
             </>,
           }}
           onChange={(e) => updateSearchString({ term: e.target.value })}
-          id="outlined-basic" label="Search" variant="outlined" />
-        <div style={{ display: 'flex', gap: '8px', justifyContent:'center', flexWrap: 'wrap'}}>
-          {!!suggestions && suggestions(rows).map(suggestion => <Chip variant='outlined' onClick={() => updateSearchString({ term: suggestion }) }  key={suggestion} label={suggestion} />)}
-        </div>
+          id="outlined-basic" label="Search" variant="outlined"
+        />
+        {!!suggestions && <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          {suggestions(rows).map(suggestion => <Chip variant='outlined' onClick={() => updateSearchString({ term: suggestion })} key={suggestion} label={suggestion} />)}
+        </div>}
       </div>
     </Popover>}
   const evaluateOrderBy = ({ property, label }) => orderBy === (property || label?.toLowerCase())
