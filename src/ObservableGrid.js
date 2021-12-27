@@ -22,6 +22,7 @@ const ObservableGrid =  ({
   // keyPattern = () => { },
   // onLoadMore,
   // rowRenderer = () => { },
+  triggerSearch,
   className,
   rowOptions = {
     padding: '20px',
@@ -61,7 +62,9 @@ const ObservableGrid =  ({
   const [gridTemplateColumns, setGridTemplateColumns] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(null)
 
-  const [elementsRendered, setElementsRendered] = useState([0,0])
+  const [elementsRendered, setElementsRendered] = useState([0, 0])
+
+  const [externalRows, setExternalRows] = useState([])
   const [cachedRows, setCachedRows] = useState([])
   const [filteredRows, setFilteredRows] = useState([])
   const [sortedRows, setSortedRows] = useState([])
@@ -140,9 +143,16 @@ const ObservableGrid =  ({
   }, [headers])
 
   useEffect(() => {
+    setCachedRows(headers.filter(header => header.customFilter).reduce((acc, value) => {
+      const tmp = value.customFilter(acc)
+      return tmp
+    }, externalRows))
+  }, [externalRows, triggerSearch, headers])
+
+  useEffect(() => {
     isEmpty
-      ? setCachedRows([])
-      : setCachedRows(() => rows.map((row, index) => ({ ...row, __origIndex: index })))
+      ? setExternalRows([])
+      : setExternalRows(() => rows.map((row, index) => ({ ...row, __origIndex: index })))
     setSelectedIndex(null)
   }, [rows, isEmpty])
 

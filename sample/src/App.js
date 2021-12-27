@@ -33,6 +33,8 @@ const App = () => {
       label: 'Full Name',
       tooltip: "Filter users by name",
       property: 'fullName',
+
+      customFilter: (rows) => selectedAvatars.length > 0 ? rows.filter((row) => selectedAvatars?.some(sa => sa === row.fullName)) : rows,
       suggestions: (rows) => Array.from(new Set(rows.map(row => row.fullName.split(" ")).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
       width: 'minmax(200px, 1fr)',
       extension: <>
@@ -79,7 +81,7 @@ const App = () => {
     {
       label: 'Tiles',
       icon: <DashboardIcon />,
-      additionalFilter: (rows) => rows.filter((row) => selectedTiles.filter(st => row.tiles.some(t => t.id === st)).length === selectedTiles.length),
+      customFilter: (rows) => rows.filter((row) => selectedTiles.filter(st => row.tiles.some(t => t.id === st)).length === selectedTiles.length),
       suggestions: (rows) => Array.from(new Set(rows.map(row => row.tiles.map(tile => tile.name)).flat())),
       property: 'tilesHash',
       width: 'minmax(100px, 2fr)',
@@ -200,14 +202,14 @@ const App = () => {
               {count}
           </Button>)}
         </div>
-        <div className={`${classes.actions} ${classes.smallActions}`}>
+        {/* <div className={`${classes.actions} ${classes.smallActions}`}>
           {selectedAvatars.map((avatar) => <AvatarRow
             row={{
               fullName: avatar,
               name: avatar.split(" ")[0],
               surname: avatar.split(" ")[1]
             }} />)}
-        </div>
+        </div> */}
       </div>
 
       <div className={classes.containerWrapper}>
@@ -230,6 +232,7 @@ const App = () => {
                 pageSize={asGrid ? 100 : 50}
                 isHeaderHidden={isHeaderHidden}
                 canvasDrawing={false}
+                triggerSearch={[selectedTiles, selectedAvatars]}
                 // customActions={<>sample</>}
                 isColumned={asGrid ? false : isColumned}
                 className={classes.observableGrid}
