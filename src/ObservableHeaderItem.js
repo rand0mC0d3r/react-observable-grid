@@ -57,6 +57,7 @@ const ObservableHeaderItem = ({
     return <Popover
       id={id}
       open={open}
+      elevation={1}
       anchorEl={anchorEl}
       onClose={handleClose}
       anchorOrigin={{
@@ -68,7 +69,16 @@ const ObservableHeaderItem = ({
         horizontal: 'center',
       }}
     >
-      <div style={{ padding: '12px 16px', display: 'flex', gap: '8px', width: '250px', flexDirection: 'column'}}>
+      <div style={{
+        padding: '12px 16px',
+        display: 'flex',
+        gap: '8px',
+        backgroundColor: theme.palette.background.default,
+        width: '250px',
+        borderRadius: '4px',
+        flexDirection: 'column',
+        border: `1px solid ${theme.palette.divider}`,
+      }}>
         <TextField
           autoFocus
           value={searchString}
