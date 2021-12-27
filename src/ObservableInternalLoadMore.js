@@ -13,17 +13,16 @@ const ObservableInternalLoadMore = ({ onLoadMore = () => { }, isPointing = false
     as="div"
     className={classes.root}
     style={{ top: isPointing ? '50%' : '-25%' }}
-    onChange={(inView) => inView && throttledLoadMore()}
-  >.</InView>
+    onChange={(inView) => inView && throttledLoadMore()} />
 }
 
 const useStyles = makeStyles(() => ({
   root: {
     position: 'relative',
-    height: '0px',
+    height: '1px',
     padding: '0px',
     margin: '0px',
-    width: '0px',
+    width: '1px',
     opacity: '0',
     float: 'left',
   },

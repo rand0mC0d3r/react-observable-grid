@@ -167,8 +167,8 @@ const actionStyles = makeStyles(() => ({
 const descriptionStyles = makeStyles(() => ({
   description: {
     '&::selection': {
-      background: '#d4ebffad',
-      color: 'black'
+      background: '#c8e2f9e8',
+      color: 'black',
     }
   },
 }))

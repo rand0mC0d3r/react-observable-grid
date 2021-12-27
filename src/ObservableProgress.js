@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
     top: '0px',
     left: '0px',
     backgroundColor: theme.palette.primary.light,
+    width: '0px',
     height: '4px'
   },
   totalProgress: {

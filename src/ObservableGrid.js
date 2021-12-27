@@ -30,6 +30,7 @@ const ObservableGrid =  ({
   headerOptions = { },
   emptyElement,
   pageSize = 25,
+  customActions,
   minRows = 25,
   canvasDrawing = false,
 
@@ -251,8 +252,9 @@ const ObservableGrid =  ({
         {throttling && rows.length > pageSize && pageSize * startEnd.end - 1 < rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
         {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
       </ObservableContainer>}
-      {(selectedIndex ? true : rows.length > pageSize && startEnd.end >= 2) &&
-        <ObservableScrollTop {...{ selectedIndex, isAtTop: rows.length > pageSize && startEnd.end >= 2 }} />}
+      {/* {customActions !== undefined || (selectedIndex ? true : rows.length > pageSize && startEnd.end >= 2) && */}
+      <ObservableScrollTop {...{ customActions, selectedIndex, isAtTop: rows.length > pageSize && startEnd.end >= 2 }} />
+        {/* } */}
     </>
       : <ObservableEmpty>{emptyElement}</ObservableEmpty>}
 

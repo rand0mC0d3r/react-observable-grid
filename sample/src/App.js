@@ -266,6 +266,7 @@ const App = () => {
                   pageSize={asGrid ? 100 : 30}
                   isHeaderHidden={isHeaderHidden}
                   canvasDrawing={false}
+                  // customActions={<>sample</>}
                   isColumned={asGrid ? false : isColumned}
                   className={classes.observableGrid}
                   isClearingOnBlur={false}

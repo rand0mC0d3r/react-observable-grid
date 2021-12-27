@@ -9,7 +9,7 @@ const ObservableEmpty = ({ children }) => {
 
   return <div className={classes.root}>
     <div className={classes.container}>
-      {children ? children : <Typography  variant="caption" color="textSecondary">No rows ...</Typography>}
+      {children ? children : <Typography variant="caption" color="textSecondary">No rows ...</Typography>}
       </div>
   </div>
 }
