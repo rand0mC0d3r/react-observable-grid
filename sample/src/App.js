@@ -1,4 +1,4 @@
-import { Button, Chip, IconButton, InputAdornment, TextField, Typography } from '@material-ui/core';
+import { Button, Chip, IconButton, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import GitHubIcon from '@material-ui/icons/GitHub';
@@ -10,21 +10,15 @@ import { useEffect, useMemo, useState } from 'react';
 import { ObservableGrid } from 'react-observable-grid';
 import LocalObservableGrid from './components/ObservableGrid';
 import { dataGenerator } from './parts/dataGenerator';
-import { ActionsRow, AvatarRow, Card, CurrencyRow, DescriptionRow, LastSeenRow, NamesRow, RowTabs, TilesRow } from './parts/SampleRow';
+import { ActionsRow, AvatarRow, Card, CurrencyRow, DescriptionRow, LastSeenRow, NamesRow, RoleRow, RowTabs, TilesRow } from './parts/SampleRow';
 
 
 const App = () => {
   const [rows, setRows] = useState([]);
-  const [cachedRows, setCachedRows] = useState([]);
-  const [searchedRows, setSearchedRows] = useState([]);
-  const [filteredRows, setFilteredRows] = useState([]);
   const [performance, setPerformance] = useState(0);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isCaseSensitive, setIsCaseSensitive] = useState(false);
   const [isColumned, setIsColumned] = useState(true);
   const [selectedTiles, setSelectedTiles] = useState([]);
   const [selectedAvatars, setSelectedAvatars] = useState([]);
-  const [searchInField, setSearchInField] = useState(['name', 'description']);
   const [isDebugging, setIsDebugging] = useState(false);
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
   const [customHeader, setCustomHeader] = useState(false);
@@ -35,23 +29,6 @@ const App = () => {
   const classes = useStyles()
 
   const headers = [
-    // {
-    //   // icon: <GitHubIcon />,
-    //   // canCanvas: true,
-    //   noSearch: true,
-    //   noSort: true,
-    //   align: 'center',
-    //   noHightlight: true,
-    //   width: '70px',
-    //   property: 'fullName',
-    //   row: (row) => <AvatarRow {...{ selectedAvatars, row }} onSelectAvatar={(fullName) => {
-    //     console.log('xxx', fullName)
-    //     setSelectedAvatars(selectedAvatars => selectedAvatars.some(sa => sa === fullName)
-    //       ? selectedAvatars.filter(sa => sa !== fullName)
-    //       : [...selectedAvatars, fullName]
-    //     )
-    //   }} />
-    // },
     {
       label: 'Full Name',
       tooltip: "Filter users by name",
@@ -84,8 +61,15 @@ const App = () => {
       ]
     },
     {
+      label: 'Role',
+      tooltip: "Filter users by role",
+      property: 'role',
+      suggestions: (rows) => Array.from(new Set(rows.map(row => row.role).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
+      width: '160px',
+      row: (row) => <RoleRow {...{ role: row.role }} />,
+    },
+    {
       label: 'Description',
-      // canCanvas: true,
       suggestions: (rows) => Array.from(new Set(rows.map(row => row.description.split(" ")).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
       icon: <SubjectIcon />,
       property: 'description',
@@ -95,8 +79,8 @@ const App = () => {
     {
       label: 'Tiles',
       icon: <DashboardIcon />,
+      additionalFilter: (rows) => rows.filter((row) => selectedTiles.filter(st => row.tiles.some(t => t.id === st)).length === selectedTiles.length),
       suggestions: (rows) => Array.from(new Set(rows.map(row => row.tiles.map(tile => tile.name)).flat())),
-      // noSearch: true,
       property: 'tilesHash',
       width: 'minmax(100px, 2fr)',
       extension: <>
@@ -148,7 +132,12 @@ const App = () => {
       property: 'name',
       canCanvas: true,
       width: 'minmax(200px, 1fr)',
-      row: (row) => <Card row={row}  selectedTiles={selectedTiles} onSelectTile={(tile) => {
+      row: (row) => <Card row={row}  selectedTiles={selectedTiles} onSelectAvatar={(fullName) => {
+        setSelectedAvatars(selectedAvatars => selectedAvatars.some(sa => sa === fullName)
+          ? selectedAvatars.filter(sa => sa !== fullName)
+          : [...selectedAvatars, fullName]
+        )
+      }} onSelectTile={(tile) => {
         setSelectedTiles(selectedTiles => selectedTiles.some(st => st === tile)
         ? selectedTiles.filter(st => st !== tile)
         : [...selectedTiles, tile]
@@ -166,31 +155,7 @@ const App = () => {
     setPerformance(Math.round(t1 - t0));
   }
 
-  useEffect(() => generateRows(35), [])
-
-  useEffect(() => {
-    searchTerm.length > 0
-    ? setSearchedRows(() => cachedRows.filter((row) => {
-      return searchInField.length > 0
-      ? searchInField.some((field) => {
-        return isCaseSensitive
-          ? row[field].includes(searchTerm)
-          : row[field].toLowerCase().includes(searchTerm.toLowerCase())
-      })
-      : true
-    }))
-    : setSearchedRows(() => cachedRows)
-  }, [searchTerm, cachedRows, searchInField, isCaseSensitive])
-
-  useEffect(() => {
-    setCachedRows(rows)
-  }, [rows])
-
-  useEffect(() => {
-    selectedTiles.length > 0
-    ? setFilteredRows(searchedRows.filter((row) => selectedTiles.filter(st => row.tiles.some(t => t.id === st)).length === selectedTiles.length))
-    : setFilteredRows(searchedRows)
-  }, [selectedTiles, searchedRows])
+  useEffect(() => generateRows(100), [])
 
   return <ThemeProvider {...{ theme }} >
     <div className={classes.wrapper}>
@@ -210,7 +175,6 @@ const App = () => {
           </IconButton>
         </div>
         <div className={`${classes.actions} ${classes.smallActions}`}>
-          <Chip variant="outlined" label={<div style={{ minWidth: '100px', textAlign: 'center' }}>{`Filtered: ${filteredRows.length}`}</div>} />
           <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debug ${isDebugging ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsColumned(!isColumned)} variant="outlined" label={`Columns ${isColumned ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setCustomHeader(!customHeader)} variant="outlined" label={`Custom H ${customHeader ? 'ON' : 'OFF'}`} />
@@ -247,7 +211,7 @@ const App = () => {
       </div>
 
       <div className={classes.containerWrapper}>
-        {/* <RowTabs rows={rows} setRows={(rows) => setCachedRows(rows)} /> */}
+        {/* {customHeader && <RowTabs rows={rows} setRows={(rows) => setCachedRows(rows)} />} */}
         <div className={classes.container}>
           {seeLive
             ? <ObservableGrid {...{isDebugging, headers, canvasDrawing }}
@@ -255,26 +219,26 @@ const App = () => {
               rowOptions={{ padding: '8px 16px' }}
               isColumned={isColumned}
               headerOptions={{ padding: '16px 16px' }}
-              rows={filteredRows}
-              isEmpty={filteredRows.length === 0}
+              rows={rows}
+              isEmpty={rows.length === 0}
               emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
             />
             : <LocalObservableGrid {...{ isDebugging, headers: asGrid ? headersGrid : headers, canvasDrawing }}
-                  uniqueId="fakeEntries"
-                  isGrid={asGrid ? 4 : undefined}
-                  isAlternating={asGrid ? false : true}
-                  pageSize={asGrid ? 100 : 30}
-                  isHeaderHidden={isHeaderHidden}
-                  canvasDrawing={false}
-                  // customActions={<>sample</>}
-                  isColumned={asGrid ? false : isColumned}
-                  className={classes.observableGrid}
-                  isClearingOnBlur={false}
-                  rowOptions={{ padding: '8px 16px 8px 16px' }}
-                  headerOptions={{ padding: '4px 16px 4px 16px' }}
-                  rows={filteredRows}
-                  isEmpty={filteredRows.length === 0}
-                  emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
+                uniqueId="fakeEntries"
+                isGrid={asGrid ? 4 : undefined}
+                isAlternating={asGrid ? false : true}
+                pageSize={asGrid ? 100 : 50}
+                isHeaderHidden={isHeaderHidden}
+                canvasDrawing={false}
+                // customActions={<>sample</>}
+                isColumned={asGrid ? false : isColumned}
+                className={classes.observableGrid}
+                isClearingOnBlur={true}
+                rowOptions={{ padding: '8px 16px 8px 16px' }}
+                headerOptions={{ padding: '4px 16px 4px 16px' }}
+                rows={rows}
+                isEmpty={rows.length === 0}
+                emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
               />}
           </div>
         </div>
@@ -295,12 +259,12 @@ const useStyles = makeStyles(() => ({
     // '& #Container-root > *': {
     //   borderBottom: '1px solid #CCC'
     // },
-    '& #Container-root > *:hover': {
-      backgroundColor: '#e0f0ff88',
-    },
-    '& #Container-root > *:active': {
-      backgroundColor: '#e0f0ff88',
-    },
+    // '& #Container-root > *:hover': {
+    //   backgroundColor: '#e0f0ff88',
+    // },
+    // '& #Container-root > *:active': {
+    //   backgroundColor: '#e0f0ff88',
+    // },
     '& #Container-root .Row-isSelected': {
       backgroundColor: 'red',
     }

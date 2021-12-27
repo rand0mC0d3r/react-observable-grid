@@ -18,6 +18,7 @@ export const dataGenerator = (count) => count === 0 ? [] : new Array(count).fill
     surname: randomSurname,
     fullName: `${randomName} ${randomSurname}`,
     streetname: `n2_${i + 1}`,
+    role: `${['Admin', 'Manager', 'User', 'Guest'][Math.floor(Math.random() * 4)]}`,
     description: `${[
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       'Donec pulvinar nisi pulvinar metus cursus, eget malesuada nunc auctor.',

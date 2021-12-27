@@ -6,14 +6,14 @@ const ObservableContainer = ({ children, isAlternating, isGrid, isScrollable }) 
   const theme = useTheme()
   const classes = useStyles(theme)
 
-  return <div className={classes.wrapper}>
+  return <div className={isGrid ? classes.wrapperGrid : classes.wrapper}>
     <div
       id="Container-root"
       className={[
         classes.container,
         isGrid ? classes.grid : classes.anyItem,
         isAlternating && classes.alternatingItem,
-        isScrollable && classes.isScrollable
+        isScrollable && isGrid ? classes.isScrollableGrid : classes.isScrollable
       ].join(' ')}>
       {children}
     </div>
@@ -25,14 +25,22 @@ const useStyles = makeStyles(theme => ({
     flex: '1 0 auto',
     position: 'relative',
     alignSelf: 'stretch',
-    '@media print' : {
-      height: 'auto',
-      overflow: 'auto',
-    }
+  },
+  wrapperGrid: {
+    flex: '1 0 auto',
+    position: 'relative',
+    alignSelf: 'stretch',
+    display: 'flex',
+    justifyContent: 'stretch',
+    overflow: 'hidden',
   },
   grid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
+
+    '& > *': {
+      alignItems: `stretch !important`,
+    },
   },
   container: {
     '&::-webkit-scrollbar': {
@@ -52,10 +60,10 @@ const useStyles = makeStyles(theme => ({
       borderBottom: `1px solid ${theme.palette.divider}`,
     },
     '& > *:hover': {
-      backgroundColor: '#88888844',
+      backgroundColor: '#e0f0ff88',
     },
     '& > *:active': {
-      backgroundColor: '#88888844',
+      backgroundColor: '#e0f0ff88',
     }
   },
   alternatingItem: {
@@ -64,6 +72,12 @@ const useStyles = makeStyles(theme => ({
     }
   },
   isScrollable: {
+    overflow: 'visible scroll',
+    position: 'absolute',
+    width: '100%',
+    height: '100%'
+  },
+  isScrollableGrid: {
     overflow: 'visible scroll',
     position: 'absolute',
     width: '100%',

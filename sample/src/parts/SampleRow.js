@@ -5,13 +5,14 @@ import TuneIcon from '@material-ui/icons/Tune';
 import { memo } from 'react';
 import stringToColor from 'string-to-color';
 
-const AvatarRow = memo(({ row: { name, surname, fullName }, selectedAvatars, onSelectAvatar = () => { } }) =>  {
+const AvatarRow = memo(({ row: { name, surname, fullName }, selectedAvatars, onSelectAvatar = () => { } }) => {
   const theme = useTheme()
   const classes = avatarStyles(theme)
+
   return <div style={{display:'flex', justifyContent: "center"}}><Avatar
     onClick={() => onSelectAvatar(fullName)}
     variant="rounded"
-    className={[classes.avatar, selectedAvatars?.some(sa => sa === fullName) && classes.selectedAvatar].join(' ')}
+    className={[classes.avatar, selectedAvatars?.length > 0 ? selectedAvatars?.some(sa => sa === fullName) && classes.selectedAvatar : ''].join(' ')}
     style={{
       fontSize: '16px',
       backgroundColor: stringToColor(fullName)
@@ -35,7 +36,9 @@ const NamesRow = ({
   </div>
 }
 
-const Card = ({ row, selectedTiles, onSelectTile = () => {} }) => {
+const RoleRow = ({ role }) => <Typography variant='subtitle2' color="textSecondary">{role}</Typography>
+
+const Card = ({ row, selectedTiles, onSelectAvatar = () => { }, onSelectTile = () => {} }) => {
   return <div
     style={{
       display: 'flex',
@@ -45,7 +48,8 @@ const Card = ({ row, selectedTiles, onSelectTile = () => {} }) => {
       padding: '8px 12px',
       borderRadius: '8px'
     }}>
-    <div style={{display: 'flex', flexWrap: 'nowrap', justifyContent: 'space-between'}}>
+    <div style={{ display: 'flex', flexWrap: 'nowrap', justifyContent: 'space-between' }}>
+      <AvatarRow row={row} selectedAvatars={selectedTiles} onSelectAvatar={onSelectTile} />
       <NamesRow row={row} />
       <CurrencyRow row={row} />
     </div>
@@ -100,7 +104,7 @@ const RowTabs = ({ rows, setRows = () => { } }) => {
   ]
 
   return <div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row', gap: '8px 8px'}}>
-    {tabs.map(({ label, description }) => <div
+    {tabs.map(({ label, description }) => <div key={label}
       style={{
         border: '1px solid #b1b1b1',
         padding: '12px 16px',
@@ -197,4 +201,4 @@ const avatarStyles = makeStyles((theme) => ({
   }
 }))
 
-export { AvatarRow, ActionsRow, RowTabs, CurrencyRow, TilesRow, DescriptionRow, NamesRow, Card, LastSeenRow };
+export { AvatarRow, ActionsRow, RowTabs, CurrencyRow, TilesRow, DescriptionRow, NamesRow, RoleRow, Card, LastSeenRow };

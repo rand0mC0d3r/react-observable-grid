@@ -157,6 +157,7 @@ const ObservableGrid =  ({
         ).length === searchColumns.length
       ))
       : setFilteredRows(() => cachedRows)
+    setSelectedIndex(null)
   }, [cachedRows, searchColumns])
 
   useEffect(() => {
@@ -253,7 +254,7 @@ const ObservableGrid =  ({
         {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
       </ObservableContainer>}
       {/* {customActions !== undefined || (selectedIndex ? true : rows.length > pageSize && startEnd.end >= 2) && */}
-      <ObservableScrollTop {...{ customActions, selectedIndex, isAtTop: rows.length > pageSize && startEnd.end >= 2 }} />
+      <ObservableScrollTop {...{ filtered: sortedRows.length, total: rows.length, customActions, selectedIndex, isAtTop: rows.length > pageSize && startEnd.end >= 2 }} />
         {/* } */}
     </>
       : <ObservableEmpty>{emptyElement}</ObservableEmpty>}
