@@ -81,6 +81,13 @@ const App = () => {
       label: 'Tiles',
       noSearch: true,
       icon: <DashboardIcon />,
+      extraFilters: [
+        {
+          label: 'Selected',
+
+          func: (rows) => rows.filter((row) => selectedTiles.filter(st => row.tiles.some(t => t.id === st)).length === selectedTiles.length)
+        }
+      ],
       customFilter: (rows) => rows.filter((row) => selectedTiles.filter(st => row.tiles.some(t => t.id === st)).length === selectedTiles.length),
       suggestions: (rows) => Array.from(new Set(rows.map(row => row.tiles.map(tile => tile.name)).flat())),
       property: 'tilesHash',
