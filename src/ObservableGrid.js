@@ -143,10 +143,7 @@ const ObservableGrid =  ({
   }, [headers])
 
   useEffect(() => {
-    setCachedRows(headers.filter(header => header.customFilter).reduce((acc, value) => {
-      const tmp = value.customFilter(acc)
-      return tmp
-    }, externalRows))
+    setCachedRows(headers.filter(header => header.customFilter).reduce((acc, value) => value.customFilter(acc), externalRows))
   }, [externalRows, triggerSearch, headers])
 
   useEffect(() => {
@@ -156,13 +153,20 @@ const ObservableGrid =  ({
     setSelectedIndex(null)
   }, [rows, isEmpty])
 
+  const searchByRegex = (searchColumn, property) => {
+    const regex = new RegExp(searchColumn.term, 'i')
+    return regex.test(property)
+  }
+
   useEffect(() => {
     searchColumns.length > 0
       ? setFilteredRows(() => cachedRows.filter(cr => searchColumns
         .filter(searchColumn => searchColumn?.term.length > 0
-          ? searchColumn.isCaseSensitive
-            ? cr[searchColumn.key].includes(searchColumn?.term)
-            : cr[searchColumn.key].toLowerCase().includes(searchColumn?.term.toLowerCase())
+          ? searchColumn.isRegex
+            ? searchByRegex(searchColumn, cr[searchColumn.key])
+            : searchColumn.isCaseSensitive
+                ? cr[searchColumn.key].includes(searchColumn?.term)
+                : cr[searchColumn.key].toLowerCase().includes(searchColumn?.term.toLowerCase())
           : true
         ).length === searchColumns.length
       ))

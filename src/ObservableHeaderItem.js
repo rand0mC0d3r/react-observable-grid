@@ -51,6 +51,11 @@ const ObservableHeaderItem = ({
     handleSearchTerm({ key: property, term: term, isRegex, isCaseSensitive })
   }
 
+  const appendToSearchString = ({ term }) => {
+    setSearchString(`${searchString}${term}`)
+    handleSearchTerm({ key: property, term: `${searchString}${term}`, isRegex, isCaseSensitive })
+  }
+
   const handleClick = (event) => { setAnchorEl(event.currentTarget) };
   const handleClose = () => { setAnchorEl(null) };
   const renderPopover = () => {
@@ -70,47 +75,60 @@ const ObservableHeaderItem = ({
       }}
     >
       <div style={{
-        padding: '12px 16px',
         display: 'flex',
         gap: '8px',
-        backgroundColor: theme.palette.background.default,
-        width: '250px',
+        backgroundColor: theme.palette.background.paper,
+        width: '350px',
         borderRadius: '4px',
         flexDirection: 'column',
         border: `1px solid ${theme.palette.divider}`,
       }}>
-        <TextField
-          autoFocus
-          value={searchString}
-          InputProps={{
-            startAdornment: <InputAdornment position="start">🔍</InputAdornment>,
-            endAdornment: <>
-              <TextFieldsIcon
-                style={{cursor: 'pointer'}}
-                onClick={() => {
-                  setIsCaseSensitive(!isCaseSensitive)
-                  handleSearchTerm({ key: property, term: searchString, isRegex, isCaseSensitive: !isCaseSensitive })
-                }}
-                color={isCaseSensitive ? 'primary' : 'disabled'}
-              />
+        <div style={{
+          backgroundColor: theme.palette.background.default,
+          padding: '16px 16px',
+          borderBottom: `1px solid ${theme.palette.primary.main}`,
+        }}>
+          <TextField
+            autoFocus
+            fullWidth
+            value={searchString}
+            InputProps={{
+              startAdornment: <InputAdornment position="start">🔍</InputAdornment>,
+              endAdornment: <>
+                <TextFieldsIcon
+                  style={{cursor: 'pointer'}}
+                  onClick={() => {
+                    setIsCaseSensitive(!isCaseSensitive)
+                    handleSearchTerm({ key: property, term: searchString, isRegex, isCaseSensitive: !isCaseSensitive })
+                  }}
+                  color={isCaseSensitive ? 'primary' : 'disabled'}
+                />
 
-              <FunctionsIcon
-                style={{cursor: 'pointer'}}
-                onClick={() => {
-                  setIsRegex(!isRegex)
-                  handleSearchTerm({ key: property, term: searchString, isRegex: !isRegex, isCaseSensitive })
-                }}
-                color={isRegex ? 'primary' : 'disabled'}
-              />
-              {searchString.length > 0 && <InputAdornment onClick={() => updateSearchString({ term: '' })} position="end"><DeleteOutlineIcon style={{cursor: 'pointer'}} /></InputAdornment>}
+                <FunctionsIcon
+                  style={{cursor: 'pointer'}}
+                  onClick={() => {
+                    setIsRegex(!isRegex)
+                    handleSearchTerm({ key: property, term: searchString, isRegex: !isRegex, isCaseSensitive })
+                  }}
+                  color={isRegex ? 'primary' : 'disabled'}
+                />
+                {searchString.length > 0 && <InputAdornment onClick={() => updateSearchString({ term: '' })} position="end"><DeleteOutlineIcon style={{cursor: 'pointer'}} /></InputAdornment>}
 
-            </>,
-          }}
-          onChange={(e) => updateSearchString({ term: e.target.value })}
-          id="outlined-basic" label="Search" variant="outlined"
-        />
-        {!!suggestions && <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          {suggestions(rows).map(suggestion => <Chip variant='outlined' onClick={() => updateSearchString({ term: suggestion })} key={suggestion} label={suggestion} />)}
+              </>,
+            }}
+            onChange={(e) => updateSearchString({ term: e.target.value })}
+            id="outlined-basic" label="Search" variant="outlined"
+          />
+        </div>
+        {!!suggestions && <div style={{ display: 'flex', padding: '12px 16px', gap: '8px', flexWrap: 'wrap' }}>
+          {suggestions(rows).map(suggestion => <Chip
+            variant='outlined'
+            onClick={() => isRegex
+              ? appendToSearchString({ term: suggestion })
+              : updateSearchString({ term: suggestion })}
+            key={suggestion}
+            label={suggestion}
+          />)}
         </div>}
       </div>
     </Popover>}
@@ -230,7 +248,7 @@ const ObservableHeaderItem = ({
           <Chip
             onClick={(e) => { handleClick(e) }}
             icon={searchString !== '' ? <SearchIcon color="action" /> : undefined}
-            label={searchString || <SearchIcon color="action" style={{ fontSize: '18px', marginTop: '3px' }} />}
+            label={(searchString.length > 6 ? `${searchString.substring(0,6)}...` : searchString) || <SearchIcon color="action" style={{ fontSize: '18px', marginTop: '3px' }} />}
             size="small"
             variant="outlined"
             onDelete={searchString !== '' ? () => {
