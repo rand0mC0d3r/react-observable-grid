@@ -22,6 +22,7 @@ const ObservableRowList = ({
   isScrollable = true,
 }) => {
   const classes = useStyles()
+
   const idValue = (index) => {
     let result = null
     if (index === 0) {

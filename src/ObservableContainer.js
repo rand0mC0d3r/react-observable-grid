@@ -53,6 +53,9 @@ const useStyles = makeStyles(theme => ({
     },
     '& > *:hover': {
       backgroundColor: '#88888844',
+    },
+    '& > *:active': {
+      backgroundColor: '#88888844',
     }
   },
   alternatingItem: {

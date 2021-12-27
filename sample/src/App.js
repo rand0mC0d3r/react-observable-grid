@@ -263,7 +263,7 @@ const App = () => {
                   uniqueId="fakeEntries"
                   isGrid={asGrid ? 4 : undefined}
                   isAlternating={asGrid ? false : true}
-                  pageSize={100}
+                  pageSize={asGrid ? 100 : 30}
                   isHeaderHidden={isHeaderHidden}
                   canvasDrawing={false}
                   isColumned={asGrid ? false : isColumned}
@@ -295,6 +295,9 @@ const useStyles = makeStyles(() => ({
     //   borderBottom: '1px solid #CCC'
     // },
     '& #Container-root > *:hover': {
+      backgroundColor: '#e0f0ff88',
+    },
+    '& #Container-root > *:active': {
       backgroundColor: '#e0f0ff88',
     },
     '& #Container-root .Row-isSelected': {
