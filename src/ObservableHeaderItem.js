@@ -29,6 +29,7 @@ const ObservableHeaderItem = ({
   noSearch,
   postHeaders,
   handleRequestSort,
+  extraFilters,
   selected,
   handleResetSort,
   extension,
@@ -243,7 +244,6 @@ const ObservableHeaderItem = ({
       </div>}
     </div>
     <div style={{ display: 'flex', gap: '4px', flexWrap: 'nowrap', alignItems: 'center'}}>
-
         {!noSearch && (selected || searchString !== '') && <Tooltip arrow title={`Search in column: ${label}`}>
           <Chip
             onClick={(e) => { handleClick(e) }}
@@ -257,6 +257,9 @@ const ObservableHeaderItem = ({
             } : undefined}
           />
         </Tooltip>}
+        {extraFilters?.map(extraFilter => <>
+          {extraFilter.label}
+        </>)}
         {extension && extension}
     </div>
     </div>

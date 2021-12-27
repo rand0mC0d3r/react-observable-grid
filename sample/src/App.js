@@ -66,7 +66,7 @@ const App = () => {
       tooltip: "Filter users by role",
       property: 'role',
       suggestions: (rows) => Array.from(new Set(rows.map(row => row.role).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
-      width: '160px',
+      width: 'minmax(60px, 0.75fr)',
       row: (row) => <RoleRow {...{ role: row.role }} />,
     },
     {
@@ -75,19 +75,12 @@ const App = () => {
       icon: <SubjectIcon />,
       property: 'description',
       row: (row) => <DescriptionRow row={row} />,
-      width: '3fr',
+      width: 'minmax(80px, 3fr)',
     },
     {
       label: 'Tiles',
       noSearch: true,
       icon: <DashboardIcon />,
-      extraFilters: [
-        {
-          label: 'Selected',
-
-          func: (rows) => rows.filter((row) => selectedTiles.filter(st => row.tiles.some(t => t.id === st)).length === selectedTiles.length)
-        }
-      ],
       customFilter: (rows) => rows.filter((row) => selectedTiles.filter(st => row.tiles.some(t => t.id === st)).length === selectedTiles.length),
       suggestions: (rows) => Array.from(new Set(rows.map(row => row.tiles.map(tile => tile.name)).flat())),
       property: 'tilesHash',
@@ -114,7 +107,14 @@ const App = () => {
       property: 'price',
       suggestions: (rows) => Array.from(new Set(rows.map(row => row.currency).flat())),
       align: 'flex-end',
-      width: 'minmax(130px, 180px)',
+      extraFilters: [
+        {
+          label: 'Selected',
+          func: (rows) => rows.filter((row) => selectedTiles.filter(st => row.tiles.some(t => t.id === st)).length === selectedTiles.length),
+          node: (rows) => <>{(rows.map(r => r.price * 1000).sort()).map(row => <>{row.price}</>)}</>
+        }
+      ],
+      width: 'minmax(130px, 220px)',
       row: (row) => <CurrencyRow row={row} />,
       secondaryHeaders: [
         {
@@ -128,7 +128,7 @@ const App = () => {
       noSearch: true,
       onHover: (row) => <ActionsRow {...{ row }} />,
       row: (row) => <LastSeenRow {...{ row }} />,
-      width: '150px',
+      width: 'minmax(130px, 0.75fr)',
       noHightlight: true,
     },
   ]
