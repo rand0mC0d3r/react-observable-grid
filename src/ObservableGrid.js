@@ -68,6 +68,20 @@ const ObservableGrid =  ({
   const [throttleLimit, setThrottleLimit] = useState(50)
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
 
+  const debugItems = [
+    { label: 'throttling', value: throttling },
+    { label: 'throttleLimit', value: throttleLimit },
+    { label: 'order', value: order },
+    { label: 'orderBy', value: orderBy },
+    { label: 'selectedIndex', value: selectedIndex },
+    { label: 'sortedRows', value: sortedRows.length },
+    { label: 'canvasDrawing', value: !throttling && canvasDrawing },
+    { label: 'rows', value: rows.length },
+    { label: 'startEnd', value: JSON.stringify(startEnd) },
+    { label: 'pageSize', value: pageSize },
+    { label: 'totalElements', value: `${elementsRendered[0]} (${elementsRendered[1]})` },
+  ]
+
   const naturalSort = createNewSortInstance({
     comparer: collator.compare,
   })
@@ -112,6 +126,13 @@ const ObservableGrid =  ({
     setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: header.property === property ? false : false })))
   }
 
+  const clearOnBlur = () => {
+    if (isClearingOnBlur) {
+      setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: false })))
+      setCurrentRow(null)
+    }
+  }
+
   useEffect(() => {
     setInnerHeaders(headers.map(header => ({ ...header, selected: false, visible: header.visible || true })))
   }, [headers])
@@ -124,7 +145,6 @@ const ObservableGrid =  ({
   }, [rows, isEmpty])
 
   useEffect(() => {
-    console.log('useEffect', searchColumns)
     searchColumns.length > 0
       ? setFilteredRows(() => cachedRows.filter(cr => searchColumns
         .filter(searchColumn => searchColumn?.term.length > 0
@@ -182,36 +202,8 @@ const ObservableGrid =  ({
     setGridTemplateColumns(gridTemplateString)
   }, [innerHeaders])
 
-  return <div
-    id={"observable-grid"}
-    className={className}
-    onMouseLeave={() => {
-      if (isClearingOnBlur) {
-        setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: false })))
-        setCurrentRow(null)
-      }
-    }}
-    style={{
-      display: 'flex',
-      position: 'absolute',
-      width: '100%',
-      height: '100%',
-      flexDirection: 'column',
-    }}>
-    {isDebugging && <ObservableDebugging items={[
-      { label: 'throttling', value: throttling },
-      { label: 'throttleLimit', value: throttleLimit },
-      { label: 'order', value: order },
-      { label: 'orderBy', value: orderBy },
-      { label: 'selectedIndex', value: selectedIndex },
-      { label: 'sortedRows', value: sortedRows.length },
-      { label: 'canvasDrawing', value: !throttling && canvasDrawing },
-      { label: 'rows', value: rows.length },
-      { label: 'startEnd', value: JSON.stringify(startEnd) },
-      { label: 'pageSize', value: pageSize },
-      { label: 'totalElements', value: `${elementsRendered[0]} (${elementsRendered[1]})` },
-    ]}>
-    </ObservableDebugging>}
+  return <div id="observable-grid" className={`${className} ${classes.root}`} onMouseLeave={clearOnBlur}>
+    {isDebugging && <ObservableDebugging items={debugItems} />}
 
     {!isHeaderHidden && headers.length > 0 && innerHeaders.length > 0 && <ObservableHeader {...{
         options: headerOptions,
@@ -242,9 +234,9 @@ const ObservableGrid =  ({
         paddingTop: 0,
         paddingBottom: 0,
         gridTemplateColumns: gridTemplateColumns
-      }}>
+      }}
+    >
       {innerHeaders.map((innerHeader, i) => <div key={`${innerHeader.property}-${innerHeader.label}`}
-        onClick={() => { console.log(innerHeader) }}
         className={`${classes.observableColumn} ${isColumned && classes.observableColumnRight}`}
         style={{ backgroundColor: i === innerHeaders.findIndex(header => header.selected) ? "#EEEEEE80" : ''}}
       />)}
@@ -258,29 +250,16 @@ const ObservableGrid =  ({
         {throttling && rows.length > pageSize && pageSize * startEnd.end - 1 < rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
         {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
       </ObservableContainer>}
-      {(selectedIndex ? true : rows.length > pageSize && startEnd.end > 3) &&
-        <ObservableScrollTop {...{ selectedIndex, isAtTop: rows.length > pageSize && startEnd.end > 3 }} />}
+      {(selectedIndex ? true : rows.length > pageSize && startEnd.end >= 2) &&
+        <ObservableScrollTop {...{ selectedIndex, isAtTop: rows.length > pageSize && startEnd.end >= 2 }} />}
     </>
       : <ObservableEmpty>{emptyElement}</ObservableEmpty>}
 
     <div className={classes.progress}>
       <div style={{ position: 'relative' }}>
-        {/* {selectedIndex} */}
-        <div style={{ width: '100%', backgroundColor: '#BBBBBB42', height: '4px' }}></div>
-        <div style={{ position: 'absolute', borderRadius: '0px 8px 8px 0px', top: '0px', left: '0px', width: `${Math.round(currentRow * 100 / sortedRows.length) + 3}%`, backgroundColor: '#3f51b569', height: '4px' }}></div>
-        {selectedIndex && <div style={{
-          position: 'absolute',
-          borderRadius: '0px 8px 8px 0px',
-          top: '0px',
-          width: '10px',
-          left: `${Math.round(selectedIndex * 100 / sortedRows.length) + 3}%`,
-          height: '4px',
-          backgroundColor: '#7885cb',
-          border: '1px solid #FFF',
-          borderTop: '0px none',
-          borderBottom: '0px none',
-        }}></div>}
-        {/* <RoomIcon style={{ fontSize: '11px' }} color={[0, 25, 50, 70, 100].some(v => v === Math.round(currentRow * 100 / sortedRows.length)) ? 'primary' : 'disabled'} /> */}
+        <div className={classes.totalProgress} />
+        <div className={classes.currentProgress} style={{ width: `${Math.round((currentRow + 1) * 100 / sortedRows.length)}%` }}></div>
+        {selectedIndex && <div className={classes.selectionProgress} style={{ left: `${Math.round((selectedIndex + 1) * 100 / sortedRows.length)}%` }}></div>}
       </div>
     </div>
   </div>
@@ -291,6 +270,30 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     bottom: '0px',
     width: '100%',
+  },
+  selectionProgress: {
+    position: 'absolute',
+    borderRadius: '8px',
+    top: '0px',
+    width: '4px',
+    height: '4px',
+    backgroundColor: theme.palette.secondary.light,
+    border: '1px solid #FFF',
+    borderTop: '0px none',
+    borderBottom: '0px none',
+  },
+  currentProgress: {
+    position: 'absolute',
+    borderRadius: '0px 8px 8px 0px',
+    top: '0px',
+    left: '0px',
+    backgroundColor: theme.palette.primary.light,
+    height: '4px'
+  },
+  totalProgress: {
+    width: '100%',
+    backgroundColor: theme.palette.divider,
+    height: '4px'
   },
   observableRow: {
     top: '0px',
@@ -326,6 +329,13 @@ const useStyles = makeStyles((theme) => ({
     '&:last-child': {
       borderRight: '0px none'
     },
+  },
+  root: {
+    display: 'flex',
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    flexDirection: 'column',
   }
 }))
 

@@ -224,7 +224,7 @@ const App = () => {
 
       <div className={`${classes.actions} ${classes.bigContainer}`}>
         <div className={`${classes.actions} ${classes.smallActions}`}>
-          {[5, 30, 1500, 65000, 1000000].map(count => <Button
+          {[5, 30, 250, 1500, 65000, 1000000].map(count => <Button
             disableElevation
             style={{minWidth: 'unset', padding: '5px 12px'}}
             color={count === rows?.length ? 'primary' : 'default'}
