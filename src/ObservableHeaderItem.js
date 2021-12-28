@@ -1,4 +1,4 @@
-import { Chip, InputAdornment, Popover, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Chip, InputAdornment, TextField, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import FunctionsIcon from '@material-ui/icons/Functions';
@@ -40,119 +40,68 @@ const ObservableHeaderItem = ({
 }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
-  const [anchorEl, setAnchorEl] = useState(null);
   const [searchString, setSearchString] = useState('');
   const [isCaseSensitive, setIsCaseSensitive] = useState(false);
   const [isRegex, setIsRegex] = useState(false);
-  const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
 
   const updateSearchString = ({ term }) => {
     setSearchString(term)
-    handleSearchTerm({ key: property, term: term, isRegex, isCaseSensitive })
-  }
+    handleSearchTerm({ key: property, term: term, isRegex, isCaseSensitive })}
 
   const appendToSearchString = ({ term }) => {
     setSearchString(`${searchString}${term}`)
-    handleSearchTerm({ key: property, term: `${searchString}${term}`, isRegex, isCaseSensitive })
-  }
+    handleSearchTerm({ key: property, term: `${searchString}${term}`, isRegex, isCaseSensitive })}
 
-  const callbackExtraFilters = useCallback((func) => {
-    return func(rows)
-  }, [rows])
-
-  const handleClick = (event) => { setAnchorEl(event.currentTarget) };
-  const handleClose = () => { setAnchorEl(null) };
-  const renderPopover = () => {
-    return <Popover
-      id={id}
-      open={open}
-      elevation={1}
-      anchorEl={anchorEl}
-      onClose={handleClose}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'center',
-      }}
-    >
-      <div style={{
-        display: 'flex',
-        gap: '8px',
-        backgroundColor: theme.palette.background.paper,
-        width: '350px',
-        borderRadius: '4px',
-        flexDirection: 'column',
-        border: `1px solid ${theme.palette.divider}`,
-      }}>
-        <div style={{
-          backgroundColor: theme.palette.background.default,
-          padding: '16px 16px',
-          borderBottom: `1px solid ${theme.palette.primary.main}`,
-        }}>
-          <TextField
-            autoFocus
-            fullWidth
-            value={searchString}
-            InputProps={{
-              startAdornment: <InputAdornment position="start">🔍</InputAdornment>,
-              endAdornment: <>
-                <Tooltip title="Toggle case-sensitive aware search" arrow>
-                  <TextFieldsIcon
-                    style={{cursor: 'pointer'}}
-                    onClick={() => {
-                      setIsCaseSensitive(!isCaseSensitive)
-                      handleSearchTerm({ key: property, term: searchString, isRegex, isCaseSensitive: !isCaseSensitive })
-                    }}
-                    color={isCaseSensitive ? 'primary' : 'disabled'}
-                  />
-                </Tooltip>
-
-                <Tooltip title="Toggle regex aware search" arrow>
-                  <FunctionsIcon
-                    style={{cursor: 'pointer'}}
-                    onClick={() => {
-                      setIsRegex(!isRegex)
-                      handleSearchTerm({ key: property, term: searchString, isRegex: !isRegex, isCaseSensitive })
-                    }}
-                    color={isRegex ? 'primary' : 'disabled'}
-                  />
-                </Tooltip>
-                {searchString.length > 0 && <InputAdornment onClick={() => updateSearchString({ term: '' })} position="end"><DeleteOutlineIcon style={{cursor: 'pointer'}} /></InputAdornment>}
-
-              </>,
+  const renderPopover = () => <TextField
+    autoFocus
+    fullWidth
+    value={searchString}
+    InputProps={{
+      startAdornment: <InputAdornment position="start">🔍</InputAdornment>,
+      endAdornment: <>
+        <Tooltip title="Toggle case-sensitive aware search" arrow>
+          <TextFieldsIcon
+            style={{cursor: 'pointer'}}
+            onClick={() => {
+              setIsCaseSensitive(!isCaseSensitive)
+              handleSearchTerm({ key: property, term: searchString, isRegex, isCaseSensitive: !isCaseSensitive })
             }}
-            onChange={(e) => updateSearchString({ term: e.target.value })}
-            id="outlined-basic" label="Search" variant="outlined"
+            color={isCaseSensitive ? 'primary' : 'disabled'}
           />
-        </div>
-        {!!suggestions && <div style={{ display: 'flex', padding: '12px 16px', gap: '8px', flexWrap: 'wrap' }}>
-          {suggestions(rows).map(suggestion => <Chip
-            variant='outlined'
-            onClick={() => isRegex
-              ? appendToSearchString({ term: suggestion })
-              : updateSearchString({ term: suggestion })}
-            key={suggestion}
-            label={suggestion}
-          />)}
-        </div>}
+        </Tooltip>
+
+        <Tooltip title="Toggle regex aware search" arrow>
+          <FunctionsIcon
+            style={{cursor: 'pointer'}}
+            onClick={() => {
+              setIsRegex(!isRegex)
+              handleSearchTerm({ key: property, term: searchString, isRegex: !isRegex, isCaseSensitive })
+            }}
+            color={isRegex ? 'primary' : 'disabled'}
+          />
+        </Tooltip>
+        {searchString.length > 0 && <InputAdornment onClick={() => updateSearchString({ term: '' })} position="end"><DeleteOutlineIcon style={{cursor: 'pointer'}} /></InputAdornment>}
+
+      </>,
+    }}
+    onChange={(e) => updateSearchString({ term: e.target.value })}
+    id="outlined-basic" label="Search" variant="outlined"/>
+
+  const renderPopoverExtras = () => !!suggestions
+    ? <div style={{ display: 'flex', padding: '12px 16px', gap: '8px', flexWrap: 'wrap' }}>
+        {suggestions(rows).map(suggestion => <Chip
+          variant='outlined'
+          onClick={() => isRegex
+            ? appendToSearchString({ term: suggestion })
+            : updateSearchString({ term: suggestion })}
+          key={suggestion}
+          label={suggestion}
+        />)}
       </div>
-    </Popover>}
+    : <></>
+
+
   const evaluateOrderBy = ({ property, label }) => orderBy === (property || label?.toLowerCase())
-  const toggleHeader = (property, label) => {
-    setHeaders(headers.map(header => {
-      if (header.property === property) {
-        return {
-          ...header,
-          visible: !header.visible
-        }
-      } else {
-        return header
-      }
-    }))}
   const renderArrows = ({property, label, align, secondary = false}) => {
     return evaluateOrderBy({ property, label }) && <div
     className={classes.arrowColor}
@@ -166,13 +115,11 @@ const ObservableHeaderItem = ({
         ? order === 'asc' ? defaultOptions.ascArrow : defaultOptions.descArrow
         : cloneElement(<>{order === 'asc' ? ascArrow : descArrow}</>)
       }
-    </div>
-  }
+    </div>}
   const renderAdditionalHeader = (headers) => <div className={classes.secondaryHeaders}>
       {headers.map(({ label, property, noSort, icon }) =>
         renderMainHeader({ noSort, property, label, icon }))
-      }
-  </div>
+      }</div>
   const renderMainHeader = ({noSort, property, label, icon, align}) => <div
     key={`${property}_${label}_${align}`}
     className={classes.flexbox}
@@ -182,8 +129,7 @@ const ObservableHeaderItem = ({
       cursor: noSort ? 'default' : 'pointer',
       justifyContent: align ? 'flex-end' : 'flex-start',
       flexDirection: align === 'right' ? 'row-reverse' : 'row',
-    }}
-  >
+    }}>
     {icon && cloneElement(icon, {
       style: { fontSize: 16 },
       color: evaluateOrderBy({ property, label }) ? 'primary' : 'action'
@@ -200,12 +146,10 @@ const ObservableHeaderItem = ({
     >
       {label}
     </Typography>
-    {!noSort && renderArrows({property, label, align})}
-  </div>
+    {!noSort && renderArrows({property, label, align})}</div>
 
-  return <>
-    {open && renderPopover()}
-    <div
+
+  return <div
     onMouseEnter={() => !noHightlight && onSelect(property)}
     className={classes.headersWrapper}
     style={{
@@ -252,33 +196,33 @@ const ObservableHeaderItem = ({
       </div>}
     </div>
     <div style={{ display: 'flex', gap: '4px', flexWrap: 'nowrap', alignItems: 'center', flexDirection: !align ? 'row' : 'row-reverse'}}>
-        {!noSearch && (selected || searchString !== '') && <Tooltip arrow title={`Search in column: ${label}${searchString.length > 0 ? ` | Search string: ${searchString}` : ''}`}>
-          <Chip
-            onClick={(e) => { handleClick(e) }}
-            icon={searchString !== '' ? <>
+        {!noSearch && (selected || searchString !== '') && <ObservableHeaderFilter
+          key={`${property}_searchString`}
+          tooltip={`Search in column: ${label}${searchString.length > 0 ? ` | Search string: ${searchString}` : ''}`}
+          label={(searchString.length > 6 ? `${searchString.substring(0, 6)}...` : searchString) || <SearchIcon color="action" style={{ fontSize: '18px', marginTop: '3px' }} />}
+          popover={<>{renderPopover()}</>}
+          popoverExtras={<>{renderPopoverExtras()}</>}
+          onDelete={searchString !== '' ? () => {
+            handleSearchTerm({ key: property, term: null })
+            setSearchString('')
+          } : undefined}
+          icon={searchString !== ''
+            ? <>
               <SearchIcon color="action" />
               {isCaseSensitive && <TextFieldsIcon color="action" style={{ fontSize: '12px' }} />}
               {isRegex && <FunctionsIcon color="action" style={{ fontSize: '12px' }} />}
-            </> : undefined}
-            label={(searchString.length > 6 ? `${searchString.substring(0,6)}...` : searchString) || <SearchIcon color="action" style={{ fontSize: '18px', marginTop: '3px' }} />}
-            size="small"
-            variant="outlined"
-            onDelete={searchString !== '' ? () => {
-              handleSearchTerm({ key: property, term: null })
-              setSearchString('')
-            } : undefined}
-          />
-        </Tooltip>}
+            </>
+            : undefined}
+        />}
+
         {rows.length > 0 && extraFilters?.map(extraFilter => <ObservableHeaderFilter
           key={`${extraFilter.label}_${property}_extraFilter`}
           label={extraFilter.label}
-          variable={extraFilter.variable}
           popover={extraFilter.node(rows)}
           icon={extraFilter.icon}
         />)}
     </div>
-    </div>
-  </>
+  </div>
 }
 
 const useStyles = makeStyles(theme => ({
@@ -319,12 +263,8 @@ const useStyles = makeStyles(theme => ({
     gap: '8px'
   },
   headersSelectable: {
-    // backgroundColor: 'red',
   },
   headersWrapper: {
-    // '&:hover': {
-      // backgroundColor: 'rgba(0,0,0,0.1)',
-    // },
   },
   headers: {
     display: 'flex',
@@ -340,8 +280,6 @@ const useStyles = makeStyles(theme => ({
     alignSelf: 'center',
     height: '100%',
     justifyContent: 'center',
-
-
   },
   flipped: {
     transform: 'rotate(180deg)'

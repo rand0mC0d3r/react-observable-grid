@@ -1,11 +1,11 @@
-import { Chip, Popover, Typography } from '@material-ui/core';
+import { Chip, Popover, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 
 const anchorOrigin = { vertical: 'bottom', horizontal: 'center' }
 const transformOrigin = { vertical: 'top', horizontal: 'center' }
 
-const ObservableHeaderFilter = ({ label, icon, popover }) => {
+const ObservableHeaderFilter = ({ label, icon, tooltip = "Filtering mechanic", popover, popoverExtras, onDelete }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
   const [anchorEl, setAnchorEl] = useState(null);
@@ -19,17 +19,17 @@ const ObservableHeaderFilter = ({ label, icon, popover }) => {
     console.log('rendering popover')
   }, [])
 
-  return <>
+  return <Fragment key={`${label}_popover_and_chip`}>
     {open && <Popover {...{ id, key: `${label}_popover`, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 1}}>
       <div className={classes.popoverRoot}>
         <div className={classes.popoverContent}>{popover}</div>
-        <div className={classes.popoverExtra}>
-          <Typography variant="caption" color="textSecondary">Custom injected search element</Typography>
-        </div>
+        {popoverExtras && <div className={classes.popoverExtra}>{popoverExtras}</div>}
       </div>
     </Popover>}
-    <Chip {...{label, icon, size: 'small', key: `${label}_popover_chip`, onClick: handleClick, variant: 'outlined'}}/>
-  </>
+    <Tooltip arrow title={tooltip}>
+      <Chip {...{label, icon, size: 'small', key: `${label}_popover_chip`, onDelete, onClick: handleClick, variant: 'outlined'}}/>
+    </Tooltip>
+  </Fragment>
 }
 
 const useStyles = makeStyles(theme => ({
