@@ -40,19 +40,19 @@ const App = () => {
       property: 'fullName',
 
       customFilter: (rows) => selectedAvatars.length > 0 ? rows.filter((row) => selectedAvatars?.some(sa => sa === row.fullName)) : rows,
-      suggestions: (rows) => Array.from(new Set(rows.map(row => row.fullName.split(" ")).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
+      suggestions: () => Array.from(new Set(rows.map(row => row.fullName.split(" ")).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
       width: 'minmax(175px, 1fr)',
       extension: <>
         {selectedAvatars.length > 0 && <Chip onDelete={() => setSelectedAvatars([])} variant="outlined" size="small" label={`People: ${selectedAvatars.length}`} />}
       </>,
       row: (row) => <div style={{ display: 'flex', gap: '8px', flexWrap: 'nowrap'}}>
-        <AvatarRow {...{ selectedAvatars, row }} onSelectAvatar={(fullName) => {
-        console.log('xxx', fullName)
-        setSelectedAvatars(selectedAvatars => selectedAvatars.some(sa => sa === fullName)
+        <AvatarRow
+          {...{ selectedAvatars, row }}
+          onSelectAvatar={(fullName) => setSelectedAvatars(selectedAvatars => selectedAvatars.some(sa => sa === fullName)
           ? selectedAvatars.filter(sa => sa !== fullName)
           : [...selectedAvatars, fullName]
-        )
-      }} />
+        )}
+        />
         <NamesRow row={row} />
       </div>,
       secondaryHeaders: [
@@ -71,7 +71,7 @@ const App = () => {
       label: 'Role',
       tooltip: "Filter users by role",
       property: 'role',
-      suggestions: (rows) => Array.from(new Set(rows.map(row => row.role).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
+      suggestions: () => Array.from(new Set(rows.map(row => row.role).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
       width: 'minmax(60px, 0.75fr)',
       row: (row) => <RoleRow {...{ role: row.role }} />,
     },
@@ -111,7 +111,7 @@ const App = () => {
       label: 'Price',
       icon: <MonetizationOnIcon />,
       property: 'price',
-      suggestions: (rows) => Array.from(new Set(rows.map(row => row.currency).flat())),
+      suggestions: () => Array.from(new Set(rows.map(row => row.currency).flat())),
       align: 'flex-end',
       extraFilters: [
         {
@@ -146,13 +146,21 @@ const App = () => {
       ]
     },
     {
+      label: "Actions",
       noSort: true,
+      align: 'flex-end',
       property: 'actions',
       noSearch: true,
       onHover: (row) => <ActionsRow {...{ row }} />,
       row: (row) => <LastSeenRow {...{ row }} />,
       width: 'minmax(130px, 0.75fr)',
       noHightlight: true,
+      secondaryHeaders: [
+        {
+          label: 'Last seen',
+          property: 'lastSeen',
+        },
+      ]
     },
   ]
 
