@@ -209,22 +209,6 @@ const ObservableGrid =  ({
     return regex.test(property)
   }
 
-  const triggerReload = () => {
-    // if (externalFilteredRows.length > 0) {
-    //   // console.log('trigger reload')
-    //   const r = headers.filter(h => h.extraFilters).reduce((acc, value) => {
-    //     // console.log(value.extraFilters)
-    //     let result = acc
-    //     value.extraFilters.forEach(filter => {
-    //       result = filter.func(result)
-    //     })
-    //     return result
-    //   }, externalFilteredRows)
-    //   console.log(r)
-    //   setExternalFilteredRows(r)
-    // }
-  }
-
   // useEffect(() => {
   //   const interval = setInterval(() => {
   //     const currentElements = Number(calculateTotalElements())
@@ -266,7 +250,6 @@ const ObservableGrid =  ({
         headers: innerHeaders,
         progress: Math.round(currentRow * 100 / sortedRows.length),
         gridTemplateColumns,
-        triggerReload,
         order,
         orderBy,
         onSelect,

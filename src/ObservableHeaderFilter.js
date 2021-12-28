@@ -14,7 +14,6 @@ const ObservableHeaderFilter = ({
   icon,
   popover,
   variable,
-  triggerReload = () => { },
 }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
@@ -24,10 +23,6 @@ const ObservableHeaderFilter = ({
 
   const handleClick = (event) => { setAnchorEl(event.currentTarget) };
   const handleClose = () => { setAnchorEl(null) };
-
-  useEffect(() => {
-    triggerReload()
-  }, [variable])
 
   return <>
     {open && <Popover

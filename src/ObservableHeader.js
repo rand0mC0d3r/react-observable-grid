@@ -22,7 +22,6 @@ const ObservableHeader = ({
   options: { ascArrow, descArrow, padding },
   options,
   order,
-  triggerReload,
   onSelect = () => { },
   orderBy,
   handleSearchTerm,
@@ -133,7 +132,7 @@ const ObservableHeader = ({
           secondaryHeaders, preHeaders, selected, postHeaders, noSort, extraFilters,
         }) => <ObservableHeaderItem key={`${label}_${property}`} {...{
           extraFilters, noSearch, property, handleRequestSort, suggestions, rows,
-          onSelect, selected, extension, secondaryHeaders, handleSearchTerm, triggerReload,
+          onSelect, selected, extension, secondaryHeaders, handleSearchTerm,
           order, options, orderBy, handleResetSort, preHeaders, icon, postHeaders,
           noSort, label, noHightlight, align }} />)}
       </div>

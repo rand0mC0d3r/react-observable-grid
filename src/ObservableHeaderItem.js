@@ -35,7 +35,6 @@ const ObservableHeaderItem = ({
   handleResetSort,
   extension,
   handleSearchTerm = () => { },
-  triggerReload,
   options: {ascArrow, descArrow, padding },
   onSelect,
   secondaryHeaders,
@@ -263,16 +262,12 @@ const ObservableHeaderItem = ({
             } : undefined}
           />
         </Tooltip>}
-
-        {rows.length > 0 && extraFilters?.map(extraFilter => <>
-          <ObservableHeaderFilter
+        {rows.length > 0 && extraFilters?.map(extraFilter => <ObservableHeaderFilter
             key={extraFilter.label}
             label={extraFilter.label}
             variable={extraFilter.variable}
             popover={extraFilter.node(rows)}
-            triggerReload={triggerReload}
-            icon={extraFilter.icon} />
-        </>)}
+            icon={extraFilter.icon} />)}
         {extension && extension}
     </div>
     </div>
