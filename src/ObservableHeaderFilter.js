@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 const anchorOrigin = { vertical: 'bottom', horizontal: 'center' }
 const transformOrigin = { vertical: 'top', horizontal: 'center' }
 
-const ObservableHeaderFilter = ({ label, icon, key, popover }) => {
+const ObservableHeaderFilter = ({ label, icon, popover }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
   const [anchorEl, setAnchorEl] = useState(null);
@@ -16,7 +16,7 @@ const ObservableHeaderFilter = ({ label, icon, key, popover }) => {
   const onClose = () => { setAnchorEl(null) };
 
   return <>
-    {open && <Popover {...{ id, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 1, key: `${key}-popover`}}>
+    {open && <Popover {...{ id, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 1}}>
       <div className={classes.popoverRoot}>
         <div className={classes.popoverContent}>{popover}</div>
         <div className={classes.popoverExtra}>
@@ -24,7 +24,7 @@ const ObservableHeaderFilter = ({ label, icon, key, popover }) => {
         </div>
       </div>
     </Popover>}
-    <Chip {...{label, icon, size: 'small', onClick: handleClick, key: `${key}-chip`, variant: 'outlined'}}/>
+    <Chip {...{label, icon, size: 'small', onClick: handleClick, variant: 'outlined'}}/>
   </>
 }
 
@@ -50,6 +50,5 @@ const useStyles = makeStyles(theme => ({
     flexWrap: 'wrap'
   },
 }))
-
 
 export default ObservableHeaderFilter

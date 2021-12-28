@@ -271,11 +271,11 @@ const ObservableHeaderItem = ({
         </Tooltip>}
         {rows.length > 0 && extraFilters?.map(extraFilter => <ObservableHeaderFilter
           key={`${extraFilter.label}_${property}_extraFilter`}
-          data-index={extraFilter.label}
           label={extraFilter.label}
           variable={extraFilter.variable}
           popover={extraFilter.node(rows)}
-          icon={extraFilter.icon} />)}
+          icon={extraFilter.icon}
+        />)}
     </div>
     </div>
   </>

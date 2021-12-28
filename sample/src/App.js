@@ -43,44 +43,42 @@ const App = () => {
       customFilter: (rows) => selectedAvatars.length > 0 ? rows.filter((row) => selectedAvatars?.some(sa => sa.fullName === row.fullName)) : rows,
       suggestions: () => Array.from(new Set(rows.map(row => row.fullName.split(" ")).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
       width: 'minmax(175px, 1fr)',
-      extraFilters: [
-        {
-          label: 'People',
-          icon: <PersonOutlineIcon />,
-          func: (rows) => rows,
-          variable: selectedAvatars,
-          node: (incomingRows) => {
-            const rowsProcessed = rows.map(r => ({ fullName: r.fullName, name: r.name, surname: r.surname }))
-            const entries = [...new Map(rowsProcessed.map(item => [item['fullName'], item])).values()];
-            return <div style={{ display: 'flex', gap: '8px', padding: '8px', flexDirection: 'column' }}>
-              <Typography variant="subtitle2">Selected People ({incomingRows.length})</Typography>
-              <div style={{ display: 'flex',  width: '450px', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-              {entries.filter((row) => selectedAvatars?.some(sa => sa.fullName === row.fullName)).map(entry => <>
-                <AvatarRow
-                  {...{ selectedAvatars, name: entry.name, surname: entry.surname, fullName: entry.fullName }}
-                  onSelectAvatar={({ fullName, surname, name }) => setSelectedAvatars(selectedAvatars => selectedAvatars.some(sa => sa === fullName)
-                    ? selectedAvatars.filter(sa => sa !== fullName)
-                    : [...selectedAvatars, { fullName, surname, name }]
-                  )}
-                />
-              </>)}
-              </div>
-              <Typography variant="subtitle2">People ({entries.length})</Typography>
-              <div style={{ display: 'flex',  width: '450px', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-              {entries.filter((e, index) => index < 35).map(entry => <>
-                <AvatarRow
-                  {...{ selectedAvatars, name: entry.name, surname: entry.surname, fullName: entry.fullName }}
-                  onSelectAvatar={({ fullName, surname, name }) => setSelectedAvatars(selectedAvatars => selectedAvatars.some(sa => sa === fullName)
-                    ? selectedAvatars.filter(sa => sa !== fullName)
-                    : [...selectedAvatars, { fullName, surname, name }]
-                  )}
-                />
-              </>)}
-              </div>
-            </div>
-          },
-        }
-      ],
+      // extraFilters: [
+      //   {
+      //     label: 'People',
+      //     icon: <PersonOutlineIcon />,
+      //     func: (rows) => rows,
+      //     variable: selectedAvatars,
+      //     node: (incomingRows) => {
+      //       const rowsProcessed = rows.map(r => ({ fullName: r.fullName, name: r.name, surname: r.surname }))
+      //       const entries = [...new Map(rowsProcessed.map(item => [item['fullName'], item])).values()];
+      //       return <div style={{ display: 'flex', gap: '8px', padding: '8px', flexDirection: 'column' }}>
+      //         <Typography variant="subtitle2">Selected People ({incomingRows.length})</Typography>
+      //         <div style={{ display: 'flex',  width: '450px', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+      //         {entries.filter((row) => selectedAvatars?.some(sa => sa.fullName === row.fullName)).map(entry => <AvatarRow
+      //             key={`${entry.fullName}_selected`}
+      //             {...{ selectedAvatars, name: entry.name, surname: entry.surname, fullName: entry.fullName }}
+      //             onSelectAvatar={({ fullName, surname, name }) => setSelectedAvatars(selectedAvatars => selectedAvatars.some(sa => sa === fullName)
+      //               ? selectedAvatars.filter(sa => sa !== fullName)
+      //               : [...selectedAvatars, { fullName, surname, name }]
+      //             )}
+      //           />)}
+      //         </div>
+      //         <Typography variant="subtitle2">People ({entries.length})</Typography>
+      //         <div style={{ display: 'flex',  width: '450px', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+      //         {entries.filter((e, index) => index < 35).map(entry => <AvatarRow
+      //             key={`${entry.fullName}_all`}
+      //             {...{ selectedAvatars, name: entry.name, surname: entry.surname, fullName: entry.fullName }}
+      //             onSelectAvatar={({ fullName, surname, name }) => setSelectedAvatars(selectedAvatars => selectedAvatars.some(sa => sa === fullName)
+      //               ? selectedAvatars.filter(sa => sa !== fullName)
+      //               : [...selectedAvatars, { fullName, surname, name }]
+      //             )}
+      //           />)}
+      //         </div>
+      //       </div>
+      //     },
+      //   }
+      // ],
       // extension: <>
       //   {selectedAvatars.length > 0 && <Chip onDelete={() => setSelectedAvatars([])} variant="outlined" size="small" label={`People: ${selectedAvatars.length}`} />}
       // </>,
@@ -152,31 +150,31 @@ const App = () => {
       property: 'price',
       suggestions: () => Array.from(new Set(rows.map(row => row.currency).flat())),
       align: 'flex-end',
-      extraFilters: [
-        {
-          label: 'Range',
-          icon: <SignalCellular3BarIcon />,
-          func: (rows) => rows.filter((row) => value[0] <= row.price.split(' ')[0] && row.price.split(' ')[0] <= value[1]),
-          variable: value,
-          node: () => {
-            const entries = rows.map(r => r.price.split(' ')[0] * 1000).sort((a, b) => a - b);
-            return <div style={{ display: 'flex', gap: '16px', padding: '8px', alignItems: 'center'}}>
-              <Typography variant="caption" color="textSecondary">{Math.round(entries.slice(0, 1) / 1000)}</Typography>
-              <Typography variant="caption" color="primary">{value[0]}</Typography>
-              <Slider
-                value={value}
-                min={Math.round(entries.slice(0, 1) / 1000)}
-                max={Math.round(entries.slice(-1) / 1000)}
-                onChange={handleChange}
-                valueLabelDisplay="off"
-                aria-labelledby="continuous-slider"
-              />
-              <Typography variant="caption" color="primary">{value[1]}</Typography>
-              <Typography variant="caption" color="textSecondary">{Math.round(entries.slice(-1) / 1000)}</Typography>
-            </div>
-          },
-        }
-      ],
+      // extraFilters: [
+      //   {
+      //     label: 'Range',
+      //     icon: <SignalCellular3BarIcon />,
+      //     func: (rows) => rows.filter((row) => value[0] <= row.price.split(' ')[0] && row.price.split(' ')[0] <= value[1]),
+      //     variable: value,
+      //     node: () => {
+      //       const entries = rows.map(r => r.price.split(' ')[0] * 1000).sort((a, b) => a - b);
+      //       return <div style={{ display: 'flex', gap: '16px', padding: '8px', alignItems: 'center'}}>
+      //         <Typography variant="caption" color="textSecondary">{Math.round(entries.slice(0, 1) / 1000)}</Typography>
+      //         <Typography variant="caption" color="primary">{value[0]}</Typography>
+      //         <Slider
+      //           value={value}
+      //           min={Math.round(entries.slice(0, 1) / 1000)}
+      //           max={Math.round(entries.slice(-1) / 1000)}
+      //           onChange={handleChange}
+      //           valueLabelDisplay="off"
+      //           aria-labelledby="continuous-slider"
+      //         />
+      //         <Typography variant="caption" color="primary">{value[1]}</Typography>
+      //         <Typography variant="caption" color="textSecondary">{Math.round(entries.slice(-1) / 1000)}</Typography>
+      //       </div>
+      //     },
+      //   }
+      // ],
       width: 'minmax(130px, 250px)',
       row: (row) => <CurrencyRow row={row} />,
       secondaryHeaders: [
@@ -229,7 +227,6 @@ const App = () => {
   ]
 
   const generateRows = (count) => {
-    setRows(() => [])
     const t0 = Date.now()
     const rowsGenerated = dataGenerator(count);
     setRows(() => rowsGenerated)
@@ -281,7 +278,6 @@ const App = () => {
             color={count === rows?.length ? 'primary' : 'default'}
             variant={count !== rows?.length ? "outlined" : 'contained'}
             key={count}
-            onMouseDown={() => setRows([])}
             onClick={() => generateRows(count)}
             >
               {count}
@@ -317,7 +313,6 @@ const App = () => {
                 pageSize={asGrid ? 100 : 50}
                 isHeaderHidden={isHeaderHidden}
                 canvasDrawing={false}
-                triggerSearch={[selectedTiles, selectedAvatars]}
                 // customActions={<>sample</>}
                 isColumned={asGrid ? false : isColumned}
                 className={classes.observableGrid}

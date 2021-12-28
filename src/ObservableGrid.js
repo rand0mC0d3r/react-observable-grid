@@ -22,7 +22,6 @@ const ObservableGrid =  ({
   // keyPattern = () => { },
   // onLoadMore,
   // rowRenderer = () => { },
-  triggerSearch,
   className,
   rowOptions = {
     padding: '20px',
@@ -56,12 +55,12 @@ const ObservableGrid =  ({
   const [innerHeaders, setInnerHeaders] = useState([])
   const [orderBy, setOrderBy] = useState('')
   const [url, setUrl] = useState('')
-  const [currentRow, setCurrentRow] = useState(null)
+  const [currentRow, setCurrentRow] = useState(-1)
   const [throttling, setThrottling] = useState(false)
   const [isDirty, setIsDirty] = useState(false)
   const [totalElements, setTotalElements] = useState(null)
   const [gridTemplateColumns, setGridTemplateColumns] = useState('')
-  const [selectedIndex, setSelectedIndex] = useState(null)
+  const [selectedIndex, setSelectedIndex] = useState(-1)
 
   const [elementsRendered, setElementsRendered] = useState([0, 0])
 
@@ -141,10 +140,11 @@ const ObservableGrid =  ({
   }, [headers])
 
   useEffect(() => {
-    console.log('1. setIndexedRows', rows.length)
-    setIndexedRows(isEmpty ? [] : () => rows.map((row, index) => ({ ...row, __origIndex: index })))
+    setIndexedRows(() => rows.length === 0 ? [] : rows.map((row, index) => ({ ...row, __origIndex: index })))
+    setFilteredRows([])
     setSelectedIndex(null)
-  }, [rows, isEmpty])
+    console.log('0. indexing rows', rows.length)
+  }, [rows])
 
   useEffect(() => {
     const t0 = performance.now()
@@ -156,14 +156,15 @@ const ObservableGrid =  ({
     }, indexedRows)
     const t1 = performance.now()
     setCustomFilteredRows(result)
+
     console.log('1. custom filtering indexed rows', indexedRows.length, result.length, t1 - t0)
-  }, [indexedRows, triggerSearch, headers])
+  }, [indexedRows, headers])
 
   const filterRows = (customFilteredRows, searchColumns) => {
-    const t0 = performance.now()
     const sensitiveSearch = (sensitive, cr, key, term) => sensitive ? cr[key].includes(term) : cr[key].toLowerCase().includes(term.toLowerCase())
     const searchByRegex = (regex, property) => regex.test(property)
 
+    const t0 = performance.now()
     const result = searchColumns.length > 0
       ? customFilteredRows.filter(cr => searchColumns
         .filter(searchColumn => searchColumn?.term.length > 0
@@ -173,19 +174,24 @@ const ObservableGrid =  ({
           : true).length === searchColumns.length)
       : customFilteredRows
     const t1 = performance.now()
+
     setFilteredRows(result)
     setSelectedIndex(null)
+
     console.log('2. filtering custom filtered rows', customFilteredRows.length, searchColumns, result.length, t1 - t0)
   }
 
   const sortRows = (orderBy, filteredRows, order) => {
-    const t0 = performance.now()
     const sortSort = (order, rows) => order === 'asc' ? naturalSort(rows).asc([r => r[orderBy]]) : naturalSort(rows).desc([r => r[orderBy]])
+
+    const t0 = performance.now()
     const orderedRows = orderBy === '' ? filteredRows.map((r, index) => ({ ...r, __index: index })) : sortSort(order, filteredRows).map((r, index) => ({ ...r, __index: index }))
     const t1 = performance.now()
+
     setSortedRows(orderedRows)
     setStartEnd({ start: -1, end: 1 })
     setThrottling(orderedRows.length - 1 >= throttleLimit)
+
     console.log('3. sorting rows', filteredRows.length, orderBy, order, t1 - t0)
   }
 

@@ -1,17 +1,13 @@
 import { Tooltip } from '@material-ui/core'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
+import PropTypes from 'prop-types'
 import React from 'react'
 
 const ObservableProgress =  ({ selectedIndex, currentRow, rowsLength }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
 
-  const focusElement = () => {
-    const requestedElement = document.getElementById('selected')
-    if(requestedElement) {
-      requestedElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    }
-  }
+  const focusElement = () => document.getElementById('selected')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 
   return <div className={classes.progress}>
     <div style={{ position: 'relative' }}>
@@ -60,5 +56,7 @@ const useStyles = makeStyles((theme) => ({
     height: '4px'
   },
 }))
+
+ObservableProgress.propTypes = { selectedIndex: PropTypes.number, currentRow: PropTypes.number, rowsLength: PropTypes.number }
 
 export default ObservableProgress
