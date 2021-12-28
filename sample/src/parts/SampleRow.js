@@ -5,7 +5,7 @@ import TuneIcon from '@material-ui/icons/Tune';
 import { memo } from 'react';
 import stringToColor from 'string-to-color';
 
-const AvatarRow = memo(({ row: { name, surname, fullName }, selectedAvatars, onSelectAvatar = () => { } }) => {
+const AvatarRow = memo(({ name, surname, fullName, selectedAvatars, onSelectAvatar = () => { } }) => {
   const theme = useTheme()
   const classes = avatarStyles(theme)
 

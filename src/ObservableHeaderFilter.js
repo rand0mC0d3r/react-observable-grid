@@ -44,8 +44,8 @@ const ObservableHeaderFilter = ({
         display: 'flex',
         gap: '8px',
         backgroundColor: theme.palette.background.paper,
-        width: '350px',
         borderRadius: '4px',
+        minWidth: '300px',
         flexDirection: 'column',
         border: `1px solid ${theme.palette.divider}`,
       }}>

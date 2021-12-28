@@ -4,6 +4,7 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import SignalCellular3BarIcon from '@material-ui/icons/SignalCellular3Bar';
 import SubjectIcon from '@material-ui/icons/Subject';
 import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
@@ -42,12 +43,35 @@ const App = () => {
       customFilter: (rows) => selectedAvatars.length > 0 ? rows.filter((row) => selectedAvatars?.some(sa => sa === row.fullName)) : rows,
       suggestions: () => Array.from(new Set(rows.map(row => row.fullName.split(" ")).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
       width: 'minmax(175px, 1fr)',
-      extension: <>
-        {selectedAvatars.length > 0 && <Chip onDelete={() => setSelectedAvatars([])} variant="outlined" size="small" label={`People: ${selectedAvatars.length}`} />}
-      </>,
+      extraFilters: [
+        {
+          label: 'People',
+          icon: <PersonOutlineIcon />,
+          func: (rows) => rows,
+          variable: selectedAvatars,
+          node: () => {
+            const rowsProcessed = rows.map(r => ({ fullName: r.fullName, name: r.name, surname: r.surname }))
+            const entries = [...new Map(rowsProcessed.map(item => [item['fullName'], item])).values()];
+            return <div style={{ display: 'flex', width: '400px', gap: '8px', padding: '24px', alignItems: 'center', flexWrap: 'wrap'}}>
+              {entries.map(entry => <>
+                <AvatarRow
+                  {...{ selectedAvatars, name: entry.name, surname: entry.surname, fullName: entry.fullName }}
+                  onSelectAvatar={(fullName) => setSelectedAvatars(selectedAvatars => selectedAvatars.some(sa => sa === fullName)
+                    ? selectedAvatars.filter(sa => sa !== fullName)
+                    : [...selectedAvatars, fullName]
+                  )}
+                />
+              </>)}
+            </div>
+          },
+        }
+      ],
+      // extension: <>
+      //   {selectedAvatars.length > 0 && <Chip onDelete={() => setSelectedAvatars([])} variant="outlined" size="small" label={`People: ${selectedAvatars.length}`} />}
+      // </>,
       row: (row) => <div style={{ display: 'flex', gap: '8px', flexWrap: 'nowrap'}}>
         <AvatarRow
-          {...{ selectedAvatars, row }}
+          {...{ selectedAvatars, fullName: row.fullName, name: row.name, surname: row.surname }}
           onSelectAvatar={(fullName) => setSelectedAvatars(selectedAvatars => selectedAvatars.some(sa => sa === fullName)
           ? selectedAvatars.filter(sa => sa !== fullName)
           : [...selectedAvatars, fullName]
@@ -128,7 +152,7 @@ const App = () => {
                 min={Math.round(entries.slice(0, 1) / 1000)}
                 max={Math.round(entries.slice(-1) / 1000)}
                 onChange={handleChange}
-                valueLabelDisplay="on"
+                valueLabelDisplay="off"
                 aria-labelledby="continuous-slider"
               />
               <Typography variant="caption" color="textSecondary">{Math.round(entries.slice(-1) / 1000)}</Typography>
