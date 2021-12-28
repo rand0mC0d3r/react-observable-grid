@@ -41,7 +41,7 @@ const App = () => {
 
       customFilter: (rows) => selectedAvatars.length > 0 ? rows.filter((row) => selectedAvatars?.some(sa => sa === row.fullName)) : rows,
       suggestions: (rows) => Array.from(new Set(rows.map(row => row.fullName.split(" ")).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
-      width: 'minmax(200px, 1fr)',
+      width: 'minmax(175px, 1fr)',
       extension: <>
         {selectedAvatars.length > 0 && <Chip onDelete={() => setSelectedAvatars([])} variant="outlined" size="small" label={`People: ${selectedAvatars.length}`} />}
       </>,

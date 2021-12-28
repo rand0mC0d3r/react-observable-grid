@@ -157,15 +157,23 @@ const ObservableGrid =  ({
   }, [rows, isEmpty])
 
   useEffect(() => {
-    setCustomFilteredRows(headers.filter(header => header.customFilter).reduce((acc, value) => value.customFilter(acc), indexedRows))
+    const computeCustomFilters = headers.filter(header => header.customFilter).reduce((acc, value) => value.customFilter(acc), indexedRows)
+    const computeExtraFilter = headers.filter(h => h.extraFilters).reduce((acc, value) => {
+      let result = acc
+      value.extraFilters.forEach(filter => { result = filter.func(result) })
+      return result
+    }, computeCustomFilters)
+  setCustomFilteredRows(computeExtraFilter)
   }, [indexedRows, triggerSearch, headers])
 
   useEffect(() => {
+    // console.log("initial passthru")
     setExternalFilteredRows(customFilteredRows)
   }, [customFilteredRows])
 
   // filter data by search with or without regex/case sensitive
   useEffect(() => {
+    console.log('triggerSearch', triggerSearch)
     searchColumns.length > 0
       ? setFilteredRows(() => externalFilteredRows.filter(cr => searchColumns
         .filter(searchColumn => searchColumn?.term.length > 0
@@ -202,26 +210,19 @@ const ObservableGrid =  ({
   }
 
   const triggerReload = () => {
-    if (externalFilteredRows.length > 0) {
-      console.log('trigger reload')
-      // const r = headers.filter(h => h.extraFilters).reduce((acc, value) => {
-      //   console.log(value.extraFilters)
-      //   let result = acc
-      //   value.extraFilters.forEach(filter => {
-      //     result = filter.func(result)
-      //   })
-      //   return result
-      // }, externalFilteredRows)
-      // console.log(r)
-      setExternalFilteredRows(() => headers.filter(h => h.extraFilters).reduce((acc, value) => {
-        console.log(value.extraFilters)
-        let result = acc
-        value.extraFilters.forEach(filter => {
-          result = filter.func(result)
-        })
-        return result
-      }, externalFilteredRows))
-    }
+    // if (externalFilteredRows.length > 0) {
+    //   // console.log('trigger reload')
+    //   const r = headers.filter(h => h.extraFilters).reduce((acc, value) => {
+    //     // console.log(value.extraFilters)
+    //     let result = acc
+    //     value.extraFilters.forEach(filter => {
+    //       result = filter.func(result)
+    //     })
+    //     return result
+    //   }, externalFilteredRows)
+    //   console.log(r)
+    //   setExternalFilteredRows(r)
+    // }
   }
 
   // useEffect(() => {
