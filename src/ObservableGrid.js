@@ -55,6 +55,7 @@ const ObservableGrid =  ({
 
   const [innerHeaders, setInnerHeaders] = useState([])
   const [orderBy, setOrderBy] = useState('')
+  const [url, setUrl] = useState('')
   const [currentRow, setCurrentRow] = useState(null)
   const [throttling, setThrottling] = useState(false)
   const [isDirty, setIsDirty] = useState(false)
@@ -85,6 +86,7 @@ const ObservableGrid =  ({
     { label: 'startEnd', value: JSON.stringify(startEnd) },
     { label: 'pageSize', value: pageSize },
     { label: 'totalElements', value: `${elementsRendered[0]} (${elementsRendered[1]})` },
+    { label: 'url', value: url },
   ]
 
   const naturalSort = createNewSortInstance({
@@ -148,16 +150,12 @@ const ObservableGrid =  ({
   }, [rows, isEmpty])
 
   useEffect(() => {
-    const t0 = performance.now()
-    const computeCustomFilters = headers.filter(header => header.customFilter).reduce((acc, value) => value.customFilter(acc), indexedRows)
-    const computeExtraFilter = headers.filter(h => h.extraFilters).reduce((acc, value) => {
+    setCustomFilteredRows(headers.filter(header => header.customFilter || header.extraFilters).reduce((acc, value) => {
       let result = acc
-      value.extraFilters.forEach(filter => { result = filter.func(result) })
+      if (value.customFilter) { result = value.customFilter(acc) }
+      if (value.extraFilters) { value.extraFilters.forEach(filter => { result = filter.func(result) })}
       return result
-    }, computeCustomFilters)
-    const t1 = performance.now()
-    console.log(`Custom Filters: ${Math.round((t1 - t0) * 1000)}`)
-  setCustomFilteredRows(computeExtraFilter)
+    }, indexedRows))
   }, [indexedRows, triggerSearch, headers])
 
   // filter data by search with or without regex/case sensitive
@@ -220,7 +218,7 @@ const ObservableGrid =  ({
   }, [headers])
 
   useEffect(() => {
-    console.log(`?orderBy=${orderBy}&order=${order}`)
+    setUrl(`?orderBy=${orderBy}&order=${order}`)
   }, [orderBy, order])
 
   useEffect(() => {
@@ -328,6 +326,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     height: '100%',
     flexDirection: 'column',
+    overflow: 'hidden',
   }
 }))
 

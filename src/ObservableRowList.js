@@ -25,11 +25,8 @@ const ObservableRowList = ({
 
   const idValue = (index) => {
     let result = null
-    if (index === 0) {
-      result = 'first'
-    } else if (index === selectedIndex) {
-      result = 'selected'
-    }
+    if (index === 0) { result = 'first'
+    } else if (index === selectedIndex) { result = 'selected' }
     return result
   }
 

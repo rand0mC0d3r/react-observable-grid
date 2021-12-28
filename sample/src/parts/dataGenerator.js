@@ -12,7 +12,7 @@ const flavorsList = [
 const randomSeed = Math.floor(Math.random() * 1500 + 1)
 
 export const dataGenerator = (count) => count === 0 ? [] : new Array(count).fill().map((_, i) => {
-  const randomFlavors = flavorsList.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 6 + 1));
+  const randomFlavors = flavorsList.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 5 + 1));
   const randomName = `${['Mary', 'John', 'Robert', 'Michael', 'William', 'David', 'Richard', 'Joseph', 'Thomas', 'Charles'][Math.floor(Math.random() * 10)]}`
   const randomSurname = `${['Williams', 'Johnson', 'Jones', 'Brown', 'Davis', 'Miller', 'Wilson', 'Moore', 'Taylor', 'Anderson'][Math.floor(Math.random() * 10)]}`
   const randomCurrency = currencies[Math.floor(Math.random() * currencies.length)]

@@ -19,7 +19,7 @@ const App = () => {
   const [isColumned, setIsColumned] = useState(true);
   const [selectedTiles, setSelectedTiles] = useState([]);
   const [selectedAvatars, setSelectedAvatars] = useState([]);
-  const [isDebugging, setIsDebugging] = useState(false);
+  const [isDebugging, setIsDebugging] = useState(true);
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
   const [customHeader, setCustomHeader] = useState(false);
   const [canvasDrawing, setCanvasDrawing] = useState(false);
