@@ -12,9 +12,9 @@ const AvatarRow = memo(({ name, surname, fullName, selectedAvatars, onSelectAvat
   return <div style={{ display: 'flex', justifyContent: "center" }}>
     <Tooltip arrow title={fullName}>
       <Avatar
-        onClick={() => onSelectAvatar(fullName)}
+        onClick={() => onSelectAvatar({ fullName, name, surname })}
         variant="rounded"
-        className={[classes.avatar, selectedAvatars?.length > 0 ? selectedAvatars?.some(sa => sa === fullName) && classes.selectedAvatar : ''].join(' ')}
+        className={[classes.avatar, selectedAvatars?.length > 0 ? selectedAvatars?.some(sa => sa.fullName === fullName) && classes.selectedAvatar : ''].join(' ')}
         style={{
           fontSize: '16px',
           backgroundColor: stringToColor(fullName)

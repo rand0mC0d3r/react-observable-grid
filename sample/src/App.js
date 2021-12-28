@@ -40,7 +40,7 @@ const App = () => {
       tooltip: "Filter users by name",
       property: 'fullName',
 
-      customFilter: (rows) => selectedAvatars.length > 0 ? rows.filter((row) => selectedAvatars?.some(sa => sa === row.fullName)) : rows,
+      customFilter: (rows) => selectedAvatars.length > 0 ? rows.filter((row) => selectedAvatars?.some(sa => sa.fullName === row.fullName)) : rows,
       suggestions: () => Array.from(new Set(rows.map(row => row.fullName.split(" ")).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
       width: 'minmax(175px, 1fr)',
       extraFilters: [
@@ -49,19 +49,23 @@ const App = () => {
           icon: <PersonOutlineIcon />,
           func: (rows) => rows,
           variable: selectedAvatars,
-          node: () => {
+          node: (incomingRows) => {
             const rowsProcessed = rows.map(r => ({ fullName: r.fullName, name: r.name, surname: r.surname }))
             const entries = [...new Map(rowsProcessed.map(item => [item['fullName'], item])).values()];
-            return <div style={{ display: 'flex', width: '450px', gap: '8px', padding: '8px', alignItems: 'center', flexWrap: 'wrap'}}>
+            return <div style={{ display: 'flex', gap: '8px', padding: '8px', flexDirection: 'column', alignItems: 'center' }}>
+              <Typography variant="subtitle2">Selected People ({incomingRows.length})</Typography>
+              <Typography variant="subtitle2">People</Typography>
+              <div style={{ display: 'flex',  width: '450px', gap: '8px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
               {entries.map(entry => <>
                 <AvatarRow
                   {...{ selectedAvatars, name: entry.name, surname: entry.surname, fullName: entry.fullName }}
-                  onSelectAvatar={(fullName) => setSelectedAvatars(selectedAvatars => selectedAvatars.some(sa => sa === fullName)
+                  onSelectAvatar={({ fullName, surname, name }) => setSelectedAvatars(selectedAvatars => selectedAvatars.some(sa => sa === fullName)
                     ? selectedAvatars.filter(sa => sa !== fullName)
-                    : [...selectedAvatars, fullName]
+                    : [...selectedAvatars, { fullName, surname, name }]
                   )}
                 />
               </>)}
+              </div>
             </div>
           },
         }
@@ -72,9 +76,9 @@ const App = () => {
       row: (row) => <div style={{ display: 'flex', gap: '8px', flexWrap: 'nowrap'}}>
         <AvatarRow
           {...{ selectedAvatars, fullName: row.fullName, name: row.name, surname: row.surname }}
-          onSelectAvatar={(fullName) => setSelectedAvatars(selectedAvatars => selectedAvatars.some(sa => sa === fullName)
+          onSelectAvatar={({ fullName, surname, name }) => setSelectedAvatars(selectedAvatars => selectedAvatars.some(sa => sa === fullName)
           ? selectedAvatars.filter(sa => sa !== fullName)
-          : [...selectedAvatars, fullName]
+          : [...selectedAvatars, { fullName, surname, name }]
         )}
         />
         <NamesRow row={row} />
