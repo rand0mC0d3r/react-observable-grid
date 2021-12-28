@@ -148,12 +148,15 @@ const ObservableGrid =  ({
   }, [rows, isEmpty])
 
   useEffect(() => {
+    const t0 = performance.now()
     const computeCustomFilters = headers.filter(header => header.customFilter).reduce((acc, value) => value.customFilter(acc), indexedRows)
     const computeExtraFilter = headers.filter(h => h.extraFilters).reduce((acc, value) => {
       let result = acc
       value.extraFilters.forEach(filter => { result = filter.func(result) })
       return result
     }, computeCustomFilters)
+    const t1 = performance.now()
+    console.log(`Custom Filters: ${Math.round((t1 - t0) * 1000)}`)
   setCustomFilteredRows(computeExtraFilter)
   }, [indexedRows, triggerSearch, headers])
 
