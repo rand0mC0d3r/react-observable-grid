@@ -1,6 +1,6 @@
 import { Chip, Popover, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const anchorOrigin = { vertical: 'bottom', horizontal: 'center' }
 const transformOrigin = { vertical: 'top', horizontal: 'center' }
@@ -10,10 +10,14 @@ const ObservableHeaderFilter = ({ label, icon, popover }) => {
   const classes = useStyles(theme)
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const id = open ? 'customFilter-popover' : undefined;
+  const id = open ? `customFilter-popover-${label}` : undefined;
 
   const handleClick = (event) => { setAnchorEl(event.currentTarget) };
   const onClose = () => { setAnchorEl(null) };
+
+  useEffect(() => {
+    console.log('rendering popover')
+  }, [])
 
   return <>
     {open && <Popover {...{ id, key: `${label}_popover`, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 1}}>

@@ -29,7 +29,7 @@ const App = () => {
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
 
-  const [value, setValue] = useState([20,370]);
+  const [value, setValue] = useState([-1,-1]);
   const handleChange = (event, newValue) => {
     event.preventDefault()
     setValue(newValue);
@@ -152,7 +152,7 @@ const App = () => {
       align: 'flex-end',
       extraFilters: [
         {
-          label: 'Range',
+          label: `${value[0]} - ${value[1]}`,
           icon: <SignalCellular3BarIcon />,
           func: (rows) => rows.filter((row) => value[0] <= row.price.split(' ')[0] && row.price.split(' ')[0] <= value[1]),
           variable: value,
