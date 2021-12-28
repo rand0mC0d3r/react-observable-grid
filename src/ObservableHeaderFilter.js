@@ -1,27 +1,16 @@
 import { Chip, Popover, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
-import FunctionsIcon from '@material-ui/icons/Functions';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import SearchIcon from '@material-ui/icons/Search';
-import TextFieldsIcon from '@material-ui/icons/TextFields';
-import PropTypes from 'prop-types';
-import React, { cloneElement, useCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 const anchorOrigin = { vertical: 'bottom', horizontal: 'center' }
 const transformOrigin = { vertical: 'top', horizontal: 'center' }
 
-const ObservableHeaderFilter = ({
-  label,
-  icon,
-  key,
-  popover,
-}) => {
+const ObservableHeaderFilter = ({ label, icon, key, popover }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
+  const id = open ? 'customFilter-popover' : undefined;
 
   const handleClick = (event) => { setAnchorEl(event.currentTarget) };
   const onClose = () => { setAnchorEl(null) };

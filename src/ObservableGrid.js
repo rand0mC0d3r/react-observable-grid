@@ -68,6 +68,7 @@ const ObservableGrid =  ({
   const [indexedRows, setIndexedRows] = useState([])
   const [customFilteredRows, setCustomFilteredRows] = useState([])
   const [sortedRows, setSortedRows] = useState([])
+  const [filteredRows, setFilteredRows] = useState([])
 
   const [startEnd, setStartEnd] = useState({ start: -1, end: 1 })
   const [throttleLimit, setThrottleLimit] = useState(50)
@@ -140,41 +141,56 @@ const ObservableGrid =  ({
   }, [headers])
 
   useEffect(() => {
+    console.log('1. setIndexedRows', rows.length)
     setIndexedRows(isEmpty ? [] : () => rows.map((row, index) => ({ ...row, __origIndex: index })))
     setSelectedIndex(null)
   }, [rows, isEmpty])
 
   useEffect(() => {
-    setCustomFilteredRows(headers.filter(header => header.customFilter || header.extraFilters).reduce((acc, value) => {
+    const t0 = performance.now()
+    const result = headers.filter(header => header.customFilter || header.extraFilters).reduce((acc, value) => {
       let result = acc
       if (value.customFilter) { result = value.customFilter(acc) }
       if (value.extraFilters) { value.extraFilters.forEach(filter => { result = filter.func(result) })}
       return result
-    }, indexedRows))
+    }, indexedRows)
+    const t1 = performance.now()
+    setCustomFilteredRows(result)
+    console.log('1. custom filtering indexed rows', indexedRows.length, result.length, t1 - t0)
   }, [indexedRows, triggerSearch, headers])
 
-  useEffect(() => {
-    const sortSort = (order, rows) => order === 'asc' ? naturalSort(rows).asc([r => r[orderBy]]) : naturalSort(rows).desc([r => r[orderBy]])
+  const filterRows = (customFilteredRows, searchColumns) => {
+    const t0 = performance.now()
     const sensitiveSearch = (sensitive, cr, key, term) => sensitive ? cr[key].includes(term) : cr[key].toLowerCase().includes(term.toLowerCase())
     const searchByRegex = (regex, property) => regex.test(property)
-    let result = customFilteredRows
 
-    if (searchColumns.length > 0) {
-      result =  customFilteredRows.filter(cr => searchColumns
+    const result = searchColumns.length > 0
+      ? customFilteredRows.filter(cr => searchColumns
         .filter(searchColumn => searchColumn?.term.length > 0
           ? searchColumn.isRegex
             ? searchByRegex(new RegExp(searchColumn.term, `${searchColumn.isSensitive ? '' : 'i'}`), cr[searchColumn.key])
             : sensitiveSearch(searchColumn.isSensitive, cr, searchColumn?.key, searchColumn?.term)
-          : true
-        ).length === searchColumns.length
-      )
-    }
-    result = orderBy === ''
-      ? result.map((r, index) => ({ ...r, __index:  index }))
-      : sortSort(order, result).map((r, index) => ({ ...r, __index: index }))
-    setSortedRows(result)
+          : true).length === searchColumns.length)
+      : customFilteredRows
+    const t1 = performance.now()
+    setFilteredRows(result)
     setSelectedIndex(null)
-  }, [customFilteredRows, searchColumns,  order, orderBy])
+    console.log('2. filtering custom filtered rows', customFilteredRows.length, searchColumns, result.length, t1 - t0)
+  }
+
+  const sortRows = (orderBy, filteredRows, order) => {
+    const t0 = performance.now()
+    const sortSort = (order, rows) => order === 'asc' ? naturalSort(rows).asc([r => r[orderBy]]) : naturalSort(rows).desc([r => r[orderBy]])
+    const orderedRows = orderBy === '' ? filteredRows.map((r, index) => ({ ...r, __index: index })) : sortSort(order, filteredRows).map((r, index) => ({ ...r, __index: index }))
+    const t1 = performance.now()
+    setSortedRows(orderedRows)
+    setStartEnd({ start: -1, end: 1 })
+    setThrottling(orderedRows.length - 1 >= throttleLimit)
+    console.log('3. sorting rows', filteredRows.length, orderBy, order, t1 - t0)
+  }
+
+  useEffect(() => filterRows(customFilteredRows, searchColumns), [customFilteredRows, searchColumns])
+  useEffect(() => sortRows(orderBy, filteredRows, order), [filteredRows, order, orderBy])
 
   // useEffect(() => {
   //   const interval = setInterval(() => {
@@ -199,7 +215,9 @@ const ObservableGrid =  ({
   }, [headers])
 
   useEffect(() => {
-    updateRenderedElements()
+    if (isDebugging) {
+      updateRenderedElements()
+    }
     setUrl(`
       ?orderBy=${orderBy}
       &order=${order}
@@ -207,8 +225,7 @@ const ObservableGrid =  ({
       &searchColumns=${JSON.stringify(searchColumns)}
       &extraFilters=${JSON.stringify(innerHeaders.filter(ih => ih.extraFilters).map(ih => ({ label: ih.label, variable: JSON.stringify(ih.variable) })))}
       &visibleHeaders=${innerHeaders.filter(header => header.visible).map(header => header.property)}`)
-
-  }, [orderBy, order, innerHeaders, searchColumns, selectedIndex])
+  }, [orderBy, order, innerHeaders, searchColumns, selectedIndex, isDebugging])
 
   useEffect(() => {
     const gridTemplateString = innerHeaders.filter(header => header.visible).map(header => header.width).join(' ')

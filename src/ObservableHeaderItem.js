@@ -253,10 +253,14 @@ const ObservableHeaderItem = ({
       </div>}
     </div>
     <div style={{ display: 'flex', gap: '4px', flexWrap: 'nowrap', alignItems: 'center', flexDirection: !align ? 'row' : 'row-reverse'}}>
-        {!noSearch && (selected || searchString !== '') && <Tooltip arrow title={`Search in column: ${label}`}>
+        {!noSearch && (selected || searchString !== '') && <Tooltip arrow title={`Search in column: ${label}${searchString.length > 0 ? ` | Search string: ${searchString}` : ''}`}>
           <Chip
             onClick={(e) => { handleClick(e) }}
-            icon={searchString !== '' ? <SearchIcon color="action" /> : undefined}
+            icon={searchString !== '' ? <>
+              <SearchIcon color="action" />
+              {isCaseSensitive && <TextFieldsIcon color="action" style={{ fontSize: '12px' }} />}
+              {isRegex && <FunctionsIcon color="action" style={{ fontSize: '12px' }} />}
+            </> : undefined}
             label={(searchString.length > 6 ? `${searchString.substring(0,6)}...` : searchString) || <SearchIcon color="action" style={{ fontSize: '18px', marginTop: '3px' }} />}
             size="small"
             variant="outlined"
