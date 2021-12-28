@@ -26,7 +26,6 @@ const ObservableHeaderFilter = ({
   const handleClose = () => { setAnchorEl(null) };
 
   useEffect(() => {
-    console.log('triggered', variable)
     triggerReload()
   }, [variable])
 

@@ -160,13 +160,6 @@ const ObservableGrid =  ({
     setCustomFilteredRows(headers.filter(header => header.customFilter).reduce((acc, value) => value.customFilter(acc), indexedRows))
   }, [indexedRows, triggerSearch, headers])
 
-  const triggerReload = () => {
-    // setInjectedRows()
-    externalFilteredRows.map()
-    console.log('reload requested')
-  }
-
-
   useEffect(() => {
     setExternalFilteredRows(customFilteredRows)
   }, [customFilteredRows])
@@ -206,6 +199,29 @@ const ObservableGrid =  ({
   const searchByRegex = (searchColumn, property) => {
     const regex = new RegExp(searchColumn.term, 'i')
     return regex.test(property)
+  }
+
+  const triggerReload = () => {
+    if (externalFilteredRows.length > 0) {
+      console.log('trigger reload')
+      // const r = headers.filter(h => h.extraFilters).reduce((acc, value) => {
+      //   console.log(value.extraFilters)
+      //   let result = acc
+      //   value.extraFilters.forEach(filter => {
+      //     result = filter.func(result)
+      //   })
+      //   return result
+      // }, externalFilteredRows)
+      // console.log(r)
+      setExternalFilteredRows(() => headers.filter(h => h.extraFilters).reduce((acc, value) => {
+        console.log(value.extraFilters)
+        let result = acc
+        value.extraFilters.forEach(filter => {
+          result = filter.func(result)
+        })
+        return result
+      }, externalFilteredRows))
+    }
   }
 
   // useEffect(() => {

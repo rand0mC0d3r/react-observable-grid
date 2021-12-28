@@ -28,7 +28,7 @@ const App = () => {
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
 
-  const [value, setValue] = useState([20,37]);
+  const [value, setValue] = useState([20,370]);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -117,17 +117,18 @@ const App = () => {
         {
           label: 'Range',
           icon: <SignalCellular3BarIcon />,
-          func: (rows) => rows.filter((row) => selectedTiles.filter(st => row.tiles.some(t => t.id === st)).length === selectedTiles.length),
+          func: (rows) => rows.filter((row) => value[0] <= row.price.split(' ')[0] && row.price.split(' ')[0] <= value[1]),
           variable: value,
-          node: (rows) => {
+          node: () => {
             const entries = rows.map(r => r.price.split(' ')[0] * 1000).sort((a, b) => a - b);
-            return <div style={{ display: 'flex', gap: '8px', alignItems: 'center'}}>
+            return <div style={{ display: 'flex', gap: '8px', padding: '24px', alignItems: 'center'}}>
               <Typography variant="caption" color="textSecondary">{Math.round(entries.slice(0, 1) / 1000)}</Typography>
               <Slider
                 value={value}
                 min={Math.round(entries.slice(0, 1) / 1000)}
                 max={Math.round(entries.slice(-1) / 1000)}
                 onChange={handleChange}
+                valueLabelDisplay="on"
                 aria-labelledby="continuous-slider"
               />
               <Typography variant="caption" color="textSecondary">{Math.round(entries.slice(-1) / 1000)}</Typography>
@@ -184,6 +185,11 @@ const App = () => {
     const t1 = Date.now();
     setPerformance(Math.round(t1 - t0));
   }
+
+  useEffect(() => {
+    const entries = rows.map(r => r.price.split(' ')[0] * 1000).sort((a, b) => a - b)
+    setValue([Math.round(entries.slice(0, 1) / 1000), Math.round(entries.slice(-1) / 1000)])
+  }, [rows])
 
   useEffect(() => generateRows(100), [])
 

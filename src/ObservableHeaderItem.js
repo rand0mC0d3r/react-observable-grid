@@ -249,7 +249,7 @@ const ObservableHeaderItem = ({
         </div>)}
       </div>}
     </div>
-    <div style={{ display: 'flex', gap: '4px', flexWrap: 'nowrap', alignItems: 'center'}}>
+    <div style={{ display: 'flex', gap: '4px', flexWrap: 'nowrap', alignItems: 'center', flexDirection: !align ? 'row' : 'row-reverse'}}>
         {!noSearch && (selected || searchString !== '') && <Tooltip arrow title={`Search in column: ${label}`}>
           <Chip
             onClick={(e) => { handleClick(e) }}
