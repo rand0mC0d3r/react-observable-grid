@@ -33,7 +33,6 @@ const ObservableHeaderItem = ({
   extraFilters,
   selected,
   handleResetSort,
-  extension,
   handleSearchTerm = () => { },
   options: {ascArrow, descArrow, padding },
   onSelect,
@@ -277,7 +276,6 @@ const ObservableHeaderItem = ({
           variable={extraFilter.variable}
           popover={extraFilter.node(rows)}
           icon={extraFilter.icon} />)}
-        {/* {extension && extension} */}
     </div>
     </div>
   </>
