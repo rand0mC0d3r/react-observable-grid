@@ -16,7 +16,7 @@ const ObservableHeaderFilter = ({ label, icon, key, popover }) => {
   const onClose = () => { setAnchorEl(null) };
 
   return <>
-    {open && <Popover {...{id, open, anchorEl, anchorOrigin, transformOrigin, onClose}} key={`${key}-popover`} elevation={1}>
+    {open && <Popover {...{id, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 1, key: `${key}-popover`}}>
       <div className={classes.popoverRoot}>
         <div className={classes.popoverContent}>{popover}</div>
         <div className={classes.popoverExtra}>
@@ -49,7 +49,6 @@ const useStyles = makeStyles(theme => ({
     gap: '8px',
     flexWrap: 'wrap'
   },
-
 }))
 
 

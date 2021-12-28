@@ -17,13 +17,8 @@ const ObservableProgress =  ({ selectedIndex, currentRow, rowsLength }) => {
     <div style={{ position: 'relative' }}>
       <div className={classes.totalProgress} />
       <div className={classes.currentProgress} style={{ width: `${Math.round((currentRow + 1) * 100 / rowsLength)}%` }}></div>
-      {selectedIndex && <Tooltip arrow title="Scroll to selected row ...">
-        <div
-          onClick={focusElement}
-          className={classes.selectionProgress}
-          style={{
-            left: `${Math.round((selectedIndex + 1) * 100 / rowsLength)}%`
-          }} />
+      {selectedIndex && <Tooltip arrow title={`Scroll to row ${selectedIndex} ...`}>
+        <div onClick={focusElement} className={classes.selectionProgress} style={{ left: `${Math.round((selectedIndex + 1) * 100 / rowsLength)}%`}} />
       </Tooltip>}
     </div>
   </div>
@@ -38,16 +33,16 @@ const useStyles = makeStyles((theme) => ({
   selectionProgress: {
     position: 'absolute',
     borderRadius: '8px',
-    top: '0px',
-    width: '4px',
-    height: '4px',
-    backgroundColor: theme.palette.secondary.light,
+    top: '-2px',
+    width: '8px',
+    height: '8px',
+    backgroundColor: theme.palette.primary.light,
     border: '1px solid #FFF',
     borderTop: '0px none',
     borderBottom: '0px none',
 
     '&:hover': {
-      boxShadow: `0px 0px 0px 10px ${theme.palette.secondary.main}`,
+      boxShadow: `0px 0px 0px 10px ${theme.palette.primary.main}`,
     }
   },
   currentProgress: {

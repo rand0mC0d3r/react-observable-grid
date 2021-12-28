@@ -40,7 +40,7 @@ const App = () => {
       tooltip: "Filter users by name",
       property: 'fullName',
 
-      // customFilter: (rows) => selectedAvatars.length > 0 ? rows.filter((row) => selectedAvatars?.some(sa => sa.fullName === row.fullName)) : rows,
+      customFilter: (rows) => selectedAvatars.length > 0 ? rows.filter((row) => selectedAvatars?.some(sa => sa.fullName === row.fullName)) : rows,
       suggestions: () => Array.from(new Set(rows.map(row => row.fullName.split(" ")).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
       width: 'minmax(175px, 1fr)',
       // extraFilters: [
@@ -87,8 +87,8 @@ const App = () => {
       row: (row) => <div style={{ display: 'flex', gap: '8px', flexWrap: 'nowrap'}}>
         <AvatarRow
           {...{ selectedAvatars, fullName: row.fullName, name: row.name, surname: row.surname }}
-          onSelectAvatar={({ fullName, surname, name }) => setSelectedAvatars(selectedAvatars => selectedAvatars.some(sa => sa === fullName)
-          ? selectedAvatars.filter(sa => sa !== fullName)
+          onSelectAvatar={({ fullName, surname, name }) => setSelectedAvatars(selectedAvatars => selectedAvatars.some(sa => sa.fullName === fullName)
+          ? selectedAvatars.filter(sa => sa.fullName !== fullName)
           : [...selectedAvatars, { fullName, surname, name }]
         )}
         />
@@ -126,7 +126,7 @@ const App = () => {
       label: 'Tiles',
       noSearch: true,
       icon: <DashboardIcon />,
-      // customFilter: (rows) => rows.filter((row) => selectedTiles.filter(st => row.tiles.some(t => t.id === st)).length === selectedTiles.length),
+      customFilter: (rows) => rows.filter((row) => selectedTiles.filter(st => row.tiles.some(t => t.id === st)).length === selectedTiles.length),
       suggestions: (rows) => Array.from(new Set(rows.map(row => row.tiles.map(tile => tile.name)).flat())),
       property: 'tilesHash',
       width: 'minmax(100px, 2fr)',
