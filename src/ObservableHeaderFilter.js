@@ -56,6 +56,9 @@ const ObservableHeaderFilter = ({
         }}>
           {popover}
         </div>
+        <div style={{ display: 'flex', padding: '12px 16px', gap: '8px', flexWrap: 'wrap' }}>
+          <Typography variant="caption" color="textSecondary">Custom injected search element</Typography>
+        </div>
       </div>
     </Popover>}
 

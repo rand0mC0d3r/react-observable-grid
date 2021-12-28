@@ -145,16 +145,18 @@ const App = () => {
           variable: value,
           node: () => {
             const entries = rows.map(r => r.price.split(' ')[0] * 1000).sort((a, b) => a - b);
-            return <div style={{ display: 'flex', gap: '8px', padding: '24px', alignItems: 'center'}}>
+            return <div style={{ display: 'flex', gap: '16px', padding: '8px', alignItems: 'center'}}>
               <Typography variant="caption" color="textSecondary">{Math.round(entries.slice(0, 1) / 1000)}</Typography>
+              <Typography variant="caption" color="primary">{value[0]}</Typography>
               <Slider
                 value={value}
                 min={Math.round(entries.slice(0, 1) / 1000)}
                 max={Math.round(entries.slice(-1) / 1000)}
-                onChange={handleChange}
+                onChangeCommitted={handleChange}
                 valueLabelDisplay="off"
                 aria-labelledby="continuous-slider"
               />
+              <Typography variant="caption" color="primary">{value[1]}</Typography>
               <Typography variant="caption" color="textSecondary">{Math.round(entries.slice(-1) / 1000)}</Typography>
             </div>
           },
