@@ -52,7 +52,7 @@ const App = () => {
           node: () => {
             const rowsProcessed = rows.map(r => ({ fullName: r.fullName, name: r.name, surname: r.surname }))
             const entries = [...new Map(rowsProcessed.map(item => [item['fullName'], item])).values()];
-            return <div style={{ display: 'flex', width: '400px', gap: '8px', padding: '24px', alignItems: 'center', flexWrap: 'wrap'}}>
+            return <div style={{ display: 'flex', width: '450px', gap: '8px', padding: '8px', alignItems: 'center', flexWrap: 'wrap'}}>
               {entries.map(entry => <>
                 <AvatarRow
                   {...{ selectedAvatars, name: entry.name, surname: entry.surname, fullName: entry.fullName }}

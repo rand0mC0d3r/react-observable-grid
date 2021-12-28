@@ -92,10 +92,6 @@ const ObservableGrid =  ({
     comparer: collator.compare,
   })
 
-  const calculateTotalElements = () => {
-    return document.getElementsByTagName('*').length
-  }
-
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && order === 'asc'
     setOrder(isAsc ? 'desc' : 'asc')
@@ -209,7 +205,7 @@ const ObservableGrid =  ({
       &order=${order}
       &selectedIndex=${selectedIndex}
       &searchColumns=${JSON.stringify(searchColumns)}
-      &extraFilters=${JSON.stringify(innerHeaders.filter(ih => ih.extraFilters).map(ih => ({ label: ih.label, variable: ih.variable })))}
+      &extraFilters=${JSON.stringify(innerHeaders.filter(ih => ih.extraFilters).map(ih => ({ label: ih.label, variable: JSON.stringify(ih.variable) })))}
       &visibleHeaders=${innerHeaders.filter(header => header.visible).map(header => header.property)}`)
 
   }, [orderBy, order, innerHeaders, searchColumns, selectedIndex])
