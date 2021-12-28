@@ -187,19 +187,20 @@ const App = () => {
       ]
     },
     {
-      label: "Actions",
-      noSort: true,
+      label: "Last Seen",
+
       align: 'flex-end',
-      property: 'actions',
-      noSearch: true,
+      property: 'lastSeen',
+      // noSearch: true,
       onHover: (row) => <ActionsRow {...{ row }} />,
       row: (row) => <LastSeenRow {...{ row }} />,
       width: 'minmax(130px, 0.75fr)',
-      noHightlight: true,
+      // noHightlight: true,
       secondaryHeaders: [
         {
-          label: 'Last seen',
-          property: 'lastSeen',
+          noSort: true,
+          label: 'Actions',
+          property: '',
         },
       ]
     },
