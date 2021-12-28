@@ -10,23 +10,25 @@ const ObservableHeaderFilter = ({ width, label, icon, tooltip = "Filtering mecha
   const classes = useStyles(theme)
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const id = open ? 'filters-section' : undefined;
 
   const onClick = (event) => setAnchorEl(event.currentTarget);
   const onClose = () => setAnchorEl(null);
 
   return <>
-    {open && <Popover {...{ key: `${label}_popover`, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 1}}>
-      <div className={classes.popoverRoot} style={{ width }}>
+    <Popover {...{ id, key: `${label}_popover`, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 1 }}>
+      {open && <div className={classes.popoverRoot} style={{ width }}>
         <div className={classes.popoverContent}>{popover}</div>
         {popoverExtras && <div className={classes.popoverExtra}>{popoverExtras}</div>}
-      </div>
-    </Popover>}
+      </div>}
+    </Popover>
     <Tooltip arrow title={tooltip}>
       <Chip {...{ label, icon, onDelete, onClick,
-        size: 'small',
-        key: `${label}_popover_chip`,
-        variant: 'outlined'
-      }}
+          size: 'small',
+          key: `${label}_popover_chip`,
+          variant: 'outlined'
+        }}
+        aria-describedby={id}
       />
     </Tooltip>
   </>
