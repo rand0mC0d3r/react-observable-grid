@@ -66,7 +66,6 @@ const ObservableGrid =  ({
 
   const [indexedRows, setIndexedRows] = useState([])
   const [customFilteredRows, setCustomFilteredRows] = useState([])
-  const [externalFilteredRows, setExternalFilteredRows] = useState([])
   const [filteredRows, setFilteredRows] = useState([])
   const [sortedRows, setSortedRows] = useState([])
 
@@ -143,14 +142,6 @@ const ObservableGrid =  ({
     setInnerHeaders(headers.map(header => ({ ...header, selected: false, visible: header.visible || true })))
   }, [headers])
 
-
-
-
-
-
-
-
-
   useEffect(() => {
     setIndexedRows(isEmpty ? [] : () => rows.map((row, index) => ({ ...row, __origIndex: index })))
     setSelectedIndex(null)
@@ -166,16 +157,10 @@ const ObservableGrid =  ({
   setCustomFilteredRows(computeExtraFilter)
   }, [indexedRows, triggerSearch, headers])
 
-  useEffect(() => {
-    // console.log("initial passthru")
-    setExternalFilteredRows(customFilteredRows)
-  }, [customFilteredRows])
-
   // filter data by search with or without regex/case sensitive
   useEffect(() => {
-    console.log('triggerSearch', triggerSearch)
     searchColumns.length > 0
-      ? setFilteredRows(() => externalFilteredRows.filter(cr => searchColumns
+      ? setFilteredRows(() => customFilteredRows.filter(cr => searchColumns
         .filter(searchColumn => searchColumn?.term.length > 0
           ? searchColumn.isRegex
             ? searchByRegex(searchColumn, cr[searchColumn.key])
@@ -185,9 +170,9 @@ const ObservableGrid =  ({
           : true
         ).length === searchColumns.length
       ))
-      : setFilteredRows(() => externalFilteredRows)
+      : setFilteredRows(() => customFilteredRows)
     setSelectedIndex(null)
-  }, [externalFilteredRows, searchColumns])
+  }, [customFilteredRows, searchColumns])
 
   // sort data from column info
   useEffect(() => {
