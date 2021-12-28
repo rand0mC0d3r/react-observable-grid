@@ -17,11 +17,7 @@ import ObservableSnapshot from './ObservableSnapshot'
 
 const ObservableGrid =  ({
   headers,
-  rows = [],
-  uniqueId = Math.random().toString(36).substr(0, 8),
-  // keyPattern = () => { },
-  // onLoadMore,
-  // rowRenderer = () => { },
+  rows,
   className,
   rowOptions = {
     padding: '20px',
@@ -57,14 +53,11 @@ const ObservableGrid =  ({
   const [url, setUrl] = useState('')
   const [currentRow, setCurrentRow] = useState(-1)
   const [throttling, setThrottling] = useState(false)
-  const [isDirty, setIsDirty] = useState(false)
-  const [totalElements, setTotalElements] = useState(null)
   const [gridTemplateColumns, setGridTemplateColumns] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(-1)
 
   const [elementsRendered, setElementsRendered] = useState([0, 0])
 
-  const [indexedRows, setIndexedRows] = useState([])
   const [customFilteredRows, setCustomFilteredRows] = useState([])
   const [sortedRows, setSortedRows] = useState([])
   const [filteredRows, setFilteredRows] = useState([])
@@ -72,6 +65,7 @@ const ObservableGrid =  ({
   const [startEnd, setStartEnd] = useState({ start: -1, end: 1 })
   const [throttleLimit, setThrottleLimit] = useState(50)
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
+
 
   const debugItems = [
     { label: 'throttling', value: throttling },
@@ -130,35 +124,29 @@ const ObservableGrid =  ({
 
   const clearOnBlur = () => {
     if (isClearingOnBlur) {
-      setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: false })))
+      setInnerHeaders(() => innerHeaders.map(header => ({ ...header, selected: false })))
       setCurrentRow(null)
     }
   }
 
   useEffect(() => {
-    setInnerHeaders(headers.map(header => ({ ...header, selected: false, visible: header.visible || true })))
+    setInnerHeaders(() => headers.map(header => ({ ...header, selected: false, visible: header.visible || true })))
   }, [headers])
-
-  useEffect(() => {
-    setIndexedRows(() => rows.length === 0 ? [] : rows.map((row, index) => ({ ...row, __origIndex: index })))
-    setFilteredRows([])
-    setSelectedIndex(null)
-    console.log('0. indexing rows', rows.length)
-  }, [rows])
 
   useEffect(() => {
     const t0 = performance.now()
     const result = headers.filter(header => header.customFilter || header.extraFilters).reduce((acc, value) => {
       let result = acc
       if (value.customFilter) { result = value.customFilter(acc) }
-      if (value.extraFilters) { value.extraFilters.forEach(filter => { result = filter.func(result) })}
+      if (value.extraFilters) { value.extraFilters.forEach(filter => { result = filter.func(result) }) }
       return result
-    }, indexedRows)
+    }, rows)
     const t1 = performance.now()
-    setCustomFilteredRows(result)
-
-    console.log('1. custom filtering indexed rows', indexedRows.length, result.length, t1 - t0)
-  }, [indexedRows, headers])
+    setCustomFilteredRows(result.map((row, index) => ({ ...row, __origIndex: index })))
+    setFilteredRows([])
+    setSelectedIndex(null)
+    console.log('1. custom filtering indexed rows', rows.length, result.length, t1 - t0)
+  }, [rows, headers])
 
   const filterRows = (customFilteredRows, searchColumns) => {
     const sensitiveSearch = (sensitive, cr, key, term) => sensitive ? cr[key].includes(term) : cr[key].toLowerCase().includes(term.toLowerCase())
@@ -212,6 +200,7 @@ const ObservableGrid =  ({
   // }, [])
 
   useEffect(() => {
+    console.log("updating headers")
     if (!headers) return
     const gridTemplateString = headers.map(header => header.width).join(' ')
     setGridTemplateColumns(gridTemplateString)
@@ -244,7 +233,7 @@ const ObservableGrid =  ({
     {!isHeaderHidden && headers.length > 0 && innerHeaders.length > 0 && <ObservableHeader {...{
         options: headerOptions,
         rows: sortedRows,
-        setHeaders: setInnerHeaders,
+        setInnerHeaders,
         headers: innerHeaders,
         progress: Math.round(currentRow * 100 / sortedRows.length),
         gridTemplateColumns,
@@ -278,18 +267,17 @@ const ObservableGrid =  ({
       />)}
     </div>}
 
-    {sortedRows.length > 0 ? <>
-      {sortedRows && <ObservableContainer {...{ isScrollable, isAlternating, isGrid }}>
-        {(throttling && sortedRows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1) &&
-          <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
-        <ObservableRowList {...{ rows: sortedRows, setCurrentRow, currentRow, throttling, setSelectedIndex, rowOptions, gridTemplateColumns, selectedIndex, startEnd, pageSize, innerHeaders}} />
-        {throttling && rows.length > pageSize && pageSize * startEnd.end - 1 < rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
-        {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
-      </ObservableContainer>}
-      {/* {customActions !== undefined || (selectedIndex ? true : rows.length > pageSize && startEnd.end >= 2) && */}
-      <ObservableScrollTop {...{ filtered: sortedRows.length, total: rows.length, customActions, selectedIndex, isAtTop: rows.length > pageSize && startEnd.end >= 2 }} />
-        {/* } */}
-    </>
+    {sortedRows.length > 0
+      ? <>
+        {sortedRows && <ObservableContainer {...{ isScrollable, isAlternating, isGrid }}>
+          {(throttling && sortedRows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1) &&
+            <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
+          <ObservableRowList {...{ rows: sortedRows, setCurrentRow, currentRow, throttling, setSelectedIndex, rowOptions, gridTemplateColumns, selectedIndex, startEnd, pageSize, innerHeaders}} />
+          {throttling && rows.length > pageSize && pageSize * startEnd.end - 1 < rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
+          {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
+        </ObservableContainer>}
+        <ObservableScrollTop {...{ filtered: sortedRows.length, total: rows.length, customActions, selectedIndex, isAtTop: rows.length > pageSize && startEnd.end >= 2 }} />
+      </>
       : <ObservableEmpty>{emptyElement}</ObservableEmpty>}
 
     <ObservableProgress {...{currentRow, rowsLength: sortedRows.length, selectedIndex }} />

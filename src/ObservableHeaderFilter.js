@@ -16,7 +16,7 @@ const ObservableHeaderFilter = ({ label, icon, popover }) => {
   const onClose = () => { setAnchorEl(null) };
 
   return <>
-    {open && <Popover {...{ id, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 1}}>
+    {open && <Popover {...{ id, key: `${label}_popover`, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 1}}>
       <div className={classes.popoverRoot}>
         <div className={classes.popoverContent}>{popover}</div>
         <div className={classes.popoverExtra}>
@@ -24,7 +24,7 @@ const ObservableHeaderFilter = ({ label, icon, popover }) => {
         </div>
       </div>
     </Popover>}
-    <Chip {...{label, icon, size: 'small', onClick: handleClick, variant: 'outlined'}}/>
+    <Chip {...{label, icon, size: 'small', key: `${label}_popover_chip`, onClick: handleClick, variant: 'outlined'}}/>
   </>
 }
 

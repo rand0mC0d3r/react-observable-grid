@@ -1,9 +1,5 @@
 import { Checkbox, Popover, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import RoomIcon from '@material-ui/icons/Room';
-import SearchIcon from '@material-ui/icons/Search';
-import SpaceBarIcon from '@material-ui/icons/SpaceBar';
 import PropTypes from 'prop-types';
 import React, { cloneElement, useCallback, useEffect, useState } from 'react';
 import { ObservableHeaderItem } from '.';
@@ -18,7 +14,7 @@ const ObservableHeader = ({
   gridTemplateColumns,
   rows,
   headers = [],
-  setHeaders,
+  setInnerHeaders,
   options: { ascArrow, descArrow, padding },
   options,
   order,
@@ -38,7 +34,7 @@ const ObservableHeader = ({
   const handleClose = () => { setAnchorEl(null) };
   const evaluateOrderBy = ({ property, label }) => orderBy === (property || label?.toLowerCase())
   const toggleHeader = (property, label) => {
-    setHeaders(() => headers.map(header => {
+    setInnerHeaders(() => headers.map(header => {
       if (header.property === property) {
         return {
           ...header,
