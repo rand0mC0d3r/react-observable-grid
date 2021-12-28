@@ -66,7 +66,6 @@ const ObservableGrid =  ({
   const [throttleLimit, setThrottleLimit] = useState(50)
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
 
-
   const debugItems = [
     { label: 'throttling', value: throttling },
     { label: 'throttleLimit', value: throttleLimit },
@@ -134,57 +133,40 @@ const ObservableGrid =  ({
   }, [headers])
 
   useEffect(() => {
-    const t0 = performance.now()
-    const result = headers.filter(header => header.customFilter || header.extraFilters).reduce((acc, value) => {
+    setCustomFilteredRows(headers.filter(header => header.customFilter || header.extraFilters).reduce((acc, value) => {
       let result = acc
       if (value.customFilter) { result = value.customFilter(acc) }
       if (value.extraFilters) { value.extraFilters.forEach(filter => { result = filter.func(result) }) }
       return result
-    }, rows)
-    const t1 = performance.now()
-    setCustomFilteredRows(result.map((row, index) => ({ ...row, __origIndex: index })))
-    setFilteredRows([])
+    }, rows.map((row, index) => ({ ...row, __origIndex: index }))))
     setSelectedIndex(null)
-    console.log('1. custom filtering indexed rows', rows.length, result.length, t1 - t0)
+    console.log('setCustomFilteredRows')
   }, [rows, headers])
 
-  const filterRows = (customFilteredRows, searchColumns) => {
+  useEffect(() => {
     const sensitiveSearch = (sensitive, cr, key, term) => sensitive ? cr[key].includes(term) : cr[key].toLowerCase().includes(term.toLowerCase())
     const searchByRegex = (regex, property) => regex.test(property)
 
-    const t0 = performance.now()
-    const result = searchColumns.length > 0
+    setFilteredRows(searchColumns.length > 0
       ? customFilteredRows.filter(cr => searchColumns
         .filter(searchColumn => searchColumn?.term.length > 0
           ? searchColumn.isRegex
             ? searchByRegex(new RegExp(searchColumn.term, `${searchColumn.isSensitive ? '' : 'i'}`), cr[searchColumn.key])
             : sensitiveSearch(searchColumn.isSensitive, cr, searchColumn?.key, searchColumn?.term)
           : true).length === searchColumns.length)
-      : customFilteredRows
-    const t1 = performance.now()
+      : customFilteredRows)
+    console.log('setFilteredRows')
+  }, [customFilteredRows, searchColumns])
 
-    setFilteredRows(result)
-    setSelectedIndex(null)
-
-    console.log('2. filtering custom filtered rows', customFilteredRows.length, searchColumns, result.length, t1 - t0)
-  }
-
-  const sortRows = (orderBy, filteredRows, order) => {
+  useEffect(() => {
     const sortSort = (order, rows) => order === 'asc' ? naturalSort(rows).asc([r => r[orderBy]]) : naturalSort(rows).desc([r => r[orderBy]])
-
-    const t0 = performance.now()
     const orderedRows = orderBy === '' ? filteredRows.map((r, index) => ({ ...r, __index: index })) : sortSort(order, filteredRows).map((r, index) => ({ ...r, __index: index }))
-    const t1 = performance.now()
 
     setSortedRows(orderedRows)
     setStartEnd({ start: -1, end: 1 })
     setThrottling(orderedRows.length - 1 >= throttleLimit)
-
-    console.log('3. sorting rows', filteredRows.length, orderBy, order, t1 - t0)
-  }
-
-  useEffect(() => filterRows(customFilteredRows, searchColumns), [customFilteredRows, searchColumns])
-  useEffect(() => sortRows(orderBy, filteredRows, order), [filteredRows, order, orderBy])
+    console.log('setSortedRows')
+  }, [filteredRows, order, orderBy])
 
   // useEffect(() => {
   //   const interval = setInterval(() => {
@@ -200,7 +182,6 @@ const ObservableGrid =  ({
   // }, [])
 
   useEffect(() => {
-    console.log("updating headers")
     if (!headers) return
     const gridTemplateString = headers.map(header => header.width).join(' ')
     setGridTemplateColumns(gridTemplateString)
@@ -263,7 +244,6 @@ const ObservableGrid =  ({
     >
       {innerHeaders.map((innerHeader, i) => <div key={`${innerHeader.property}-${innerHeader.label}`}
         className={`${classes.observableColumn} ${isColumned && classes.observableColumnRight}`}
-        style={{ backgroundColor: i === innerHeaders.findIndex(header => header.selected) ? "#EEEEEE80" : ''}}
       />)}
     </div>}
 

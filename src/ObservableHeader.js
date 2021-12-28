@@ -125,10 +125,10 @@ const ObservableHeader = ({
       >
         {headers?.filter(header => header.visible).map(({
           noHightlight, align, label, suggestions, noSearch, icon, property, extension,
-          secondaryHeaders, preHeaders, selected, postHeaders, noSort, extraFilters,
+          secondaryHeaders, preHeaders, postHeaders, noSort, extraFilters,
         }) => <ObservableHeaderItem key={`${label}_${property}`} {...{
           extraFilters, noSearch, property, handleRequestSort, suggestions, rows,
-          onSelect, selected, extension, secondaryHeaders, handleSearchTerm,
+          onSelect, extension, secondaryHeaders, handleSearchTerm,
           order, options, orderBy, handleResetSort, preHeaders, icon, postHeaders,
           noSort, label, noHightlight, align }} />)}
       </div>

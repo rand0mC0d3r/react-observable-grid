@@ -31,7 +31,6 @@ const ObservableHeaderItem = ({
   postHeaders,
   handleRequestSort,
   extraFilters,
-  selected,
   handleResetSort,
   handleSearchTerm = () => { },
   options: {ascArrow, descArrow, padding },
@@ -158,6 +157,7 @@ const ObservableHeaderItem = ({
       display: 'flex',
       alignItems: 'center',
       flexWrap: 'nowrap',
+      gap: '8px',
       justifyContent: 'space-between',
       flexDirection: align === 'flex-end' ? 'row-reverse' : 'row',
     }}>
@@ -197,8 +197,15 @@ const ObservableHeaderItem = ({
         </div>)}
       </div>}
     </div>
-    <div id="filters-section" style={{ display: 'flex', gap: '4px', flexWrap: 'nowrap', alignItems: 'center', flexDirection: !align ? 'row' : 'row-reverse'}}>
-        {!noSearch && (selected || searchString !== '') && <ObservableHeaderFilter
+    <div style={{
+      display: 'flex',
+      gap: '4px',
+      flexWrap: 'wrap',
+      alignItems: 'center',
+      justifyContent: align !== 'flex-end' ? 'flex-end' : 'flex-start',
+      flexDirection: !align ? 'row' : 'row-reverse'
+    }}>
+        {!noSearch && <ObservableHeaderFilter
           key={`${property}_searchString`}
           width={'350px'}
           tooltip={`Search in column: ${label}${searchString.length > 0 ? ` | Search string: ${searchString}` : ''}`}
@@ -219,7 +226,7 @@ const ObservableHeaderItem = ({
             : undefined}
         />}
 
-        {rows.length > 0 && extraFilters?.map(extraFilter => <ObservableHeaderFilter
+        {extraFilters?.map(extraFilter => <ObservableHeaderFilter
           key={`${extraFilter.label}_${property}_extraFilter`}
           label={extraFilter.label}
           tooltip={extraFilter.tooltip}

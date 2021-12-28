@@ -10,12 +10,12 @@ const ObservableHeaderFilter = ({ width, label, icon, tooltip = "Filtering mecha
   const classes = useStyles(theme)
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  const id = open ? 'filters-section' : undefined;
+  const id = 'filters-section';
 
   const onClick = (event) => setAnchorEl(event.currentTarget);
   const onClose = () => setAnchorEl(null);
 
-  return <>
+  return <div id={id}>
     <Popover {...{ id, key: `${label}_popover`, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 1 }}>
       {open && <div className={classes.popoverRoot} style={{ width }}>
         <div className={classes.popoverContent}>{popover}</div>
@@ -31,7 +31,7 @@ const ObservableHeaderFilter = ({ width, label, icon, tooltip = "Filtering mecha
         aria-describedby={id}
       />
     </Tooltip>
-  </>
+  </div>
 }
 
 const useStyles = makeStyles(theme => ({

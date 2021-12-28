@@ -1,7 +1,9 @@
 import { makeStyles } from '@material-ui/core/styles'
-import React, { useState } from 'react'
+import throttle from 'lodash/throttle'
+import React, { useCallback } from 'react'
 import ObservableRow from './ObservableRow'
 import ObservableSnapshot from './ObservableSnapshot'
+
 
 const ObservableRowList = ({
   rows = [],
@@ -22,6 +24,8 @@ const ObservableRowList = ({
   isScrollable = true,
 }) => {
   const classes = useStyles()
+  const useThrottled = (callback, delay) => (useCallback(throttle((...args) => callback(...args), delay), [delay]))
+  const throttledLoadMore = useThrottled((index) => setCurrentRow(index), 250)
 
   const idValue = (index) => {
     let result = null
@@ -49,7 +53,9 @@ const ObservableRowList = ({
         }}
         className={`${isGrid ? classes.observableGrid : classes.observableRow} ${(isSelectable && selectedIndex === row.__origIndex) ? 'Row-isSelected' : ''}`}
         index={row.__index}
-        onMouseEnter={() => setCurrentRow(row.__index)}
+        onMouseEnter={() => {
+          throttledLoadMore(row.__index)
+        }}
         forceRender={!throttling}
         isRelevant={throttling
           ? row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize))
@@ -84,6 +90,5 @@ const useStyles = makeStyles(() => ({
     display: 'grid',
   },
 }))
-
 
 export default ObservableRowList

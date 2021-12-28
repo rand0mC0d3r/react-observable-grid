@@ -42,7 +42,7 @@ const App = () => {
       property: 'fullName',
       customFilter: (rows) => selectedAvatars.length > 0 ? rows.filter((row) => selectedAvatars?.some(sa => sa.fullName === row.fullName)) : rows,
       suggestions: () => Array.from(new Set(rows.map(row => row.fullName.split(" ")).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
-      width: 'minmax(175px, 1fr)',
+      width: 'minmax(200px, 1fr)',
       extraFilters: [
         {
           label: 'People',
@@ -232,6 +232,7 @@ const App = () => {
     const rowsGenerated = dataGenerator(count);
     setRows(() => rowsGenerated)
     const t1 = Date.now();
+    console.log('Rows generated in', Date.now() - t0, 'ms')
     setPerformance(Math.round(t1 - t0));
   }
 
@@ -330,12 +331,12 @@ const useStyles = makeStyles(() => ({
     // '& #Container-root > *': {
     //   borderBottom: '1px solid #CCC'
     // },
-    // '& #Container-root > *:hover': {
-    //   backgroundColor: '#e0f0ff88',
-    // },
-    // '& #Container-root > *:active': {
-    //   backgroundColor: '#e0f0ff88',
-    // },
+    '& #Container-root > *:hover': {
+      backgroundColor: '#e0f0ff88',
+    },
+    '& #Container-root > *:active': {
+      backgroundColor: '#e0f0ff88',
+    },
     '& #Container-root .Row-isSelected': {
       backgroundColor: 'red',
     }
