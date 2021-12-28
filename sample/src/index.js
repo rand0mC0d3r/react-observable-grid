@@ -10,5 +10,5 @@ ReactDOM.render(<StylesProvider>
 		<App />
 	</StylesProvider>, document.getElementById('root'));
 
-serviceWorkerRegistration.register();
+serviceWorkerRegistration.unregister();
 reportWebVitals();

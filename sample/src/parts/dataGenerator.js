@@ -1,4 +1,4 @@
-const currencies = ["USD","EUR","GBP","JPY","CAD","AUD","CHF","SEK","NZD"];
+const currencies = ["USD","EUR","GBP"];
 const colorList = ['pink','green','blue','deepblue','orange','purple','brown','grey','black','olive']
 const flavorsList = ['Chocolate','Vanilla','Strawberry','Mint','Coffee','Cinnamon','Peppermint','Lemon','Hazelnut','Coconut'].map((flavor, index) => ({
   id: index,
@@ -6,12 +6,13 @@ const flavorsList = ['Chocolate','Vanilla','Strawberry','Mint','Coffee','Cinnamo
   color: colorList[index % colorList.length],
 }))
 
+const randomSeed = Math.floor(Math.random() * 1500 + 1)
+
 export const dataGenerator = (count) => count === 0 ? [] : new Array(count).fill().map((_, i) => {
   const randomFlavors = flavorsList.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 10 + 2));
   const randomName = `${['Mary', 'John', 'Robert', 'Michael', 'William', 'David', 'Richard', 'Joseph', 'Thomas', 'Charles'][Math.floor(Math.random() * 10)]}`
   const randomSurname = `${['Williams', 'Johnson', 'Jones', 'Brown', 'Davis', 'Miller', 'Wilson', 'Moore', 'Taylor', 'Anderson'][Math.floor(Math.random() * 10)]}`
   const randomCurrency = currencies[Math.floor(Math.random() * currencies.length)]
-
   return {
     uuid: `uuid_${i}`,
     name: randomName,
@@ -50,7 +51,7 @@ export const dataGenerator = (count) => count === 0 ? [] : new Array(count).fill
     ][Math.floor(Math.random() * 10)]}`,
     tiles: randomFlavors,
     tilesHash: randomFlavors.map(({ name }) => name).sort().join(''),
-    price: `${i + 1}.0${Math.floor(Math.random() * 100)} ${randomCurrency}`,
+    price: `${Math.floor(Math.random() * randomSeed)} ${randomCurrency}`,
     currency: randomCurrency,
   }
 });

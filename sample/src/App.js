@@ -1,9 +1,10 @@
-import { Button, Chip, IconButton, Typography } from '@material-ui/core';
+import { Button, Chip, IconButton, Slider, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import SignalCellular3BarIcon from '@material-ui/icons/SignalCellular3Bar';
 import SubjectIcon from '@material-ui/icons/Subject';
 import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
 import { useEffect, useMemo, useState } from 'react';
@@ -26,6 +27,11 @@ const App = () => {
   const [asGrid, setAsGrid] = useState(false);
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
+
+  const [value, setValue] = useState([20,37]);
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const headers = [
     {
@@ -109,9 +115,24 @@ const App = () => {
       align: 'flex-end',
       extraFilters: [
         {
-          label: 'Selected',
+          label: 'Range',
+          icon: <SignalCellular3BarIcon />,
           func: (rows) => rows.filter((row) => selectedTiles.filter(st => row.tiles.some(t => t.id === st)).length === selectedTiles.length),
-          node: (rows) => <>{(rows.map(r => r.price * 1000).sort()).map(row => <>{row.price}</>)}</>
+          variable: value,
+          node: (rows) => {
+            const entries = rows.map(r => r.price.split(' ')[0] * 1000).sort((a, b) => a - b);
+            return <div style={{ display: 'flex', gap: '8px', alignItems: 'center'}}>
+              <Typography variant="caption" color="textSecondary">{Math.round(entries.slice(0, 1) / 1000)}</Typography>
+              <Slider
+                value={value}
+                min={Math.round(entries.slice(0, 1) / 1000)}
+                max={Math.round(entries.slice(-1) / 1000)}
+                onChange={handleChange}
+                aria-labelledby="continuous-slider"
+              />
+              <Typography variant="caption" color="textSecondary">{Math.round(entries.slice(-1) / 1000)}</Typography>
+            </div>
+          },
         }
       ],
       width: 'minmax(130px, 220px)',

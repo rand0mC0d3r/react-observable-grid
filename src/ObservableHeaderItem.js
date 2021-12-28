@@ -7,6 +7,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import TextFieldsIcon from '@material-ui/icons/TextFields';
 import PropTypes from 'prop-types';
 import React, { cloneElement, useCallback, useEffect, useState } from 'react';
+import ObservableHeaderFilter from './ObservableHeaderFilter';
 
 const defaultOptions = {
   ascArrow: '▲',
@@ -34,6 +35,7 @@ const ObservableHeaderItem = ({
   handleResetSort,
   extension,
   handleSearchTerm = () => { },
+  triggerReload,
   options: {ascArrow, descArrow, padding },
   onSelect,
   secondaryHeaders,
@@ -56,6 +58,10 @@ const ObservableHeaderItem = ({
     setSearchString(`${searchString}${term}`)
     handleSearchTerm({ key: property, term: `${searchString}${term}`, isRegex, isCaseSensitive })
   }
+
+  const callbackExtraFilters = useCallback((func) => {
+    return func(rows)
+  }, [rows])
 
   const handleClick = (event) => { setAnchorEl(event.currentTarget) };
   const handleClose = () => { setAnchorEl(null) };
@@ -257,8 +263,15 @@ const ObservableHeaderItem = ({
             } : undefined}
           />
         </Tooltip>}
-        {extraFilters?.map(extraFilter => <>
-          {extraFilter.label}
+
+        {rows.length > 0 && extraFilters?.map(extraFilter => <>
+          <ObservableHeaderFilter
+            key={extraFilter.label}
+            label={extraFilter.label}
+            variable={extraFilter.variable}
+            popover={extraFilter.node(rows)}
+            triggerReload={triggerReload}
+            icon={extraFilter.icon} />
         </>)}
         {extension && extension}
     </div>

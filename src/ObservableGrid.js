@@ -64,8 +64,9 @@ const ObservableGrid =  ({
 
   const [elementsRendered, setElementsRendered] = useState([0, 0])
 
-  const [externalRows, setExternalRows] = useState([])
-  const [cachedRows, setCachedRows] = useState([])
+  const [indexedRows, setIndexedRows] = useState([])
+  const [customFilteredRows, setCustomFilteredRows] = useState([])
+  const [externalFilteredRows, setExternalFilteredRows] = useState([])
   const [filteredRows, setFilteredRows] = useState([])
   const [sortedRows, setSortedRows] = useState([])
 
@@ -142,25 +143,38 @@ const ObservableGrid =  ({
     setInnerHeaders(headers.map(header => ({ ...header, selected: false, visible: header.visible || true })))
   }, [headers])
 
-  useEffect(() => {
-    setCachedRows(headers.filter(header => header.customFilter).reduce((acc, value) => value.customFilter(acc), externalRows))
-  }, [externalRows, triggerSearch, headers])
+
+
+
+
+
+
+
 
   useEffect(() => {
-    isEmpty
-      ? setExternalRows([])
-      : setExternalRows(() => rows.map((row, index) => ({ ...row, __origIndex: index })))
+    setIndexedRows(isEmpty ? [] : () => rows.map((row, index) => ({ ...row, __origIndex: index })))
     setSelectedIndex(null)
   }, [rows, isEmpty])
 
-  const searchByRegex = (searchColumn, property) => {
-    const regex = new RegExp(searchColumn.term, 'i')
-    return regex.test(property)
+  useEffect(() => {
+    setCustomFilteredRows(headers.filter(header => header.customFilter).reduce((acc, value) => value.customFilter(acc), indexedRows))
+  }, [indexedRows, triggerSearch, headers])
+
+  const triggerReload = () => {
+    // setInjectedRows()
+    externalFilteredRows.map()
+    console.log('reload requested')
   }
 
+
+  useEffect(() => {
+    setExternalFilteredRows(customFilteredRows)
+  }, [customFilteredRows])
+
+  // filter data by search with or without regex/case sensitive
   useEffect(() => {
     searchColumns.length > 0
-      ? setFilteredRows(() => cachedRows.filter(cr => searchColumns
+      ? setFilteredRows(() => externalFilteredRows.filter(cr => searchColumns
         .filter(searchColumn => searchColumn?.term.length > 0
           ? searchColumn.isRegex
             ? searchByRegex(searchColumn, cr[searchColumn.key])
@@ -170,10 +184,11 @@ const ObservableGrid =  ({
           : true
         ).length === searchColumns.length
       ))
-      : setFilteredRows(() => cachedRows)
+      : setFilteredRows(() => externalFilteredRows)
     setSelectedIndex(null)
-  }, [cachedRows, searchColumns])
+  }, [externalFilteredRows, searchColumns])
 
+  // sort data from column info
   useEffect(() => {
     function sortSort(order, rows) {
       return order === 'asc'
@@ -188,18 +203,23 @@ const ObservableGrid =  ({
     updateRenderedElements()
   }, [filteredRows, order, orderBy])
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const currentElements = Number(calculateTotalElements())
-      if(currentElements >= 1000) {
-        setThrottleLimit(throttleLimit - 1/10 * throttleLimit)
-        setThrottling(true)
-      }
-      updateRenderedElements()
-    }, 1500)
+  const searchByRegex = (searchColumn, property) => {
+    const regex = new RegExp(searchColumn.term, 'i')
+    return regex.test(property)
+  }
 
-    return () => clearInterval(interval)
-  }, [])
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     const currentElements = Number(calculateTotalElements())
+  //     if(currentElements >= 1000) {
+  //       setThrottleLimit(throttleLimit - 1/10 * throttleLimit)
+  //       setThrottling(true)
+  //     }
+  //     updateRenderedElements()
+  //   }, 1500)
+
+  //   return () => clearInterval(interval)
+  // }, [])
 
   useEffect(() => {
     if (!headers) return
@@ -224,11 +244,12 @@ const ObservableGrid =  ({
 
     {!isHeaderHidden && headers.length > 0 && innerHeaders.length > 0 && <ObservableHeader {...{
         options: headerOptions,
-        gridTemplateColumns,
         rows: sortedRows,
         setHeaders: setInnerHeaders,
         headers: innerHeaders,
         progress: Math.round(currentRow * 100 / sortedRows.length),
+        gridTemplateColumns,
+        triggerReload,
         order,
         orderBy,
         onSelect,
