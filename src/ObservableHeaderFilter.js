@@ -1,4 +1,4 @@
-import { Chip, InputAdornment, Popover, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Chip, Popover, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import FunctionsIcon from '@material-ui/icons/Functions';
@@ -8,6 +8,8 @@ import TextFieldsIcon from '@material-ui/icons/TextFields';
 import PropTypes from 'prop-types';
 import React, { cloneElement, useCallback, useEffect, useState } from 'react';
 
+const anchorOrigin = { vertical: 'bottom', horizontal: 'center' }
+const transformOrigin = { vertical: 'top', horizontal: 'center' }
 
 const ObservableHeaderFilter = ({
   label,
@@ -16,125 +18,49 @@ const ObservableHeaderFilter = ({
   popover,
 }) => {
   const theme = useTheme()
+  const classes = useStyles(theme)
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
   const handleClick = (event) => { setAnchorEl(event.currentTarget) };
-  const handleClose = () => { setAnchorEl(null) };
+  const onClose = () => { setAnchorEl(null) };
 
   return <>
-    {open && <Popover
-      id={id}
-      key={`${key}-popover`}
-      open={open}
-      elevation={1}
-      anchorEl={anchorEl}
-      onClose={handleClose}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'center',
-      }}
-    >
-      <div style={{
-        display: 'flex',
-        gap: '8px',
-        backgroundColor: theme.palette.background.paper,
-        borderRadius: '4px',
-        minWidth: '300px',
-        flexDirection: 'column',
-        border: `1px solid ${theme.palette.divider}`,
-      }}>
-        <div style={{
-          backgroundColor: theme.palette.background.default,
-          padding: '16px 16px',
-          borderBottom: `1px solid ${theme.palette.primary.main}`,
-        }}>
-          {popover}
-        </div>
-        <div style={{ display: 'flex', padding: '12px 16px', gap: '8px', flexWrap: 'wrap' }}>
+    {open && <Popover {...{id, open, anchorEl, anchorOrigin, transformOrigin, onClose}} key={`${key}-popover`} elevation={1}>
+      <div className={classes.popoverRoot}>
+        <div className={classes.popoverContent}>{popover}</div>
+        <div className={classes.popoverExtra}>
           <Typography variant="caption" color="textSecondary">Custom injected search element</Typography>
         </div>
       </div>
     </Popover>}
-    <Chip {...{label, icon}}
-      onClick={(e) => { handleClick(e) }}
-      size="small"
-      key={`${key}-chip`}
-      variant="outlined"
-    />
+    <Chip {...{label, icon, size: 'small', onClick: handleClick, key: `${key}-chip`, variant: 'outlined'}}/>
   </>
 }
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    width: '100%',
-  },
-  wrapper: {
-    display: 'grid',
-    fontSize: '12px',
-    minHeight: '56px',
-
-    alignItems: 'stretch',
-    gridColumnGap: '16px',
-    gridRowGap: '16px',
-
-    boxShadow: '0px 5px 3px -5px #00000029',
-    borderBottom: `1px solid ${theme.palette.divider}`,
-  },
-  arrowColor: {
-    color: theme.palette.primary.main
-  },
-  flexbox: {
+  popoverRoot: {
     display: 'flex',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: '4px'
-  },
-  miniFlexbox: {
-    gap: '2px',
-  },
-  maxiFlexbox: {
-    gap: '4px 12px',
-  },
-  secondaryHeaders: {
-    display: 'flex',
-    alignItems: 'center',
-    flexWrap: 'nowrap',
-    gap: '8px'
-  },
-  headersSelectable: {
-    // backgroundColor: 'red',
-  },
-  headersWrapper: {
-    // '&:hover': {
-      // backgroundColor: 'rgba(0,0,0,0.1)',
-    // },
-  },
-  headers: {
-    display: 'flex',
-    alignItems: 'center',
-    flexWrap: 'nowrap',
+    gap: '8px',
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: '4px',
+    minWidth: '300px',
     flexDirection: 'column',
-    position: 'relative',
-    alignSelf: 'stretch',
-    gap: theme.spacing(1),
-
-    margin: '0px -4px',
-    padding: '0px 4px',
-    alignSelf: 'center',
-    height: '100%',
-    justifyContent: 'center',
-
-
+    border: `1px solid ${theme.palette.divider}`,
   },
-  flipped: {
-    transform: 'rotate(180deg)'
-  }
+  popoverContent: {
+    backgroundColor: theme.palette.background.default,
+    padding: '16px 16px',
+    borderBottom: `1px solid ${theme.palette.primary.main}`,
+  },
+  popoverExtra: {
+    display: 'flex',
+    padding: '12px 16px',
+    gap: '8px',
+    flexWrap: 'wrap'
+  },
+
 }))
 
 
