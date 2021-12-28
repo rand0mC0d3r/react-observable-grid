@@ -154,6 +154,7 @@ const App = () => {
         {
           label: `${value[0]} - ${value[1]}`,
           icon: <SignalCellular3BarIcon />,
+          tooltip: 'Prices range',
           func: (rows) => rows.filter((row) => value[0] <= row.price.split(' ')[0] && row.price.split(' ')[0] <= value[1]),
           variable: value,
           node: () => {

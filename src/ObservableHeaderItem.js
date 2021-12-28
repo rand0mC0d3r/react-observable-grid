@@ -159,7 +159,7 @@ const ObservableHeaderItem = ({
       flexWrap: 'nowrap',
       justifyContent: 'space-between',
       flexDirection: align === 'flex-end' ? 'row-reverse' : 'row',
-  }}>
+    }}>
     <div
       key={`${label}_${property}`}
       id="Header-header"
@@ -198,8 +198,8 @@ const ObservableHeaderItem = ({
     </div>
     <div style={{ display: 'flex', gap: '4px', flexWrap: 'nowrap', alignItems: 'center', flexDirection: !align ? 'row' : 'row-reverse'}}>
         {!noSearch && (selected || searchString !== '') && <ObservableHeaderFilter
-        key={`${property}_searchString`}
-        width={'350px'}
+          key={`${property}_searchString`}
+          width={'350px'}
           tooltip={`Search in column: ${label}${searchString.length > 0 ? ` | Search string: ${searchString}` : ''}`}
           label={(searchString.length > 6 ? `${searchString.substring(0, 6)}...` : searchString) || <SearchIcon color="action" style={{ fontSize: '18px', marginTop: '3px' }} />}
           popover={<>{renderPopover()}</>}
@@ -220,6 +220,7 @@ const ObservableHeaderItem = ({
         {rows.length > 0 && extraFilters?.map(extraFilter => <ObservableHeaderFilter
           key={`${extraFilter.label}_${property}_extraFilter`}
           label={extraFilter.label}
+          tooltip={extraFilter.tooltip}
           popover={extraFilter.node(rows)}
           icon={extraFilter.icon}
         />)}

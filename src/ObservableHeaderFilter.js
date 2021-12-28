@@ -1,6 +1,6 @@
 import { Chip, Popover, Tooltip } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import React, { Fragment, useEffect, useState } from 'react';
+import React from 'react';
 
 const anchorOrigin = { vertical: 'bottom', horizontal: 'center' }
 const transformOrigin = { vertical: 'top', horizontal: 'center' }
@@ -8,28 +8,28 @@ const transformOrigin = { vertical: 'top', horizontal: 'center' }
 const ObservableHeaderFilter = ({ width, label, icon, tooltip = "Filtering mechanic", popover, popoverExtras, onDelete }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  const id = open ? `customFilter-popover-${label}` : undefined;
 
-  const handleClick = (event) => { setAnchorEl(event.currentTarget) };
-  const onClose = () => { setAnchorEl(null) };
+  const onClick = (event) => setAnchorEl(event.currentTarget);
+  const onClose = () => setAnchorEl(null);
 
-  useEffect(() => {
-    console.log('rendering popover')
-  }, [])
-
-  return <Fragment key={`${label}_popover_and_chip`}>
-    {open && <Popover {...{ id, key: `${label}_popover`, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 1}}>
+  return <>
+    {open && <Popover {...{ key: `${label}_popover`, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 1}}>
       <div className={classes.popoverRoot} style={{ width }}>
         <div className={classes.popoverContent}>{popover}</div>
         {popoverExtras && <div className={classes.popoverExtra}>{popoverExtras}</div>}
       </div>
     </Popover>}
     <Tooltip arrow title={tooltip}>
-      <Chip {...{label, icon, size: 'small', key: `${label}_popover_chip`, onDelete, onClick: handleClick, variant: 'outlined'}}/>
+      <Chip {...{ label, icon, onDelete, onClick,
+        size: 'small',
+        key: `${label}_popover_chip`,
+        variant: 'outlined'
+      }}
+      />
     </Tooltip>
-  </Fragment>
+  </>
 }
 
 const useStyles = makeStyles(theme => ({
