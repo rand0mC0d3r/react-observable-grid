@@ -12,11 +12,10 @@ import React, { cloneElement, useCallback, useEffect, useState } from 'react';
 const ObservableHeaderFilter = ({
   label,
   icon,
+  key,
   popover,
-  variable,
 }) => {
   const theme = useTheme()
-  const classes = useStyles(theme)
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
@@ -27,6 +26,7 @@ const ObservableHeaderFilter = ({
   return <>
     {open && <Popover
       id={id}
+      key={`${key}-popover`}
       open={open}
       elevation={1}
       anchorEl={anchorEl}
@@ -61,12 +61,12 @@ const ObservableHeaderFilter = ({
         </div>
       </div>
     </Popover>}
-
-      <Chip {...{label, icon}}
-        onClick={(e) => { handleClick(e) }}
-        size="small"
-        variant="outlined"
-      />
+    <Chip {...{label, icon}}
+      onClick={(e) => { handleClick(e) }}
+      size="small"
+      key={`${key}-chip`}
+      variant="outlined"
+    />
   </>
 }
 
