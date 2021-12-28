@@ -147,6 +147,7 @@ const App = () => {
     },
     {
       noSort: true,
+      property: 'actions',
       noSearch: true,
       onHover: (row) => <ActionsRow {...{ row }} />,
       row: (row) => <LastSeenRow {...{ row }} />,

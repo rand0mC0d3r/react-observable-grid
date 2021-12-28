@@ -187,7 +187,6 @@ const ObservableGrid =  ({
       : setSortedRows(() => sortSort(order, filteredRows).map((r, index) => ({ ...r, __index: index })))
     setStartEnd({ start: -1, end: 1 })
     setThrottling(filteredRows.length - 1 >= throttleLimit)
-    updateRenderedElements()
   }, [filteredRows, order, orderBy])
 
   const searchByRegex = (searchColumn, property) => {
@@ -218,8 +217,16 @@ const ObservableGrid =  ({
   }, [headers])
 
   useEffect(() => {
-    setUrl(`?orderBy=${orderBy}&order=${order}`)
-  }, [orderBy, order])
+    updateRenderedElements()
+    setUrl(`
+      ?orderBy=${orderBy}
+      &order=${order}
+      &selectedIndex=${selectedIndex}
+      &searchColumns=${JSON.stringify(searchColumns)}
+      &extraFilters=${JSON.stringify(innerHeaders.filter(ih => ih.extraFilters).map(ih => ({ label: ih.label, variable: ih.variable })))}
+      &visibleHeaders=${innerHeaders.filter(header => header.visible).map(header => header.property)}`)
+
+  }, [orderBy, order, innerHeaders, searchColumns, selectedIndex])
 
   useEffect(() => {
     const gridTemplateString = innerHeaders.filter(header => header.visible).map(header => header.width).join(' ')

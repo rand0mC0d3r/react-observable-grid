@@ -101,23 +101,27 @@ const ObservableHeaderItem = ({
             InputProps={{
               startAdornment: <InputAdornment position="start">🔍</InputAdornment>,
               endAdornment: <>
-                <TextFieldsIcon
-                  style={{cursor: 'pointer'}}
-                  onClick={() => {
-                    setIsCaseSensitive(!isCaseSensitive)
-                    handleSearchTerm({ key: property, term: searchString, isRegex, isCaseSensitive: !isCaseSensitive })
-                  }}
-                  color={isCaseSensitive ? 'primary' : 'disabled'}
-                />
+                <Tooltip title="Toggle case-sensitive aware search" arrow>
+                  <TextFieldsIcon
+                    style={{cursor: 'pointer'}}
+                    onClick={() => {
+                      setIsCaseSensitive(!isCaseSensitive)
+                      handleSearchTerm({ key: property, term: searchString, isRegex, isCaseSensitive: !isCaseSensitive })
+                    }}
+                    color={isCaseSensitive ? 'primary' : 'disabled'}
+                  />
+                </Tooltip>
 
-                <FunctionsIcon
-                  style={{cursor: 'pointer'}}
-                  onClick={() => {
-                    setIsRegex(!isRegex)
-                    handleSearchTerm({ key: property, term: searchString, isRegex: !isRegex, isCaseSensitive })
-                  }}
-                  color={isRegex ? 'primary' : 'disabled'}
-                />
+                <Tooltip title="Toggle regex aware search" arrow>
+                  <FunctionsIcon
+                    style={{cursor: 'pointer'}}
+                    onClick={() => {
+                      setIsRegex(!isRegex)
+                      handleSearchTerm({ key: property, term: searchString, isRegex: !isRegex, isCaseSensitive })
+                    }}
+                    color={isRegex ? 'primary' : 'disabled'}
+                  />
+                </Tooltip>
                 {searchString.length > 0 && <InputAdornment onClick={() => updateSearchString({ term: '' })} position="end"><DeleteOutlineIcon style={{cursor: 'pointer'}} /></InputAdornment>}
 
               </>,
