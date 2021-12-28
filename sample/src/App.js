@@ -114,7 +114,7 @@ const App = () => {
     },
     {
       label: 'Description',
-      suggestions: (rows) => Array.from(new Set(rows.map(row => row.description.split(" ")).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
+      suggestions: (rows) => Array.from(new Set(rows.map(row => row.description.split(" ")).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 20),
       icon: <SubjectIcon />,
       property: 'description',
       row: (row) => <DescriptionRow row={row} />,

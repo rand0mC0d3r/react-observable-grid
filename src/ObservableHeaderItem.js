@@ -88,9 +88,10 @@ const ObservableHeaderItem = ({
     id="outlined-basic" label="Search" variant="outlined"/>
 
   const renderPopoverExtras = () => !!suggestions
-    ? <div style={{ display: 'flex', padding: '12px 16px', gap: '8px', flexWrap: 'wrap' }}>
+    ? <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
         {suggestions(rows).map(suggestion => <Chip
           variant='outlined'
+          size="small"
           onClick={() => isRegex
             ? appendToSearchString({ term: suggestion })
             : updateSearchString({ term: suggestion })}
@@ -197,7 +198,8 @@ const ObservableHeaderItem = ({
     </div>
     <div style={{ display: 'flex', gap: '4px', flexWrap: 'nowrap', alignItems: 'center', flexDirection: !align ? 'row' : 'row-reverse'}}>
         {!noSearch && (selected || searchString !== '') && <ObservableHeaderFilter
-          key={`${property}_searchString`}
+        key={`${property}_searchString`}
+        width={'350px'}
           tooltip={`Search in column: ${label}${searchString.length > 0 ? ` | Search string: ${searchString}` : ''}`}
           label={(searchString.length > 6 ? `${searchString.substring(0, 6)}...` : searchString) || <SearchIcon color="action" style={{ fontSize: '18px', marginTop: '3px' }} />}
           popover={<>{renderPopover()}</>}

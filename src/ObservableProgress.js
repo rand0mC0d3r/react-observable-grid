@@ -9,22 +9,25 @@ const ObservableProgress =  ({ selectedIndex, currentRow, rowsLength }) => {
 
   const focusElement = () => document.getElementById('selected')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 
-  return <div className={classes.progress}>
-    <div style={{ position: 'relative' }}>
+  return <div className={classes.root}>
+    <div className={classes.container}>
       <div className={classes.totalProgress} />
-      <div className={classes.currentProgress} style={{ width: `${Math.round((currentRow + 1) * 100 / rowsLength)}%` }}></div>
+      <div className={classes.currentProgress} style={{ width: `${Math.round((currentRow + 1) * 100 / rowsLength)}%` }} />
       {selectedIndex && <Tooltip arrow title={`Scroll to row ${selectedIndex} ...`}>
-        <div onClick={focusElement} className={classes.selectionProgress} style={{ left: `${Math.round((selectedIndex + 1) * 100 / rowsLength)}%`}} />
+        <div onClick={focusElement} className={classes.selectionProgress} style={{ left: `${Math.round((selectedIndex + 1) * 100 / rowsLength)}%` }} />
       </Tooltip>}
     </div>
   </div>
 }
 
 const useStyles = makeStyles((theme) => ({
-  progress: {
+  root: {
     position: 'absolute',
     bottom: '0px',
     width: '100%',
+  },
+  container: {
+    position: 'relative'
   },
   selectionProgress: {
     position: 'absolute',
