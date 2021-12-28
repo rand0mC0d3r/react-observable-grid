@@ -67,7 +67,6 @@ const ObservableGrid =  ({
 
   const [indexedRows, setIndexedRows] = useState([])
   const [customFilteredRows, setCustomFilteredRows] = useState([])
-  const [filteredRows, setFilteredRows] = useState([])
   const [sortedRows, setSortedRows] = useState([])
 
   const [startEnd, setStartEnd] = useState({ start: -1, end: 1 })
@@ -158,41 +157,28 @@ const ObservableGrid =  ({
     }, indexedRows))
   }, [indexedRows, triggerSearch, headers])
 
-  // filter data by search with or without regex/case sensitive
   useEffect(() => {
-    searchColumns.length > 0
-      ? setFilteredRows(() => customFilteredRows.filter(cr => searchColumns
+    const sortSort = (order, rows) => order === 'asc' ? naturalSort(rows).asc([r => r[orderBy]]) : naturalSort(rows).desc([r => r[orderBy]])
+    const sensitiveSearch = (sensitive, cr, key, term) => sensitive ? cr[key].includes(term) : cr[key].toLowerCase().includes(term.toLowerCase())
+    const searchByRegex = (regex, property) => regex.test(property)
+    let result = customFilteredRows
+
+    if (searchColumns.length > 0) {
+      result =  customFilteredRows.filter(cr => searchColumns
         .filter(searchColumn => searchColumn?.term.length > 0
           ? searchColumn.isRegex
-            ? searchByRegex(searchColumn, cr[searchColumn.key])
-            : searchColumn.isCaseSensitive
-                ? cr[searchColumn.key].includes(searchColumn?.term)
-                : cr[searchColumn.key].toLowerCase().includes(searchColumn?.term.toLowerCase())
+            ? searchByRegex(new RegExp(searchColumn.term, `${searchColumn.isSensitive ? '' : 'i'}`), cr[searchColumn.key])
+            : sensitiveSearch(searchColumn.isSensitive, cr, searchColumn?.key, searchColumn?.term)
           : true
         ).length === searchColumns.length
-      ))
-      : setFilteredRows(() => customFilteredRows)
-    setSelectedIndex(null)
-  }, [customFilteredRows, searchColumns])
-
-  // sort data from column info
-  useEffect(() => {
-    function sortSort(order, rows) {
-      return order === 'asc'
-        ? naturalSort(rows).asc([r => r[orderBy]])
-        : naturalSort(rows).desc([r => r[orderBy]])
+      )
     }
-    orderBy === ''
-      ? setSortedRows(() => filteredRows.map((r, index) => ({ ...r, __index:  index })))
-      : setSortedRows(() => sortSort(order, filteredRows).map((r, index) => ({ ...r, __index: index })))
-    setStartEnd({ start: -1, end: 1 })
-    setThrottling(filteredRows.length - 1 >= throttleLimit)
-  }, [filteredRows, order, orderBy])
-
-  const searchByRegex = (searchColumn, property) => {
-    const regex = new RegExp(searchColumn.term, 'i')
-    return regex.test(property)
-  }
+    result = orderBy === ''
+      ? result.map((r, index) => ({ ...r, __index:  index }))
+      : sortSort(order, result).map((r, index) => ({ ...r, __index: index }))
+    setSortedRows(result)
+    setSelectedIndex(null)
+  }, [customFilteredRows, searchColumns,  order, orderBy])
 
   // useEffect(() => {
   //   const interval = setInterval(() => {
