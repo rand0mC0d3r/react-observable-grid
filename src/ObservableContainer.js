@@ -2,7 +2,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import React from 'react'
 
-const ObservableContainer = ({ children, isAlternating, isGrid, isScrollable }) => {
+const ObservableContainer = ({ children, isAlternating, isDirty = false, isGrid, isScrollable }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
 
@@ -11,6 +11,7 @@ const ObservableContainer = ({ children, isAlternating, isGrid, isScrollable }) 
       id="Container-root"
       className={[
         classes.container,
+        isDirty && classes.dirty,
         isGrid ? classes.grid : classes.anyItem,
         isAlternating && classes.alternatingItem,
         isScrollable && isGrid ? classes.isScrollableGrid : classes.isScrollable
@@ -25,6 +26,9 @@ const useStyles = makeStyles(theme => ({
     flex: '1 0 auto',
     position: 'relative',
     alignSelf: 'stretch',
+  },
+  dirty: {
+    filter: 'blur(2px) opacity(0.85)',
   },
   wrapperGrid: {
     flex: '1 0 auto',

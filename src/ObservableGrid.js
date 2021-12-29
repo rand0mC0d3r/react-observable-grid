@@ -248,15 +248,15 @@ const ObservableGrid =  ({
       />)}
     </div>}
 
-    {sortedRows.length > 0
+    {rows.length > 0
       ? <>
-        {sortedRows && <ObservableContainer {...{ isScrollable, isAlternating, isGrid }}>
+          <ObservableContainer {...{ isScrollable, isDirty: rows.length > 0 && sortedRows.length === 0, isAlternating, isGrid }}>
           {(throttling && sortedRows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1) &&
             <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
-          <ObservableRowList {...{ rows: sortedRows, setCurrentRow, currentRow, throttling, setSelectedIndex, rowOptions, gridTemplateColumns, selectedIndex, startEnd, pageSize, innerHeaders}} />
+          {sortedRows && <ObservableRowList {...{ rows: sortedRows, setCurrentRow, currentRow, throttling, setSelectedIndex, rowOptions, gridTemplateColumns, selectedIndex, startEnd, pageSize, innerHeaders}} />}
           {throttling && rows.length > pageSize && pageSize * startEnd.end - 1 < rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
           {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
-        </ObservableContainer>}
+        </ObservableContainer>
         <ObservableScrollTop {...{ filtered: sortedRows.length, total: rows.length, customActions, selectedIndex, isAtTop: rows.length > pageSize && startEnd.end >= 2 }} />
       </>
       : <ObservableEmpty>{emptyElement}</ObservableEmpty>}

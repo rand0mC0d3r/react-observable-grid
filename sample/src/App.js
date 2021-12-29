@@ -148,7 +148,7 @@ const App = () => {
       label: 'Price',
       icon: <MonetizationOnIcon />,
       property: 'price',
-      suggestions: () => Array.from(new Set(rows.map(row => row.currency).flat())),
+      suggestions: (data) => Array.from(new Set(data.map(row => row.currency).flat())),
       align: 'flex-end',
       extraFilters: [
         {
@@ -187,7 +187,7 @@ const App = () => {
     },
     {
       label: "Last Seen",
-      suggestions: () => Array.from(new Set(rows.map(row => row.lastSeen).flat())),
+      suggestions: (data) => Array.from(new Set(data.map(row => row.lastSeen).flat())),
       align: 'flex-end',
       property: 'lastSeen',
       // noSearch: true,
@@ -288,15 +288,21 @@ const App = () => {
       <div className={classes.containerWrapper}>
         <div className={classes.container}>
           {seeLive
-            ? <ObservableGrid {...{isDebugging, headers, canvasDrawing }}
-              uniqueId="fakeEntries"
-              rowOptions={{ padding: '8px 16px' }}
-              isColumned={isColumned}
-              headerOptions={{ padding: '16px 16px' }}
-              rows={rows}
-              isEmpty={rows.length === 0}
-              emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
-            />
+            ? <ObservableGrid {...{ isDebugging, headers: asGrid ? headersGrid : headers, canvasDrawing }}
+                uniqueId="fakeEntries"
+                isGrid={asGrid ? 4 : undefined}
+                isAlternating={asGrid ? false : true}
+                pageSize={asGrid ? 100 : 50}
+                isHeaderHidden={isHeaderHidden}
+                canvasDrawing={false}
+                isColumned={asGrid ? false : isColumned}
+                className={classes.observableGrid}
+                isClearingOnBlur={true}
+                rowOptions={{ padding: '8px 16px 8px 16px' }}
+                headerOptions={{ padding: '4px 16px 4px 16px' }}
+                rows={rows}
+                emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
+              />
             : <LocalObservableGrid {...{ isDebugging, headers: asGrid ? headersGrid : headers, canvasDrawing }}
                 uniqueId="fakeEntries"
                 isGrid={asGrid ? 4 : undefined}
