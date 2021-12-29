@@ -41,7 +41,7 @@ const App = () => {
       tooltip: "Filter users by name",
       property: 'fullName',
       customFilter: (rows) => selectedAvatars.length > 0 ? rows.filter((row) => selectedAvatars?.some(sa => sa.fullName === row.fullName)) : rows,
-      suggestions: () => Array.from(new Set(rows.map(row => row.fullName.split(" ")).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
+      suggestions: (data) => Array.from(new Set(data.map(row => row.fullName.split(" ")).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 20),
       width: 'minmax(200px, 1fr)',
       extraFilters: [
         {
@@ -108,13 +108,13 @@ const App = () => {
       label: 'Role',
       tooltip: "Filter users by role",
       property: 'role',
-      suggestions: () => Array.from(new Set(rows.map(row => row.role).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
+      suggestions: (data) => Array.from(new Set(data.map(row => row.role).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
       width: 'minmax(90px, 0.75fr)',
       row: (row) => <RoleRow {...{ role: row.role }} />,
     },
     {
       label: 'Description',
-      suggestions: () => Array.from(new Set(rows.map(row => row.description.split(" ")).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 20),
+      suggestions: (data) => Array.from(new Set(data.map(row => row.description.split(" ")).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 20),
       icon: <SubjectIcon />,
       property: 'description',
       row: (row) => <DescriptionRow row={row} />,
@@ -125,7 +125,7 @@ const App = () => {
       noSearch: true,
       icon: <DashboardIcon />,
       customFilter: (rows) => rows.filter((row) => selectedTiles.filter(st => row.tiles.some(t => t.id === st)).length === selectedTiles.length),
-      suggestions: (rows) => Array.from(new Set(rows.map(row => row.tiles.map(tile => tile.name)).flat())),
+      suggestions: (data) => Array.from(new Set(data.map(row => row.tiles.map(tile => tile.name)).flat())),
       property: 'tilesHash',
       width: 'minmax(100px, 2fr)',
       // extension: <>

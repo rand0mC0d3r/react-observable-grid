@@ -214,6 +214,7 @@ const ObservableGrid =  ({
     {!isHeaderHidden && headers.length > 0 && innerHeaders.length > 0 && <ObservableHeader {...{
         options: headerOptions,
         rows: sortedRows,
+        originalRows: rows,
         setInnerHeaders,
         headers: innerHeaders,
         progress: Math.round(currentRow * 100 / sortedRows.length),

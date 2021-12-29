@@ -13,6 +13,7 @@ const defaultOptions = {
 const ObservableHeader = ({
   gridTemplateColumns,
   rows,
+  originalRows,
   headers = [],
   setInnerHeaders,
   options: { ascArrow, descArrow, padding },
@@ -27,11 +28,13 @@ const ObservableHeader = ({
   const theme = useTheme()
   const classes = useStyles(theme)
   const [anchorEl, setAnchorEl] = useState(null);
+  const [liveData, setLiveData] = useState(false);
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
   const handleClick = (event) => { setAnchorEl(event.currentTarget) };
   const handleClose = () => { setAnchorEl(null) };
+  const handleChange = (event) => setLiveData((prev) => !prev)
   const evaluateOrderBy = ({ property, label }) => orderBy === (property || label?.toLowerCase())
   const toggleHeader = (property, label) => {
     setInnerHeaders(() => headers.map(header => {
@@ -128,8 +131,8 @@ const ObservableHeader = ({
           secondaryHeaders, preHeaders, postHeaders, noSort, extraFilters,
         }) => <ObservableHeaderItem key={`${label}_${property}`} {...{
           extraFilters, noSearch, property, handleRequestSort, suggestions, rows,
-          onSelect, extension, secondaryHeaders, handleSearchTerm,
-          order, options, orderBy, handleResetSort, preHeaders, icon, postHeaders,
+          onSelect, extension, secondaryHeaders, handleSearchTerm, checked: liveData, onChange: handleChange,
+          order, options, orderBy, handleResetSort, preHeaders, icon, postHeaders, originalRows,
           noSort, label, noHightlight, align }} />)}
       </div>
     </div>

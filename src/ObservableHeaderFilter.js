@@ -1,11 +1,13 @@
-import { Chip, Popover, Tooltip } from '@material-ui/core';
+import { Chip, Popover, Switch, Tooltip } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import ShortTextIcon from '@material-ui/icons/ShortText';
+import ViewHeadlineIcon from '@material-ui/icons/ViewHeadline';
 import React from 'react';
 
 const anchorOrigin = { vertical: 'bottom', horizontal: 'center' }
 const transformOrigin = { vertical: 'top', horizontal: 'center' }
 
-const ObservableHeaderFilter = ({ width, label, icon, tooltip = "Filtering mechanic", popover, popoverExtras, onDelete }) => {
+const ObservableHeaderFilter = ({ width, checked, onChange, label, icon, tooltip = "Filtering mechanic", popover, popoverExtras, onDelete }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -17,12 +19,26 @@ const ObservableHeaderFilter = ({ width, label, icon, tooltip = "Filtering mecha
   const onClose = () => setAnchorEl(null);
 
   return <div ref={divRef}>
-    <Popover {...{ id, className: classes.popover, key: `${label}_popover`, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 1 }}>
-      {open && <div className={classes.popoverRoot} style={{ width }}>
+    {open && <Popover {...{ id, className: classes.popover, key: `${label}_popover`, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 1 }}>
+      <div className={classes.root} style={{ width }}>
+        <div className={classes.toolbar}>
+          <div className={classes.menu} >
+            <ViewHeadlineIcon />
+            <Switch
+              checked={checked}
+              onChange={onChange}
+              name="checkedA"
+              color="primary"
+              size='small'
+              inputProps={{ 'aria-label': 'secondary checkbox' }}
+            />
+            <ShortTextIcon />
+          </div>
+        </div>
         <div className={classes.popoverContent}>{popover}</div>
         {popoverExtras && <div className={classes.popoverExtra}>{popoverExtras}</div>}
-      </div>}
-    </Popover>
+      </div>
+    </Popover>}
     <Tooltip arrow title={tooltip}>
       <Chip {...{ label, icon, onDelete, onClick,
           size: 'small',
@@ -42,7 +58,21 @@ const useStyles = makeStyles(theme => ({
       backdropFilter: 'blur(10px)',
     }
   },
-  popoverRoot: {
+  menu: {
+    display: 'flex',
+    gap: '4px',
+    alignItems: 'center',
+  },
+  toolbar: {
+    display: 'flex',
+    gap: '4px',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: theme.palette.divider,
+    flexDirection: 'row-reverse',
+    padding: '4px 16px'
+  },
+  root: {
     display: 'flex',
     borderRadius: '4px',
     minWidth: '300px',
