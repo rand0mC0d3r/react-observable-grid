@@ -25,7 +25,7 @@ const ObservableRowList = ({
 }) => {
   const classes = useStyles()
   const useThrottled = (callback, delay) => (useCallback(throttle((...args) => callback(...args), delay), [delay]))
-  const throttledLoadMore = useThrottled((index) => setCurrentRow(index), 250)
+  const throttledLoadMore = useThrottled((index) => setCurrentRow(index), 1000)
 
   const idValue = (index) => {
     let result = null
