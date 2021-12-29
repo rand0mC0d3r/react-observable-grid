@@ -96,4 +96,4 @@ const headers = [
 	emptyElement={<div>No data found ...</div>}
 	rowRenderer={row => <SampleRow {...{ row }} />}
 />
-					```
+```
