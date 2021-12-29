@@ -10,12 +10,13 @@ const ObservableHeaderFilter = ({ width, label, icon, tooltip = "Filtering mecha
   const classes = useStyles(theme)
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const divRef = React.useRef();
   const id = 'filters-section';
 
-  const onClick = (event) => setAnchorEl(event.currentTarget);
+  const onClick = () => setAnchorEl(divRef.current);
   const onClose = () => setAnchorEl(null);
 
-  return <div id={id}>
+  return <div ref={divRef}>
     <Popover {...{ id, key: `${label}_popover`, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 1 }}>
       {open && <div className={classes.popoverRoot} style={{ width }}>
         <div className={classes.popoverContent}>{popover}</div>
