@@ -48,8 +48,8 @@ const ObservableHeaderItem = ({
     handleSearchTerm({ key: property, term: term, isRegex, isCaseSensitive })}
 
   const appendToSearchString = ({ term }) => {
-    setSearchString(`${searchString}${term}`)
-    handleSearchTerm({ key: property, term: `${searchString}${term}`, isRegex, isCaseSensitive })}
+    setSearchString(`${searchString}|${term}`)
+    handleSearchTerm({ key: property, term: `${searchString}|${term}`, isRegex, isCaseSensitive })}
 
   const renderPopover = () => <TextField
     autoFocus

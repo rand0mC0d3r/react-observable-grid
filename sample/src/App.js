@@ -109,7 +109,7 @@ const App = () => {
       tooltip: "Filter users by role",
       property: 'role',
       suggestions: () => Array.from(new Set(rows.map(row => row.role).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
-      width: 'minmax(60px, 0.75fr)',
+      width: 'minmax(90px, 0.75fr)',
       row: (row) => <RoleRow {...{ role: row.role }} />,
     },
     {

@@ -17,7 +17,7 @@ const ObservableHeaderFilter = ({ width, label, icon, tooltip = "Filtering mecha
   const onClose = () => setAnchorEl(null);
 
   return <div ref={divRef}>
-    <Popover {...{ id, key: `${label}_popover`, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 1 }}>
+    <Popover {...{ id, className: classes.popover, key: `${label}_popover`, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 1 }}>
       {open && <div className={classes.popoverRoot} style={{ width }}>
         <div className={classes.popoverContent}>{popover}</div>
         {popoverExtras && <div className={classes.popoverExtra}>{popoverExtras}</div>}
@@ -36,9 +36,14 @@ const ObservableHeaderFilter = ({ width, label, icon, tooltip = "Filtering mecha
 }
 
 const useStyles = makeStyles(theme => ({
+  popover: {
+    '& .MuiPopover-paper': {
+      backgroundColor: '#FFFFFF88',
+      backdropFilter: 'blur(10px)',
+    }
+  },
   popoverRoot: {
     display: 'flex',
-    backgroundColor: theme.palette.background.paper,
     borderRadius: '4px',
     minWidth: '300px',
     flexDirection: 'column',
