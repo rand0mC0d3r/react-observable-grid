@@ -41,12 +41,12 @@ const ObservableRowList = ({
       : header.row
         ? header.row(row)
         : <Typography
-          style={{ wordBreak: 'break-all' }}
-          variant="body1"
-          color="textPrimary"
-        >
-          {typeof row[header.property] === 'string' ? row[header.property] : JSON.stringify(row[header.property])}
-        </Typography>
+            style={{ wordBreak: 'break-all' }}
+            variant="subtitle2"
+            color="textPrimary"
+          >
+            {typeof row[header.property] === 'string' ? row[header.property] : JSON.stringify(row[header.property])}
+          </Typography>
   }
 
   return (rows || [])

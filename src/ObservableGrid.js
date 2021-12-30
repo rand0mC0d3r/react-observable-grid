@@ -145,7 +145,7 @@ const ObservableGrid =  ({
       return result
     }, rows.map((row, index) => ({ ...row, __origIndex: index }))))
     setSelectedIndex(null)
-    console.log('setCustomFilteredRows')
+    // console.log('setCustomFilteredRows')
   }, [rows, headers])
 
   useEffect(() => {
@@ -160,7 +160,7 @@ const ObservableGrid =  ({
             : sensitiveSearch(searchColumn.isSensitive, cr, searchColumn?.key, searchColumn?.term)
           : true).length === searchColumns.length)
       : customFilteredRows)
-    console.log('setFilteredRows')
+    // console.log('setFilteredRows')
   }, [customFilteredRows, searchColumns])
 
   useEffect(() => {
@@ -170,7 +170,7 @@ const ObservableGrid =  ({
     setSortedRows(orderedRows)
     setStartEnd({ start: -1, end: 1 })
     setThrottling(orderedRows.length - 1 >= throttleLimit)
-    console.log('setSortedRows')
+    // console.log('setSortedRows')
   }, [filteredRows, order, orderBy])
 
   useEffect(() => {
@@ -186,14 +186,31 @@ const ObservableGrid =  ({
       setMissedColumns(missingColumns)
       const newHeaders =  [
         ...headers.filter(prev => !missingColumns.includes(prev.property)),
-        ...missingColumns.map(missingColumn => ({
-          label: missingColumn,
-          property: missingColumn,
-          suggestions: (data) => Array.from(new Set(data.map(row => row[missingColumn]).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
-          width: `minmax(${observedColumns.length * 10}px, 1fr)`
-        })),
+        ...missingColumns.map(missingColumn => {
+          let minMax = '0.85fr'
+          let averageLength = 0
+          rows.filter((r, i) => i < 10).forEach(r => {
+            if (typeof r[missingColumn] === 'string') {
+              return averageLength = (r[missingColumn].length + averageLength) / 2
+            }
+            return averageLength = (100 + averageLength) / 2
+          })
+          if (averageLength > 75) {
+            minMax = '3fr'
+          } else if (averageLength > 50) {
+            minMax = '2fr'
+          }
+
+          console.log(missingColumn, averageLength, minMax)
+          return {
+            label: missingColumn[0].toUpperCase() + missingColumn.substring(1),
+            property: missingColumn,
+            suggestions: (data) => Array.from(new Set(data.map(row => row[missingColumn]).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
+            width: `minmax(${observedColumns.length * 10}px, ${minMax})`
+          }
+        }),
       ]
-      console.log('set new headers')
+      // console.log('set new headers')
       setInnerHeaders(() => newHeaders.map(header => ({ ...header, selected: false, visible: header.visible || true })))
     } else {
       setInnerHeaders(() => headers.map(header => ({ ...header, selected: false, visible: header.visible || true })))
