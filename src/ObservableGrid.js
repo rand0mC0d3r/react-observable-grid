@@ -187,7 +187,7 @@ const ObservableGrid =  ({
       const newHeaders =  [
         ...headers.filter(prev => !missingColumns.includes(prev.property)),
         ...missingColumns.map(missingColumn => {
-          let minMax = '0.85fr'
+          let minMax = '1fr'
           let averageLength = 0
           rows.filter((r, i) => i < 10).forEach(r => {
             if (typeof r[missingColumn] === 'string') {
@@ -199,18 +199,17 @@ const ObservableGrid =  ({
             minMax = '3fr'
           } else if (averageLength > 50) {
             minMax = '2fr'
+          } else if (averageLength < 10) {
+            minMax = '0.5fr'
           }
-
-          console.log(missingColumn, averageLength, minMax)
           return {
             label: missingColumn[0].toUpperCase() + missingColumn.substring(1),
             property: missingColumn,
             suggestions: (data) => Array.from(new Set(data.map(row => row[missingColumn]).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
-            width: `minmax(${observedColumns.length * 10}px, ${minMax})`
+            width: `minmax(${observedColumns.length * 10 - 10}px, ${minMax})`
           }
         }),
       ]
-      // console.log('set new headers')
       setInnerHeaders(() => newHeaders.map(header => ({ ...header, selected: false, visible: header.visible || true })))
     } else {
       setInnerHeaders(() => headers.map(header => ({ ...header, selected: false, visible: header.visible || true })))
@@ -292,7 +291,7 @@ const ObservableGrid =  ({
         gridTemplateColumns: gridTemplateColumns
       }}
     >
-      {innerHeaders.map((innerHeader, i) => <div key={`${innerHeader.property}-${innerHeader.label}`}
+      {innerHeaders.filter(ih => ih.visible).map((innerHeader, i) => <div key={`${innerHeader.property}-${innerHeader.label}`}
         className={`${classes.observableColumn} ${isColumned && classes.observableColumnRight}`}
       />)}
     </div>}
