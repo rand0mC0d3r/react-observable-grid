@@ -67,9 +67,9 @@ const ObservableRowList = ({
           <React.Fragment key={`${header.property}_${header.label}_${header.tooltip}_${header.width}`}>
             {(!throttling && canvasDrawing && header.canCanvas)
               ? <ObservableSnapshot origIndex={row.__origIndex} index={row.__index} id={`${row.__origIndex}_${header.property}_${header.label}`}>
-                {row.__index === currentRow && header.onHover ? header.onHover(row) : header.row(row)}
+                {row.__index === currentRow && header.onHover ? header.onHover(row) : header.row ? header.row(row) : <div>empty</div>}
               </ObservableSnapshot>
-              : row.__index === currentRow && header.onHover ? header.onHover(row) : header.row(row)}
+              : row.__index === currentRow && header.onHover ? header.onHover(row) : header.row ? header.row(row) : <div>empty</div>}
           </React.Fragment>)}
       </ObservableRow>)
 }

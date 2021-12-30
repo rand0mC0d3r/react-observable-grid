@@ -21,6 +21,7 @@ const App = () => {
   const [selectedTiles, setSelectedTiles] = useState([]);
   const [selectedAvatars, setSelectedAvatars] = useState([]);
   const [isDebugging, setIsDebugging] = useState(false);
+  const [isDiscovering, setIsDiscovering] = useState(false);
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
   const [customHeader, setCustomHeader] = useState(false);
   const [canvasDrawing, setCanvasDrawing] = useState(false);
@@ -260,6 +261,7 @@ const App = () => {
         </div>
         <div className={`${classes.actions} ${classes.smallActions}`}>
           <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debug ${isDebugging ? 'ON' : 'OFF'}`} />
+          <Chip onClick={() => setIsDiscovering(!isDiscovering)} variant="outlined" label={`Discover ${isDiscovering ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsColumned(!isColumned)} variant="outlined" label={`Columns ${isColumned ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setCustomHeader(!customHeader)} variant="outlined" label={`Custom H ${customHeader ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsHeaderHidden(!isHeaderHidden)} variant="outlined" label={`Hide H ${isHeaderHidden ? 'ON' : 'OFF'}`} />
@@ -310,6 +312,7 @@ const App = () => {
                 pageSize={asGrid ? 100 : 50}
                 isHeaderHidden={isHeaderHidden}
                 canvasDrawing={false}
+                isDiscovering={isDiscovering}
                 isColumned={asGrid ? false : isColumned}
                 className={classes.observableGrid}
                 isClearingOnBlur={true}

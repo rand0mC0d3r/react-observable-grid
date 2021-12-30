@@ -41,6 +41,7 @@ const ObservableGrid =  ({
   isScrollable = true,
   isHeaderHidden = false,
   isAlternating = true,
+  isDiscovering = false,
 }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
@@ -48,12 +49,16 @@ const ObservableGrid =  ({
   const [searchColumns, setSearchColumns] = useState([])
   const [order, setOrder] = useState('asc')
 
+
+  const [completeHeaders, setCompleteHeaders] = useState([])
   const [innerHeaders, setInnerHeaders] = useState([])
+
   const [orderBy, setOrderBy] = useState('')
   const [url, setUrl] = useState('')
   const [currentRow, setCurrentRow] = useState(-1)
   const [throttling, setThrottling] = useState(false)
   const [gridTemplateColumns, setGridTemplateColumns] = useState('')
+  const [missedColumns, setMissedColumns] = useState([])
   const [selectedIndex, setSelectedIndex] = useState(-1)
 
   const [elementsRendered, setElementsRendered] = useState([0, 0])
@@ -128,9 +133,9 @@ const ObservableGrid =  ({
     }
   }
 
-  useEffect(() => {
-    setInnerHeaders(() => headers.map(header => ({ ...header, selected: false, visible: header.visible || true })))
-  }, [headers])
+  // useEffect(() => {
+  //   setInnerHeaders(() => headers.map(header => ({ ...header, selected: false, visible: header.visible || true })))
+  // }, [headers])
 
   useEffect(() => {
     setCustomFilteredRows(headers.filter(header => header.customFilter || header.extraFilters).reduce((acc, value) => {
@@ -168,6 +173,27 @@ const ObservableGrid =  ({
     console.log('setSortedRows')
   }, [filteredRows, order, orderBy])
 
+  useEffect(() => {
+    if (isDiscovering) {
+      const watchedHeaders = headers.map(header => ([
+        header.property,
+        ...header.secondaryHeaders?.map(sh => sh.property) || [],
+        ...header.preHeaders?.map(sh => sh.property) || [],
+        ...header.postHeaders?.map(sh => sh.property) || [],
+      ])).flat()
+      const missingColumns = Object.keys(rows[0]).filter(knownColumn => !watchedHeaders.includes(knownColumn))
+      setMissedColumns(missingColumns)
+      const newHeaders =  [
+          ...headers.filter(prev => !missingColumns.includes(prev.property)),
+          ...missingColumns.map(missingColumn => ({ label: missingColumn, property: missingColumn, width: "100px" })),
+      ]
+      console.log('set new headers')
+      setInnerHeaders(() => newHeaders.map(header => ({ ...header, selected: false, visible: header.visible || true })))
+    } else {
+      setInnerHeaders(() => headers.map(header => ({ ...header, selected: false, visible: header.visible || true })))
+    }
+  }, [rows, headers, isDiscovering])
+
   // useEffect(() => {
   //   const interval = setInterval(() => {
   //     const currentElements = Number(calculateTotalElements())
@@ -184,7 +210,7 @@ const ObservableGrid =  ({
   useEffect(() => {
     if (!headers) return
     const gridTemplateString = headers.map(header => header.width).join(' ')
-    setGridTemplateColumns(gridTemplateString)
+    // setGridTemplateColumns(gridTemplateString)
     if (gridTemplateString.indexOf('minmax') === -1) {
       console.error('Current grid-template-columns map contains no minmax(). Please use one otherwise the header will not be able to expand.')
     }
@@ -200,11 +226,14 @@ const ObservableGrid =  ({
       &selectedIndex=${selectedIndex}
       &searchColumns=${JSON.stringify(searchColumns)}
       &extraFilters=${JSON.stringify(innerHeaders.filter(ih => ih.extraFilters).map(ih => ({ label: ih.label, variable: JSON.stringify(ih.variable) })))}
-      &visibleHeaders=${innerHeaders.filter(header => header.visible).map(header => header.property)}`)
+      &visibleHeaders=${innerHeaders.filter(header => !!header.visible).map(header => header.property)}`)
   }, [orderBy, order, innerHeaders, searchColumns, selectedIndex, isDebugging])
 
   useEffect(() => {
+    console.log(innerHeaders)
     const gridTemplateString = innerHeaders.filter(header => header.visible).map(header => header.width).join(' ')
+    console.log(gridTemplateString)
+    debugger
     setGridTemplateColumns(gridTemplateString)
   }, [innerHeaders])
 
