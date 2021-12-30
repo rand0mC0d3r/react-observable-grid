@@ -228,6 +228,17 @@ const App = () => {
     },
   ]
 
+  const hiddenHeaders = [
+    {
+      property: 'uuid',
+      visible: false,
+    },
+    {
+      property: 'tilesHash',
+      visible: false,
+    }
+  ]
+
   const generateRows = (count) => {
     const t0 = Date.now()
     const rowsGenerated = dataGenerator(count);
@@ -305,7 +316,7 @@ const App = () => {
                 rows={rows}
                 emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
               />
-            : <LocalObservableGrid {...{ isDebugging, headers: asGrid ? headersGrid : [], canvasDrawing }}
+            : <LocalObservableGrid {...{ isDebugging, headers: asGrid ? headersGrid : (isDiscovering ? [] : headers), canvasDrawing }}
                 uniqueId="fakeEntries"
                 isGrid={asGrid ? 4 : undefined}
                 isAlternating={asGrid ? false : true}
