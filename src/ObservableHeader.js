@@ -2,7 +2,7 @@ import { Checkbox, Popover, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import React, { cloneElement, useCallback, useEffect, useState } from 'react';
-import { ObservableHeaderItem } from '.';
+import ObservableHeaderItem from './ObservableHeaderItem';
 
 const defaultOptions = {
   ascArrow: '▲',
