@@ -185,8 +185,13 @@ const ObservableGrid =  ({
       const missingColumns = observedColumns.filter(knownColumn => !watchedHeaders.includes(knownColumn))
       setMissedColumns(missingColumns)
       const newHeaders =  [
-          ...headers.filter(prev => !missingColumns.includes(prev.property)),
-          ...missingColumns.map(missingColumn => ({ label: missingColumn, property: missingColumn, width: `minmax(${observedColumns.length * 10}px, 1fr)` })),
+        ...headers.filter(prev => !missingColumns.includes(prev.property)),
+        ...missingColumns.map(missingColumn => ({
+          label: missingColumn,
+          property: missingColumn,
+          suggestions: (data) => Array.from(new Set(data.map(row => row[missingColumn]).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
+          width: `minmax(${observedColumns.length * 10}px, 1fr)`
+        })),
       ]
       console.log('set new headers')
       setInnerHeaders(() => newHeaders.map(header => ({ ...header, selected: false, visible: header.visible || true })))
