@@ -23,6 +23,7 @@ const App = () => {
   const [isDebugging, setIsDebugging] = useState(false);
   const [isDiscovering, setIsDiscovering] = useState(false);
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
+  const [noHeaders, setNoHeaders] = useState(false);
   const [customHeader, setCustomHeader] = useState(false);
   const [canvasDrawing, setCanvasDrawing] = useState(false);
   const [seeLive, setSeeLive] = useState(false);
@@ -273,6 +274,7 @@ const App = () => {
         <div className={`${classes.actions} ${classes.smallActions}`}>
           <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debug ${isDebugging ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsDiscovering(!isDiscovering)} variant="outlined" label={`Discover ${isDiscovering ? 'ON' : 'OFF'}`} />
+          <Chip onClick={() => setNoHeaders(!noHeaders)} variant="outlined" label={`Headers ${noHeaders ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsColumned(!isColumned)} variant="outlined" label={`Columns ${isColumned ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setCustomHeader(!customHeader)} variant="outlined" label={`Custom H ${customHeader ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsHeaderHidden(!isHeaderHidden)} variant="outlined" label={`Hide H ${isHeaderHidden ? 'ON' : 'OFF'}`} />
@@ -316,7 +318,12 @@ const App = () => {
                 rows={rows}
                 emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
               />
-            : <LocalObservableGrid {...{ isDebugging, headers: asGrid ? headersGrid : (isDiscovering ? [] : headers), canvasDrawing }}
+            : <>
+              {/* <LocalObservableGrid
+                className={classes.observableGrid}
+                rows={rows}
+              /> */}
+              <LocalObservableGrid {...{ isDebugging, headers: asGrid ? headersGrid : (noHeaders ? undefined : headers), canvasDrawing }}
                 uniqueId="fakeEntries"
                 isGrid={asGrid ? 4 : undefined}
                 isAlternating={asGrid ? false : true}
@@ -331,7 +338,8 @@ const App = () => {
                 headerOptions={{ padding: '4px 16px 4px 16px' }}
                 rows={rows}
                 emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
-              />}
+              />
+            </>}
           </div>
         </div>
       </div>

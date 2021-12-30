@@ -30,7 +30,7 @@ const ObservableGrid =  ({
   minRows = 25,
   canvasDrawing = false,
 
-  isColumned= false,
+  isColumned= true,
   isEmpty = false,
   isClearingOnBlur = true,
   // isInfinite = false,
@@ -52,7 +52,7 @@ const ObservableGrid =  ({
 
   const [completeHeaders, setCompleteHeaders] = useState([])
   const [innerHeaders, setInnerHeaders] = useState([])
-
+  const [discovering, setDiscovering] = useState(false)
   const [orderBy, setOrderBy] = useState('')
   const [url, setUrl] = useState('')
   const [currentRow, setCurrentRow] = useState(-1)
@@ -138,14 +138,14 @@ const ObservableGrid =  ({
   // }, [headers])
 
   useEffect(() => {
-    setCustomFilteredRows(headers.filter(header => header.customFilter || header.extraFilters).reduce((acc, value) => {
+    setCustomFilteredRows((headers || []).filter(header => header.customFilter || header.extraFilters).reduce((acc, value) => {
       let result = acc
       if (value.customFilter) { result = value.customFilter(acc) }
       if (value.extraFilters) { value.extraFilters.forEach(filter => { result = filter.func(result) }) }
       return result
     }, rows.map((row, index) => ({ ...row, __origIndex: index }))))
     setSelectedIndex(null)
-    // console.log('setCustomFilteredRows')
+    if (!headers) { setDiscovering(true) }
   }, [rows, headers])
 
   useEffect(() => {
@@ -174,8 +174,8 @@ const ObservableGrid =  ({
   }, [filteredRows, order, orderBy])
 
   useEffect(() => {
-    if (isDiscovering) {
-      const watchedHeaders = headers.map(header => ([
+    if (discovering || isDiscovering) {
+      const watchedHeaders = (headers || []).map(header => ([
         header.property,
         ...header.secondaryHeaders?.map(sh => sh.property) || [],
         ...header.preHeaders?.map(sh => sh.property) || [],
@@ -185,7 +185,7 @@ const ObservableGrid =  ({
       const missingColumns = observedColumns.filter(knownColumn => !watchedHeaders.includes(knownColumn))
       setMissedColumns(missingColumns)
       const newHeaders =  [
-        ...headers.filter(prev => !missingColumns.includes(prev.property)),
+        ...(headers || []).filter(prev => !missingColumns.includes(prev.property)),
         ...missingColumns.map(missingColumn => {
           let minMax = '1fr'
           let averageLength = 0
@@ -215,9 +215,9 @@ const ObservableGrid =  ({
       ]
       setInnerHeaders(() => newHeaders.map(header => ({ ...header, selected: false, visible: header.visible || true })))
     } else {
-      setInnerHeaders(() => headers.map(header => ({ ...header, selected: false, visible: header.visible || true })))
+      setInnerHeaders(() => (headers || []).map(header => ({ ...header, selected: false, visible: header.visible || true })))
     }
-  }, [rows, headers, isDiscovering])
+  }, [rows, headers, isDiscovering, discovering])
 
   // useEffect(() => {
   //   const interval = setInterval(() => {
@@ -235,7 +235,6 @@ const ObservableGrid =  ({
   useEffect(() => {
     if (!headers) return
     const gridTemplateString = headers.map(header => header.width).join(' ')
-    // setGridTemplateColumns(gridTemplateString)
     if (gridTemplateString.indexOf('minmax') === -1) {
       console.error('Current grid-template-columns map contains no minmax(). Please use one otherwise the header will not be able to expand.')
     }
@@ -294,7 +293,7 @@ const ObservableGrid =  ({
         gridTemplateColumns: gridTemplateColumns
       }}
     >
-      {innerHeaders.filter(ih => ih.visible).map((innerHeader, i) => <div key={`${innerHeader.property}-${innerHeader.label}`}
+      {innerHeaders.filter(ih => ih.visible).map((innerHeader, i) => <div key={`${innerHeader.property}-${innerHeader.label || ''}`}
         className={`${classes.observableColumn} ${isColumned && classes.observableColumnRight}`}
       />)}
     </div>}
