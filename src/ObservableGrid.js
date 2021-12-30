@@ -205,7 +205,10 @@ const ObservableGrid =  ({
           return {
             label: missingColumn[0].toUpperCase() + missingColumn.substring(1),
             property: missingColumn,
-            suggestions: (data) => Array.from(new Set(data.map(row => row[missingColumn]).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10),
+            noSearch: !rows.filter((d, i) => i < 10).map(row => row[missingColumn]).every(d => typeof d === 'string'),
+            suggestions: (data) => data.filter((d, i) => i < 10).map(row => row[missingColumn]).every(d => typeof d === 'string') || false
+              ? Array.from(new Set(data.map(row => row[missingColumn]).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10)
+              : [],
             width: `minmax(${observedColumns.length * 10 - 10}px, ${minMax})`
           }
         }),
