@@ -1,3 +1,4 @@
+import { Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import throttle from 'lodash/throttle'
 import React, { useCallback } from 'react'
@@ -34,6 +35,20 @@ const ObservableRowList = ({
     return result
   }
 
+  const renderRow = (row, currentRow, header) => {
+    return row.__index === currentRow && header.onHover
+      ? header.onHover(row)
+      : header.row
+        ? header.row(row)
+        : <Typography
+          style={{ wordBreak: 'break-all' }}
+          variant="body1"
+          color="textPrimary"
+        >
+          {typeof row[header.property] === 'string' ? row[header.property] : JSON.stringify(row[header.property])}
+        </Typography>
+  }
+
   return (rows || [])
       .filter(row => throttling
         ? row.__index <= (selectedIndex === null
@@ -67,9 +82,9 @@ const ObservableRowList = ({
           <React.Fragment key={`${header.property}_${header.label}_${header.tooltip}_${header.width}`}>
             {(!throttling && canvasDrawing && header.canCanvas)
               ? <ObservableSnapshot origIndex={row.__origIndex} index={row.__index} id={`${row.__origIndex}_${header.property}_${header.label}`}>
-                {row.__index === currentRow && header.onHover ? header.onHover(row) : header.row ? header.row(row) : <div>empty</div>}
+                {renderRow(row, currentRow, header)}
               </ObservableSnapshot>
-              : row.__index === currentRow && header.onHover ? header.onHover(row) : header.row ? header.row(row) : <div>empty</div>}
+              : renderRow(row, currentRow, header)}
           </React.Fragment>)}
       </ObservableRow>)
 }

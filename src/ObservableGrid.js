@@ -181,11 +181,12 @@ const ObservableGrid =  ({
         ...header.preHeaders?.map(sh => sh.property) || [],
         ...header.postHeaders?.map(sh => sh.property) || [],
       ])).flat()
-      const missingColumns = Object.keys(rows[0]).filter(knownColumn => !watchedHeaders.includes(knownColumn))
+      const observedColumns = Object.keys(rows[0])
+      const missingColumns = observedColumns.filter(knownColumn => !watchedHeaders.includes(knownColumn))
       setMissedColumns(missingColumns)
       const newHeaders =  [
           ...headers.filter(prev => !missingColumns.includes(prev.property)),
-          ...missingColumns.map(missingColumn => ({ label: missingColumn, property: missingColumn, width: "100px" })),
+          ...missingColumns.map(missingColumn => ({ label: missingColumn, property: missingColumn, width: `minmax(${observedColumns.length * 10}px, 1fr)` })),
       ]
       console.log('set new headers')
       setInnerHeaders(() => newHeaders.map(header => ({ ...header, selected: false, visible: header.visible || true })))
@@ -230,17 +231,14 @@ const ObservableGrid =  ({
   }, [orderBy, order, innerHeaders, searchColumns, selectedIndex, isDebugging])
 
   useEffect(() => {
-    console.log(innerHeaders)
     const gridTemplateString = innerHeaders.filter(header => header.visible).map(header => header.width).join(' ')
-    console.log(gridTemplateString)
-    debugger
     setGridTemplateColumns(gridTemplateString)
   }, [innerHeaders])
 
   return <div id="observable-grid" className={`${className} ${classes.root}`} onMouseLeave={clearOnBlur}>
     {isDebugging && <ObservableDebugging items={debugItems} />}
 
-    {!isHeaderHidden && headers.length > 0 && innerHeaders.length > 0 && <ObservableHeader {...{
+    {!isHeaderHidden && innerHeaders.length > 0 && <ObservableHeader {...{
         options: headerOptions,
         rows: sortedRows,
         originalRows: rows,

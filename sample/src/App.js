@@ -305,7 +305,7 @@ const App = () => {
                 rows={rows}
                 emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
               />
-            : <LocalObservableGrid {...{ isDebugging, headers: asGrid ? headersGrid : headers, canvasDrawing }}
+            : <LocalObservableGrid {...{ isDebugging, headers: asGrid ? headersGrid : [], canvasDrawing }}
                 uniqueId="fakeEntries"
                 isGrid={asGrid ? 4 : undefined}
                 isAlternating={asGrid ? false : true}
