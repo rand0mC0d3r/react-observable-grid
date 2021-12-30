@@ -62,11 +62,18 @@ const ObservableHeader = ({
         horizontal: 'center',
       }}
     >
-        <div>
-          {headers.map(header => <div key={`${header.property}_${header.label}`} style={{display: 'flex', alignItems: 'center', gap: '8px', padding: '4px 12px'}}>
+        <div style={{display: 'flex', flexDirection: 'column', gap: '2px', padding: '4px 12px'}}>
+          {headers.map(header => <div key={`${header.property}_${header.label}`} style={{display: 'flex', alignItems: 'center', gap: '2px', alignItems:'center'}}>
             <Checkbox color="primary" checked={header.visible} onChange={() => toggleHeader(header.property, header.label)}/>
             {header.icon}
-            <Typography color="textSecondary">{header.label} (property: {header.property})</Typography>
+            <Typography
+              style={{ lineHeight: '0px' }}
+              variant="caption"
+              onClick={() => toggleHeader(header.property, header.label)}
+              color="textSecondary"
+            >
+              {header.label} (property: {header.property})
+            </Typography>
           </div>)}
         </div>
     </Popover>}
