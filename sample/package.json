@@ -35,7 +35,7 @@
   },
   "scripts": {
     "prestart": "npm install",
-    "start": "npm cache clean --force && npm install && DISABLE_ESLINT_PLUGIN=true react-scripts start",
+    "start": "npm cache clean --force && npm install && react-scripts start",
     "update": "npx ncu -u",
     "serve": "serve -s build",
     "build": "react-scripts build",
