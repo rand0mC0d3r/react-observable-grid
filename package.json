@@ -55,7 +55,7 @@
     "start": "serve -s build",
     "build": "echo 'building'",
     "build.sample": "rm -rf ./build && cd sample && npm install && npx react-scripts build && mv ./build ../",
-    "build.lib": "rollup -c",
+    "build.lib": "rollup -c && cd dist && ls -al",
     "build.all": "concurrently \"npm run build.sample\" \"npm run build.lib\"",
     "test": "react-scripts test",
     "clone.component": "clear && mkdir -p ./sample/src/components/ && cp -r src/* sample/src/components/ && echo 'Synchronized'",

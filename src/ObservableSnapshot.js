@@ -1,5 +1,5 @@
 import domtoimage from 'dom-to-image'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 const ObservableSnapshot =  ({ id, index, origIndex, children }) => {
   const [snapshot, setSnapshot] = useState('')

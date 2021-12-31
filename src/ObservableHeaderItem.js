@@ -2,11 +2,9 @@ import { Chip, InputAdornment, TextField, Tooltip, Typography } from '@material-
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import FunctionsIcon from '@material-ui/icons/Functions';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
 import TextFieldsIcon from '@material-ui/icons/TextFields';
-import PropTypes from 'prop-types';
-import React, { cloneElement, useCallback, useEffect, useState } from 'react';
+import React, { cloneElement, useState } from 'react';
 import ObservableHeaderFilter from './ObservableHeaderFilter';
 
 const defaultOptions = {
