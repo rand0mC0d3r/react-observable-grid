@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
     alignSelf: 'stretch',
   },
   dirty: {
-    filter: 'blur(2px) opacity(0.85)',
+    filter: 'blur(2px) opacity(0.85) grayscale(0.75)',
   },
   wrapperGrid: {
     flex: '1 0 auto',
@@ -76,7 +76,7 @@ const useStyles = makeStyles(theme => ({
     }
   },
   isScrollable: {
-    overflow: 'visible scroll',
+    overflow: 'hidden scroll',
     position: 'absolute',
     width: '100%',
     height: '100%'

@@ -30,6 +30,7 @@ const ObservableGrid =  ({
   minRows = 25,
   canvasDrawing = false,
 
+  isOmittingColumns = [],
   isColumned= true,
   isEmpty = false,
   isClearingOnBlur = true,
@@ -56,6 +57,7 @@ const ObservableGrid =  ({
   const [orderBy, setOrderBy] = useState('')
   const [url, setUrl] = useState('')
   const [currentRow, setCurrentRow] = useState(-1)
+  const [isDirty, setIsDirty] = useState(false)
   const [throttling, setThrottling] = useState(false)
   const [gridTemplateColumns, setGridTemplateColumns] = useState('')
   const [missedColumns, setMissedColumns] = useState([])
@@ -133,10 +135,6 @@ const ObservableGrid =  ({
     }
   }
 
-  // useEffect(() => {
-  //   setInnerHeaders(() => headers.map(header => ({ ...header, selected: false, visible: header.visible || true })))
-  // }, [headers])
-
   useEffect(() => {
     setCustomFilteredRows((headers || []).filter(header => header.customFilter || header.extraFilters).reduce((acc, value) => {
       let result = acc
@@ -145,6 +143,7 @@ const ObservableGrid =  ({
       return result
     }, rows.map((row, index) => ({ ...row, __origIndex: index }))))
     setSelectedIndex(null)
+    setIsDirty(true)
     if (!headers) { setDiscovering(true) }
   }, [rows, headers])
 
@@ -160,7 +159,6 @@ const ObservableGrid =  ({
             : sensitiveSearch(searchColumn.isSensitive, cr, searchColumn?.key, searchColumn?.term)
           : true).length === searchColumns.length)
       : customFilteredRows)
-    // console.log('setFilteredRows')
   }, [customFilteredRows, searchColumns])
 
   useEffect(() => {
@@ -170,7 +168,7 @@ const ObservableGrid =  ({
     setSortedRows(orderedRows)
     setStartEnd({ start: -1, end: 1 })
     setThrottling(orderedRows.length - 1 >= throttleLimit)
-    // console.log('setSortedRows')
+    setIsDirty(false)
   }, [filteredRows, order, orderBy])
 
   useEffect(() => {
@@ -213,32 +211,11 @@ const ObservableGrid =  ({
           }
         }),
       ]
-      setInnerHeaders(() => newHeaders.map(header => ({ ...header, selected: false, visible: header.visible || true })))
+      setInnerHeaders(() => newHeaders.map(header => ({ ...header, selected: false, visible: header.visible || true })).filter(header => !isOmittingColumns.includes(header.property)))
     } else {
-      setInnerHeaders(() => (headers || []).map(header => ({ ...header, selected: false, visible: header.visible || true })))
+      setInnerHeaders(() => (headers || []).map(header => ({ ...header, selected: false, visible: header.visible || true })).filter(header => !isOmittingColumns.includes(header.property)))
     }
   }, [rows, headers, isDiscovering, discovering])
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     const currentElements = Number(calculateTotalElements())
-  //     if(currentElements >= 1000) {
-  //       setThrottleLimit(throttleLimit - 1/10 * throttleLimit)
-  //       setThrottling(true)
-  //     }
-  //     updateRenderedElements()
-  //   }, 1500)
-
-  //   return () => clearInterval(interval)
-  // }, [])
-
-  useEffect(() => {
-    if (!headers) return
-    const gridTemplateString = headers.map(header => header.width).join(' ')
-    if (gridTemplateString.indexOf('minmax') === -1) {
-      console.error('Current grid-template-columns map contains no minmax(). Please use one otherwise the header will not be able to expand.')
-    }
-  }, [headers])
 
   useEffect(() => {
     if (isDebugging) {
@@ -256,11 +233,13 @@ const ObservableGrid =  ({
   useEffect(() => {
     const gridTemplateString = innerHeaders.filter(header => header.visible).map(header => header.width).join(' ')
     setGridTemplateColumns(gridTemplateString)
+    if (gridTemplateString.indexOf('minmax') === -1) {
+      console.error('Current grid-template-columns map contains no minmax(). Please use one otherwise the header will not be able to expand.')
+    }
   }, [innerHeaders])
 
   return <div id="observable-grid" className={`${className} ${classes.root}`} onMouseLeave={clearOnBlur}>
     {isDebugging && <ObservableDebugging items={debugItems} />}
-
     {!isHeaderHidden && innerHeaders.length > 0 && <ObservableHeader {...{
         options: headerOptions,
         rows: sortedRows,
@@ -300,7 +279,7 @@ const ObservableGrid =  ({
 
     {rows.length > 0
       ? <>
-          <ObservableContainer {...{ isScrollable, isDirty: rows.length > 0 && sortedRows.length === 0, isAlternating, isGrid }}>
+          <ObservableContainer {...{ isScrollable, isDirty, isAlternating, isGrid }}>
           {(throttling && sortedRows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1) &&
             <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
           {sortedRows && <ObservableRowList {...{ rows: sortedRows, setCurrentRow, currentRow, throttling, setSelectedIndex, rowOptions, gridTemplateColumns, selectedIndex, startEnd, pageSize, innerHeaders}} />}

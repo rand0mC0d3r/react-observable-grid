@@ -325,6 +325,7 @@ const App = () => {
               /> */}
               <LocalObservableGrid {...{ isDebugging, headers: asGrid ? headersGrid : (noHeaders ? undefined : headers), canvasDrawing }}
                 uniqueId="fakeEntries"
+                isOmittingColumns={['uuid', 'tilesHash']}
                 isGrid={asGrid ? 4 : undefined}
                 isAlternating={asGrid ? false : true}
                 pageSize={asGrid ? 100 : 50}
