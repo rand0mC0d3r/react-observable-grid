@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
     alignSelf: 'stretch',
   },
   dirty: {
-    filter: 'blur(2px) opacity(0.85) grayscale(0.75)',
+    filter: 'opacity(0.45) grayscale(0.85)',
   },
   wrapperGrid: {
     flex: '1 0 auto',

@@ -229,24 +229,8 @@ const App = () => {
     },
   ]
 
-  const hiddenHeaders = [
-    {
-      property: 'uuid',
-      visible: false,
-    },
-    {
-      property: 'tilesHash',
-      visible: false,
-    }
-  ]
-
   const generateRows = (count) => {
-    const t0 = Date.now()
-    const rowsGenerated = dataGenerator(count);
-    setRows(() => rowsGenerated)
-    const t1 = Date.now();
-    console.log('Rows generated in', Date.now() - t0, 'ms')
-    setPerformance(Math.round(t1 - t0));
+    setRows(dataGenerator(count));
   }
 
   useEffect(() => {
