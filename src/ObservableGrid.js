@@ -145,14 +145,13 @@ const ObservableGrid =  ({
 
   useEffect(() => {
     if (discovering || isDiscovering) {
-      const watchedHeaders = (headers || []).map(header => ([
+      const watchedHeaders = headers?.map(header => ([
         header.property,
         ...header.secondaryHeaders?.map(sh => sh.property) || [],
         ...header.preHeaders?.map(sh => sh.property) || [],
         ...header.postHeaders?.map(sh => sh.property) || [],
-      ])).flat()
-      const observedColumns = Object.keys(rows[0])
-      const missingColumns = observedColumns.filter(knownColumn => !watchedHeaders.includes(knownColumn))
+      ])).flat() || []
+      const missingColumns = Object.keys(rows[0]).filter(knownColumn => !watchedHeaders.includes(knownColumn))
       const newHeaders =  [
         ...(headers || []).filter(prev => !missingColumns.includes(prev.property)),
         ...missingColumns.map(missingColumn => {
@@ -172,7 +171,7 @@ const ObservableGrid =  ({
             suggestions: (data) => data.filter((d, i) => i < 10).map(row => row[missingColumn]).every(d => typeof d === 'string') || false
               ? Array.from(new Set(data.map(row => row[missingColumn]).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 10)
               : [],
-            width: `minmax(${observedColumns.length * 10 - 10}px, ${minMax})`
+            width: `minmax(${Object.keys(rows[0]).length * 10 - 10}px, ${minMax})`
           }
         }),
       ]
