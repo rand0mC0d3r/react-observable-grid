@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     width: '8px',
     height: '8px',
     backgroundColor: theme.palette.primary.light,
-    border: '1px solid #FFF',
+    border: `1px solid ${theme.palette.divider}`,
     borderTop: '0px none',
     borderBottom: '0px none',
 
