@@ -95,17 +95,14 @@ const ObservableGrid =  ({
   }
 
   useEffect(() => {
+    const extractFilter = (headers) => [
+      ...headers.filter(h => h.customFilter).map(h => ({ filter: h.customFilter })),
+      ...headers.filter(h => h.extraFilters).reduce((acc, h) => [...acc, ...h.extraFilters.map(f => ({ filter: f.func }))], [])
+    ]
+
     setIsDirty(() => true)
     const indexedRows = rows.map((row, index) => ({ ...row, __origIndex: index }))
-    headers.length > 0
-      ? setCustomFilteredRows(() => headers.filter(header => header.customFilter || header.extraFilters).reduce((acc, value) => {
-          let result = acc
-          if (value.customFilter) { result = value.customFilter(acc) }
-          if (value.extraFilters) { value.extraFilters.forEach(filter => { result = filter.func(result) }) }
-          return result
-        }, indexedRows))
-      : setCustomFilteredRows(() => indexedRows)
-
+    setCustomFilteredRows(() => headers.length > 0 ? extractFilter(headers).reduce((acc, value) => value.filter(acc), indexedRows) : indexedRows)
     setSelectedIndex(() => null)
     if (!headers) { setDiscovering(() => true) }
   }, [rows, headers])
@@ -189,7 +186,7 @@ const ObservableGrid =  ({
 
   useEffect(() => setGridTemplateColumns(innerHeaders.filter(header => header.visible).map(header => header.width).join(' ')), [innerHeaders])
 
-  return <div id="observable-grid" className={classes.root} onMouseLeave={clearOnBlur}>
+  return <div id="observable-grid" className={`${className} ${classes.root}`} onMouseLeave={clearOnBlur}>
     {!isHeaderHidden && innerHeaders.length > 0 && <ObservableHeader {...{
         options: headerOptions,
         rows: sortedRows,
