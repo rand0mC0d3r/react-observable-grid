@@ -94,6 +94,20 @@ const ObservableGrid =  ({
     }
   }
 
+    const determineAverageOfContent = (rows, column) => {
+      let averageLength = 0
+      rows.filter((_, i) => i * 2 < 10).forEach(r => typeof r[column] === 'string'
+        ? averageLength = (r[column].length + averageLength) / 2
+        : averageLength = (100 + averageLength) / 2
+      )
+      return averageLength
+    }
+    const extractHeaderKeys = (headers) => headers?.map(header => ([
+        header.property,
+        ...header.secondaryHeaders?.map(sh => sh.property) || [],
+        ...header.preHeaders?.map(sh => sh.property) || [],
+        ...header.postHeaders?.map(sh => sh.property) || [],
+      ])).flat() || []
     const extractCustomFilters = (headers) => headers.filter(h => h.customFilter).map(h => ({ filter: h.customFilter }))
     const extractExtraFilters = (headers) => headers.filter(h => h.extraFilters).reduce((acc, h) => [...acc, ...h.extraFilters.map(f => ({ filter: f.func }))], [])
     const extractFilter = (headers) => [ ...extractCustomFilters(headers), ...extractExtraFilters(headers)]
@@ -119,22 +133,18 @@ const ObservableGrid =  ({
   useEffect(() => {
     console.log('4. useEffect', rows, headers, isDiscovering, discovering)
     if (discovering || isDiscovering) {
-      const watchedHeaders = headers?.map(header => ([
-        header.property,
-        ...header.secondaryHeaders?.map(sh => sh.property) || [],
-        ...header.preHeaders?.map(sh => sh.property) || [],
-        ...header.postHeaders?.map(sh => sh.property) || [],
-      ])).flat() || []
+      const watchedHeaders = extractHeaderKeys(headers)
       const missingColumns = Object.keys(rows[0]).filter(knownColumn => !watchedHeaders.includes(knownColumn))
       const newHeaders =  [
         ...(headers || []).filter(prev => !missingColumns.includes(prev.property)),
         ...missingColumns.map(missingColumn => {
           let minMax = '1fr'
-          let averageLength = 0
-          rows.filter((_, i) => i < 10).forEach(r => typeof r[missingColumn] === 'string'
-            ? averageLength = (r[missingColumn].length + averageLength) / 2
-            : averageLength = (100 + averageLength) / 2
-          )
+          const averageLength = determineAverageOfContent(rows, column)
+          // let averageLength = 0
+          // rows.filter((_, i) => i < 10).forEach(r => typeof r[missingColumn] === 'string'
+          //   ? averageLength = (r[missingColumn].length + averageLength) / 2
+          //   : averageLength = (100 + averageLength) / 2
+          // )
           if (averageLength > 75) { minMax = '3fr' }
           else if (averageLength > 50) { minMax = '2fr' }
           else if (averageLength < 10) { minMax = '0.5fr' }
