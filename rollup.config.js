@@ -1,9 +1,8 @@
-import babel from 'rollup-plugin-babel'
+import babel from '@rollup/plugin-babel'
+import commonjs from '@rollup/plugin-commonjs'
 import resolve from '@rollup/plugin-node-resolve'
 import external from 'rollup-plugin-peer-deps-external'
-import commonjs from '@rollup/plugin-commonjs'
 import { terser } from 'rollup-plugin-terser'
-import generateDeclarations from 'rollup-plugin-generate-declarations'
 
 export default [
   {
@@ -23,12 +22,12 @@ export default [
       babel({
         exclude: 'node_modules/**',
         presets: ['@babel/preset-react'],
+        babelHelpers: 'bundled',
       }),
       resolve(),
       commonjs(),
       external(),
-      generateDeclarations(),
-      terser({ numWorkers: 4 }),
+      terser({ numWorkers: 2 }),
     ],
   },
 ]

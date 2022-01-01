@@ -9,6 +9,7 @@
     "@babel/core": "^7.14.6",
     "@babel/preset-env": "^7.14.5",
     "@babel/preset-react": "^7.14.5",
+    "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^19.0.1",
     "@rollup/plugin-node-resolve": "^13.0.2",
     "babel-loader": "^8.2.2",
@@ -18,7 +19,6 @@
     "nodemon": "^2.0.15",
     "npm-check-updates": "12.0.2",
     "rollup": "^2.53.3",
-    "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-generate-declarations": "^1.1.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-terser": "^7.0.2"
