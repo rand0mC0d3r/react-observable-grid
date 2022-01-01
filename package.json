@@ -12,10 +12,10 @@
     "@rollup/plugin-commonjs": "^19.0.1",
     "@rollup/plugin-node-resolve": "^13.0.2",
     "babel-loader": "^8.2.2",
-    "chokidar-cli": "^3.0.0",
     "concurrently": "^6.4.0",
     "copy-and-watch": "^0.1.6",
     "eslint-plugin-mui-unused-classes": "^1.0.3",
+    "nodemon": "^2.0.15",
     "npm-check-updates": "12.0.2",
     "rollup": "^2.53.3",
     "rollup-plugin-babel": "^4.4.0",
@@ -63,7 +63,7 @@
     "copy.component": "npm run clone.component && copy-and-watch dist/* sample/src/components/ --watch",
     "tag": "npm run build.all && git commit -am 'built next version' && npm version patch && git push && git push --tags && npm publish",
     "ship": "npm run build.sample && git commit -am 'built sample project' && git push",
-    "build.watch": "chokidar \"src/**/*.js\" -c \"npm run clone.component\""
+    "build.watch": "nodemon --watch \"src/**/*.js\" --exec \"npm run clone.component\""
   },
   "eslintConfig": {
     "extends": "react-app"
