@@ -94,13 +94,20 @@ const ObservableGrid =  ({
     }
   }
 
-  useEffect(() => {
-    const extractFilter = (headers) => [
-      ...headers.filter(h => h.customFilter).map(h => ({ filter: h.customFilter })),
-      ...headers.filter(h => h.extraFilters).reduce((acc, h) => [...acc, ...h.extraFilters.map(f => ({ filter: f.func }))], [])
-    ]
-    const indexedRows = rows.map((row, index) => ({ ...row, __origIndex: index }))
+    const extractCustomFilters = (headers) => headers.filter(h => h.customFilter).map(h => ({ filter: h.customFilter }))
+    const extractExtraFilters = (headers) => headers.filter(h => h.extraFilters).reduce((acc, h) => [...acc, ...h.extraFilters.map(f => ({ filter: f.func }))], [])
+    const extractFilter = (headers) => [ ...extractCustomFilters(headers), ...extractExtraFilters(headers)]
+    const indexRows = (rows) => rows.map((row, index) => ({ ...row, __origIndex: index }))
+    const sensitiveSearch = (sensitive, cr, key, term) => sensitive ? cr[key].includes(term) : cr[key].toLowerCase().includes(term.toLowerCase())
+    const searchByRegex = (regex, property) => regex.test(property)
+    const createRegex = (term, isCaseSensitive) => new RegExp(term, isCaseSensitive ? '' : 'i')
+    const filterRows = (rows, searchColumns) => rows.filter(cr => (searchColumns.filter(({ term, isRegex, isSensitive, key }) => term.length > 0
+      ? isRegex ? searchByRegex(createRegex(term, isSensitive), cr[key]) : sensitiveSearch(isSensitive, cr, key, term)
+      : true
+    )).length === searchColumns.length)
 
+  useEffect(() => {
+    const indexedRows = indexRows(rows)
     setIsDirty(() => true)
     setCustomFilteredRows(() => headers.length > 0 ? extractFilter(headers).reduce((acc, value) => value.filter(acc), indexedRows) : indexedRows)
     setSelectedIndex(() => null)
@@ -147,14 +154,6 @@ const ObservableGrid =  ({
   }, [rows, headers, isDiscovering, discovering])
 
   useEffect(() => {
-    const sensitiveSearch = (sensitive, cr, key, term) => sensitive ? cr[key].includes(term) : cr[key].toLowerCase().includes(term.toLowerCase())
-    const searchByRegex = (regex, property) => regex.test(property)
-    const createRegex = (term, isCaseSensitive) => new RegExp(term, isCaseSensitive ? '' : 'i')
-    const filterRows = (rows, searchColumns) => rows.filter(cr => (searchColumns.filter(({ term, isRegex, isSensitive, key }) => term.length > 0
-      ? isRegex ? searchByRegex(createRegex(term, isSensitive), cr[key]) : sensitiveSearch(isSensitive, cr, key, term)
-      : true
-    )).length === searchColumns.length)
-
     setFilteredRows(() => searchColumns.length > 0 ? filterRows(customFilteredRows, searchColumns) : customFilteredRows)
   }, [customFilteredRows, searchColumns])
 
