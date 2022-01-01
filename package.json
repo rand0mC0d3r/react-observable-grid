@@ -49,7 +49,7 @@
   "license": "MIT",
   "scripts": {
     "wipe": "rm -rf package-lock.json && rm -rf ./node_modules && cd sample && rm -rf package-lock.json && rm -rf ./node_modules",
-    "dev": "concurrently \"npm run build.watch\" \"cd sample && export PORT=3339 && npx react-scripts start\"",
+    "dev": "concurrently \"npm run build.watch\" \"cd sample && npm install && export PORT=3339 && npx react-scripts start\"",
     "start": "serve -s build",
     "build": "echo 'building'",
     "build.sample": "rm -rf ./build && cd sample && npm install && npx react-scripts build && mv ./build ../",

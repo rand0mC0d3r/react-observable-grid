@@ -23,6 +23,7 @@ const App = () => {
   const [selectedAvatars, setSelectedAvatars] = useState([]);
   const [isDebugging, setIsDebugging] = useState(false);
   const [isDiscovering, setIsDiscovering] = useState(false);
+  const [hasProgressBar, setHasProgressBar] = useState(false);
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
   const [noHeaders, setNoHeaders] = useState(false);
   const [customHeader, setCustomHeader] = useState(false);
@@ -260,6 +261,7 @@ const App = () => {
           <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debug ${isDebugging ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsDiscovering(!isDiscovering)} variant="outlined" label={`Discover ${isDiscovering ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setNoHeaders(!noHeaders)} variant="outlined" label={`Headers ${noHeaders ? 'ON' : 'OFF'}`} />
+          <Chip onClick={() => setHasProgressBar(!hasProgressBar)} variant="outlined" label={`Progress bar ${hasProgressBar ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsColumned(!isColumned)} variant="outlined" label={`Columns ${isColumned ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setCustomHeader(!customHeader)} variant="outlined" label={`Custom H ${customHeader ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsHeaderHidden(!isHeaderHidden)} variant="outlined" label={`Hide H ${isHeaderHidden ? 'ON' : 'OFF'}`} />
@@ -313,6 +315,7 @@ const App = () => {
                 customActions={ <Fab size="small" color="primary" aria-label="add">
                   <AddIcon />
                 </Fab>}
+                hasProgressBar={hasProgressBar}
                 isOmittingColumns={['uuid', 'tilesHash']}
                 isGrid={asGrid ? 4 : undefined}
                 isAlternating={asGrid ? false : true}

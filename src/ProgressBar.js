@@ -3,7 +3,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import React from 'react'
 
-const ObservableProgress =  ({ selectedIndex, currentRow, rowsLength }) => {
+const ProgressBar =  ({ selectedIndex, currentRow, rowsLength }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
 
@@ -60,6 +60,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-ObservableProgress.propTypes = { selectedIndex: PropTypes.number, currentRow: PropTypes.number, rowsLength: PropTypes.number }
+ProgressBar.propTypes = { selectedIndex: PropTypes.number, currentRow: PropTypes.number, rowsLength: PropTypes.number }
 
-export default ObservableProgress
+export default ProgressBar

@@ -1,14 +1,16 @@
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { createNewSortInstance } from 'fast-sort'
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import ActionButtons from './ActionButtons'
 import ObservableContainer from './ObservableContainer'
 import ObservableDebugging from './ObservableDebugging'
 import ObservableEmpty from './ObservableEmpty'
 import ObservableHeader from './ObservableHeader'
 import ObservableInternalLoadMore from './ObservableInternalLoadMore'
-import ObservableProgress from './ObservableProgress'
+// import ObservableProgress from './ObservableProgress'
 import ObservableRowList from './ObservableRowList'
+
+const ProgressBar = React.lazy(() => import('./ProgressBar'));
 
 const ObservableGrid =  ({
   headers,
@@ -37,6 +39,8 @@ const ObservableGrid =  ({
   isHeaderHidden = false,
   isAlternating = true,
   isDiscovering = false,
+
+  hasProgressBar = false,
 }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
@@ -248,7 +252,9 @@ const ObservableGrid =  ({
       </>
       : <ObservableEmpty>{emptyElement}</ObservableEmpty>}
 
-    <ObservableProgress {...{currentRow, rowsLength: sortedRows.length, selectedIndex }} />
+      <Suspense fallback={<></>}>
+        {hasProgressBar && <ProgressBar {...{ currentRow, rowsLength: sortedRows.length, selectedIndex }} />}
+      </Suspense>
   </div>
 }
 
