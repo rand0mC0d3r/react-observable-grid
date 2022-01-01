@@ -105,6 +105,8 @@ const ObservableGrid =  ({
       ? isRegex ? searchByRegex(createRegex(term, isSensitive), cr[key]) : sensitiveSearch(isSensitive, cr, key, term)
       : true
     )).length === searchColumns.length)
+    const orderRows = (rows, orderBy, order) => (orderBy === '' ? rows : order === 'asc' ? naturalSort(rows).asc([r => r[orderBy]]): naturalSort(rows).desc([r => r[orderBy]])).map((r, index) => ({ ...r, __index: index }))
+
 
   useEffect(() => {
     const indexedRows = indexRows(rows)
@@ -158,9 +160,7 @@ const ObservableGrid =  ({
   }, [customFilteredRows, searchColumns])
 
   useEffect(() => {
-    const orderedRows = (orderBy === '' ? filteredRows : order === 'asc' ? naturalSort(rows).asc([r => r[orderBy]]) : naturalSort(rows).desc([r => r[orderBy]]))
-      .map((r, index) => ({ ...r, __index: index }))
-
+    const orderedRows = orderRows(filteredRows, orderBy, order)
     setSortedRows(() => orderedRows)
     setStartEnd(() => ({ start: -1, end: 1 }))
     setThrottling(() => orderedRows.length - 1 >= throttleLimit)
