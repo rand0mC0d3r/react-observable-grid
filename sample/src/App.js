@@ -1,5 +1,6 @@
-import { Button, Chip, IconButton, Slider, Typography } from '@material-ui/core';
+import { Button, Chip, Fab, IconButton, Slider, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import AddIcon from '@material-ui/icons/Add';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
@@ -309,6 +310,9 @@ const App = () => {
               /> */}
               <LocalObservableGrid {...{ isDebugging, headers: asGrid ? headersGrid : (noHeaders ? undefined : headers), canvasDrawing }}
                 uniqueId="fakeEntries"
+                customActions={ <Fab size="small" color="primary" aria-label="add">
+                  <AddIcon />
+                </Fab>}
                 isOmittingColumns={['uuid', 'tilesHash']}
                 isGrid={asGrid ? 4 : undefined}
                 isAlternating={asGrid ? false : true}

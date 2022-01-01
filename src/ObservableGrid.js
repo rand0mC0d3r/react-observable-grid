@@ -1,6 +1,7 @@
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { createNewSortInstance } from 'fast-sort'
 import React, { useEffect, useState } from 'react'
+import ActionButtons from './ActionButtons'
 import ObservableContainer from './ObservableContainer'
 import ObservableDebugging from './ObservableDebugging'
 import ObservableEmpty from './ObservableEmpty'
@@ -8,7 +9,6 @@ import ObservableHeader from './ObservableHeader'
 import ObservableInternalLoadMore from './ObservableInternalLoadMore'
 import ObservableProgress from './ObservableProgress'
 import ObservableRowList from './ObservableRowList'
-import ObservableScrollTop from './ObservableScrollTop'
 
 const ObservableGrid =  ({
   headers,
@@ -244,7 +244,7 @@ const ObservableGrid =  ({
           {throttling && rows.length > pageSize && pageSize * startEnd.end - 1 < rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
           {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
         </ObservableContainer>
-        <ObservableScrollTop {...{ filtered: sortedRows.length, total: rows.length, customActions, selectedIndex, isAtTop: rows.length > pageSize && startEnd.end >= 2 }} />
+        <ActionButtons {...{ filtered: sortedRows.length, total: rows.length, customActions, selectedIndex, isAtTop: rows.length > pageSize && startEnd.end >= 2 }} />
       </>
       : <ObservableEmpty>{emptyElement}</ObservableEmpty>}
 
