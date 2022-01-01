@@ -108,28 +108,6 @@ const ObservableGrid =  ({
   }, [rows, headers])
 
   useEffect(() => {
-    const sensitiveSearch = (sensitive, cr, key, term) => sensitive ? cr[key].includes(term) : cr[key].toLowerCase().includes(term.toLowerCase())
-    const searchByRegex = (regex, property) => regex.test(property)
-    const createRegex = (term, isCaseSensitive) => new RegExp(term, isCaseSensitive ? '' : 'i')
-    const filterRows = (rows, searchColumns) => rows.filter(cr => (searchColumns.filter(({ term, isRegex, isSensitive, key }) => term.length > 0
-      ? isRegex ? searchByRegex(createRegex(term, isSensitive), cr[key]) : sensitiveSearch(isSensitive, cr, key, term)
-      : true
-    )).length === searchColumns.length)
-
-    setFilteredRows(() => searchColumns.length > 0 ? filterRows(customFilteredRows, searchColumns) : customFilteredRows)
-  }, [customFilteredRows, searchColumns])
-
-  useEffect(() => {
-    const orderedRows = (orderBy === '' ? filteredRows : order === 'asc' ? naturalSort(rows).asc([r => r[orderBy]]) : naturalSort(rows).desc([r => r[orderBy]]))
-      .map((r, index) => ({ ...r, __index: index }))
-
-    setSortedRows(() => orderedRows)
-    setStartEnd(() => ({ start: -1, end: 1 }))
-    setThrottling(() => orderedRows.length - 1 >= throttleLimit)
-    setIsDirty(() => false)
-  }, [filteredRows, order, orderBy])
-
-  useEffect(() => {
     console.log('4. useEffect', rows, headers, isDiscovering, discovering)
     if (discovering || isDiscovering) {
       const watchedHeaders = headers?.map(header => ([
@@ -169,9 +147,29 @@ const ObservableGrid =  ({
   }, [rows, headers, isDiscovering, discovering])
 
   useEffect(() => {
-    if (isDebugging) {
-      updateRenderedElements()
-    }
+    const sensitiveSearch = (sensitive, cr, key, term) => sensitive ? cr[key].includes(term) : cr[key].toLowerCase().includes(term.toLowerCase())
+    const searchByRegex = (regex, property) => regex.test(property)
+    const createRegex = (term, isCaseSensitive) => new RegExp(term, isCaseSensitive ? '' : 'i')
+    const filterRows = (rows, searchColumns) => rows.filter(cr => (searchColumns.filter(({ term, isRegex, isSensitive, key }) => term.length > 0
+      ? isRegex ? searchByRegex(createRegex(term, isSensitive), cr[key]) : sensitiveSearch(isSensitive, cr, key, term)
+      : true
+    )).length === searchColumns.length)
+
+    setFilteredRows(() => searchColumns.length > 0 ? filterRows(customFilteredRows, searchColumns) : customFilteredRows)
+  }, [customFilteredRows, searchColumns])
+
+  useEffect(() => {
+    const orderedRows = (orderBy === '' ? filteredRows : order === 'asc' ? naturalSort(rows).asc([r => r[orderBy]]) : naturalSort(rows).desc([r => r[orderBy]]))
+      .map((r, index) => ({ ...r, __index: index }))
+
+    setSortedRows(() => orderedRows)
+    setStartEnd(() => ({ start: -1, end: 1 }))
+    setThrottling(() => orderedRows.length - 1 >= throttleLimit)
+    setIsDirty(() => false)
+  }, [filteredRows, order, orderBy])
+
+  useEffect(() => {
+    if (isDebugging) { updateRenderedElements() }
     setUrl(`
       ?orderBy=${orderBy}
       &order=${order}
