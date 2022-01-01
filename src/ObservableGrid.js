@@ -99,7 +99,7 @@ const ObservableGrid =  ({
       ...headers.filter(h => h.customFilter).map(h => ({ filter: h.customFilter })),
       ...headers.filter(h => h.extraFilters).reduce((acc, h) => [...acc, ...h.extraFilters.map(f => ({ filter: f.func }))], [])
     ]
-
+    console.log('1. useEffect, get rows and headers', rows, headers)
     setIsDirty(() => true)
     const indexedRows = rows.map((row, index) => ({ ...row, __origIndex: index }))
     setCustomFilteredRows(() => headers.length > 0 ? extractFilter(headers).reduce((acc, value) => value.filter(acc), indexedRows) : indexedRows)
@@ -111,6 +111,7 @@ const ObservableGrid =  ({
     const sensitiveSearch = (sensitive, cr, key, term) => sensitive ? cr[key].includes(term) : cr[key].toLowerCase().includes(term.toLowerCase())
     const searchByRegex = (regex, property) => regex.test(property)
 
+    console.log('2. useEffect', customFilteredRows, searchColumns)
     setFilteredRows(() => searchColumns.length > 0
       ? customFilteredRows.filter(cr => searchColumns.filter(searchColumn => searchColumn?.term.length > 0
         ? searchColumn.isRegex
@@ -121,6 +122,8 @@ const ObservableGrid =  ({
   }, [customFilteredRows, searchColumns])
 
   useEffect(() => {
+    console.log('3. useEffect', filteredRows, orderBy, order)
+
     const orderedRows = orderBy === ''
       ? filteredRows.map((r, index) => ({ ...r, __index: index }))
       : order === 'asc'
@@ -134,6 +137,7 @@ const ObservableGrid =  ({
   }, [filteredRows, order, orderBy])
 
   useEffect(() => {
+    console.log('4. useEffect', rows, headers, isDiscovering, discovering)
     if (discovering || isDiscovering) {
       const watchedHeaders = headers?.map(header => ([
         header.property,
