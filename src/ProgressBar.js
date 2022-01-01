@@ -3,7 +3,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import React from 'react'
 
-const ProgressBar =  ({ selectedIndex, currentRow, rowsLength }) => {
+const ProgressBar =  ({ selectedIndex, currentRow, count }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
 
@@ -12,9 +12,9 @@ const ProgressBar =  ({ selectedIndex, currentRow, rowsLength }) => {
   return <div className={classes.root}>
     <div className={classes.container}>
       <div className={classes.totalProgress} />
-      <div className={classes.currentProgress} style={{ width: `${Math.round((currentRow + 1) * 100 / rowsLength)}%` }} />
+      <div className={classes.currentProgress} style={{ width: `${Math.round((currentRow + 1) * 100 / count)}%` }} />
       {selectedIndex && <Tooltip arrow title={`Scroll to row ${selectedIndex} ...`}>
-        <div onClick={focusElement} className={classes.selectionProgress} style={{ left: `${Math.round((selectedIndex + 1) * 100 / rowsLength)}%` }} />
+        <div onClick={focusElement} className={classes.selectionProgress} style={{ left: `${Math.round((selectedIndex + 1) * 100 / count)}%` }} />
       </Tooltip>}
     </div>
   </div>
@@ -60,6 +60,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-ProgressBar.propTypes = { selectedIndex: PropTypes.number, currentRow: PropTypes.number, rowsLength: PropTypes.number }
+ProgressBar.propTypes = { selectedIndex: PropTypes.number, currentRow: PropTypes.number, count: PropTypes.number }
 
 export default ProgressBar

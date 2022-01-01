@@ -1,18 +1,16 @@
-import { makeStyles, useTheme } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 import { createNewSortInstance } from 'fast-sort'
 import React, { Suspense, useEffect, useState } from 'react'
-import ActionButtons from './ActionButtons'
-import Columns from './Columns'
 import Container from './Container'
-// import ObservableDebugging from './ObservableDebugging'
 import ObservableEmpty from './ObservableEmpty'
 import ObservableHeader from './ObservableHeader'
 import ObservableInternalLoadMore from './ObservableInternalLoadMore'
-// import ObservableProgress from './ObservableProgress'
 import ObservableRowList from './ObservableRowList'
 
 const ProgressBar = React.lazy(() => import('./ProgressBar'));
 const Debugging = React.lazy(() => import('./Debugging'));
+const Columns = React.lazy(() => import('./Columns'));
+const ActionButtons = React.lazy(() => import('./ActionButtons'));
 
 const ObservableGrid =  ({
   headers,
@@ -43,9 +41,9 @@ const ObservableGrid =  ({
   isDiscovering = false,
 
   hasProgressBar = false,
+  hasFloatingActions = false,
 }) => {
-  const theme = useTheme()
-  const classes = useStyles(theme)
+  const classes = useStyles()
 
   const [searchColumns, setSearchColumns] = useState([])
   const [order, setOrder] = useState('asc')
@@ -73,21 +71,6 @@ const ObservableGrid =  ({
   const onSelect = (property) => setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: header.property === property ? true : false })))
   const onDeSelect = (property) => setInnerHeaders(innerHeaders.map(header => ({ ...header, selected: header.property === property ? false : false })))
 
-  const debugItems = [
-    { label: 'throttling', value: throttling },
-    { label: 'throttleLimit', value: throttleLimit },
-    { label: 'order', value: order },
-    { label: 'orderBy', value: orderBy },
-    { label: 'selectedIndex', value: selectedIndex },
-    { label: 'sortedRows', value: sortedRows.length },
-    { label: 'canvasDrawing', value: !throttling && canvasDrawing },
-    { label: 'rows', value: rows.length },
-    { label: 'startEnd', value: JSON.stringify(startEnd) },
-    { label: 'pageSize', value: pageSize },
-    { label: 'totalElements', value: `${elementsRendered[0]} (${elementsRendered[1]})` },
-    { label: 'url', value: url },
-  ]
-
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && order === 'asc'
     setOrder(isAsc ? 'desc' : 'asc')
@@ -113,12 +96,16 @@ const ObservableGrid =  ({
 
   useEffect(() => {
     setIsDirty(() => true)
-    setCustomFilteredRows(() => (headers || []).filter(header => header.customFilter || header.extraFilters).reduce((acc, value) => {
-      let result = acc
-      if (value.customFilter) { result = value.customFilter(acc) }
-      if (value.extraFilters) { value.extraFilters.forEach(filter => { result = filter.func(result) }) }
-      return result
-    }, rows.map((row, index) => ({ ...row, __origIndex: index }))))
+    const indexedRows = rows.map((row, index) => ({ ...row, __origIndex: index }))
+    headers.length > 0
+      ? setCustomFilteredRows(() => headers.filter(header => header.customFilter || header.extraFilters).reduce((acc, value) => {
+          let result = acc
+          if (value.customFilter) { result = value.customFilter(acc) }
+          if (value.extraFilters) { value.extraFilters.forEach(filter => { result = filter.func(result) }) }
+          return result
+        }, indexedRows))
+      : setCustomFilteredRows(() => indexedRows)
+
     setSelectedIndex(() => null)
     if (!headers) { setDiscovering(() => true) }
   }, [rows, headers])
@@ -202,7 +189,7 @@ const ObservableGrid =  ({
 
   useEffect(() => setGridTemplateColumns(innerHeaders.filter(header => header.visible).map(header => header.width).join(' ')), [innerHeaders])
 
-  return <div id="observable-grid" className={`${className} ${classes.root}`} onMouseLeave={clearOnBlur}>
+  return <div id="observable-grid" className={classes.root} onMouseLeave={clearOnBlur}>
     {!isHeaderHidden && innerHeaders.length > 0 && <ObservableHeader {...{
         options: headerOptions,
         rows: sortedRows,
@@ -226,64 +213,55 @@ const ObservableGrid =  ({
       }}
     />}
 
-    {!isGrid && isColumned && <Columns {...{ rowOptions, gridTemplateColumns, innerHeaders }} />}
-
     {rows.length > 0
-      ? <>
-          <Container {...{ isScrollable, isDirty, isAlternating, isGrid }}>
+      ? <Container {...{ isScrollable, isDirty, isAlternating, isGrid }}>
           {(throttling && sortedRows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1) &&
             <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
           {sortedRows && <ObservableRowList {...{ rows: sortedRows, setCurrentRow, currentRow, throttling, setSelectedIndex, rowOptions, gridTemplateColumns, selectedIndex, startEnd, pageSize, innerHeaders}} />}
           {throttling && rows.length > pageSize && pageSize * startEnd.end - 1 < rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
           {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
         </Container>
-        <ActionButtons {...{ filtered: sortedRows.length, total: rows.length, customActions, selectedIndex, isAtTop: rows.length > pageSize && startEnd.end >= 2 }} />
-      </>
       : <ObservableEmpty>{emptyElement}</ObservableEmpty>}
 
       <Suspense fallback={<></>}>
-        {isDebugging && <Debugging items={debugItems} />}
-        {hasProgressBar && <ProgressBar {...{ currentRow, rowsLength: sortedRows.length, selectedIndex }} />}
+        {isDebugging && <Debugging {...{
+          items: [
+            { label: 'throttling', value: throttling },
+            { label: 'throttleLimit', value: throttleLimit },
+            { label: 'order', value: order },
+            { label: 'orderBy', value: orderBy },
+            { label: 'selectedIndex', value: selectedIndex },
+            { label: 'sortedRows', value: sortedRows.length },
+            { label: 'canvasDrawing', value: !throttling && canvasDrawing },
+            { label: 'rows', value: rows.length },
+            { label: 'startEnd', value: JSON.stringify(startEnd) },
+            { label: 'pageSize', value: pageSize },
+            { label: 'totalElements', value: `${elementsRendered[0]} (${elementsRendered[1]})` },
+            { label: 'url', value: url },
+          ]
+        }} />}
+        {!isGrid && isColumned && <Columns {...{
+          rowOptions,
+          gridTemplateColumns,
+          innerHeaders
+        }} />}
+        {hasProgressBar && <ProgressBar {...{
+          currentRow,
+          count: sortedRows.length,
+          selectedIndex
+        }} />}
+        {hasFloatingActions && rows.length > 0 && <ActionButtons {...{
+          filtered: sortedRows.length,
+          total: rows.length,
+          customActions,
+          selectedIndex,
+          isAtTop: rows.length > pageSize && startEnd.end >= 2
+        }} />}
       </Suspense>
   </div>
 }
 
-const useStyles = makeStyles((theme) => ({
-        observableRow: {
-          top: '0px',
-          left: '0px',
-          bottom: '0px',
-          right: '0px',
-          position: 'absolute',
-          alignSelf: 'stretch',
-          breakInside: 'avoid',
-          fontSize: '12px',
-          display: 'grid',
-          alignItems: 'unset',
-          gap: '16px',
-          zIndex: -1,
-        },
-  observableGrid: {
-    breakInside: 'avoid',
-    fontSize: '12px',
-    gridColumnGap: '16px',
-    display: 'grid',
-  },
-  observableRowSelected: {
-    backgroundColor: "#4442"
-  },
-      observableColumnRight: {
-        borderRight: `1px solid ${theme.palette.divider}`,
-      },
-  observableColumnLeft: {
-  },
-      observableColumn: {
-        margin: '0px -8px',
-
-        '&:last-child': {
-          borderRight: '0px none'
-        },
-      },
+const useStyles = makeStyles(() => ({
   root: {
     display: 'flex',
     position: 'absolute',
@@ -293,6 +271,5 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
   }
 }))
-
 
 export default ObservableGrid
