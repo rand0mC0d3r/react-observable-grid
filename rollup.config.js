@@ -10,10 +10,6 @@ export default [
     output: [
       {
         dir: 'dist/',
-        format: 'cjs',
-      },
-      {
-        dir: 'dist/',
         format: 'es',
         exports: 'named',
       },
