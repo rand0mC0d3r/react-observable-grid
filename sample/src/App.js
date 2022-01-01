@@ -18,7 +18,7 @@ import { ActionsRow, AvatarRow, Card, CurrencyRow, DescriptionRow, LastSeenRow, 
 const App = () => {
   const [rows, setRows] = useState(dataGenerator(100));
   const [performance, setPerformance] = useState(0);
-  const [isColumned, setIsColumned] = useState(true);
+  const [isColumned, setIsColumned] = useState(false);
   const [selectedTiles, setSelectedTiles] = useState([]);
   const [selectedAvatars, setSelectedAvatars] = useState([]);
   const [isDebugging, setIsDebugging] = useState(false);

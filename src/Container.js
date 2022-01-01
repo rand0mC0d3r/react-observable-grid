@@ -3,7 +3,7 @@ import clsx from 'clsx'
 import PropTypes from 'prop-types'
 import React from 'react'
 
-const ObservableContainer = ({ children, isAlternating, isDirty, isGrid, isScrollable }) => {
+const Container = ({ children, isAlternating, isDirty, isGrid, isScrollable }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
 
@@ -87,13 +87,13 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-ObservableContainer.defaultProps = {
+Container.defaultProps = {
   isScrollable: true,
   isAlternating: true,
   isDirty: false,
   isGrid: false,
 }
-ObservableContainer.propTypes = {
+Container.propTypes = {
   children: PropTypes.node.isRequired,
   isAlternating: PropTypes.bool,
   isDirty: PropTypes.bool,
@@ -101,4 +101,4 @@ ObservableContainer.propTypes = {
   isScrollable: PropTypes.bool,
 }
 
-export default ObservableContainer
+export default Container

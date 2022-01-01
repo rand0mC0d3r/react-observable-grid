@@ -2,7 +2,8 @@ import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { createNewSortInstance } from 'fast-sort'
 import React, { Suspense, useEffect, useState } from 'react'
 import ActionButtons from './ActionButtons'
-import ObservableContainer from './ObservableContainer'
+import Columns from './Columns'
+import Container from './Container'
 // import ObservableDebugging from './ObservableDebugging'
 import ObservableEmpty from './ObservableEmpty'
 import ObservableHeader from './ObservableHeader'
@@ -29,7 +30,7 @@ const ObservableGrid =  ({
   canvasDrawing = false,
 
   isOmittingColumns = [],
-  isColumned= true,
+  isColumned= false,
   isClearingOnBlur = true,
   // isInfinite = false,
   isUpdatingUrl = false,
@@ -225,29 +226,17 @@ const ObservableGrid =  ({
       }}
     />}
 
-    {!isGrid && <div
-      className={classes.observableRow}
-      style={{
-        padding: rowOptions.padding,
-        paddingTop: 0,
-        paddingBottom: 0,
-        gridTemplateColumns: gridTemplateColumns
-      }}
-    >
-      {innerHeaders.filter(ih => ih.visible).map((innerHeader, i) => <div key={`${innerHeader.property}-${innerHeader.label || ''}`}
-        className={`${classes.observableColumn} ${isColumned && classes.observableColumnRight}`}
-      />)}
-    </div>}
+    {!isGrid && isColumned && <Columns {...{ rowOptions, gridTemplateColumns, innerHeaders }} />}
 
     {rows.length > 0
       ? <>
-          <ObservableContainer {...{ isScrollable, isDirty, isAlternating, isGrid }}>
+          <Container {...{ isScrollable, isDirty, isAlternating, isGrid }}>
           {(throttling && sortedRows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1) &&
             <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
           {sortedRows && <ObservableRowList {...{ rows: sortedRows, setCurrentRow, currentRow, throttling, setSelectedIndex, rowOptions, gridTemplateColumns, selectedIndex, startEnd, pageSize, innerHeaders}} />}
           {throttling && rows.length > pageSize && pageSize * startEnd.end - 1 < rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
           {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
-        </ObservableContainer>
+        </Container>
         <ActionButtons {...{ filtered: sortedRows.length, total: rows.length, customActions, selectedIndex, isAtTop: rows.length > pageSize && startEnd.end >= 2 }} />
       </>
       : <ObservableEmpty>{emptyElement}</ObservableEmpty>}
@@ -260,20 +249,20 @@ const ObservableGrid =  ({
 }
 
 const useStyles = makeStyles((theme) => ({
-  observableRow: {
-    top: '0px',
-    left: '0px',
-    bottom: '0px',
-    right: '0px',
-    position: 'absolute',
-    alignSelf: 'stretch',
-    breakInside: 'avoid',
-    fontSize: '12px',
-    display: 'grid',
-    alignItems: 'unset',
-    gap: '16px',
-    zIndex: -1,
-  },
+        observableRow: {
+          top: '0px',
+          left: '0px',
+          bottom: '0px',
+          right: '0px',
+          position: 'absolute',
+          alignSelf: 'stretch',
+          breakInside: 'avoid',
+          fontSize: '12px',
+          display: 'grid',
+          alignItems: 'unset',
+          gap: '16px',
+          zIndex: -1,
+        },
   observableGrid: {
     breakInside: 'avoid',
     fontSize: '12px',
@@ -283,18 +272,18 @@ const useStyles = makeStyles((theme) => ({
   observableRowSelected: {
     backgroundColor: "#4442"
   },
-  observableColumnRight: {
-    borderRight: `1px solid ${theme.palette.divider}`,
-  },
+      observableColumnRight: {
+        borderRight: `1px solid ${theme.palette.divider}`,
+      },
   observableColumnLeft: {
   },
-  observableColumn: {
-    margin: '0px -8px',
+      observableColumn: {
+        margin: '0px -8px',
 
-    '&:last-child': {
-      borderRight: '0px none'
-    },
-  },
+        '&:last-child': {
+          borderRight: '0px none'
+        },
+      },
   root: {
     display: 'flex',
     position: 'absolute',
