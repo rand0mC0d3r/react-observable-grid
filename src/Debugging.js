@@ -2,7 +2,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import React from 'react'
 
-const ObservableDebugging = ({ items }) => {
+const Debugging = ({ items }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
 
@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-ObservableDebugging.defaultProps = { items: [] }
-ObservableDebugging.propTypes = { items: PropTypes.array.isRequired }
+Debugging.defaultProps = { items: [] }
+Debugging.propTypes = { items: PropTypes.array.isRequired }
 
-export default ObservableDebugging
+export default Debugging

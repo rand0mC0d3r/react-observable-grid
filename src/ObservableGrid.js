@@ -3,7 +3,7 @@ import { createNewSortInstance } from 'fast-sort'
 import React, { Suspense, useEffect, useState } from 'react'
 import ActionButtons from './ActionButtons'
 import ObservableContainer from './ObservableContainer'
-import ObservableDebugging from './ObservableDebugging'
+// import ObservableDebugging from './ObservableDebugging'
 import ObservableEmpty from './ObservableEmpty'
 import ObservableHeader from './ObservableHeader'
 import ObservableInternalLoadMore from './ObservableInternalLoadMore'
@@ -11,6 +11,7 @@ import ObservableInternalLoadMore from './ObservableInternalLoadMore'
 import ObservableRowList from './ObservableRowList'
 
 const ProgressBar = React.lazy(() => import('./ProgressBar'));
+const Debugging = React.lazy(() => import('./Debugging'));
 
 const ObservableGrid =  ({
   headers,
@@ -201,7 +202,6 @@ const ObservableGrid =  ({
   useEffect(() => setGridTemplateColumns(innerHeaders.filter(header => header.visible).map(header => header.width).join(' ')), [innerHeaders])
 
   return <div id="observable-grid" className={`${className} ${classes.root}`} onMouseLeave={clearOnBlur}>
-    {isDebugging && <ObservableDebugging items={debugItems} />}
     {!isHeaderHidden && innerHeaders.length > 0 && <ObservableHeader {...{
         options: headerOptions,
         rows: sortedRows,
@@ -253,6 +253,7 @@ const ObservableGrid =  ({
       : <ObservableEmpty>{emptyElement}</ObservableEmpty>}
 
       <Suspense fallback={<></>}>
+        {isDebugging && <Debugging items={debugItems} />}
         {hasProgressBar && <ProgressBar {...{ currentRow, rowsLength: sortedRows.length, selectedIndex }} />}
       </Suspense>
   </div>
