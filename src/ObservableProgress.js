@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
   selectionProgress: {
     position: 'absolute',
-    borderRadius: '8px',
+    borderRadius: theme.shape.borderRadius,
     top: '-2px',
     width: '8px',
     height: '8px',

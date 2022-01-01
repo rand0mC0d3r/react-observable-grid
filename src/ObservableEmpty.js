@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
   container: {
     backgroundColor: theme.palette.background.paper,
     padding: '20px 40px',
-    borderRadius: '4px',
+    borderRadius: theme.shape.borderRadius,
     border: `1px solid ${theme.palette.divider} `
   },
 }))

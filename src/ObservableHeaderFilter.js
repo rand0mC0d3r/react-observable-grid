@@ -74,7 +74,7 @@ const useStyles = makeStyles(theme => ({
   },
   root: {
     display: 'flex',
-    borderRadius: '4px',
+    borderRadius: theme.shape.borderRadius,
     minWidth: '300px',
     flexDirection: 'column',
     border: `1px solid ${theme.palette.divider}`,

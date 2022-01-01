@@ -7,6 +7,11 @@ const ObservableScrollTop = ({ selectedIndex, isAtTop, customActions, total = 0,
   const theme = useTheme()
   const classes = useStyles(theme)
 
+  const predefinedActions = [
+    { id: 'selected', tooltip: `Scroll to item: ${selectedIndex}`, label: `→ ${selectedIndex + 1}`, visible: selectedIndex },
+    { id: 'first', tooltip: `Scroll to top: ${selectedIndex}`, label: '↑', visible: isAtTop }
+  ]
+
   const focusElement = (id) => {
     const requestedElement = document.getElementById(id)
     if(requestedElement) {
@@ -16,10 +21,7 @@ const ObservableScrollTop = ({ selectedIndex, isAtTop, customActions, total = 0,
 
   return <div className={classes.root}>
     {customActions}
-    {[
-      selectedIndex ? { id: 'selected', label: `→ ${selectedIndex + 1}` } : false,
-      isAtTop ? { id: 'first', label: '↑' } : false
-    ]
+    {predefinedActions
       .filter(item => item !== false)
       .map(({ id, label }) => <Tooltip key={id} title={`Scroll to ${id}`} arrow>
         <div onClick={() => focusElement(id)} className={classes.item}>{label}</div>
@@ -50,18 +52,13 @@ const useStyles = makeStyles(theme => ({
   item: {
     fontWeight: 'bold',
     border: `1px solid ${theme.palette.divider}`,
-    backgroundColor: `${theme.palette.divider}`,
     padding: '10px 16px',
-    borderRadius: '8px',
-    opacity: 0.5,
+    borderRadius: theme.shape.borderRadius,
     backdropFilter: 'blur(4px)',
-    display: 'flex',
     gap: theme.spacing(0.5),
-    alignItems: 'center',
 
     '&:hover': {
-      opacity: 1,
-      backgroundColor: '#CCC !important',
+      backdropFilter: 'blur(4px) brightness(1.05)',
     }
   },
 }))

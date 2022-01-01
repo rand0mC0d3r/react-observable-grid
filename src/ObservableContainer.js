@@ -1,4 +1,5 @@
 import { makeStyles, useTheme } from '@material-ui/core/styles'
+import clsx from 'clsx'
 import PropTypes from 'prop-types'
 import React from 'react'
 
@@ -6,16 +7,16 @@ const ObservableContainer = ({ children, isAlternating, isDirty, isGrid, isScrol
   const theme = useTheme()
   const classes = useStyles(theme)
 
-  return <div className={[classes.root, isGrid && classes.rootGrid].filter(cn => !!cn).join(' ')}>
+  return <div className={clsx([classes.root, isGrid && classes.rootGrid])}>
     <div
       id="Container-root"
-      className={[
+      className={clsx([
         classes.container,
         isDirty && classes.dirty,
         isGrid ? classes.grid : classes.anyItem,
         isAlternating && classes.alternatingItem,
-        isScrollable && isGrid ? classes.isScrollableGrid : classes.isScrollable
-      ].filter(cn => !!cn).join(' ')}>
+        isScrollable && (isGrid ? classes.isScrollableGrid : classes.isScrollable)
+      ])}>
       {children}
     </div>
   </div>

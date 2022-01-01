@@ -8,7 +8,7 @@ const ObservableDebugging = ({ items }) => {
 
   return <div className={classes.root}>
     {items?.map(({ label, value }) => <div className={classes.item} key={`${label}_${value}_debugging`}>
-      {`${label.toUpperCase()}: ${value}`}
+      {label}: {value}
     </div>)}
   </div>
 }
@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.text.primary,
     fontSize: '12px',
     backgroundColor: theme.palette.divider,
-    borderRadius: theme.spacing(1),
+    borderRadius: theme.shape.borderRadius,
     padding: `${theme.spacing(0.5)}px ${theme.spacing(1)}px`,
     backdropFilter: 'blur(4px)',
   },
