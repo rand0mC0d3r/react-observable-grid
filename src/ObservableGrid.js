@@ -110,15 +110,20 @@ const ObservableGrid =  ({
   useEffect(() => {
     const sensitiveSearch = (sensitive, cr, key, term) => sensitive ? cr[key].includes(term) : cr[key].toLowerCase().includes(term.toLowerCase())
     const searchByRegex = (regex, property) => regex.test(property)
+    const createRegex = (term, isCaseSensitive) => new RegExp(term, isCaseSensitive ? '' : 'i')
+
+    const filterRows = (rows, searchColumns) => {
+      return rows.filter(cr => {
+        const filtered = searchColumns.filter(({ term, isRegex, isSensitive, key }) => term.length > 0
+          ? isRegex ? searchByRegex(createRegex(term, isSensitive), cr[key]) : sensitiveSearch(isSensitive, cr, key, term)
+          : true
+        )
+        return filtered.length === searchColumns.length
+      })
+    }
 
     console.log('2. useEffect', customFilteredRows, searchColumns)
-    setFilteredRows(() => searchColumns.length > 0
-      ? customFilteredRows.filter(cr => searchColumns.filter(searchColumn => searchColumn?.term.length > 0
-        ? searchColumn.isRegex
-          ? searchByRegex(new RegExp(searchColumn.term, `${searchColumn.isSensitive ? '' : 'i'}`), cr[searchColumn.key])
-          : sensitiveSearch(searchColumn.isSensitive, cr, searchColumn?.key, searchColumn?.term)
-        : true).length === searchColumns.length)
-      : customFilteredRows)
+    setFilteredRows(() => searchColumns.length > 0 ? filterRows(customFilteredRows, searchColumns) : customFilteredRows)
   }, [customFilteredRows, searchColumns])
 
   useEffect(() => {
