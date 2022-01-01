@@ -2,11 +2,11 @@ import { makeStyles, useTheme } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import React from 'react'
 
-const ObservableContainer = ({ children, isAlternating, isDirty = false, isGrid, isScrollable }) => {
+const ObservableContainer = ({ children, isAlternating, isDirty, isGrid, isScrollable }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
 
-  return <div className={isGrid ? classes.wrapperGrid : classes.wrapper}>
+  return <div className={[classes.root, isGrid && classes.rootGrid].filter(cn => !!cn).join(' ')}>
     <div
       id="Container-root"
       className={[
@@ -15,28 +15,25 @@ const ObservableContainer = ({ children, isAlternating, isDirty = false, isGrid,
         isGrid ? classes.grid : classes.anyItem,
         isAlternating && classes.alternatingItem,
         isScrollable && isGrid ? classes.isScrollableGrid : classes.isScrollable
-      ].join(' ')}>
+      ].filter(cn => !!cn).join(' ')}>
       {children}
     </div>
   </div>
 }
 
 const useStyles = makeStyles(theme => ({
-  wrapper: {
+  root: {
     flex: '1 0 auto',
     position: 'relative',
     alignSelf: 'stretch',
   },
-  dirty: {
-    filter: 'opacity(0.45) grayscale(0.85)',
-  },
-  wrapperGrid: {
-    flex: '1 0 auto',
-    position: 'relative',
-    alignSelf: 'stretch',
+  rootGrid: {
     display: 'flex',
     justifyContent: 'stretch',
     overflow: 'hidden',
+  },
+  dirty: {
+    filter: 'opacity(0.45) grayscale(0.85)',
   },
   grid: {
     display: 'grid',
@@ -89,7 +86,18 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-ObservableContainer.defaultProps = { isScrollable: true, isAlternating: true }
-ObservableContainer.propTypes = { children: PropTypes.node.isRequired, isScrollable: PropTypes.bool, isAlternating: PropTypes.bool }
+ObservableContainer.defaultProps = {
+  isScrollable: true,
+  isAlternating: true,
+  isDirty: false,
+  isGrid: false,
+}
+ObservableContainer.propTypes = {
+  children: PropTypes.node.isRequired,
+  isAlternating: PropTypes.bool,
+  isDirty: PropTypes.bool,
+  isGrid: PropTypes.bool,
+  isScrollable: PropTypes.bool,
+}
 
 export default ObservableContainer

@@ -7,7 +7,7 @@ const ObservableDebugging = ({ items }) => {
   const classes = useStyles(theme)
 
   return <div className={classes.root}>
-    {items.map(({ label, value }) => <div className={classes.item} key={`${label}_${value}_debugging`}>
+    {items?.map(({ label, value }) => <div className={classes.item} key={`${label}_${value}_debugging`}>
       {`${label.toUpperCase()}: ${value}`}
     </div>)}
   </div>
