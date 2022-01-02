@@ -1,4 +1,4 @@
-import { Avatar, Tooltip, Typography } from '@material-ui/core';
+import { Avatar, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import TuneIcon from '@material-ui/icons/Tune';
@@ -10,7 +10,6 @@ const AvatarRow = memo(({ name, surname, fullName, selectedAvatars, onSelectAvat
   const classes = avatarStyles(theme)
 
   return <div style={{ display: 'flex', justifyContent: "center" }}>
-    <Tooltip arrow title={fullName}>
       <Avatar
         onClick={() => onSelectAvatar({ fullName, name, surname })}
         variant="rounded"
@@ -22,54 +21,15 @@ const AvatarRow = memo(({ name, surname, fullName, selectedAvatars, onSelectAvat
       >
       {name?.substr(0, 1)}{surname?.substr(0, 1)}
       </Avatar>
-    </Tooltip>
   </div>
 })
 
-const NamesRow = ({
-  row: { name, surname, nickname, streetname } }) => {
+const NamesRow = ({ name, surname }) => {
   return <div style={{ display: 'flex', flexDirection: 'row', gap: '8px', alignItems: 'center' }}>
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-      <Typography
-        style={{ fontSize: '14px' }}
-        variant='subtitle2'
-        color="textSecondary">
-        {name} {surname}
-      </Typography>
+      <Typography variant='body2' color="textSecondary">{name} {surname}</Typography>
     </div>
   </div>
-}
-
-const RoleRow = ({ role }) => <Typography style={{ fontSize: '14px' }} color="textSecondary">{role}</Typography>
-
-const Card = ({ row, selectedTiles, onSelectAvatar = () => { }, onSelectTile = () => {} }) => {
-  return <div
-    style={{
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '8px',
-      border: '1px solid #CCC',
-      padding: '8px 12px',
-      borderRadius: '8px'
-    }}>
-    <div style={{ display: 'flex', flexWrap: 'nowrap', justifyContent: 'space-between' }}>
-      <AvatarRow row={row} selectedAvatars={selectedTiles} onSelectAvatar={onSelectTile} />
-      <NamesRow row={row} />
-      <CurrencyRow row={row} />
-    </div>
-      <DescriptionRow row={row} />
-    <div style={{ display: 'flex', flexWrap: 'nowrap', justifyContent: 'space-between', alignItems: 'center' }}>
-      <TilesRow row={row} selectedTiles={selectedTiles} onSelectTile={onSelectTile}/>
-      <ActionsRow />
-    </div>
-
-  </div>
-}
-
-const DescriptionRow = ({ row: { description } }) => {
-  const theme = useTheme()
-  const classes = descriptionStyles(theme)
-  return <Typography className={classes.description} style={{userSelect: 'text'}} variant='body2'>{description}</Typography>
 }
 
 const TilesRow = ({ row: { tiles }, selectedTiles, onSelectTile = () => {} }) => {
@@ -92,6 +52,22 @@ const TilesRow = ({ row: { tiles }, selectedTiles, onSelectTile = () => {} }) =>
     >{name}</div>)}
   </div>
 }
+
+
+const CurrencyRow = ({ row: { price} }) => <Typography style={{ display: 'flex', justifyContent: 'flex-end' }} variant='subtitle2'>{price}</Typography>
+const DescriptionRow = memo(({ description }) => <Typography variant='body2'>{description}</Typography>)
+const RoleRow = memo(({ role }) => <Typography variant='body2' color="textSecondary">{role}</Typography>)
+const LastSeenRow = memo(({ lastSeen }) => <Typography variant='body2' color="textSecondary">Last Seen: {lastSeen}</Typography>)
+
+const ActionsRow = memo(() => {
+  const theme = useTheme()
+  const classes = actionStyles(theme)
+  return <div className={classes.actionContainer}>
+    <TuneIcon color="primary" />
+    <DeleteOutlineIcon color="secondary" />
+  </div>
+})
+
 
 const RowTabs = ({ rows, setRows = () => { } }) => {
   const theme = useTheme()
@@ -137,24 +113,29 @@ const RowTabs = ({ rows, setRows = () => { } }) => {
   </div>
 }
 
-const CurrencyRow = ({ row: { price, currency } }) => {
-  // console.log(price)
-  return <Typography style={{ display: 'flex', justifyContent: 'flex-end' }} variant='subtitle2'>{price}</Typography>
-}
 
-const ActionsRow = () => {
-  const theme = useTheme()
-  const classes = actionStyles(theme)
-  return <div className={classes.actionContainer}>
-    <TuneIcon color="primary" />
-    <DeleteOutlineIcon color="secondary" />
+const Card = ({ row, selectedTiles, onSelectAvatar = () => { }, onSelectTile = () => {} }) => {
+  return <div
+    style={{
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '8px',
+      border: '1px solid #CCC',
+      padding: '8px 12px',
+      borderRadius: '8px'
+    }}>
+    <div style={{ display: 'flex', flexWrap: 'nowrap', justifyContent: 'space-between' }}>
+      <AvatarRow row={row} selectedAvatars={selectedTiles} onSelectAvatar={onSelectTile} />
+      <NamesRow row={row} />
+      <CurrencyRow row={row} />
+    </div>
+      <DescriptionRow row={row} />
+    <div style={{ display: 'flex', flexWrap: 'nowrap', justifyContent: 'space-between', alignItems: 'center' }}>
+      <TilesRow row={row} selectedTiles={selectedTiles} onSelectTile={onSelectTile}/>
+      <ActionsRow />
+    </div>
+
   </div>
-}
-
-const LastSeenRow = ({ row: { lastSeen }}) => {
-  const theme = useTheme()
-  const classes = actionStyles(theme)
-  return <div className={classes.actionContainer}>Last Seen: {lastSeen}</div>
 }
 
 const actionStyles = makeStyles(() => ({
@@ -172,14 +153,14 @@ const actionStyles = makeStyles(() => ({
   },
 }))
 
-const descriptionStyles = makeStyles(() => ({
-  description: {
-    '&::selection': {
-      background: '#c8e2f9e8',
-      color: 'black',
-    }
-  },
-}))
+// const descriptionStyles = makeStyles(() => ({
+//   description: {
+//     '&::selection': {
+//       background: '#c8e2f9e8',
+//       color: 'black',
+//     }
+//   },
+// }))
 
 const tileStyles = makeStyles((theme) => ({
   tile: {

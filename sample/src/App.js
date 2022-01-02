@@ -95,7 +95,7 @@ const App = () => {
           : [...selectedAvatars, { fullName, surname, name }]
         )}
         />
-        <NamesRow row={row} />
+        <NamesRow {...{name: row.name, surname: row.surname}} />
       </div>,
       secondaryHeaders: [
         {
@@ -122,7 +122,7 @@ const App = () => {
       suggestions: (data) => Array.from(new Set(data.map(row => row.description.split(" ")).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 20),
       icon: <SubjectIcon />,
       property: 'description',
-      row: (row) => <DescriptionRow row={row} />,
+      row: (row) => <DescriptionRow {...{ description: row.description }} />,
       width: 'minmax(80px, 3fr)',
     },
     {
@@ -196,8 +196,8 @@ const App = () => {
       align: 'flex-end',
       property: 'lastSeen',
       // noSearch: true,
-      onHover: (row) => <ActionsRow {...{ row }} />,
-      row: (row) => <LastSeenRow {...{ row }} />,
+      onHover: (row) => <ActionsRow />,
+      row: (row) => <LastSeenRow  {...{ lastSeen: row.lastSeen }} />,
       width: 'minmax(130px, 0.75fr)',
       // noHightlight: true,
       secondaryHeaders: [
