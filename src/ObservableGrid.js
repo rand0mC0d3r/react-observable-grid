@@ -6,6 +6,7 @@ import ObservableEmpty from './ObservableEmpty'
 import ObservableHeader from './ObservableHeader'
 import ObservableInternalLoadMore from './ObservableInternalLoadMore'
 import ObservableRowList from './ObservableRowList'
+import Processing from './Processing'
 
 const ProgressBar = React.lazy(() => import('./ProgressBar'));
 const Debugging = React.lazy(() => import('./Debugging'));
@@ -57,9 +58,7 @@ const ObservableGrid =  ({
   const [gridTemplateColumns, setGridTemplateColumns] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const [elementsRendered, setElementsRendered] = useState([0, 0])
-  const [customFilteredRows, setCustomFilteredRows] = useState([])
   const [sortedRows, setSortedRows] = useState([])
-  const [filteredRows, setFilteredRows] = useState([])
   const [startEnd, setStartEnd] = useState({ start: -1, end: 1 })
   const [throttleLimit, setThrottleLimit] = useState(50)
 
@@ -130,7 +129,8 @@ const ObservableGrid =  ({
 
 
   useEffect(() => {
-    console.log("i start")
+    console.log("A.i start")
+    console.log(rows, headers, searchColumns, order, orderBy)
     const indexedRows = indexRows(rows)
     setIsDirty(() => true)
     setSelectedIndex(() => null)
@@ -143,10 +143,11 @@ const ObservableGrid =  ({
     setStartEnd(() => ({ start: -1, end: 1 }))
     setThrottling(() => tmpRows3.length - 1 >= throttleLimit)
     setIsDirty(() => false)
-  }, [rows, headers, searchColumns, order, orderBy])
+    console.log("A.i end")
+  }, [rows, headers, searchColumns, order, orderBy, throttleLimit])
 
   useEffect(() => {
-    console.log('4. useEffect', rows, headers, isDiscovering, discovering)
+    // console.log('4. useEffect', rows, headers, isDiscovering, discovering)
     if (discovering || isDiscovering) {
       const watchedHeaders = extractHeaderKeys(headers)
       const missingColumns = Object.keys(rows[0]).filter(knownColumn => !watchedHeaders.includes(knownColumn))
@@ -173,7 +174,7 @@ const ObservableGrid =  ({
     } else {
       setInnerHeaders(() => (headers || []).map(header => ({ ...header, selected: false, visible: header.visible || true })).filter(header => !isOmittingColumns.includes(header.property)))
     }
-    console.log("i end")
+    // console.log("i end")
   }, [rows, headers, isDiscovering, discovering])
 
   // useEffect(() => {
@@ -202,6 +203,7 @@ const ObservableGrid =  ({
   useEffect(() => setGridTemplateColumns(innerHeaders.filter(header => header.visible).map(header => header.width).join(' ')), [innerHeaders])
 
   return <div id="observable-grid" className={`${className} ${classes.root}`} onMouseLeave={clearOnBlur}>
+    <Processing {...{rows, headers, orderBy, order, searchColumns}} />
     {!isHeaderHidden && innerHeaders.length > 0 && <ObservableHeader {...{
         options: headerOptions,
         rows: sortedRows,
