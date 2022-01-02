@@ -17,7 +17,6 @@ import { ActionsRow, AvatarRow, Card, CurrencyRow, DescriptionRow, LastSeenRow, 
 
 const App = () => {
   const [rows, setRows] = useState(dataGenerator(100));
-  const [performance, setPerformance] = useState(0);
   const [isColumned, setIsColumned] = useState(false);
   const [testOptions, setTestOptions] = useState({ foo: 'bar' });
   const [selectedTiles, setSelectedTiles] = useState([]);
@@ -269,7 +268,6 @@ const App = () => {
           <Chip onClick={() => setIsColumned(!isColumned)} variant="outlined" label={`Columns ${isColumned ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setCustomHeader(!customHeader)} variant="outlined" label={`Custom H ${customHeader ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsHeaderHidden(!isHeaderHidden)} variant="outlined" label={`Hide H ${isHeaderHidden ? 'ON' : 'OFF'}`} />
-          <Chip variant="outlined" label={<div style={{ minWidth: '100px', textAlign: 'center' }}>{`Perf: ${performance}ms`}</div>} />
           <Chip onClick={() => setCanvasDrawing(!canvasDrawing)} variant="outlined" label={`🧪 Canvas ${canvasDrawing ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setSeeLive(!seeLive)} variant="outlined" label={`Env ${seeLive ? 'PROD' : 'DEV'}`} />
           <Chip onClick={() => setAsGrid(!asGrid)} variant="outlined" label={`Grid ${asGrid ? 'GRID' : 'TABLE'}`} />

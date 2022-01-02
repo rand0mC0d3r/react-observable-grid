@@ -57,7 +57,7 @@ const TilesRow = ({ row: { tiles }, selectedTiles, onSelectTile = () => {} }) =>
 const CurrencyRow = ({ row: { price} }) => <Typography style={{ display: 'flex', justifyContent: 'flex-end' }} variant='subtitle2'>{price}</Typography>
 const DescriptionRow = memo(({ description }) => <Typography variant='body2'>{description}</Typography>)
 const RoleRow = memo(({ role }) => <Typography variant='body2' color="textSecondary">{role}</Typography>)
-const LastSeenRow = memo(({ lastSeen }) => <Typography variant='body2' color="textSecondary">Last Seen: {lastSeen}</Typography>)
+const LastSeenRow = memo(({ lastSeen }) => <Typography style={{display: 'flex', justifyContent: 'flex-end'}} variant='caption' color="textSecondary">Last Seen: {lastSeen}</Typography>)
 
 const ActionsRow = memo(() => {
   const theme = useTheme()
