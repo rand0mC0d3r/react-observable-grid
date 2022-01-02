@@ -63,6 +63,11 @@ const ObservableGrid =  ({
   const [startEnd, setStartEnd] = useState({ start: -1, end: 1 })
   const [throttleLimit, setThrottleLimit] = useState(50)
 
+  useEffect(() => {
+    console.log('useEffect', isDebugging)
+  }, [isDebugging])
+
+
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
   const naturalSort = createNewSortInstance({ comparer: collator.compare })
   const updateRenderedElements = () => setElementsRendered(() => [document.getElementsByTagName('*').length, Number(calculateGridElements())])
@@ -123,6 +128,7 @@ const ObservableGrid =  ({
 
 
   useEffect(() => {
+    console.log("i start")
     const indexedRows = indexRows(rows)
     setIsDirty(() => true)
     setCustomFilteredRows(() => headers?.length > 0 ? extractFilter(headers).reduce((acc, value) => value.filter(acc), indexedRows) : indexedRows)
@@ -140,11 +146,6 @@ const ObservableGrid =  ({
         ...missingColumns.map(missingColumn => {
           let minMax = '1fr'
           const averageLength = determineAverageOfContent(rows, missingColumn)
-          // let averageLength = 0
-          // rows.filter((_, i) => i < 10).forEach(r => typeof r[missingColumn] === 'string'
-          //   ? averageLength = (r[missingColumn].length + averageLength) / 2
-          //   : averageLength = (100 + averageLength) / 2
-          // )
           if (averageLength > 75) { minMax = '3fr' }
           else if (averageLength > 50) { minMax = '2fr' }
           else if (averageLength < 10) { minMax = '0.5fr' }
@@ -163,6 +164,7 @@ const ObservableGrid =  ({
     } else {
       setInnerHeaders(() => (headers || []).map(header => ({ ...header, selected: false, visible: header.visible || true })).filter(header => !isOmittingColumns.includes(header.property)))
     }
+    console.log("i end")
   }, [rows, headers, isDiscovering, discovering])
 
   useEffect(() => {

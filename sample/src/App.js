@@ -19,6 +19,7 @@ const App = () => {
   const [rows, setRows] = useState(dataGenerator(100));
   const [performance, setPerformance] = useState(0);
   const [isColumned, setIsColumned] = useState(false);
+  const [testOptions, setTestOptions] = useState({ foo: 'bar' });
   const [selectedTiles, setSelectedTiles] = useState([]);
   const [selectedAvatars, setSelectedAvatars] = useState([]);
   const [isDebugging, setIsDebugging] = useState(false);
@@ -262,6 +263,7 @@ const App = () => {
           <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debug ${isDebugging ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsDiscovering(!isDiscovering)} variant="outlined" label={`Discover ${isDiscovering ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setNoHeaders(!noHeaders)} variant="outlined" label={`Headers ${noHeaders ? 'ON' : 'OFF'}`} />
+          <Chip onClick={() => setTestOptions({foo: 'baz'})} variant="outlined" label={`Options ${JSON.stringify(testOptions)}`} />
           <Chip onClick={() => setHasProgressBar(!hasProgressBar)} variant="outlined" label={`Progress bar ${hasProgressBar ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setHasFloatingActions(!hasFloatingActions)} variant="outlined" label={`Floating ${hasFloatingActions ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsColumned(!isColumned)} variant="outlined" label={`Columns ${isColumned ? 'ON' : 'OFF'}`} />
@@ -276,7 +278,7 @@ const App = () => {
 
       <div className={`${classes.actions} ${classes.bigContainer}`}>
         <div className={`${classes.actions} ${classes.smallActions}`}>
-          {[5, 30, 250, 1500, 65000, 1000000].map(count => <Button
+          {[5, 30, 250, 1500, 65000, 100000].map(count => <Button
             disableElevation
             style={{minWidth: 'unset', padding: '5px 12px'}}
             color={count === rows?.length ? 'primary' : 'default'}
@@ -317,6 +319,7 @@ const App = () => {
                 customActions={ <Fab size="small" color="primary" aria-label="add">
                   <AddIcon />
                 </Fab>}
+                testOptions={testOptions}
                 hasProgressBar={hasProgressBar}
                 isOmittingColumns={['uuid', 'tilesHash']}
                 isGrid={asGrid ? 4 : undefined}
