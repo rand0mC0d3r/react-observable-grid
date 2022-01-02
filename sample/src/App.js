@@ -24,6 +24,7 @@ const App = () => {
   const [isDebugging, setIsDebugging] = useState(false);
   const [isDiscovering, setIsDiscovering] = useState(false);
   const [hasProgressBar, setHasProgressBar] = useState(false);
+  const [hasFloatingActions, setHasFloatingActions] = useState(false);
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
   const [noHeaders, setNoHeaders] = useState(false);
   const [customHeader, setCustomHeader] = useState(false);
@@ -262,6 +263,7 @@ const App = () => {
           <Chip onClick={() => setIsDiscovering(!isDiscovering)} variant="outlined" label={`Discover ${isDiscovering ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setNoHeaders(!noHeaders)} variant="outlined" label={`Headers ${noHeaders ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setHasProgressBar(!hasProgressBar)} variant="outlined" label={`Progress bar ${hasProgressBar ? 'ON' : 'OFF'}`} />
+          <Chip onClick={() => setHasFloatingActions(!hasFloatingActions)} variant="outlined" label={`Floating ${hasFloatingActions ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsColumned(!isColumned)} variant="outlined" label={`Columns ${isColumned ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setCustomHeader(!customHeader)} variant="outlined" label={`Custom H ${customHeader ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsHeaderHidden(!isHeaderHidden)} variant="outlined" label={`Hide H ${isHeaderHidden ? 'ON' : 'OFF'}`} />
@@ -325,6 +327,7 @@ const App = () => {
                 isDiscovering={isDiscovering}
                 isColumned={asGrid ? false : isColumned}
                 className={classes.observableGrid}
+                hasFloatingActions={hasFloatingActions}
                 isClearingOnBlur={true}
                 rowOptions={{ padding: '8px 16px 8px 16px' }}
                 headerOptions={{ padding: '4px 16px 4px 16px' }}

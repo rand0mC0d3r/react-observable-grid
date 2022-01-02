@@ -125,7 +125,7 @@ const ObservableGrid =  ({
   useEffect(() => {
     const indexedRows = indexRows(rows)
     setIsDirty(() => true)
-    setCustomFilteredRows(() => headers.length > 0 ? extractFilter(headers).reduce((acc, value) => value.filter(acc), indexedRows) : indexedRows)
+    setCustomFilteredRows(() => headers?.length > 0 ? extractFilter(headers).reduce((acc, value) => value.filter(acc), indexedRows) : indexedRows)
     setSelectedIndex(() => null)
     if (!headers) { setDiscovering(() => true) }
   }, [rows, headers])
@@ -139,7 +139,7 @@ const ObservableGrid =  ({
         ...(headers || []).filter(prev => !missingColumns.includes(prev.property)),
         ...missingColumns.map(missingColumn => {
           let minMax = '1fr'
-          const averageLength = determineAverageOfContent(rows, column)
+          const averageLength = determineAverageOfContent(rows, missingColumn)
           // let averageLength = 0
           // rows.filter((_, i) => i < 10).forEach(r => typeof r[missingColumn] === 'string'
           //   ? averageLength = (r[missingColumn].length + averageLength) / 2

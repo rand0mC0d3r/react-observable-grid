@@ -31,16 +31,16 @@ const NamesRow = ({
   return <div style={{ display: 'flex', flexDirection: 'row', gap: '8px', alignItems: 'center' }}>
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
       <Typography
-        style={{ cursor: 'pointer' }}
+        style={{ fontSize: '14px' }}
         variant='subtitle2'
-      color="textSecondary">
+        color="textSecondary">
         {name} {surname}
       </Typography>
     </div>
   </div>
 }
 
-const RoleRow = ({ role }) => <Typography variant='subtitle2' color="textSecondary">{role}</Typography>
+const RoleRow = ({ role }) => <Typography style={{ fontSize: '14px' }} color="textSecondary">{role}</Typography>
 
 const Card = ({ row, selectedTiles, onSelectAvatar = () => { }, onSelectTile = () => {} }) => {
   return <div

@@ -61,6 +61,12 @@ const useStyles = makeStyles(theme => ({
       paddingRight: '2px',
       borderBottom: `1px solid ${theme.palette.divider}`,
     },
+    '& *': {
+      overflow: 'scroll',
+    },
+    '& *::-webkit-scrollbar': {
+      display: 'none',
+    },
     '& > *:hover': {
       backgroundColor: '#e0f0ff88',
     },
