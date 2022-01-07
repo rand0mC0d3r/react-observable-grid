@@ -1,5 +1,6 @@
 import { Button, Chip, Fab, IconButton, Slider, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import AddIcon from '@material-ui/icons/Add';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import GitHubIcon from '@material-ui/icons/GitHub';
@@ -17,14 +18,14 @@ import { ActionsRow, AvatarRow, Card, CurrencyRow, DescriptionRow, LastSeenRow, 
 
 const App = () => {
   const [rows, setRows] = useState(dataGenerator(100));
-  const [isColumned, setIsColumned] = useState(false);
+  const [isColumned, setIsColumned] = useState(true);
   const [testOptions, setTestOptions] = useState({ foo: 'bar' });
   const [selectedTiles, setSelectedTiles] = useState([]);
   const [selectedAvatars, setSelectedAvatars] = useState([]);
   const [isDebugging, setIsDebugging] = useState(false);
   const [isDiscovering, setIsDiscovering] = useState(false);
   const [hasProgressBar, setHasProgressBar] = useState(false);
-  const [hasFloatingActions, setHasFloatingActions] = useState(false);
+  const [hasFloatingActions, setHasFloatingActions] = useState(true);
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
   const [noHeaders, setNoHeaders] = useState(false);
   const [customHeader, setCustomHeader] = useState(false);
@@ -157,10 +158,10 @@ const App = () => {
       align: 'flex-end',
       extraFilters: [
         {
-          label: `${value[0]} - ${value[1]}`,
-          icon: <SignalCellular3BarIcon />,
+          label: `Prices`,
+          icon: <AccountBalanceWalletIcon />,
           tooltip: 'Prices range',
-          func: (rows) => rows.filter((row) => value[0] <= row.price.split(' ')[0] && row.price.split(' ')[0] <= value[1]),
+          func: (rows) => value[0] !== -1 ? rows.filter((row) => value[0] <= row.price.split(' ')[0] && row.price.split(' ')[0] <= value[1]) : rows,
           variable: value,
           node: () => {
             const entries = rows.map(r => r.price.split(' ')[0] * 1000).sort((a, b) => a - b);
@@ -236,11 +237,6 @@ const App = () => {
     setRows(dataGenerator(count));
   }
 
-  useEffect(() => {
-    const entries = rows.map(r => r.price.split(' ')[0] * 1000).sort((a, b) => a - b)
-    setValue([Math.round(entries.slice(0, 1) / 1000), Math.round(entries.slice(-1) / 1000)])
-  }, [rows])
-
   return <ThemeProvider {...{ theme }} >
     <div className={classes.wrapper}>
       <div className={`${classes.actions} ${classes.bigContainer}`}>
@@ -314,7 +310,7 @@ const App = () => {
               /> */}
               <LocalObservableGrid {...{ isDebugging, headers: asGrid ? headersGrid : (noHeaders ? undefined : headers), canvasDrawing }}
                 uniqueId="fakeEntries"
-                customActions={ <Fab size="small" color="primary" aria-label="add">
+                customActions={<Fab size="small" color="primary" onClick={() => { alert('I am inserted by the developer')}} aria-label="add">
                   <AddIcon />
                 </Fab>}
                 testOptions={testOptions}

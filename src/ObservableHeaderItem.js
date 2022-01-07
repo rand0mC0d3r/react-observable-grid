@@ -17,6 +17,7 @@ const ObservableHeaderItem = ({
   property,
   label,
   rows,
+  width,
   originalRows,
   noHightlight,
   align,
@@ -88,7 +89,7 @@ const ObservableHeaderItem = ({
     id="outlined-basic" label="Search" variant="outlined"/>
 
   const renderPopoverExtras = () => !!suggestions
-    ? <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+    ? <>
         {suggestions(checked ? rows : originalRows).map(suggestion => <Chip
           variant='outlined'
           size="small"
@@ -98,7 +99,7 @@ const ObservableHeaderItem = ({
           key={suggestion}
           label={suggestion}
         />)}
-      </div>
+      </>
     : <></>
 
 
@@ -127,6 +128,7 @@ const ObservableHeaderItem = ({
     onClick={() => !noSort && handleRequestSort(property || label.toLowerCase())}
     onDoubleClick={() => !noSort && handleResetSort()}
     style={{
+      flexWrap: 'nowrap',
       cursor: noSort ? 'default' : 'pointer',
       justifyContent: align ? 'flex-end' : 'flex-start',
       flexDirection: align === 'right' ? 'row-reverse' : 'row',
@@ -160,6 +162,7 @@ const ObservableHeaderItem = ({
       flexWrap: 'nowrap',
       gap: '8px',
       justifyContent: 'space-between',
+      overflow: 'hidden',
       flexDirection: align === 'flex-end' ? 'row-reverse' : 'row',
     }}>
     <div
@@ -218,11 +221,11 @@ const ObservableHeaderItem = ({
             setSearchString('')
           } : undefined}
           icon={searchString !== ''
-            ? <>
-              <SearchIcon color="action" />
-              {isCaseSensitive && <TextFieldsIcon color="action" style={{ fontSize: '12px' }} />}
-              {isRegex && <FunctionsIcon color="action" style={{ fontSize: '12px' }} />}
-            </>
+            ? <div style={{paddingLeft: '2px'}}>
+                <SearchIcon color="primary" style={{ fontSize: '18px' }} />
+                {isCaseSensitive && <TextFieldsIcon color="action" style={{ fontSize: '12px' }} />}
+                {isRegex && <FunctionsIcon color="action" style={{ fontSize: '12px' }} />}
+              </div>
             : undefined}
         />}
 

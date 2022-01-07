@@ -1,31 +1,24 @@
 import { createNewSortInstance } from 'fast-sort'
 import React, { useEffect, useState } from 'react'
 
-
 const Processing =  ({
   headers,
   rows,
 	orderBy,
 	order,
-	searchColumns,
+  searchColumns,
+  throttleLimit,
 
 	isDiscovering,
 	isOmittingColumns,
 
-	setProcessedRows,
-	setProcessedHeaders,
+	setProcessedRows = () => { },
+  setProcessedHeaders = () => { },
+  setSelectedIndex = () => { },
+  setThrottling = () => { },
+  setDiscovering = () => { },
+  setStartEnd = () => { },
 }) => {
-
-  const [innerHeaders, setInnerHeaders] = useState([])
-  const [discovering, setDiscovering] = useState(false)
-  const [url, setUrl] = useState('')
-  const [isDirty, setIsDirty] = useState(false)
-  const [throttling, setThrottling] = useState(false)
-  const [selectedIndex, setSelectedIndex] = useState(-1)
-  const [sortedRows, setSortedRows] = useState([])
-  const [startEnd, setStartEnd] = useState({ start: -1, end: 1 })
-  const [throttleLimit, setThrottleLimit] = useState(50)
-
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
   const naturalSort = createNewSortInstance({ comparer: collator.compare })
 
@@ -59,25 +52,19 @@ const Processing =  ({
 		: naturalSort(rows).desc([r => r[orderBy]]))
 
   useEffect(() => {
-    console.log("B.i start")
-    console.log(rows, headers, searchColumns, order, orderBy)
     const indexedRows = indexRows(rows)
-    setIsDirty(() => true)
     setSelectedIndex(() => null)
     if (!headers) { setDiscovering(() => true) }
 
     const tmpRows1 = headers?.length > 0 ? extractFilter(headers).reduce((acc, value) => value.filter(acc), indexedRows) : indexedRows
     const tmpRows2 = searchColumns.length > 0 ? filterRows(tmpRows1, searchColumns) : tmpRows1
     const tmpRows3 = orderRows(tmpRows2, orderBy, order).map((r, index) => ({ ...r, __index: index }))
-    setSortedRows(() => tmpRows3)
+    setProcessedRows(() => tmpRows3)
     setStartEnd(() => ({ start: -1, end: 1 }))
     setThrottling(() => tmpRows3.length - 1 >= throttleLimit)
-    setIsDirty(() => false)
-    console.log("B.i end")
   }, [rows, headers, searchColumns, order, orderBy, throttleLimit])
 
   useEffect(() => {
-    // console.log('4. useEffect', rows, headers, isDiscovering, discovering)
     if (isDiscovering) {
       const watchedHeaders = extractHeaderKeys(headers)
       const missingColumns = Object.keys(rows[0]).filter(knownColumn => !watchedHeaders.includes(knownColumn))
@@ -100,15 +87,13 @@ const Processing =  ({
           }
         }),
       ]
-      setInnerHeaders(() => newHeaders.map(header => ({ ...header, selected: false, visible: header.visible || true })).filter(header => !isOmittingColumns?.includes(header.property)))
+      setProcessedHeaders(() => newHeaders.map(header => ({ ...header, selected: false, visible: header.visible || true })).filter(header => !isOmittingColumns?.includes(header.property)))
     } else {
-      setInnerHeaders(() => (headers || []).map(header => ({ ...header, selected: false, visible: header.visible || true })).filter(header => !isOmittingColumns?.includes(header.property)))
+      setProcessedHeaders(() => (headers || []).map(header => ({ ...header, selected: false, visible: header.visible || true })).filter(header => !isOmittingColumns?.includes(header.property)))
     }
-    // console.log("i end")
   }, [rows, headers, isDiscovering])
 
   return null
 }
-
 
 export default Processing

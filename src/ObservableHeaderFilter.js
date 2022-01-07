@@ -19,7 +19,7 @@ const ObservableHeaderFilter = ({ width, checked, onChange, label, icon, tooltip
   const onClose = () => setAnchorEl(null);
 
   return <div ref={divRef}>
-    {open && <Popover {...{ id, className: classes.popover, key: `${label}_popover`, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 1 }}>
+    {open && <Popover {...{ id, className: classes.popover, key: `${label}_popover`, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 2 }}>
       <div className={classes.root} style={{ width }}>
         <div className={classes.toolbar}>
           <div className={classes.menu} >
@@ -40,13 +40,21 @@ const ObservableHeaderFilter = ({ width, checked, onChange, label, icon, tooltip
       </div>
     </Popover>}
     <Tooltip arrow title={tooltip}>
+      <span>
+        {/* <div style={{
+          width: 250px;
+          white-space: nowrap;
+        overflow: hidden;
+  text-overflow: ellipsis;
+        }}>slfkdsklfdslkfdslkfds</div> */}
       <Chip {...{ label, icon, onDelete, onClick,
           size: 'small',
           key: `${label}_popover_chip`,
           variant: 'outlined'
         }}
         aria-describedby={id}
-      />
+        />
+      </span>
     </Tooltip>
   </div>
 }
@@ -54,7 +62,9 @@ const ObservableHeaderFilter = ({ width, checked, onChange, label, icon, tooltip
 const useStyles = makeStyles(theme => ({
   popover: {
     '& .MuiPopover-paper': {
-      backgroundColor: '#FFFFFF88',
+      backgroundColor: '#FFFFFF96',
+      marginTop: '8px',
+      borderRadius: '0px',
       backdropFilter: 'blur(10px)',
     }
   },
@@ -68,26 +78,26 @@ const useStyles = makeStyles(theme => ({
     gap: '4px',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: theme.palette.divider,
+    backgroundColor: '#DDDDDD96',
     flexDirection: 'row-reverse',
     padding: '4px 16px'
   },
   root: {
     display: 'flex',
-    borderRadius: theme.shape.borderRadius,
+    // borderRadius: theme.shape.borderRadius,
     minWidth: '300px',
     flexDirection: 'column',
     border: `1px solid ${theme.palette.divider}`,
   },
   popoverContent: {
     backgroundColor: theme.palette.background.default,
-    padding: '16px 16px',
+    padding: '12px',
   },
   popoverExtra: {
     borderTop: `1px solid ${theme.palette.primary.main}`,
     display: 'flex',
-    padding: '12px 16px',
-    gap: '8px',
+    padding: '12px',
+    gap: '8px 4px',
     flexWrap: 'wrap'
   },
 }))
