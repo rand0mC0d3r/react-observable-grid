@@ -25,10 +25,13 @@
         letter-spacing: 0px;
         font-kerning: normal;
         font-variant: proportional-width;
-        user-select: none;
       }
       body::-webkit-scrollbar {
         display: none;
+      }
+      *::selection {
+          color: #000;
+          background: #001cbb52;
       }
       .MuiAccordion-root.Mui-expanded {
         margin: 4px 0px !important;

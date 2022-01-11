@@ -31,9 +31,10 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.text.primary,
     fontSize: '12px',
     backgroundColor: theme.palette.divider,
+    border: `1px solid ${theme.palette.divider}`,
     borderRadius: theme.shape.borderRadius,
     padding: `${theme.spacing(0.5)}px ${theme.spacing(1)}px`,
-    backdropFilter: 'blur(4px)',
+    backdropFilter: 'blur(12px)',
   },
 }))
 
