@@ -288,21 +288,28 @@ const App = () => {
       <div className={classes.containerWrapper}>
         <div className={classes.container}>
           {seeLive
-            ? <ObservableGrid {...{ isDebugging, headers: asGrid ? headersGrid : headers, canvasDrawing }}
+            ? <ObservableGrid {...{ isDebugging, headers: asGrid ? headersGrid : (noHeaders ? undefined : headers), canvasDrawing }}
                 uniqueId="fakeEntries"
+                customActions={<Fab size="small" color="primary" onClick={() => { alert('I am inserted by the developer')}} aria-label="add">
+                  <AddIcon />
+                </Fab>}
+                testOptions={testOptions}
+                hasProgressBar={hasProgressBar}
+                isOmittingColumns={['uuid', 'tilesHash']}
                 isGrid={asGrid ? 4 : undefined}
                 isAlternating={asGrid ? false : true}
                 pageSize={asGrid ? 100 : 50}
                 isHeaderHidden={isHeaderHidden}
                 canvasDrawing={false}
+                isDiscovering={isDiscovering}
                 isColumned={asGrid ? false : isColumned}
                 className={classes.observableGrid}
+                hasFloatingActions={hasFloatingActions}
                 isClearingOnBlur={true}
                 rowOptions={{ padding: '8px 16px 8px 16px' }}
                 headerOptions={{ padding: '4px 16px 4px 16px' }}
                 rows={rows}
-                emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
-              />
+                emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}/>
             : <>
               {/* <LocalObservableGrid
                 className={classes.observableGrid}
