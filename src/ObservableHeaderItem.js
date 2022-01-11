@@ -213,7 +213,16 @@ const ObservableHeaderItem = ({
           key={`${property}_searchString`}
           width={'350px'}
           tooltip={`Search in column: ${label}${searchString.length > 0 ? ` | Search string: ${searchString}` : ''}`}
-          label={(searchString.length > 6 ? `${searchString.substring(0, 6)}...` : searchString) || <SearchIcon color="action" style={{ fontSize: '18px', marginTop: '3px' }} />}
+          label={<>
+            {searchString !== ''
+              ? <div style={{alignItems: 'center', display: 'flex'}}>
+                  {isCaseSensitive && <TextFieldsIcon color="action" style={{ fontSize: '12px' }} />}
+                  {isRegex && <FunctionsIcon color="action" style={{ fontSize: '12px' }} />}
+                  <div className={classes.truncate}>{searchString}</div>
+                </div>
+              : <SearchIcon color="action" style={{ fontSize: '18px', marginTop: '3px' }} />
+            }
+          </>}
           popover={<>{renderPopover()}</>}
           popoverExtras={<>{renderPopoverExtras()}</>}
           onDelete={searchString !== '' ? () => {
@@ -221,11 +230,7 @@ const ObservableHeaderItem = ({
             setSearchString('')
           } : undefined}
           icon={searchString !== ''
-            ? <div style={{paddingLeft: '2px'}}>
-                <SearchIcon color="primary" style={{ fontSize: '18px' }} />
-                {isCaseSensitive && <TextFieldsIcon color="action" style={{ fontSize: '12px' }} />}
-                {isRegex && <FunctionsIcon color="action" style={{ fontSize: '12px' }} />}
-              </div>
+            ? <SearchIcon color="primary" style={{ fontSize: '18px' }} />
             : undefined}
         />}
 
@@ -276,6 +281,13 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     flexWrap: 'nowrap',
     gap: '8px'
+  },
+  truncate: {
+    minWidth: '35px',
+    maxWidth: '65px',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis'
   },
   headersSelectable: {
   },

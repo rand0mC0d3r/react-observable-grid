@@ -40,13 +40,6 @@ const ObservableHeaderFilter = ({ width, checked, onChange, label, icon, tooltip
       </div>
     </Popover>}
     <Tooltip arrow title={tooltip}>
-      <span>
-        {/* <div style={{
-          width: 250px;
-          white-space: nowrap;
-        overflow: hidden;
-  text-overflow: ellipsis;
-        }}>slfkdsklfdslkfdslkfds</div> */}
       <Chip {...{ label, icon, onDelete, onClick,
           size: 'small',
           key: `${label}_popover_chip`,
@@ -54,7 +47,6 @@ const ObservableHeaderFilter = ({ width, checked, onChange, label, icon, tooltip
         }}
         aria-describedby={id}
         />
-      </span>
     </Tooltip>
   </div>
 }
