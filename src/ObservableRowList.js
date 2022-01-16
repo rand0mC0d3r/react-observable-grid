@@ -41,7 +41,7 @@ const ObservableRowList = ({
       : header.row
         ? header.row(row)
         : <Typography
-            style={{ wordBreak: 'break-all' }}
+            style={{ wordBreak: 'break-all', fontSize: '13px' }}
             variant="subtitle2"
             color="textPrimary"
           >

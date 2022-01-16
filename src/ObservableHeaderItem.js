@@ -1,9 +1,8 @@
-import { Chip, InputAdornment, TextField, Tooltip, Typography } from '@material-ui/core';
+import { InputAdornment, TextField, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import FunctionsIcon from '@material-ui/icons/Functions';
-import PlusOneIcon from '@material-ui/icons/PlusOne';
 import SearchIcon from '@material-ui/icons/Search';
 import TextFieldsIcon from '@material-ui/icons/TextFields';
 import React, { cloneElement, useEffect, useState } from 'react';
@@ -47,11 +46,11 @@ const ObservableHeaderItem = ({
   const [isCaseSensitive, setIsCaseSensitive] = useState(false);
   const [isRegex, setIsRegex] = useState(false);
 
-  useEffect(() => {
-    const currentElement = document.getElementById(`headerItem_${property}`)
+  // useEffect(() => {
+  //   const currentElement = document.getElementById(`headerItem_${property}`)
 
 
-  }, [])
+  // }, [])
 
   const updateSearchString = ({ term }) => {
     setSearchString(term)
@@ -63,7 +62,6 @@ const ObservableHeaderItem = ({
 
   const renderPopover = () => <TextField
     autoFocus
-    size="small"
     fullWidth
     value={searchString}
     InputProps={{
@@ -90,31 +88,27 @@ const ObservableHeaderItem = ({
             color={isRegex ? 'primary' : 'disabled'}
           />
         </Tooltip>
-        {searchString.length > 0 && <InputAdornment onClick={() => updateSearchString({ term: '' })} position="end"><DeleteOutlineIcon style={{cursor: 'pointer'}} /></InputAdornment>}
-
       </>,
     }}
     onChange={(e) => updateSearchString({ term: e.target.value })}
     id="outlined-basic" label="Search" variant="outlined"/>
 
   const renderPopoverExtras = () => !!suggestions
-    ? <>
-
-      {suggestions(checked ? rows : originalRows).map(suggestion => <Chip
-        icon={isRegex
-          ? <AddCircleOutlineIcon color="action" />
-          : <SearchIcon color="secondary" style={{opacity: '0.75'}} />
-        }
-        variant={suggestion === searchString ? 'default' : 'outlined'}
-        color={suggestion === searchString ? 'primary' : 'default'}
-        size="small"
-        onClick={() => isRegex
-          ? appendToSearchString({ term: suggestion })
-          : updateSearchString({ term: suggestion })}
-        key={suggestion}
-        label={`${suggestion}`}
-        />)}
-      </>
+    ? <>{suggestions(checked ? rows : originalRows).map(suggestion =>
+    <div
+      className={classes.customChip}
+      variant={suggestion === searchString ? 'default' : 'outlined'}
+      color={suggestion === searchString ? 'primary' : 'default'}
+      // size="small"
+      onClick={() => isRegex
+        ? appendToSearchString({ term: suggestion })
+        : updateSearchString({ term: suggestion })}
+      key={suggestion}
+      // label={`${suggestion}`}
+      >
+        {isRegex ? <AddCircleOutlineIcon className={classes.smallChipIcon} /> : <SearchIcon className={classes.smallChipIcon} />}
+        {suggestion}
+    </div>)}</>
     : <></>
 
 
@@ -226,10 +220,11 @@ const ObservableHeaderItem = ({
     }}>
         {!noSearch && <ObservableHeaderFilter {...{ checked, onChange, property }}
           key={`${property}_searchString`}
-          width={'350px'}
           tooltip={`Search in column: ${label}${searchString.length > 0 ? ` | Search string: ${searchString}` : ''}`}
           label={searchString}
           popover={<>{renderPopover()}</>}
+
+          toolbarItems={searchString.length > 0 && <InputAdornment onClick={() => updateSearchString({ term: '' })} position="end"><DeleteOutlineIcon style={{cursor: 'pointer'}} /></InputAdornment>}
           popoverExtras={<>{renderPopoverExtras()}</>}
           onDelete={searchString !== '' ? () => {
             handleSearchTerm({ key: property, term: null })
@@ -256,6 +251,24 @@ const ObservableHeaderItem = ({
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
+  },
+  customChip: {
+    display: 'flex',
+    gap: '4px',
+    cursor: 'pointer',
+    alignItems: 'center',
+    border: `1px dotted ${theme.palette.divider}`,
+    padding: '2px 4px',
+    borderRadius: theme.shape.borderRadius * 4,
+
+    '&:hover': {
+      border: `1px solid ${theme.palette.divider}`,
+      boxShadow: `inset 0px 0px 0px 1px ${theme.palette.divider}`,
+    }
+  },
+  smallChipIcon: {
+    fontSize: '16px',
+    color: theme.palette.text.hint,
   },
   wrapper: {
     display: 'grid',

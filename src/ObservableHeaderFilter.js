@@ -8,7 +8,7 @@ import React, { cloneElement, useRef, useState } from 'react';
 const anchorOrigin = { vertical: 'bottom', horizontal: 'center' }
 const transformOrigin = { vertical: 'top', horizontal: 'center' }
 
-const ObservableHeaderFilter = ({ width, extraIcons, checked, onChange, label, icon, tooltip = "Filtering mechanic", popover, popoverExtras, onDelete }) => {
+const ObservableHeaderFilter = ({ extraIcons, checked, onChange, label, icon, tooltip = "Filtering mechanic", popover, popoverExtras, onDelete, toolbarItems }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
   const [anchorEl, setAnchorEl] = useState(null);
@@ -22,7 +22,7 @@ const ObservableHeaderFilter = ({ width, extraIcons, checked, onChange, label, i
 
   return <div ref={divRef}>
     {open && <Popover {...{ id, className: classes.popover, key: `${label}_popover`, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 2 }}>
-      <div className={classes.root} style={{ width }}>
+      <div className={classes.root}>
         <div className={classes.toolbar}>
           <div className={classes.menu} >
             <ViewHeadlineIcon />
@@ -35,6 +35,7 @@ const ObservableHeaderFilter = ({ width, extraIcons, checked, onChange, label, i
               inputProps={{ 'aria-label': 'secondary checkbox' }}
             />
             <ShortTextIcon />
+            {toolbarItems}
           </div>
         </div>
         <div className={classes.popoverContent}>{popover}</div>
@@ -42,29 +43,15 @@ const ObservableHeaderFilter = ({ width, extraIcons, checked, onChange, label, i
       </div>
     </Popover>}
     <Tooltip arrow title={tooltip}>
-      {/* <span> */}
       <div
+        {...{ onClick }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-          {...{ onClick }}
-        className={clsx([
-          label.length > 0 && classes.activeChip,
-          classes.customChip,
-          ])}
-        >
+        className={clsx([ label.length > 0 && classes.activeChip, classes.customChip,])}>
           {icon && cloneElement(icon, { className: classes.smallChipIcon})}
           {extraIcons}
-          {/* {isHovered && label} */}
           {label && <div className={classes.truncate}>{label}</div>}
       </div>
-      {/* <Chip {...{ label, icon, onDelete, onClick,
-          size: 'small',
-          key: `${label}_popover_chip`,
-          variant: 'outlined'
-        }}
-        aria-describedby={id}
-        /> */}
-        {/* </span> */}
     </Tooltip>
   </div>
 }
@@ -122,8 +109,7 @@ const useStyles = makeStyles(theme => ({
   },
   root: {
     display: 'flex',
-    // borderRadius: theme.shape.borderRadius,
-    minWidth: '300px',
+    width: '350px',
     flexDirection: 'column',
     border: `1px solid ${theme.palette.divider}`,
   },
