@@ -1,5 +1,4 @@
 import { makeStyles, useTheme } from '@material-ui/core/styles'
-import clsx from 'clsx'
 import PropTypes from 'prop-types'
 import React from 'react'
 
@@ -16,7 +15,9 @@ const Columns = ({ gridTemplateColumns, rowOptions, innerHeaders }) => {
 			gridTemplateColumns: gridTemplateColumns
 		}}
 	>
-		{innerHeaders.filter(ih => ih.visible).map(innerHeader => <div key={`${innerHeader.property}-${innerHeader.label || ''}`} className={classes.observableColumn}/>)}
+    {innerHeaders
+      .filter(ih => ih.visible)
+      .map(innerHeader => <div key={`${innerHeader.property}-${innerHeader.label || ''}`} className={classes.observableColumn} />)}
 	</div>
 }
 
@@ -46,9 +47,9 @@ const useStyles = makeStyles(theme => ({
 }))
 
 Columns.propTypes = {
-  innerHeaders: PropTypes.array,
+  innerHeaders: PropTypes.array.isRequired,
   rowOptions: PropTypes.object,
-  gridTemplateColumns: PropTypes.string,
+  gridTemplateColumns: PropTypes.string.isRequired,
 }
 
 export default Columns

@@ -1,6 +1,7 @@
 import { Tooltip } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
+import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -9,8 +10,8 @@ const ActionButtons = ({ selectedIndex, isAtTop, customActions, total, filtered 
   const classes = useStyles(theme)
 
   const predefinedActions = [
-    { id: 'selected', title: `Scroll to item: ${selectedIndex}`, label: `→ ${selectedIndex + 1}`, visible: selectedIndex },
-    { id: 'first', title: `Scroll to top: ${selectedIndex}`, label: '↑', visible: isAtTop },
+    { id: 'selected', onClick: () => focusElement('selected'),  title: `Scroll to item: ${selectedIndex}`, label: `→ ${selectedIndex + 1}`, visible: selectedIndex },
+    { id: 'first', onClick: () => focusElement('first'), title: `Scroll to beginning`, label: '↑', visible: isAtTop },
     { id: 'filtered', title: `Filtered rows: ${filtered}`, label: <><SearchIcon style={{fontSize: '18px'}} /> {filtered}</>, visible: filtered !== total && total > 0 },
     { id: 'total', title: `Total rows: ${total}`, label: total, visible: total > 0 }
   ]
@@ -23,8 +24,8 @@ const ActionButtons = ({ selectedIndex, isAtTop, customActions, total, filtered 
   }
 
   return <div className={classes.root}>
-    {predefinedActions.filter(item => item.visible).map(({ id, label, title }) => <Tooltip {...{ title }} key={id} arrow>
-      <div onClick={() => focusElement(id)} className={classes.item}>{label}</div>
+    {predefinedActions.filter(item => item.visible).map(({ id, label, title, onClick }) => <Tooltip {...{ title }} key={id} arrow>
+      <div onClick={onClick && onClick} className={clsx([classes.item, onClick && classes.actionItem])}>{label}</div>
     </Tooltip>)}
     {customActions}
   </div>
@@ -40,6 +41,9 @@ const useStyles = makeStyles(theme => ({
     zIndex: '1',
     alignItems: 'flex-end',
   },
+  actionItem: {
+    cursor: 'pointer',
+  },
   item: {
     fontWeight: 'bold',
     border: `1px solid ${theme.palette.divider}`,
@@ -49,9 +53,11 @@ const useStyles = makeStyles(theme => ({
     borderRadius: theme.shape.borderRadius,
     backdropFilter: 'blur(4px)',
     gap: theme.spacing(0.5),
+    userSelect: 'none',
 
     '&:hover': {
       backdropFilter: 'blur(4px) brightness(1.05)',
+      boxShadow: `inset 0px 0px 0px 1px ${theme.palette.divider}`,
     }
   },
 }))
