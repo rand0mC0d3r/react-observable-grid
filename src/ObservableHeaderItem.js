@@ -1,10 +1,12 @@
 import { Chip, InputAdornment, TextField, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import FunctionsIcon from '@material-ui/icons/Functions';
+import PlusOneIcon from '@material-ui/icons/PlusOne';
 import SearchIcon from '@material-ui/icons/Search';
 import TextFieldsIcon from '@material-ui/icons/TextFields';
-import React, { cloneElement, useState } from 'react';
+import React, { cloneElement, useEffect, useState } from 'react';
 import ObservableHeaderFilter from './ObservableHeaderFilter';
 
 const defaultOptions = {
@@ -45,6 +47,12 @@ const ObservableHeaderItem = ({
   const [isCaseSensitive, setIsCaseSensitive] = useState(false);
   const [isRegex, setIsRegex] = useState(false);
 
+  useEffect(() => {
+    const currentElement = document.getElementById(`headerItem_${property}`)
+
+
+  }, [])
+
   const updateSearchString = ({ term }) => {
     setSearchString(term)
     handleSearchTerm({ key: property, term: term, isRegex, isCaseSensitive })}
@@ -55,6 +63,7 @@ const ObservableHeaderItem = ({
 
   const renderPopover = () => <TextField
     autoFocus
+    size="small"
     fullWidth
     value={searchString}
     InputProps={{
@@ -90,14 +99,20 @@ const ObservableHeaderItem = ({
 
   const renderPopoverExtras = () => !!suggestions
     ? <>
-        {suggestions(checked ? rows : originalRows).map(suggestion => <Chip
-          variant='outlined'
-          size="small"
-          onClick={() => isRegex
-            ? appendToSearchString({ term: suggestion })
-            : updateSearchString({ term: suggestion })}
-          key={suggestion}
-          label={suggestion}
+
+      {suggestions(checked ? rows : originalRows).map(suggestion => <Chip
+        icon={isRegex
+          ? <AddCircleOutlineIcon color="action" />
+          : <SearchIcon color="secondary" style={{opacity: '0.75'}} />
+        }
+        variant={suggestion === searchString ? 'default' : 'outlined'}
+        color={suggestion === searchString ? 'primary' : 'default'}
+        size="small"
+        onClick={() => isRegex
+          ? appendToSearchString({ term: suggestion })
+          : updateSearchString({ term: suggestion })}
+        key={suggestion}
+        label={`${suggestion}`}
         />)}
       </>
     : <></>
@@ -201,7 +216,7 @@ const ObservableHeaderItem = ({
         </div>)}
       </div>}
     </div>
-    <div style={{
+    <div id={`headerItemFilters_${property}`} style={{
       display: 'flex',
       gap: '4px',
       flexWrap: 'wrap',
@@ -213,25 +228,18 @@ const ObservableHeaderItem = ({
           key={`${property}_searchString`}
           width={'350px'}
           tooltip={`Search in column: ${label}${searchString.length > 0 ? ` | Search string: ${searchString}` : ''}`}
-          label={<>
-            {searchString !== ''
-              ? <div style={{alignItems: 'center', display: 'flex'}}>
-                  {isCaseSensitive && <TextFieldsIcon color="action" style={{ fontSize: '12px' }} />}
-                  {isRegex && <FunctionsIcon color="action" style={{ fontSize: '12px' }} />}
-                  <div className={classes.truncate}>{searchString}</div>
-                </div>
-              : <SearchIcon color="action" style={{ fontSize: '18px', marginTop: '3px' }} />
-            }
-          </>}
+          label={searchString}
           popover={<>{renderPopover()}</>}
           popoverExtras={<>{renderPopoverExtras()}</>}
           onDelete={searchString !== '' ? () => {
             handleSearchTerm({ key: property, term: null })
             setSearchString('')
           } : undefined}
-          icon={searchString !== ''
-            ? <SearchIcon color="primary" style={{ fontSize: '18px' }} />
-            : undefined}
+        icon={<SearchIcon />}
+        extraIcons={<>
+          {isCaseSensitive && <TextFieldsIcon color="action" style={{ fontSize: '12px' }} />}
+          {isRegex && <FunctionsIcon color="action" style={{ fontSize: '12px' }} />}
+        </>}
         />}
 
         {extraFilters?.map(extraFilter => <ObservableHeaderFilter {...{ checked, onChange, property }}

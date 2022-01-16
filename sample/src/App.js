@@ -120,95 +120,100 @@ const App = () => {
     },
     {
       label: 'Description',
-      suggestions: (data) => Array.from(new Set(data.map(row => row.description.split(" ")).flat())).sort((a, b) => a.length - b.length).reverse().slice(0, 20),
+      suggestions: (data) => Array
+        .from(new Set(data.map(row => row.description.split(" ")).flat()))
+        .map(entry => entry.replace(/[^a-zA-z0-9]/gi,''))
+        .sort((a, b) => b.length - a.length)
+        .filter(entry => entry.length > 2)
+        .slice(0, 20),
       icon: <SubjectIcon />,
       property: 'description',
       row: (row) => <DescriptionRow {...{ description: row.description }} />,
       width: 'minmax(80px, 3fr)',
     },
-    {
-      label: 'Tiles',
-      noSearch: true,
-      icon: <DashboardIcon />,
-      customFilter: (rows) => rows.filter((row) => selectedTiles.filter(st => row.tiles.some(t => t.id === st)).length === selectedTiles.length),
-      suggestions: (data) => Array.from(new Set(data.map(row => row.tiles.map(tile => tile.name)).flat())),
-      property: 'tilesHash',
-      width: 'minmax(100px, 2fr)',
-      // extension: <>
-      //   {selectedTiles.length > 0 && <Chip onDelete={() => setSelectedTiles([])} variant="outlined" size="small" label={`Tiles: ${selectedTiles.length}`} />}
-      // </>,
-      row: (row) => <TilesRow row={row} selectedTiles={selectedTiles} onSelectTile={(tile) => {
-        setSelectedTiles(selectedTiles => selectedTiles.some(st => st === tile)
-        ? selectedTiles.filter(st => st !== tile)
-        : [...selectedTiles, tile]
-        )
-      }}  />,
-      secondaryHeaders: [
-        {
-          label: 'Tiles Count',
-          property: 'tiles',
-        },
-      ]
-    },
-    {
-      label: 'Price',
-      icon: <MonetizationOnIcon />,
-      property: 'price',
-      suggestions: (data) => Array.from(new Set(data.map(row => row.currency).flat())),
-      align: 'flex-end',
-      extraFilters: [
-        {
-          label: `Prices`,
-          icon: <AccountBalanceWalletIcon />,
-          tooltip: 'Prices range',
-          func: (rows) => value[0] !== -1 ? rows.filter((row) => value[0] <= row.price.split(' ')[0] && row.price.split(' ')[0] <= value[1]) : rows,
-          variable: value,
-          node: () => {
-            const entries = rows.map(r => r.price.split(' ')[0] * 1000).sort((a, b) => a - b);
-            return <div style={{ display: 'flex', gap: '16px', padding: '8px', alignItems: 'center'}}>
-              <Typography variant="caption" color="textSecondary">{Math.round(entries.slice(0, 1) / 1000)}</Typography>
-              <Typography variant="caption" color="primary">{value[0]}</Typography>
-              <Slider
-                value={value}
-                min={Math.round(entries.slice(0, 1) / 1000)}
-                max={Math.round(entries.slice(-1) / 1000)}
-                onChange={handleChange}
-                valueLabelDisplay="off"
-                aria-labelledby="continuous-slider"
-              />
-              <Typography variant="caption" color="primary">{value[1]}</Typography>
-              <Typography variant="caption" color="textSecondary">{Math.round(entries.slice(-1) / 1000)}</Typography>
-            </div>
-          },
-        }
-      ],
-      width: 'minmax(130px, 250px)',
-      row: (row) => <CurrencyRow row={row} />,
-      secondaryHeaders: [
-        {
-          label: 'Currency',
-          property: 'currency',
-        },
-      ]
-    },
-    {
-      label: "Last Seen",
-      suggestions: (data) => Array.from(new Set(data.map(row => row.lastSeen).flat())),
-      align: 'flex-end',
-      property: 'lastSeen',
-      // noSearch: true,
-      onHover: (row) => <ActionsRow />,
-      row: (row) => <LastSeenRow  {...{ lastSeen: row.lastSeen }} />,
-      width: 'minmax(130px, 0.75fr)',
-      // noHightlight: true,
-      secondaryHeaders: [
-        {
-          noSort: true,
-          label: 'Actions',
-          property: '',
-        },
-      ]
-    },
+    // {
+    //   label: 'Tiles',
+    //   noSearch: true,
+    //   icon: <DashboardIcon />,
+    //   customFilter: (rows) => rows.filter((row) => selectedTiles.filter(st => row.tiles.some(t => t.id === st)).length === selectedTiles.length),
+    //   suggestions: (data) => Array.from(new Set(data.map(row => row.tiles.map(tile => tile.name)).flat())),
+    //   property: 'tilesHash',
+    //   width: 'minmax(100px, 2fr)',
+    //   // extension: <>
+    //   //   {selectedTiles.length > 0 && <Chip onDelete={() => setSelectedTiles([])} variant="outlined" size="small" label={`Tiles: ${selectedTiles.length}`} />}
+    //   // </>,
+    //   row: (row) => <TilesRow row={row} selectedTiles={selectedTiles} onSelectTile={(tile) => {
+    //     setSelectedTiles(selectedTiles => selectedTiles.some(st => st === tile)
+    //     ? selectedTiles.filter(st => st !== tile)
+    //     : [...selectedTiles, tile]
+    //     )
+    //   }}  />,
+    //   secondaryHeaders: [
+    //     {
+    //       label: 'Tiles Count',
+    //       property: 'tiles',
+    //     },
+    //   ]
+    // },
+    // {
+    //   label: 'Price',
+    //   icon: <MonetizationOnIcon />,
+    //   property: 'price',
+    //   suggestions: (data) => Array.from(new Set(data.map(row => row.currency).flat())),
+    //   align: 'flex-end',
+    //   extraFilters: [
+    //     {
+    //       label: `Prices`,
+    //       icon: <AccountBalanceWalletIcon />,
+    //       tooltip: 'Prices range',
+    //       func: (rows) => value[0] !== -1 ? rows.filter((row) => value[0] <= row.price.split(' ')[0] && row.price.split(' ')[0] <= value[1]) : rows,
+    //       variable: value,
+    //       node: () => {
+    //         const entries = rows.map(r => r.price.split(' ')[0] * 1000).sort((a, b) => a - b);
+    //         return <div style={{ display: 'flex', gap: '16px', padding: '8px', alignItems: 'center'}}>
+    //           <Typography variant="caption" color="textSecondary">{Math.round(entries.slice(0, 1) / 1000)}</Typography>
+    //           <Typography variant="caption" color="primary">{value[0]}</Typography>
+    //           <Slider
+    //             value={value}
+    //             min={Math.round(entries.slice(0, 1) / 1000)}
+    //             max={Math.round(entries.slice(-1) / 1000)}
+    //             onChange={handleChange}
+    //             valueLabelDisplay="off"
+    //             aria-labelledby="continuous-slider"
+    //           />
+    //           <Typography variant="caption" color="primary">{value[1]}</Typography>
+    //           <Typography variant="caption" color="textSecondary">{Math.round(entries.slice(-1) / 1000)}</Typography>
+    //         </div>
+    //       },
+    //     }
+    //   ],
+    //   width: 'minmax(130px, 250px)',
+    //   row: (row) => <CurrencyRow row={row} />,
+    //   secondaryHeaders: [
+    //     {
+    //       label: 'Currency',
+    //       property: 'currency',
+    //     },
+    //   ]
+    // },
+    // {
+    //   label: "Last Seen",
+    //   suggestions: (data) => Array.from(new Set(data.map(row => row.lastSeen).flat())),
+    //   align: 'flex-end',
+    //   property: 'lastSeen',
+    //   // noSearch: true,
+    //   onHover: (row) => <ActionsRow />,
+    //   row: (row) => <LastSeenRow  {...{ lastSeen: row.lastSeen }} />,
+    //   width: 'minmax(130px, 0.75fr)',
+    //   // noHightlight: true,
+    //   secondaryHeaders: [
+    //     {
+    //       noSort: true,
+    //       label: 'Actions',
+    //       property: '',
+    //     },
+    //   ]
+    // },
   ]
 
   const headersGrid = [
