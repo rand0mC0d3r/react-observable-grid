@@ -3,10 +3,11 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import FunctionsIcon from '@material-ui/icons/Functions';
+import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import SearchIcon from '@material-ui/icons/Search';
 import TextFieldsIcon from '@material-ui/icons/TextFields';
 import clsx from 'clsx';
-import React, { cloneElement, useEffect, useState } from 'react';
+import React, { cloneElement, useEffect, useRef, useState } from 'react';
 import ObservableHeaderFilter from './ObservableHeaderFilter';
 
 const defaultOptions = {
@@ -46,7 +47,7 @@ const ObservableHeaderItem = ({
   const [searchString, setSearchString] = useState('');
   const [isCaseSensitive, setIsCaseSensitive] = useState(false);
   const [isRegex, setIsRegex] = useState(false);
-
+  const divRef = useRef();
   // useEffect(() => {
   //   const currentElement = document.getElementById(`headerItem_${property}`)
 
@@ -58,8 +59,9 @@ const ObservableHeaderItem = ({
     handleSearchTerm({ key: property, term: term, isRegex, isCaseSensitive })}
 
   const appendToSearchString = ({ term }) => {
-    setSearchString(`${searchString}|${term}`)
-    handleSearchTerm({ key: property, term: `${searchString}|${term}`, isRegex, isCaseSensitive })}
+    const searchTerm = [searchString ? searchString : undefined, term].filter(e => !!e).join('|')
+    setSearchString(searchTerm)
+    handleSearchTerm({ key: property, term: searchTerm, isRegex, isCaseSensitive })}
 
   const renderPopover = () => <TextField
     autoFocus
@@ -97,10 +99,7 @@ const ObservableHeaderItem = ({
   const renderPopoverExtras = () => !!suggestions
     ? <>{suggestions(checked ? rows : originalRows).map(suggestion =>
       <div
-        className={clsx([classes.customChip, suggestion === searchString && classes.activeChip])}
-        // variant={suggestion === searchString ? 'default' : 'outlined'}
-        // color={suggestion === searchString ? 'primary' : 'default'}
-      // size="small"
+        className={clsx([classes.customChip, searchString.includes(suggestion) && classes.activeChip])}
         onClick={() => {
           return suggestion === searchString
             ? updateSearchString({ term: '' })
@@ -108,10 +107,18 @@ const ObservableHeaderItem = ({
               ? appendToSearchString({ term: suggestion })
               : updateSearchString({ term: suggestion })}
         }
-      key={suggestion}
-      // label={`${suggestion}`}
+        key={suggestion}
       >
-        {isRegex ? <AddCircleOutlineIcon className={classes.smallChipIcon} /> : <SearchIcon className={classes.smallChipIcon} />}
+        {suggestion === searchString
+          ? <RemoveCircleOutlineIcon className={classes.smallChipIcon} />
+          : isRegex
+            ? <>
+              {searchString.includes(suggestion)
+                ? <RemoveCircleOutlineIcon className={classes.smallChipIcon} />
+                : <AddCircleOutlineIcon className={classes.smallChipIcon} />}
+            </>
+            : <SearchIcon className={classes.smallChipIcon} />
+        }
         <Typography variant="caption">{suggestion}</Typography>
     </div>)}</>
     : <></>
@@ -167,6 +174,7 @@ const ObservableHeaderItem = ({
 
 
   return <div
+    ref={divRef}
     id={`headerItem_${property}`}
     onMouseEnter={() => !noHightlight && onSelect(property)}
     className={classes.headersWrapper}
@@ -228,7 +236,7 @@ const ObservableHeaderItem = ({
           tooltip={`Search in column: ${label}${searchString.length > 0 ? ` | Search string: ${searchString}` : ''}`}
           label={searchString}
           popover={<>{renderPopover()}</>}
-
+          divRef={divRef}
           toolbarItems={searchString.length > 0 && <InputAdornment onClick={() => updateSearchString({ term: '' })} position="end"><DeleteOutlineIcon style={{cursor: 'pointer'}} /></InputAdornment>}
           popoverExtras={<>{renderPopoverExtras()}</>}
           onDelete={searchString !== '' ? () => {

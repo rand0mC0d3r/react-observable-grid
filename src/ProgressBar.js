@@ -25,18 +25,19 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     bottom: '0px',
     width: '100%',
+    height: '4px',
   },
   container: {
     position: 'relative'
   },
   selectionProgress: {
     position: 'absolute',
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: '50%',
     top: '-2px',
-    width: '8px',
-    height: '8px',
+    width: '12px',
+    height: '12px',
     backgroundColor: theme.palette.primary.light,
-    border: `1px solid ${theme.palette.divider}`,
+    border: `1px solid ${theme.palette.background.default}`,
     borderTop: '0px none',
     borderBottom: '0px none',
 
@@ -49,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '0px 8px 8px 0px',
     top: '0px',
     left: '0px',
+    border: `1px solid ${theme.palette.background.default}`,
     backgroundColor: theme.palette.primary.light,
     width: '0px',
     height: '4px'

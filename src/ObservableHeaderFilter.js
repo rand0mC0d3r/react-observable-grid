@@ -8,19 +8,19 @@ import React, { cloneElement, useRef, useState } from 'react';
 const anchorOrigin = { vertical: 'bottom', horizontal: 'center' }
 const transformOrigin = { vertical: 'top', horizontal: 'center' }
 
-const ObservableHeaderFilter = ({ extraIcons, checked, onChange, label, icon, tooltip = "Filtering mechanic", popover, popoverExtras, onDelete, toolbarItems }) => {
+const ObservableHeaderFilter = ({ divRef, extraIcons, checked, onChange, label, icon, tooltip = "Filtering mechanic", popover, popoverExtras, onDelete, toolbarItems }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
   const [anchorEl, setAnchorEl] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
   const open = Boolean(anchorEl);
-  const divRef = useRef();
+  // const divRef = useRef();
   const id = 'filters-section';
 
   const onClick = () => setAnchorEl(divRef.current);
   const onClose = () => setAnchorEl(null);
 
-  return <div ref={divRef}>
+  return <div>
     {open && <Popover {...{ id, className: classes.popover, key: `${label}_popover`, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 2 }}>
       <div className={classes.root}>
         <div className={classes.toolbar}>

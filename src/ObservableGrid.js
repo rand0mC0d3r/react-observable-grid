@@ -111,15 +111,13 @@ const ObservableGrid =  ({
 
   useEffect(() => setGridTemplateColumns(innerHeaders.filter(header => header.visible).map(header => header.width).join(' ')), [innerHeaders])
 
-  return <div id="observable-grid" className={`${className} ${classes.root}`} onMouseLeave={clearOnBlur}>
+  return <>
     <Processing {...{
-      rows, headers, orderBy, order, searchColumns, throttleLimit,
-
-      isDiscovering, isOmittingColumns,
-
+      rows, headers, orderBy, order, searchColumns, throttleLimit, isDiscovering, isOmittingColumns,
       setProcessedRows: setSortedRows, setProcessedHeaders: setInnerHeaders, setSelectedIndex, setThrottling, setDiscovering, setStartEnd,
     }} />
-    {!isHeaderHidden && innerHeaders.length > 0 && <ObservableHeader {...{
+    <div id="observable-grid" className={`${className} ${classes.root}`} onMouseLeave={clearOnBlur}>
+      {!isHeaderHidden && innerHeaders.length > 0 && <ObservableHeader {...{
         options: headerOptions,
         rows: sortedRows,
         originalRows: rows,
@@ -138,19 +136,18 @@ const ObservableGrid =  ({
             : setSearchColumns([...searchColumns.filter(sc => sc.key !== key), { key, term, isRegex, isCaseSensitive }])
         },
         handleResetSort,
-        rowOptions
-      }}
-    />}
+        rowOptions }}
+      />}
 
-    {rows.length > 0
-      ? <Container {...{ isScrollable, isDirty, isAlternating, isGrid }}>
-          {(throttling && sortedRows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1) &&
-            <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
-          {sortedRows && <ObservableRowList {...{ rows: sortedRows, setCurrentRow, currentRow, throttling, setSelectedIndex, rowOptions, gridTemplateColumns, selectedIndex, startEnd, pageSize, innerHeaders}} />}
-          {throttling && rows.length > pageSize && pageSize * startEnd.end - 1 < rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
-          {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
-        </Container>
-      : <ObservableEmpty>{emptyElement}</ObservableEmpty>}
+      {rows.length > 0
+        ? <Container {...{ isScrollable, isDirty, isAlternating, isGrid }}>
+            {(throttling && sortedRows.length > pageSize && startEnd.end > 0 && startEnd.start !== -1) &&
+              <ObservableInternalLoadMore isPointing onLoadMore={regressStartEnd} />}
+            {sortedRows && <ObservableRowList {...{ rows: sortedRows, setCurrentRow, currentRow, throttling, setSelectedIndex, rowOptions, gridTemplateColumns, selectedIndex, startEnd, pageSize, innerHeaders}} />}
+            {throttling && rows.length > pageSize && pageSize * startEnd.end - 1 < rows.length && <ObservableInternalLoadMore onLoadMore={advanceStartEnd} />}
+            {/* {isInfinite && sortedRows.length - currentIndex < 25 && !!onLoadMore && <ObservableLoadMore {...{ onLoadMore }} />} */}
+          </Container>
+        : <ObservableEmpty>{emptyElement}</ObservableEmpty>}
 
       <Suspense fallback={<></>}>
         {isDebugging && <Debugging {...{
@@ -170,10 +167,10 @@ const ObservableGrid =  ({
           ]
         }} />}
         {!isGrid && isColumned && <Columns {...{
-          rowOptions,
-          gridTemplateColumns,
-          innerHeaders
-        }} />}
+              rowOptions,
+              gridTemplateColumns,
+              innerHeaders
+            }} />}
         {hasProgressBar && <ProgressBar {...{
           currentRow,
           count: sortedRows.length,
@@ -187,7 +184,8 @@ const ObservableGrid =  ({
           isAtTop: rows.length > pageSize && startEnd.end >= 2
         }} />}
       </Suspense>
-  </div>
+    </div>
+  </>
 }
 
 const useStyles = makeStyles(() => ({

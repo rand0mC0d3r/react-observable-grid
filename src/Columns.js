@@ -22,7 +22,8 @@ const Columns = ({ gridTemplateColumns, rowOptions, innerHeaders }) => {
       .map((innerHeader, i) => <div
         key={`${innerHeader.property}-${innerHeader.label || ''}`}
         className={clsx([classes.column, i === indexSelected && classes.columnDisabled])}
-        onMouseEnter={() => setIndexSelected(i)}
+        onMouseEnter={() => indexSelected !== i && setIndexSelected(i)}
+        onTouchStart={() => indexSelected !== i && setIndexSelected(i)}
       />)}
 	</div>
 }

@@ -52,6 +52,7 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     borderRadius: theme.shape.borderRadius,
     backdropFilter: 'blur(4px)',
+    lineHeight: '16px',
     gap: theme.spacing(0.5),
     userSelect: 'none',
 
