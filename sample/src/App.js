@@ -196,24 +196,24 @@ const App = () => {
         },
       ]
     },
-    // {
-    //   label: "Last Seen",
-    //   suggestions: (data) => Array.from(new Set(data.map(row => row.lastSeen).flat())),
-    //   align: 'flex-end',
-    //   property: 'lastSeen',
-    //   // noSearch: true,
-    //   onHover: (row) => <ActionsRow />,
-    //   row: (row) => <LastSeenRow  {...{ lastSeen: row.lastSeen }} />,
-    //   width: 'minmax(130px, 0.75fr)',
-    //   // noHightlight: true,
-    //   secondaryHeaders: [
-    //     {
-    //       noSort: true,
-    //       label: 'Actions',
-    //       property: '',
-    //     },
-    //   ]
-    // },
+    {
+      label: "Last Seen",
+      suggestions: (data) => Array.from(new Set(data.map(row => row.lastSeen).flat())),
+      align: 'flex-end',
+      property: 'lastSeen',
+      // noSearch: true,
+      onHover: (row) => <ActionsRow />,
+      row: (row) => <LastSeenRow  {...{ lastSeen: row.lastSeen }} />,
+      width: 'minmax(130px, 0.75fr)',
+      // noHightlight: true,
+      secondaryHeaders: [
+        {
+          noSort: true,
+          label: 'Actions',
+          property: '',
+        },
+      ]
+    },
   ]
 
   const headersGrid = [

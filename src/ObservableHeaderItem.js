@@ -5,6 +5,7 @@ import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import FunctionsIcon from '@material-ui/icons/Functions';
 import SearchIcon from '@material-ui/icons/Search';
 import TextFieldsIcon from '@material-ui/icons/TextFields';
+import clsx from 'clsx';
 import React, { cloneElement, useEffect, useState } from 'react';
 import ObservableHeaderFilter from './ObservableHeaderFilter';
 
@@ -95,19 +96,23 @@ const ObservableHeaderItem = ({
 
   const renderPopoverExtras = () => !!suggestions
     ? <>{suggestions(checked ? rows : originalRows).map(suggestion =>
-    <div
-      className={classes.customChip}
-      variant={suggestion === searchString ? 'default' : 'outlined'}
-      color={suggestion === searchString ? 'primary' : 'default'}
+      <div
+        className={clsx([classes.customChip, suggestion === searchString && classes.activeChip])}
+        // variant={suggestion === searchString ? 'default' : 'outlined'}
+        // color={suggestion === searchString ? 'primary' : 'default'}
       // size="small"
-      onClick={() => isRegex
-        ? appendToSearchString({ term: suggestion })
-        : updateSearchString({ term: suggestion })}
+        onClick={() => {
+          return suggestion === searchString
+            ? updateSearchString({ term: '' })
+            : isRegex
+              ? appendToSearchString({ term: suggestion })
+              : updateSearchString({ term: suggestion })}
+        }
       key={suggestion}
       // label={`${suggestion}`}
       >
         {isRegex ? <AddCircleOutlineIcon className={classes.smallChipIcon} /> : <SearchIcon className={classes.smallChipIcon} />}
-        {suggestion}
+        <Typography variant="caption">{suggestion}</Typography>
     </div>)}</>
     : <></>
 
@@ -258,13 +263,16 @@ const useStyles = makeStyles(theme => ({
     cursor: 'pointer',
     alignItems: 'center',
     border: `1px dotted ${theme.palette.divider}`,
-    padding: '2px 4px',
+    padding: '2px 8px 2px 4px',
     borderRadius: theme.shape.borderRadius * 4,
 
     '&:hover': {
       border: `1px solid ${theme.palette.divider}`,
       boxShadow: `inset 0px 0px 0px 1px ${theme.palette.divider}`,
     }
+  },
+  activeChip: {
+    backgroundColor: theme.palette.action.selected,
   },
   smallChipIcon: {
     fontSize: '16px',
