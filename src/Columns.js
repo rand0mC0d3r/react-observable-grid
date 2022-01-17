@@ -1,10 +1,12 @@
 import { makeStyles, useTheme } from '@material-ui/core/styles'
+import clsx from 'clsx'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { useState } from 'react'
 
 const Columns = ({ gridTemplateColumns, rowOptions, innerHeaders }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
+  const [indexSelected, setIndexSelected] = useState(null)
 
 	return <div
 		className={classes.root}
@@ -14,10 +16,14 @@ const Columns = ({ gridTemplateColumns, rowOptions, innerHeaders }) => {
 			paddingBottom: 0,
 			gridTemplateColumns: gridTemplateColumns
 		}}
-	>
+  >
     {innerHeaders
       .filter(ih => ih.visible)
-      .map(innerHeader => <div key={`${innerHeader.property}-${innerHeader.label || ''}`} className={classes.observableColumn} />)}
+      .map((innerHeader, i) => <div
+        key={`${innerHeader.property}-${innerHeader.label || ''}`}
+        className={clsx([classes.column, i === indexSelected && classes.columnDisabled])}
+        onMouseEnter={() => setIndexSelected(i)}
+      />)}
 	</div>
 }
 
@@ -34,10 +40,15 @@ const useStyles = makeStyles(theme => ({
     display: 'grid',
     alignItems: 'unset',
     gap: '16px',
-    zIndex: -1,
-	},
-	observableColumn: {
-		margin: '0px -8px',
+    pointerEvents: 'none',
+  },
+  columnDisabled: {
+    pointerEvents: 'none !important',
+    boxShadow: `inset 0px 4px 0px 0px ${theme.palette.primary.main}66`,
+  },
+	column: {
+    margin: '0px -8px',
+    pointerEvents: 'all',
 		borderRight: `1px solid ${theme.palette.divider}`,
 
     '&:last-child': {

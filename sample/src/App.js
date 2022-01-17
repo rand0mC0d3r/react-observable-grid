@@ -364,10 +364,10 @@ const useStyles = makeStyles(() => ({
     //   borderBottom: '1px solid #CCC'
     // },
     '& #Container-root > *:hover': {
-      backgroundColor: '#e0f0ff88',
+      backgroundColor: '#3f51b51c',
     },
     '& #Container-root > *:active': {
-      backgroundColor: '#e0f0ff88',
+      backgroundColor: '#3f51b51c',
     },
     '& #Container-root .Row-isSelected': {
       backgroundColor: 'red',
