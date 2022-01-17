@@ -21,9 +21,9 @@ const Columns = ({ gridTemplateColumns, rowOptions, innerHeaders }) => {
       .filter(ih => ih.visible)
       .map((innerHeader, i) => <div
         key={`${innerHeader.property}-${innerHeader.label || ''}`}
-        className={clsx([classes.column, i === indexSelected && classes.columnDisabled])}
-        onMouseEnter={() => indexSelected !== i && setIndexSelected(i)}
-        onTouchStart={() => indexSelected !== i && setIndexSelected(i)}
+        className={clsx([classes.column])}
+        // onMouseEnter={() => indexSelected !== i && setIndexSelected(i)}
+        // onTouchStart={() => indexSelected !== i && setIndexSelected(i)}
       />)}
 	</div>
 }
@@ -43,13 +43,13 @@ const useStyles = makeStyles(theme => ({
     gap: '16px',
     pointerEvents: 'none',
   },
-  columnDisabled: {
-    pointerEvents: 'none !important',
-    boxShadow: `inset 0px 4px 0px 0px ${theme.palette.primary.main}66`,
-  },
+  // columnDisabled: {
+  //   pointerEvents: 'none !important',
+  //   boxShadow: `inset 0px 4px 0px 0px ${theme.palette.primary.main}66`,
+  // },
 	column: {
     margin: '0px -8px',
-    pointerEvents: 'all',
+    // pointerEvents: 'all',
 		borderRight: `1px solid ${theme.palette.divider}`,
 
     '&:last-child': {

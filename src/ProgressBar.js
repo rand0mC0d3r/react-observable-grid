@@ -13,7 +13,7 @@ const ProgressBar =  ({ selectedIndex, currentRow, count }) => {
     <div className={classes.container}>
       <div className={classes.totalProgress} />
       <div className={classes.currentProgress} style={{ width: `${Math.round((currentRow + 1) * 100 / count)}%` }} />
-      {selectedIndex && <Tooltip arrow title={`Scroll to row ${selectedIndex} ...`}>
+      {selectedIndex && <Tooltip arrow title={`Scroll to row ${selectedIndex + 1} ...`}>
         <div onClick={focusElement} className={classes.selectionProgress} style={{ left: `${Math.round((selectedIndex + 1) * 100 / count)}%` }} />
       </Tooltip>}
     </div>
@@ -32,10 +32,10 @@ const useStyles = makeStyles((theme) => ({
   },
   selectionProgress: {
     position: 'absolute',
-    borderRadius: '50%',
-    top: '-2px',
-    width: '12px',
-    height: '12px',
+    borderRadius: '50% 50% 0 0',
+    bottom: '0px',
+    width: '8px',
+    height: '6px',
     backgroundColor: theme.palette.primary.light,
     border: `1px solid ${theme.palette.background.default}`,
     borderTop: '0px none',
