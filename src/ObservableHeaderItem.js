@@ -99,7 +99,11 @@ const ObservableHeaderItem = ({
   const renderPopoverExtras = () => !!suggestions
     ? <>{suggestions(checked ? rows : originalRows).map(suggestion =>
       <div
-        className={clsx([classes.customChip, searchString.includes(suggestion) && classes.activeChip])}
+        className={clsx([
+          classes.customChip, (isRegex
+            ? searchString.includes(`${suggestion}`)
+            : searchString === suggestion)
+          && classes.activeChip])}
         onClick={() => {
           return suggestion === searchString
             ? updateSearchString({ term: '' })

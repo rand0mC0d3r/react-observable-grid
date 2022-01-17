@@ -121,8 +121,10 @@ const App = () => {
     {
       label: 'Description',
       suggestions: (data) => Array
-        .from(new Set(data.map(row => row.description.split(" ")).flat()))
-        .map(entry => entry.replace(/[^a-zA-z0-9]/gi,''))
+        .from(new Set(data
+          .map(row => row.description.split(" "))
+          .flat()
+          .map(entry => entry.replace(/[^a-zA-z0-9]/gi, ''))))
         .sort((a, b) => b.length - a.length)
         .filter(entry => entry.length > 2)
         .slice(0, 20),

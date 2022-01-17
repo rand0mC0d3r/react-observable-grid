@@ -10,8 +10,8 @@ const ActionButtons = ({ selectedIndex, isAtTop, customActions, total, filtered 
   const classes = useStyles(theme)
 
   const predefinedActions = [
-    { id: 'selected', onClick: () => focusElement('selected'),  title: `Scroll to item: ${selectedIndex}`, label: `→ ${selectedIndex + 1}`, visible: selectedIndex },
     { id: 'first', onClick: () => focusElement('first'), title: `Scroll to beginning`, label: '↑', visible: isAtTop },
+    { id: 'selected', onClick: () => focusElement('selected'), title: `Scroll to item: ${selectedIndex + 1}`, label: `→ ${selectedIndex + 1}`, visible: selectedIndex },
     { id: 'filtered', title: `Filtered rows: ${filtered}`, label: <><SearchIcon style={{fontSize: '18px'}} /> {filtered}</>, visible: filtered !== total && total > 0 },
     { id: 'total', title: `Total rows: ${total}`, label: total, visible: total > 0 }
   ]

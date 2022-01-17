@@ -50,6 +50,7 @@ const ObservableHeader = ({
   const renderPopover = () => {
     return <Popover
       id={id}
+      className={classes.popover}
       open={open}
       anchorEl={anchorEl}
       onClose={handleClose}
@@ -152,6 +153,14 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     overflow: 'hidden',
     flex: '0 0 auto'
+  },
+  popover: {
+    '& .MuiPopover-paper': {
+      backgroundColor: '#FFFFFF96',
+      marginTop: '8px',
+      borderRadius: '0px',
+      backdropFilter: 'blur(10px)',
+    }
   },
   wrapper: {
     display: 'grid',
