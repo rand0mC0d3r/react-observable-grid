@@ -1,4 +1,4 @@
-import { Popover, Switch, Tooltip } from '@material-ui/core';
+import { Popover, Switch, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import ShortTextIcon from '@material-ui/icons/ShortText';
 import ViewHeadlineIcon from '@material-ui/icons/ViewHeadline';
@@ -8,13 +8,12 @@ import React, { cloneElement, useRef, useState } from 'react';
 const anchorOrigin = { vertical: 'bottom', horizontal: 'center' }
 const transformOrigin = { vertical: 'top', horizontal: 'center' }
 
-const ObservableHeaderFilter = ({ divRef, extraIcons, checked, onChange, label, icon, tooltip = "Filtering mechanic", popover, popoverExtras, onDelete, toolbarItems }) => {
+const ObservableHeaderFilter = ({ width = '350px', title,  divRef, extraIcons, checked, onChange, label, icon, tooltip = "Filtering mechanic", popover, popoverExtras, onDelete, toolbarItems }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
   const [anchorEl, setAnchorEl] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
   const open = Boolean(anchorEl);
-  // const divRef = useRef();
   const id = 'filters-section';
 
   const onClick = () => setAnchorEl(divRef.current);
@@ -22,9 +21,12 @@ const ObservableHeaderFilter = ({ divRef, extraIcons, checked, onChange, label, 
 
   return <div>
     {open && <Popover {...{ id, className: classes.popover, key: `${label}_popover`, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 2 }}>
-      <div className={classes.root}>
+      <div className={classes.root} style={{ width }}>
         <div className={classes.toolbar}>
-          <div className={classes.menu} >
+          <Typography variant="body2" color="textSecondary">
+          {title}
+          </Typography>
+          <div className={classes.menu}>
             <ViewHeadlineIcon />
             <Switch
               checked={checked}
@@ -104,12 +106,12 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: '#DDDDDD96',
-    flexDirection: 'row-reverse',
+    flexDirection: 'row',
     padding: '4px 16px'
   },
   root: {
     display: 'flex',
-    width: '350px',
+    // width: '350px',
     flexDirection: 'column',
     border: `1px solid ${theme.palette.divider}`,
   },

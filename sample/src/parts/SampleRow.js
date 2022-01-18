@@ -1,26 +1,30 @@
-import { Avatar, Typography } from '@material-ui/core';
+import { Avatar, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import TuneIcon from '@material-ui/icons/Tune';
 import { memo } from 'react';
 import stringToColor from 'string-to-color';
 
-const AvatarRow = memo(({ name, surname, fullName, selectedAvatars, onSelectAvatar = () => { } }) => {
+const AvatarRow = memo(({ name, opacity = 1, surname, fullName, selectedAvatars, onSelectAvatar = () => { } }) => {
   const theme = useTheme()
   const classes = avatarStyles(theme)
 
   return <div style={{ display: 'flex', justifyContent: "center" }}>
+    <Tooltip arrow title={fullName}>
       <Avatar
         onClick={() => onSelectAvatar({ fullName, name, surname })}
         variant="rounded"
         className={[classes.avatar, selectedAvatars?.length > 0 ? selectedAvatars?.some(sa => sa.fullName === fullName) && classes.selectedAvatar : ''].join(' ')}
         style={{
           fontSize: '16px',
+          cursor: 'pointer',
+          opacity: opacity,
           backgroundColor: stringToColor(fullName)
         }}
       >
       {name?.substr(0, 1)}{surname?.substr(0, 1)}
       </Avatar>
+    </Tooltip>
   </div>
 })
 

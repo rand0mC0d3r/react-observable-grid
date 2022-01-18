@@ -238,7 +238,8 @@ const ObservableHeaderItem = ({
         {!noSearch && <ObservableHeaderFilter {...{ checked, onChange, property }}
           key={`${property}_searchString`}
           tooltip={`Search in column: ${label}${searchString.length > 0 ? ` | Search string: ${searchString}` : ''}`}
-          label={searchString}
+        label={searchString}
+          title="Search in column"
           popover={<>{renderPopover()}</>}
           divRef={divRef}
           toolbarItems={searchString.length > 0 && <InputAdornment onClick={() => updateSearchString({ term: '' })} position="end"><DeleteOutlineIcon style={{cursor: 'pointer'}} /></InputAdornment>}
@@ -247,18 +248,21 @@ const ObservableHeaderItem = ({
             handleSearchTerm({ key: property, term: null })
             setSearchString('')
           } : undefined}
-        icon={<SearchIcon />}
-        extraIcons={<>
-          {isCaseSensitive && <TextFieldsIcon color="action" style={{ fontSize: '12px' }} />}
-          {isRegex && <FunctionsIcon color="action" style={{ fontSize: '12px' }} />}
-        </>}
+          icon={<SearchIcon />}
+          extraIcons={<>
+            {isCaseSensitive && <TextFieldsIcon color="action" style={{ fontSize: '12px' }} />}
+            {isRegex && <FunctionsIcon color="action" style={{ fontSize: '12px' }} />}
+          </>}
         />}
 
         {extraFilters?.map(extraFilter => <ObservableHeaderFilter {...{ checked, onChange, property }}
           key={`${extraFilter.label}_${property}_extraFilter`}
           label={extraFilter.label}
+          title={extraFilter.label}
+          width={'400px'}
           tooltip={extraFilter.tooltip}
           popover={extraFilter.node(rows)}
+          divRef={divRef}
           icon={extraFilter.icon}
         />)}
     </div>

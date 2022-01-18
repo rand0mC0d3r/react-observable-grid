@@ -59,21 +59,11 @@ const App = () => {
             const rowsProcessed = rows.map(r => ({ fullName: r.fullName, name: r.name, surname: r.surname }))
             const entries = [...new Map(rowsProcessed.map(item => [item['fullName'], item])).values()];
             return <div style={{ display: 'flex', gap: '8px', padding: '8px', flexDirection: 'column' }}>
-              <Typography variant="subtitle2">Selected People ({incomingRows.length})</Typography>
-              <div style={{ display: 'flex',  width: '450px', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-              {entries.filter((row) => selectedAvatars?.some(sa => sa.fullName === row.fullName)).map(entry => <AvatarRow
-                  key={`${entry.fullName}_selected`}
-                  {...{ selectedAvatars, name: entry.name, surname: entry.surname, fullName: entry.fullName }}
-                  onSelectAvatar={({ fullName, surname, name }) => setSelectedAvatars(selectedAvatars => selectedAvatars.some(sa => sa === fullName)
-                    ? selectedAvatars.filter(sa => sa !== fullName)
-                    : [...selectedAvatars, { fullName, surname, name }]
-                  )}
-                />)}
-              </div>
-              <Typography variant="subtitle2">People ({entries.length})</Typography>
-              <div style={{ display: 'flex',  width: '450px', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-              {entries.filter((e, index) => index < 35).map(entry => <AvatarRow
+              <Typography variant="subtitle2">People ({entries.length}) ({incomingRows.length})</Typography>
+              <div style={{ display: 'flex', justifyContent: 'center', width: '100%', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                {entries.filter((e, index) => index < 35).map(entry => <AvatarRow
                   key={`${entry.fullName}_all`}
+                  opacity={selectedAvatars?.some(sa => sa.fullName === entry.fullName) ? 1 : 0.5}
                   {...{ selectedAvatars, name: entry.name, surname: entry.surname, fullName: entry.fullName }}
                   onSelectAvatar={({ fullName, surname, name }) => setSelectedAvatars(selectedAvatars => selectedAvatars.some(sa => sa === fullName)
                     ? selectedAvatars.filter(sa => sa !== fullName)
