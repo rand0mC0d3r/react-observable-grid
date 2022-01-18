@@ -52,6 +52,7 @@ const Processing =  ({
 		: naturalSort(rows).desc([r => r[orderBy]]))
 
   useEffect(() => {
+    console.log("processing everything")
     const indexedRows = indexRows(rows)
     setSelectedIndex(() => null)
     if (!headers) { setDiscovering(() => true) }

@@ -94,7 +94,7 @@ const ObservableGrid =  ({
   const clearOnBlur = () => {
     if (isClearingOnBlur) {
       // setInnerHeaders(() => innerHeaders.map(header => ({ ...header, selected: false })))
-      // setCurrentRow(null)
+      setCurrentRow(null)
     }
   }
 

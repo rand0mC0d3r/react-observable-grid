@@ -1,10 +1,10 @@
 import { Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+// import useIdleCallback from '@react-hook/idle-callback'
 import throttle from 'lodash/throttle'
 import React, { useCallback } from 'react'
 import ObservableRow from './ObservableRow'
-import ObservableSnapshot from './ObservableSnapshot'
-
+// import ObservableSnapshot from './ObservableSnapshot'
 
 const ObservableRowList = ({
   rows = [],
@@ -26,7 +26,11 @@ const ObservableRowList = ({
 }) => {
   const classes = useStyles()
   const useThrottled = (callback, delay) => (useCallback(throttle((...args) => callback(...args), delay), [delay]))
-  const throttledLoadMore = useThrottled((index) => setCurrentRow(index), 1500)
+  const throttledLoadMore = useThrottled((index) => {
+    setCurrentRow(index)
+    console.log("tiggered throttle")
+  }, 2500)
+
 
   const idValue = (index) => {
     let result = null
@@ -68,9 +72,7 @@ const ObservableRowList = ({
         }}
         className={`${isGrid ? classes.observableGrid : classes.observableRow} ${(isSelectable && selectedIndex === row.__origIndex) ? 'Row-isSelected' : ''}`}
         index={row.__index}
-        onMouseEnter={() => {
-          throttledLoadMore(row.__index)
-        }}
+        onMouseEnter={() => throttledLoadMore(row.__index)}
         forceRender={!throttling}
         isRelevant={throttling
           ? row.__index <= (selectedIndex === null ? (startEnd.end * pageSize) : Math.max(selectedIndex, startEnd.end * pageSize))
@@ -80,11 +82,7 @@ const ObservableRowList = ({
       >
         {innerHeaders.filter(header => header.visible).map(header =>
           <React.Fragment key={`${header.property}_${header.label}_${header.tooltip}_${header.width}`}>
-            {(!throttling && canvasDrawing && header.canCanvas)
-              ? <ObservableSnapshot origIndex={row.__origIndex} index={row.__index} id={`${row.__origIndex}_${header.property}_${header.label}`}>
-                {renderRow(row, currentRow, header)}
-              </ObservableSnapshot>
-              : renderRow(row, currentRow, header)}
+            {renderRow(row, currentRow, header)}
           </React.Fragment>)}
       </ObservableRow>)
 }
