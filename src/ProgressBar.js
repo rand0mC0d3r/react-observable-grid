@@ -50,7 +50,6 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '0px 8px 8px 0px',
     top: '0px',
     left: '0px',
-    border: `1px solid ${theme.palette.background.default}`,
     backgroundColor: theme.palette.primary.light,
     width: '0px',
     height: '4px'
