@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   },
   currentProgress: {
     position: 'absolute',
-    borderRadius: '0px 8px 8px 0px',
+    borderRadius: '0px 4px 4px 0px',
     top: '0px',
     left: '0px',
     backgroundColor: theme.palette.primary.light,

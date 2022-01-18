@@ -416,7 +416,8 @@ const useStyles = makeStyles(() => ({
   container: {
     flex: '1 0 auto',
     position: 'relative',
-    borderRadius: '0px 4px 4px 4px',
+    borderRadius: '8px',
+    overflow: 'hidden',
     border: '1px solid #333',
   }
 }))
