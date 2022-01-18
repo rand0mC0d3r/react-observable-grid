@@ -62,9 +62,9 @@ const ObservableGrid =  ({
   const [startEnd, setStartEnd] = useState({ start: -1, end: 1 })
   const [throttleLimit, setThrottleLimit] = useState(50)
 
-  useEffect(() => {
-    console.log('useEffect', isDebugging)
-  }, [isDebugging])
+  // useEffect(() => {
+  //   console.log('useEffect', isDebugging)
+  // }, [isDebugging])
 
 
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })

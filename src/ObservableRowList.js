@@ -28,7 +28,7 @@ const ObservableRowList = ({
   const useThrottled = (callback, delay) => (useCallback(throttle((...args) => callback(...args), delay), [delay]))
   const throttledLoadMore = useThrottled((index) => {
     setCurrentRow(index)
-    console.log("tiggered throttle")
+    // console.log("tiggered throttle")
   }, 2500)
 
 
