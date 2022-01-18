@@ -7,6 +7,6 @@ body {
   -webkit-font-smoothing: subpixel-antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* overscroll-behavior-y: contain; */
-  overscroll-behavior-y: none;
-  overscroll-behavior-x: none;
+  /* overscroll-behavior-y: none;
+  overscroll-behavior-x: none; */
 }

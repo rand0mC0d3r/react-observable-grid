@@ -51,13 +51,12 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
     borderRadius: theme.shape.borderRadius,
-    backdropFilter: 'blur(4px)',
+    backgroundColor: theme.palette.background.paper,
     lineHeight: '16px',
     gap: theme.spacing(0.5),
     userSelect: 'none',
 
     '&:hover': {
-      backdropFilter: 'blur(4px) brightness(1.05)',
       boxShadow: `inset 0px 0px 0px 1px ${theme.palette.divider}`,
     }
   },

@@ -152,13 +152,13 @@ const ObservableGrid =  ({
       <Suspense fallback={<></>}>
         {isDebugging && <Debugging {...{
           items: [
-            { label: 'throttling', value: throttling },
+            { label: 'throttling', value: throttling ? 'yes' : 'no' },
             { label: 'throttleLimit', value: throttleLimit },
             { label: 'order', value: order },
             { label: 'orderBy', value: orderBy },
             { label: 'selectedIndex', value: selectedIndex },
             { label: 'sortedRows', value: sortedRows.length },
-            { label: 'canvasDrawing', value: !throttling && canvasDrawing },
+            { label: 'canvasDrawing', value: !throttling && canvasDrawing ? 'yes' : 'no' },
             { label: 'rows', value: rows.length },
             { label: 'startEnd', value: JSON.stringify(startEnd) },
             { label: 'pageSize', value: pageSize },

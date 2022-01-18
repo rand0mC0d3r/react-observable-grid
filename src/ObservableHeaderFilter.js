@@ -64,7 +64,6 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: '#FFFFFF96',
       marginTop: '8px',
       borderRadius: '0px',
-      backdropFilter: 'blur(10px)',
     }
   },
   smallChipIcon: {

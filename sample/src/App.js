@@ -19,6 +19,7 @@ import { ActionsRow, AvatarRow, Card, CurrencyRow, DescriptionRow, LastSeenRow, 
 const App = () => {
   const [rows, setRows] = useState(dataGenerator(100));
   const [isColumned, setIsColumned] = useState(true);
+  const [hideAll, setHideAll] = useState(false);
   const [testOptions, setTestOptions] = useState({ foo: 'bar' });
   const [selectedTiles, setSelectedTiles] = useState([]);
   const [selectedAvatars, setSelectedAvatars] = useState([]);
@@ -121,7 +122,7 @@ const App = () => {
       icon: <SubjectIcon />,
       property: 'description',
       row: (row) => <DescriptionRow {...{ description: row.description }} />,
-      width: 'minmax(80px, 3fr)',
+      width: 'minmax(80px, 2fr)',
     },
     {
       label: 'Tiles',
@@ -130,7 +131,7 @@ const App = () => {
       customFilter: (rows) => rows.filter((row) => selectedTiles.filter(st => row.tiles.some(t => t.id === st)).length === selectedTiles.length),
       suggestions: (data) => Array.from(new Set(data.map(row => row.tiles.map(tile => tile.name)).flat())),
       property: 'tilesHash',
-      width: 'minmax(100px, 2fr)',
+      width: 'minmax(100px, 1.5fr)',
       // extension: <>
       //   {selectedTiles.length > 0 && <Chip onDelete={() => setSelectedTiles([])} variant="outlined" size="small" label={`Tiles: ${selectedTiles.length}`} />}
       // </>,
@@ -179,7 +180,7 @@ const App = () => {
           },
         }
       ],
-      width: 'minmax(130px, 250px)',
+      width: 'minmax(130px, 200px)',
       row: (row) => <CurrencyRow row={row} />,
       secondaryHeaders: [
         {
@@ -235,8 +236,8 @@ const App = () => {
   }
 
   return <ThemeProvider {...{ theme }} >
-    <div className={classes.wrapper}>
-      <div className={`${classes.actions} ${classes.bigContainer}`}>
+    <div className={hideAll ? classes.wrapperClean : classes.wrapper}>
+      {!hideAll && <div className={`${classes.actions} ${classes.bigContainer}`}>
         <div className={classes.actions}>
           <Typography color="textPrimary" variant="h3">👀 🗞️</Typography>
           <Typography
@@ -255,23 +256,24 @@ const App = () => {
           <Chip onClick={() => setIsDebugging(!isDebugging)} variant="outlined" label={`Debug ${isDebugging ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsDiscovering(!isDiscovering)} variant="outlined" label={`Discover ${isDiscovering ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setNoHeaders(!noHeaders)} variant="outlined" label={`Headers ${noHeaders ? 'ON' : 'OFF'}`} />
-          <Chip onClick={() => setTestOptions({foo: 'baz'})} variant="outlined" label={`Options ${JSON.stringify(testOptions)}`} />
+          <Chip onClick={() => setTestOptions({ foo: 'baz' })} variant="outlined" label={`Options ${JSON.stringify(testOptions)}`} />
           <Chip onClick={() => setHasProgressBar(!hasProgressBar)} variant="outlined" label={`Progress bar ${hasProgressBar ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setHasFloatingActions(!hasFloatingActions)} variant="outlined" label={`Floating ${hasFloatingActions ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsColumned(!isColumned)} variant="outlined" label={`Columns ${isColumned ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setCustomHeader(!customHeader)} variant="outlined" label={`Custom H ${customHeader ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setIsHeaderHidden(!isHeaderHidden)} variant="outlined" label={`Hide H ${isHeaderHidden ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setCanvasDrawing(!canvasDrawing)} variant="outlined" label={`🧪 Canvas ${canvasDrawing ? 'ON' : 'OFF'}`} />
+          <Chip onClick={() => setHideAll(!hideAll)} variant="outlined" label={`🧪 Destroy UI ${hideAll ? 'ON' : 'OFF'}`} />
           <Chip onClick={() => setSeeLive(!seeLive)} variant="outlined" label={`Env ${seeLive ? 'PROD' : 'DEV'}`} />
           <Chip onClick={() => setAsGrid(!asGrid)} variant="outlined" label={`Grid ${asGrid ? 'GRID' : 'TABLE'}`} />
         </div>
-      </div>
+      </div>}
 
-      <div className={`${classes.actions} ${classes.bigContainer}`}>
+      {!hideAll && <div className={`${classes.actions} ${classes.bigContainer}`}>
         <div className={`${classes.actions} ${classes.smallActions}`}>
           {[5, 30, 250, 1500, 65000, 100000].map(count => <Button
             disableElevation
-            style={{minWidth: 'unset', padding: '5px 12px'}}
+            style={{ minWidth: 'unset', padding: '5px 12px' }}
             color={count === rows?.length ? 'primary' : 'default'}
             variant={count !== rows?.length ? "outlined" : 'contained'}
             key={count}
@@ -280,10 +282,10 @@ const App = () => {
             {count}
           </Button>)}
         </div>
-      </div>
+      </div>}
 
       <div className={classes.containerWrapper}>
-        <div className={classes.container}>
+        <div className={hideAll ? classes.containerClean : classes.container}>
           {seeLive
             ? <ObservableGrid {...{ isDebugging, headers: asGrid ? headersGrid : (noHeaders ? undefined : headers), canvasDrawing }}
                 uniqueId="fakeEntries"
@@ -378,6 +380,19 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'center',
     alignItems: 'stretch',
   },
+  wrapperClean: {
+    display: 'flex',
+    gap: '16px',
+    left: '0px',
+    right: '0px',
+    top: '0px',
+    bottom: '0px',
+    flexDirection: 'column',
+    position: 'absolute',
+    alignContent: 'stretch',
+    justifyContent: 'center',
+    alignItems: 'stretch',
+  },
   wrapper2: {
     display: 'flex',
     position: 'absolute',
@@ -409,6 +424,13 @@ const useStyles = makeStyles(() => ({
     borderRadius: '8px',
     overflow: 'hidden',
     border: '1px solid #333',
+  },
+  containerClean: {
+    flex: '1 0 auto',
+    position: 'relative',
+    // borderRadius: '8px',
+    overflow: 'hidden',
+    // border: '1px solid #333',
   }
 }))
 
