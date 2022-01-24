@@ -23,9 +23,7 @@ const ObservableHeaderFilter = ({ width = '350px', title,  divRef, extraIcons, c
     {open && <Popover {...{ id, className: classes.popover, key: `${label}_popover`, open, anchorEl, anchorOrigin, transformOrigin, onClose, elevation: 2 }}>
       <div className={classes.root} style={{ width }}>
         <div className={classes.toolbar}>
-          <Typography variant="body2" color="textSecondary">
-          {title}
-          </Typography>
+          <Typography variant="body2" color="textSecondary">{title}</Typography>
           <div className={classes.menu}>
             <ViewHeadlineIcon />
             <Switch
@@ -61,7 +59,7 @@ const ObservableHeaderFilter = ({ width = '350px', title,  divRef, extraIcons, c
 const useStyles = makeStyles(theme => ({
   popover: {
     '& .MuiPopover-paper': {
-      backgroundColor: '#FFFFFF96',
+      backgroundColor: '#FFFFFFF5',
       marginTop: '8px',
       borderRadius: '0px',
     }
