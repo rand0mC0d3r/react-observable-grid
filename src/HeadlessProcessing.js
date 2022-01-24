@@ -1,27 +1,19 @@
 import { createNewSortInstance } from 'fast-sort';
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import DataProvider from './GridStore';
 
 const Processing =  ({
   headers,
   rows,
-	// orderBy,
-	// order,
-  // searchColumns,
-  // throttleLimit,
-
-	// isDiscovering,
-	// isOmittingColumns,
-
-	// setProcessedRows = () => { },
-  // setProcessedHeaders = () => { },
-  // setSelectedIndex = () => { },
-  // setThrottling = () => { },
-  // setDiscovering = () => { },
-  // setStartEnd = () => { },
 }) => {
+  // to carve out
+  const isOmittingColumns = []
+
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
   const naturalSort = createNewSortInstance({ comparer: collator.compare })
+  const { facts, selectedIndex, setSelectedIndex, setInnerRows, setInnerHeaders, setStartEnd, setThrottling  } = useContext(DataProvider)
+
+  const { searchColumns, order, orderBy, throttleLimit, isDiscovering } = facts
 
 	const determineAverageOfContent = (rows, column) => {
 		let averageLength = 0
@@ -61,7 +53,7 @@ const Processing =  ({
     const tmpRows1 = headers?.length > 0 ? extractFilter(headers).reduce((acc, value) => value.filter(acc), indexedRows) : indexedRows
     const tmpRows2 = searchColumns.length > 0 ? filterRows(tmpRows1, searchColumns) : tmpRows1
     const tmpRows3 = orderRows(tmpRows2, orderBy, order).map((r, index) => ({ ...r, __index: index }))
-    setProcessedRows(() => tmpRows3)
+    setInnerRows(() => tmpRows3)
     setStartEnd(() => ({ start: -1, end: 1 }))
     setThrottling(() => tmpRows3.length - 1 >= throttleLimit)
   }, [rows, headers, searchColumns, order, orderBy, throttleLimit])
@@ -89,9 +81,9 @@ const Processing =  ({
           }
         }),
       ]
-      setProcessedHeaders(() => newHeaders.map(header => ({ ...header, selected: false, visible: header.visible || true })).filter(header => !isOmittingColumns?.includes(header.property)))
+      setInnerHeaders(() => newHeaders.map(header => ({ ...header, selected: false, visible: header.visible || true })).filter(header => !isOmittingColumns?.includes(header.property)))
     } else {
-      setProcessedHeaders(() => (headers || []).map(header => ({ ...header, selected: false, visible: header.visible || true })).filter(header => !isOmittingColumns?.includes(header.property)))
+      setInnerHeaders(() => (headers || []).map(header => ({ ...header, selected: false, visible: header.visible || true })).filter(header => !isOmittingColumns?.includes(header.property)))
     }
   }, [rows, headers, isDiscovering])
 
