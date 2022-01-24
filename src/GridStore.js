@@ -41,28 +41,34 @@ function GridProvider({ rows, headers, children, ...props }) {
     isDiscovering: false,
   })
 
-  useEffect(() => {
-    setFacts(() => ({ ...facts, total: rows.length}))
-  }, [rows])
+  useEffect(() => setFacts(() => ({ ...facts, total: rows.length })), [rows])
+  useEffect(() => setGridTemplateColumns(innerHeaders.filter(header => header.visible).map(header => header.width).join(' ')), [innerHeaders])
 
-  return <>
-
+  return <div style={{
+    display: 'flex',
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    flexDirection: 'column',
+    overflow: 'hidden'
+  }}>
     <Context.Provider
-    id="provider"
-    value={{
-      rows, headers, facts,
+      id="provider"
+      value={{
+        rows, headers, facts,
 
-      startEnd, setStartEnd,
-      setThrottling,
-      innerRows, setInnerRows,
-      innerHeaders, setInnerHeaders,
-      selectedIndex, setSelectedIndex
+        gridTemplateColumns,
+
+        startEnd, setStartEnd,
+        setThrottling,
+        innerRows, setInnerRows,
+        innerHeaders, setInnerHeaders,
+        selectedIndex, setSelectedIndex
     }}>
       <HeadlessProcessing {...{ rows, headers }} />
-      {JSON.stringify(innerRows.length)}
       {children}
     </Context.Provider>
-  </>
+  </div>
 }
 
 export default Context

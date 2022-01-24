@@ -14,6 +14,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ObservableGrid } from 'react-observable-grid';
 import { GridProvider } from './components/GridStore';
 import HeadlessActionButtons from './components/HeadlessActionButtons';
+import HeadlessColumns from './components/HeadlessColumns';
 import HeadlessDebugging from './components/HeadlessDebugging';
 import LocalObservableGrid from './components/ObservableGrid';
 import { dataGenerator } from './parts/dataGenerator';
@@ -289,7 +290,7 @@ const App = () => {
       </div>}
 
       <div className={classes.containerWrapper}>
-        <div className={hideAll ? classes.containerClean : classes.container}>
+        <div id="outside" className={hideAll ? classes.containerClean : classes.container}>
           {seeLive
             ? <ObservableGrid {...{ isDebugging, headers: asGrid ? headersGrid : (noHeaders ? undefined : headers), canvasDrawing }}
                 uniqueId="fakeEntries"
@@ -319,6 +320,7 @@ const App = () => {
                 rows={rows}
               /> */}
               <GridProvider {...{ rows, headers }}>
+                <HeadlessColumns />
                 <HeadlessDebugging>{items => <div>{JSON.stringify(items)}</div>}</HeadlessDebugging>
                 <HeadlessActionButtons>{({ total, filtered, selectedIndex, goToTop, goToSelectedIndex }) => <>
                   <ActionButtons {...{total, filtered, selectedIndex, goToTop, goToSelectedIndex}} />
