@@ -1,26 +1,15 @@
 import React, { useContext } from 'react';
 import DataProvider from './GridStore';
 
-const HeadlessColumns = () => {
+export default () => {
   const { gridTemplateColumns, innerHeaders } = useContext(DataProvider)
 
 	return <div
     style={{
-      top: '0px',
-      left: '0px',
-      bottom: '0px',
-      right: '0px',
-      position: 'absolute',
-      alignSelf: 'stretch',
-      breakInside: 'avoid',
-      fontSize: '12px',
-      display: 'grid',
-      alignItems: 'unset',
-      gap: '16px',
-      zIndex: '-1',
-			paddingTop: '0',
-			paddingBottom: '0',
-			gridTemplateColumns: gridTemplateColumns
+      top: '0px', left: '0px', bottom: '0px', right: '0px',
+      position: 'absolute', alignSelf: 'stretch', breakInside: 'avoid',
+      display: 'grid', alignItems: 'unset', gap: '16px', zIndex: '-1',
+      paddingTop: '0', paddingBottom: '0', gridTemplateColumns
 		}}
   >
     {innerHeaders
@@ -35,5 +24,3 @@ const HeadlessColumns = () => {
         }} />)}
 	</div>
 }
-
-export default HeadlessColumns

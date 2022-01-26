@@ -60,10 +60,11 @@ function GridProvider({ rows, headers, children, ...props }) {
         gridTemplateColumns,
 
         startEnd, setStartEnd,
-        setThrottling,
+        throttling, setThrottling,
         innerRows, setInnerRows,
         innerHeaders, setInnerHeaders,
-        selectedIndex, setSelectedIndex
+        selectedIndex, setSelectedIndex,
+        currentRow, setCurrentRow
     }}>
       <HeadlessProcessing {...{ rows, headers }} />
       {children}

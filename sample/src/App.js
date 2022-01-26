@@ -15,7 +15,9 @@ import { ObservableGrid } from 'react-observable-grid';
 import { GridProvider } from './components/GridStore';
 import HeadlessActionButtons from './components/HeadlessActionButtons';
 import HeadlessColumns from './components/HeadlessColumns';
+import HeadlessContainer from './components/HeadlessContainer';
 import HeadlessDebugging from './components/HeadlessDebugging';
+import HeadlessRowList from './components/HeadlessRowList';
 import LocalObservableGrid from './components/ObservableGrid';
 import { dataGenerator } from './parts/dataGenerator';
 import { ActionsRow, AvatarRow, Card, CurrencyRow, DescriptionRow, LastSeenRow, NamesRow, RoleRow, RowTabs, TilesRow } from './parts/SampleRow';
@@ -321,6 +323,9 @@ const App = () => {
               /> */}
               <GridProvider {...{ rows, headers }}>
                 <HeadlessColumns />
+                <HeadlessContainer>
+                  <HeadlessRowList />
+                </HeadlessContainer>
                 <HeadlessDebugging>{items => <div>{JSON.stringify(items)}</div>}</HeadlessDebugging>
                 <HeadlessActionButtons>{({ total, filtered, selectedIndex, goToTop, goToSelectedIndex }) => <>
                   <ActionButtons {...{total, filtered, selectedIndex, goToTop, goToSelectedIndex}} />
