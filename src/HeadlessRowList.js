@@ -64,7 +64,7 @@ const ObservableRowList = ({
         }
         onClick={() => isSelectable && !isGrid && setSelectedIndex(selectedIndex === row.__origIndex ? null : row.__origIndex)}
       >
-        {innerHeaders.filter(header => header.visible).map(header =>
+        {innerHeaders.filter(ih => ih.visible).map(header =>
           <React.Fragment key={`${header.property}_${header.label}_${header.tooltip}_${header.width}`}>
             {row.__index === currentRow && header.onHover ? header.onHover(row) : header.row(row)}
           </React.Fragment>)}

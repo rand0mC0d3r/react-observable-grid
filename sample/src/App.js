@@ -326,7 +326,8 @@ const App = () => {
                 <HeadlessContainer>
                   <HeadlessRowList />
                 </HeadlessContainer>
-                <HeadlessDebugging>{items => <div>{JSON.stringify(items)}</div>}</HeadlessDebugging>
+                {/* <HeadlessDebugging>{items => <div>{JSON.stringify(items)}</div>}</HeadlessDebugging> */}
+                <HeadlessDebugging>{}</HeadlessDebugging>
                 <HeadlessActionButtons>{({ total, filtered, selectedIndex, goToTop, goToSelectedIndex }) => <>
                   <ActionButtons {...{total, filtered, selectedIndex, goToTop, goToSelectedIndex}} />
                 </>}</HeadlessActionButtons>
