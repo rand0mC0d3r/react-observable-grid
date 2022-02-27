@@ -12,7 +12,9 @@ import SubjectIcon from '@material-ui/icons/Subject';
 import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
 import { useEffect, useMemo, useState } from 'react';
 import { ObservableGrid } from 'react-observable-grid';
-import { GridProvider } from './components/GridStore';
+import GridDebug from './components/GridDebug';
+import GridHeaders from './components/GridHeaders';
+import { Grid } from './components/GridStore';
 import HeadlessActionButtons from './components/HeadlessActionButtons';
 import HeadlessColumns from './components/HeadlessColumns';
 import HeadlessContainer from './components/HeadlessContainer';
@@ -316,48 +318,22 @@ const App = () => {
                 headerOptions={{ padding: '4px 16px 4px 16px' }}
                 rows={rows}
                 emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}/>
-            : <>
-              {/* <LocalObservableGrid
-                className={classes.observableGrid}
-                rows={rows}
-              /> */}
-              <GridProvider {...{ rows, headers }}>
-                <HeadlessColumns />
+            : <Grid {...{ rows, headers }}>
+                <GridHeaders style={{padding: '16px'}}>
+                  {(headers) => <>{headers.map(h => <div>{h.label}</div>)}</> }
+                </GridHeaders>
+                {/* <HeadlessColumns />
                 <HeadlessContainer>
                   <HeadlessRowList />
-                </HeadlessContainer>
-                {/* <HeadlessDebugging>{items => <div>{JSON.stringify(items)}</div>}</HeadlessDebugging> */}
-                <HeadlessDebugging>{}</HeadlessDebugging>
-                <HeadlessActionButtons>{({ total, filtered, selectedIndex, goToTop, goToSelectedIndex }) => <>
+                </HeadlessContainer> */}
+                {/* <HeadlessDebugging>{items => <div>{JSON.stringify(items)}</div>}</HeadlessDebugging>
+                dd */}
+                {/* <GridDebug>{(debug) => <>{ JSON.stringify(debug) }</>}</GridDebug> */}
+              {/* <GridDebug>{(debug) => <>{debug.map(debugItem => <>{debug}</>)}</>}</GridDebug> */}
+                {/* <HeadlessActionButtons>{({ total, filtered, selectedIndex, goToTop, goToSelectedIndex }) => <>
                   <ActionButtons {...{total, filtered, selectedIndex, goToTop, goToSelectedIndex}} />
-                </>}</HeadlessActionButtons>
-              </GridProvider>
-
-                {/* <LocalObservableGrid {...{ isDebugging, headers: asGrid ? headersGrid : (noHeaders ? undefined : headers), canvasDrawing }}
-                  uniqueId="fakeEntries"
-                  customActions={<Fab size="small" color="primary" onClick={() => { alert('I am inserted by the developer')}} aria-label="add">
-                    <AddIcon />
-                  </Fab>}
-                  testOptions={testOptions}
-                  hasProgressBar={hasProgressBar}
-                  // isOmittingColumns={['uuid', 'tilesHash']}
-                  isGrid={asGrid ? 4 : undefined}
-                  isAlternating={asGrid ? false : true}
-                  pageSize={asGrid ? 100 : 50}
-                  isHeaderHidden={isHeaderHidden}
-                  canvasDrawing={false}
-                  isDiscovering={isDiscovering}
-                  isColumned={asGrid ? false : isColumned}
-                  className={classes.observableGrid}
-                  hasFloatingActions={hasFloatingActions}
-                  isClearingOnBlur={true}
-                  rowOptions={{ padding: '8px 16px 8px 16px' }}
-                  headerOptions={{ padding: '4px 16px 4px 16px' }}
-                  rows={rows}
-                  emptyElement={<Typography variant="caption" color="textSecondary">No data found ...</Typography>}
-                /> */}
-
-            </>}
+                </>}</HeadlessActionButtons> */}
+              </Grid>}
           </div>
         </div>
       </div>
