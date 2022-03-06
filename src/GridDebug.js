@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { useContext } from 'react'
-import DataProvider from './GridStore'
+import DataProvider from './GridStoreNg'
 
 const GridDebug = ({ children }) => {
   const { stats } = useContext(DataProvider)
