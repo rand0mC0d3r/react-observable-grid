@@ -183,7 +183,9 @@ const useStyles = makeStyles(() => ({
     padding: '16px'
   },
   header: {
-    display: 'flex'
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px'
   },
   wrapper: {
     display: 'flex',
