@@ -39,6 +39,14 @@ const App = () => {
     setValue(newValue);
   };
 
+
+  const global =  {
+		alternatingRows: {
+			enabled: true,
+			stepping: (index) => index % 2 === 0,
+		}
+  }
+
 	const grid = [
 		{
       header: {
@@ -98,21 +106,22 @@ const App = () => {
     <div className={hideAll ? classes.wrapperClean : classes.wrapper}>
       <div className={classes.containerWrapper}>
         <div id="outside" className={hideAll ? classes.containerClean : classes.container}>
-          <Grid {...{ data, grid }}>
+          <Grid {...{ data, grid, global }}>
             <GridHeadersNg className={classes.headers}>
               {headers => headers.map(({ key, component }) => <Fragment key={key}>
                 <Typography color="textPrimary" variant='subtitle2'>{component}</Typography>
               </Fragment>)}
             </GridHeadersNg>
             <GridRowsNg>
-              {({ rows, rowProps, styleProps }) => rows.map(({ key, component }) => <div
+              {({ rows, rowProps, styleProps }) => rows.map(({ key, component, alternating }) => <div
                 {...rowProps}
                 {...{
                   key,
                   style: {
                     ...styleProps,
-                    borderBottom: '1px solid red',
-                    padding: '10px'
+                    borderBottom: '1px solid #DDD',
+                    padding: '10px',
+                    backgroundColor: alternating ? '#f0f0f0' : '#fff'
                   }
                 }}>
                 {component}

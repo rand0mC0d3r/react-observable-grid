@@ -3,7 +3,7 @@ import HeadlessProcessing from './HeadlessProcessing'
 
 const Context = createContext()
 
-const Grid = ({ data, grid, children, ...props }) =>{
+const Grid = ({ data, grid, global, children, ...props }) =>{
 
 
   // const [rows, setRows] = useState(props['rows'] || [])
@@ -26,7 +26,7 @@ const Grid = ({ data, grid, children, ...props }) =>{
   })
 
 
-  useEffect(() => console.log(data), [data])
+  // useEffect(() => console.log(data), [data])
   // useEffect(() => setGridTemplateColumns(innerHeaders.filter(header => header.visible).map(header => header.width).join(' ')), [innerHeaders])
 
   return <div style={{
@@ -40,7 +40,7 @@ const Grid = ({ data, grid, children, ...props }) =>{
     <Context.Provider
       id="provider"
       value={{
-        data, grid, stats,
+        data, grid, stats, global,
       }}>
       {children}
     </Context.Provider>

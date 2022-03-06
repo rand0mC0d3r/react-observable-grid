@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import DataProvider from './GridStoreNg';
 
 const GridRowsNg = ({ children, className, style }) => {
-  const { data, grid } = useContext(DataProvider)
+  const { data, grid, global } = useContext(DataProvider)
 
   const [gridTemplateColumns, setGridTemplateColumns] = useState('')
   const [presentColumns, setPresentColumns] = useState([])
@@ -41,7 +41,8 @@ const GridRowsNg = ({ children, className, style }) => {
         rowProps: {
           className,
         },
-        rows: data.map(dataItem => ({
+        rows: data.map((dataItem, index) => ({
+          alternating: global.alternatingRows.stepping(index),
           key: dataItem.uuid,
           component: <>
             {presentColumns.map(({ component, key }) => <div key={key}>{component(dataItem)}</div>)}
