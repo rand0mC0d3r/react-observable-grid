@@ -35,10 +35,9 @@ const GridRowsNg = ({ children, className, style }) => {
       gridTemplateColumns,
       ...style,
     }}>
-      {data && data.map(dataItem => <>
-        <div>{dataItem.uuid}</div>
-        {presentColumns.map(({component}) => <>{component(dataItem)}</>)}
-      </>)}
+      {children && data && children(data.map(dataItem => <>
+        {presentColumns.map(({component}) => <div>{component(dataItem)}</div>)}
+      </>))}
     </div>
     </div>
   </div>

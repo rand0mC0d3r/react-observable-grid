@@ -49,7 +49,7 @@ const App = () => {
 			},
       row: {
         key: 'namer',
-        component: (row) => <div>{row.name}</div>,
+        component: (row) => <>{row.name}</>,
 			}
 		},
 		{
@@ -106,7 +106,6 @@ const App = () => {
             </GridHeadersNg>
             <GridRowsNg>
               {(rows) => rows.map((row) => <Fragment>
-                ddd
                 {row}
               </Fragment>)}
             </GridRowsNg>
