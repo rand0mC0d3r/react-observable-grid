@@ -7,7 +7,10 @@ const Context = createContext()
 const Grid = ({ data, grid, global, children, ...props }) => {
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
   const naturalSort = createNewSortInstance({ comparer: collator.compare })
+
   const [_data, set_Data] = useState([])
+  const [_gridTemplateColumns, set_GridTemplateColumns] = useState('')
+
 
   // const [rows, setRows] = useState(props['rows'] || [])
   // const [headers, setHeaders] = useState(props['headers'] || [])
@@ -40,6 +43,13 @@ const Grid = ({ data, grid, global, children, ...props }) => {
 
     set_Data(sortData(data, stats.sort.column, stats.sort.direction))
   }, [data])
+
+  useEffect(() => {
+    set_GridTemplateColumns(grid
+      .filter(gridItem => gridItem.header.visible)
+      .map(gridItem => gridItem.header.width)
+      .join(' '))
+  }, [grid])
 
   useEffect(() => {
     console.log(data)
@@ -84,7 +94,9 @@ const Grid = ({ data, grid, global, children, ...props }) => {
     <Context.Provider
       id="provider"
       value={{
-        data: _data, grid, stats, global,
+        data: _data,
+        gridTemplateColumns: _gridTemplateColumns,
+        grid, stats, global,
 
         onSort
       }}>

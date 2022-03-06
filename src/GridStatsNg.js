@@ -6,7 +6,7 @@ const GridHeadersNg = ({ children, className, style }) => {
   const { stats } = useContext(DataProvider)
   const { total, sort }  = stats
 
-  return <div {...{ className }} style={{ ...style}}>
+  return <div {...{ className }} style={{ ...style, zIndex: 2}}>
     {children && children({ total, sort })}
     </div>
 }

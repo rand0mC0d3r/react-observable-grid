@@ -3,34 +3,29 @@ import React, { useContext, useEffect, useState } from 'react';
 import DataProvider from './GridStoreNg';
 
 const GridHeadersNg = ({ children, className, style }) => {
-  const { grid, stats, onSort } = useContext(DataProvider)
-  const [gridTemplateColumns, setGridTemplateColumns] = useState('')
-
-  useEffect(() => {
-    setGridTemplateColumns(grid
-      .filter(gridItem => gridItem.header.visible)
-      .map(gridItem => gridItem.header.width)
-      .join(' '))
-  }, [grid])
+  const { grid, gridTemplateColumns, stats, onSort } = useContext(DataProvider)
 
   return <div {...{ className }} style={{
-      display: 'grid',
-      gridTemplateColumns,
-      ...style,
-    }}>
-      {children && children(grid
-        .filter(gridItem => gridItem.header.visible)
-        .map(({ header }) => ({
-          component: header.component,
-          key: header.key,
-          onSort,
-          align: header.align,
-          sort: {
-            direction: stats.sort.direction,
-            active: stats.sort.column === header.key,
-          }
-        })))}
-    </div>
+    display: 'grid',
+    zIndex: 1,
+    alignItems: 'center',
+    gridTemplateColumns,
+    ...style,
+  }}>
+    {children && children(grid
+      .filter(gridItem => gridItem.header.visible)
+      .map(({ header }) => ({
+        component: header.component,
+        key: header.key,
+        onSort,
+        extraKeys: header.extraKeys,
+        align: header.align,
+        sort: {
+          direction: stats.sort.direction,
+          column: stats.sort.column,
+        }
+      })))}
+  </div>
 }
 
 GridHeadersNg.propTypes = { children: PropTypes.func.isRequired }

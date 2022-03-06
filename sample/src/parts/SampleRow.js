@@ -5,28 +5,21 @@ import TuneIcon from '@material-ui/icons/Tune';
 import { memo } from 'react';
 import stringToColor from 'string-to-color';
 
-const AvatarRow = memo(({ name, opacity = 1, surname, fullName, selectedAvatars, onSelectAvatar = () => { } }) => {
-  const theme = useTheme()
-  const classes = avatarStyles(theme)
-
-  return <div style={{ display: 'flex', justifyContent: "center" }}>
-    <Tooltip arrow title={fullName}>
+const AvatarRow = memo(({ name, surname }) => <div style={{ display: 'flex', justifyContent: "center" }}>
+    <Tooltip arrow title={`${name} ${surname}`}>
       <Avatar
-        onClick={() => onSelectAvatar({ fullName, name, surname })}
         variant="rounded"
-        className={[classes.avatar, selectedAvatars?.length > 0 ? selectedAvatars?.some(sa => sa.fullName === fullName) && classes.selectedAvatar : ''].join(' ')}
         style={{
           fontSize: '16px',
           cursor: 'pointer',
-          opacity: opacity,
-          backgroundColor: stringToColor(fullName)
+          backgroundColor: stringToColor(`${name} ${surname}`)
         }}
       >
       {name?.substr(0, 1)}{surname?.substr(0, 1)}
       </Avatar>
     </Tooltip>
   </div>
-})
+)
 
 const NamesRow = ({ name, surname }) => {
   return <div style={{ display: 'flex', flexDirection: 'row', gap: '8px', alignItems: 'center' }}>
@@ -62,7 +55,7 @@ const CurrencyRow = ({ row: { price } }) => <Typography style={{ display: 'flex'
 
 const DescriptionRow = memo(({ description }) => <Typography variant='body2'>{description}</Typography>)
 const RoleRow = memo(({ row: { role }}) => <Typography variant='body2' color="textSecondary">{role}</Typography>)
-const LastSeenRow = memo(({ lastSeen }) => <Typography style={{display: 'flex', justifyContent: 'flex-end'}} variant='caption' color="textSecondary">Last Seen: {lastSeen}</Typography>)
+const LastSeenRow = memo(({ row: { lastSeen } }) => <Typography style={{display: 'flex', justifyContent: 'flex-end'}} variant='caption' color="textSecondary">Last Seen: {lastSeen}</Typography>)
 
 const ActionsRow = memo(() => {
   const theme = useTheme()

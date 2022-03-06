@@ -7,18 +7,21 @@ const GridHeaders = () => {
   const theme = useTheme()
   const classes = gridHeadersStyles(theme)
   return <GridHeadersNg className={classes.headers}>
-    {headers => headers.map(({ key, component, sort, onSort, align }) => <Fragment key={key}>
-      <div className={classes.header} style={{ justifyContent: align ? align : 'flex-start'}}>
-        <Typography
-          onClick={() => onSort(key)}
-          color={sort.active ? 'primary' : 'textPrimary'}
-          variant='subtitle2'
-        >
-          {component}
-        </Typography>
-        {sort.active && <>
-          <div className={classes.sortArrow}>{sort.direction === 'asc' ? '↑' : '↓'}</div>
-        </>}
+    {headers => headers.map(({ key, component, sort, onSort, align, extraKeys }) => <Fragment key={key}>
+      <div className={classes.headerWrapper} style={{ alignItems: align ? align : 'flex-start' }}>
+        <div className={classes.header} style={{ justifyContent: align ? align : 'flex-start' }}>
+          <Typography
+            onClick={() => onSort(key)}
+            color={sort.column === key ? 'primary' : 'textPrimary'}
+            variant='subtitle2'
+          >
+            {component}
+          </Typography>
+          {sort.column === key && <>
+            <div className={classes.sortArrow}>{sort.direction === 'asc' ? '↑' : '↓'}</div>
+          </>}
+        </div>
+        <div>{extraKeys}</div>
       </div>
     </Fragment>)}
   </GridHeadersNg>
@@ -34,6 +37,11 @@ const gridHeadersStyles = makeStyles(() => ({
     backgroundColor: '#3f51b51c',
     borderBottom: '2px solid #999',
     padding: '16px'
+  },
+  headerWrapper: {
+    padding: '0px 8px',
+    display: 'flex',
+    flexDirection: 'column',
   },
   header: {
     display: 'flex',

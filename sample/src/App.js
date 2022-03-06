@@ -12,6 +12,7 @@ import SubjectIcon from '@material-ui/icons/Subject';
 import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { ObservableGrid } from 'react-observable-grid';
+import GridColumnsNg from './components/GridColumnsNg';
 import GridDebug from './components/GridDebug';
 import GridHeadersNg from './components/GridHeadersNg';
 import GridRowsNg from './components/GridRowsNg';
@@ -56,14 +57,30 @@ const App = () => {
 	const grid = [
 		{
       header: {
-        key: 'name',
+        extraKeys: ['name', 'surname'],
+        key: 'fullName',
 				width: '1fr',
 				visible: true,
 				component: <>Name</>,
 			},
       row: {
         key: 'namer',
-        component: (row) => <>{row.name}</>,
+        component: ({ name, surname }) => <div style={{ display: 'flex', gap: '8px'}}>
+          <AvatarRow {...{name, surname}}/>
+          <NamesRow {...{name, surname}} />
+        </div>,
+			}
+    },
+    {
+      header: {
+        key: 'role',
+				width: '150px',
+				visible: true,
+        component: <>Role</>,
+			},
+      row: {
+        key: 'role',
+        component: (row) => <RoleRow {...{row}} />,
 			}
 		},
 		{
@@ -78,24 +95,16 @@ const App = () => {
         component: (row) => <>{row.fullName}</>,
 			}
 		},
-		{
-      header: {
-        key: 'role',
-				width: '150px',
-				visible: true,
-        component: <>Role</>,
-			},
-      row: {
-        key: 'role',
-        component: (row) => <RoleRow {...{row}} />,
-			}
-		},
+
 		{
       header: {
         key: 'description',
 				width: '2fr',
 				visible: true,
-        component: <>Description</>,
+        component: <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <SubjectIcon />
+          <Typography variant="caption">Description</Typography>
+        </div>,
 			},
       row: {
         key:  'descriptionr',
@@ -104,8 +113,9 @@ const App = () => {
 		},
 		{
       header: {
+        extraKeys: ['currency'],
         key: 'amount',
-				width: '100px',
+				width: '200px',
         visible: true,
         align: 'flex-end',
         component: <>Currency</>,
@@ -113,6 +123,19 @@ const App = () => {
       row: {
         key:  'currency',
         component: (row) => <CurrencyRow {...{row}} />,
+			}
+		},
+		{
+      header: {
+        key: 'lastSeen',
+				width: '200px',
+        visible: true,
+        align: 'flex-end',
+        component: <>Last Seen</>,
+			},
+      row: {
+        key:  'lastSeen',
+        component: (row) => <LastSeenRow {...{row}} />,
 			}
 		}
 	]
@@ -126,6 +149,7 @@ const App = () => {
         <div id="outside" className={hideAll ? classes.containerClean : classes.container}>
           <Grid {...{ data, grid, global }}>
             <GridHeaders />
+            <GridColumnsNg style={{ padding: '16px' }} />
             <GridRowsNg>
               {({ rows, rowProps, styleProps }) => rows.map(({ key, component, alternating }) => <div
                 {...rowProps}
@@ -135,7 +159,7 @@ const App = () => {
                     ...styleProps,
                     borderBottom: '1px solid #DDD',
                     padding: '16px',
-                    backgroundColor: alternating ? '#f0f0f0' : '#fff'
+                    backgroundColor: alternating ? '#f0f0f077' : '#ffffff77'
                   }
                 }}>
                 {component}

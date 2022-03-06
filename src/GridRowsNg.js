@@ -36,6 +36,7 @@ const GridRowsNg = ({ children, className, style }) => {
       {children && data && children({
         styleProps: {
           display: 'grid',
+          alignItems: 'center',
           gridTemplateColumns,
         },
         rowProps: {
