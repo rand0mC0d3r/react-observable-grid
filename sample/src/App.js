@@ -182,22 +182,6 @@ const useStyles = makeStyles(() => ({
     padding: '16px',
     bottom: '16px'
   },
-  sortArrow: {
-    backgroundColor: '#3f51b577',
-    border: '1px solid #3f51b5',
-    borderRadius: '50%',
-  },
-  headers: {
-    backgroundColor: '#3f51b51c',
-    borderBottom: '1px solid red',
-    padding: '16px'
-  },
-  header: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    cursor: 'pointer',
-  },
   wrapper: {
     display: 'flex',
     gap: '16px',
