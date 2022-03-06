@@ -15,6 +15,7 @@ import { ObservableGrid } from 'react-observable-grid';
 import GridDebug from './components/GridDebug';
 import GridHeadersNg from './components/GridHeadersNg';
 import GridRowsNg from './components/GridRowsNg';
+import GridStatsNg from './components/GridStatsNg';
 import { Grid } from './components/GridStoreNg';
 import HeadlessActionButtons from './components/HeadlessActionButtons';
 import HeadlessColumns from './components/HeadlessColumns';
@@ -27,7 +28,7 @@ import { ActionsRow, AvatarRow, Card, CurrencyRow, DescriptionRow, LastSeenRow, 
 import { ActionButtons } from './parts/Tooling';
 
 const App = () => {
-  const [data, setData] = useState(dataGenerator(500));
+  const [data, setData] = useState(dataGenerator(10));
   const [hideAll, setHideAll] = useState(false);
 
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
@@ -44,7 +45,11 @@ const App = () => {
 		alternatingRows: {
 			enabled: true,
 			stepping: (index) => index % 2 === 0,
-		}
+    },
+    sort: {
+      initialDirection: 'asc',
+      initialColumn: 'name',
+    }
   }
 
 	const grid = [
@@ -104,13 +109,15 @@ const App = () => {
 
   return <ThemeProvider {...{ theme }} >
     <div className={hideAll ? classes.wrapperClean : classes.wrapper}>
+      <Button variant="outlined" onClick={() => setData(dataGenerator(50))}>Recreate</Button>
       <div className={classes.containerWrapper}>
         <div id="outside" className={hideAll ? classes.containerClean : classes.container}>
           <Grid {...{ data, grid, global }}>
             <GridHeadersNg className={classes.headers}>
-              {headers => headers.map(({ key, component }) => <Fragment key={key}>
-                <Typography color="textPrimary" variant='subtitle2'>{component}</Typography>
-              </Fragment>)}
+              {headers => headers.map(({ key, component, sort }) => <div className={classes.header} key={key}>
+                <Typography color={sort.active ? 'primary' : 'textPrimary'} variant='subtitle2'>{component}</Typography>
+                {sort.active && <>{sort.direction === 'asc' ? '↑' : '↓'}</>}
+              </div>)}
             </GridHeadersNg>
             <GridRowsNg>
               {({ rows, rowProps, styleProps }) => rows.map(({ key, component, alternating }) => <div
@@ -127,6 +134,11 @@ const App = () => {
                 {component}
               </div>)}
             </GridRowsNg>
+            <GridStatsNg className={classes.stats}>
+              {({ total }) => <div >
+                {total}
+              </div>}
+            </GridStatsNg>
           </Grid>
           </div>
         </div>
@@ -157,10 +169,21 @@ const useStyles = makeStyles(() => ({
       backgroundColor: 'red',
     }
   },
+  stats: {
+    position: 'absolute',
+    backgroundColor: '#BBB',
+    border: '1px solid #888',
+    right: '16px',
+    padding: '16px',
+    bottom: '16px'
+  },
   headers: {
     backgroundColor: '#3f51b51c',
     borderBottom: '1px solid red',
     padding: '16px'
+  },
+  header: {
+    display: 'flex'
   },
   wrapper: {
     display: 'flex',
