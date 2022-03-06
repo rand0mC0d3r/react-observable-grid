@@ -114,9 +114,12 @@ const App = () => {
         <div id="outside" className={hideAll ? classes.containerClean : classes.container}>
           <Grid {...{ data, grid, global }}>
             <GridHeadersNg className={classes.headers}>
-              {headers => headers.map(({ key, component, sort }) => <div className={classes.header} key={key}>
-                <Typography color={sort.active ? 'primary' : 'textPrimary'} variant='subtitle2'>{component}</Typography>
-                {sort.active && <>{sort.direction === 'asc' ? '↑' : '↓'}</>}
+              {headers => headers.map(({ key, component, sort, onSort }) => <div className={classes.header} key={key}>
+                <Typography
+                  onClick={() => onSort(key)}
+                  color={sort.active ? 'primary' : 'textPrimary'}
+                  variant='subtitle2'>{component}</Typography>
+                {sort.active && <div className={classes.sortArrow}>{sort.direction === 'asc' ? '↑' : '↓'}</div>}
               </div>)}
             </GridHeadersNg>
             <GridRowsNg>
@@ -135,8 +138,8 @@ const App = () => {
               </div>)}
             </GridRowsNg>
             <GridStatsNg className={classes.stats}>
-              {({ total }) => <div >
-                {total}
+              {({ total, sort }) => <div >
+                {total} {sort.column} {sort.direction}
               </div>}
             </GridStatsNg>
           </Grid>
@@ -177,6 +180,11 @@ const useStyles = makeStyles(() => ({
     padding: '16px',
     bottom: '16px'
   },
+  sortArrow: {
+    backgroundColor: '#3f51b577',
+    border: '1px solid #3f51b5',
+    borderRadius: '50%',
+  },
   headers: {
     backgroundColor: '#3f51b51c',
     borderBottom: '1px solid red',
@@ -185,7 +193,8 @@ const useStyles = makeStyles(() => ({
   header: {
     display: 'flex',
     alignItems: 'center',
-    gap: '8px'
+    gap: '8px',
+    cursor: 'pointer',
   },
   wrapper: {
     display: 'flex',

@@ -57,8 +57,14 @@ const Grid = ({ data, grid, global, children, ...props }) => {
     console.log(stats)
   }, [stats])
 
-  const onSort = () => {
-    console.log('sort')
+  const onSort = (key) => {
+    setStats(stats => ({
+      ...stats, sort: {
+        ...stats.sort,
+        direction: stats.sort.direction === 'asc' ? 'desc' : 'asc',
+        column: key,
+      }
+      }))
   }
 
   // useEffect(() => {
@@ -78,8 +84,10 @@ const Grid = ({ data, grid, global, children, ...props }) => {
       id="provider"
       value={{
         data: _data, grid, stats, global,
+
+        onSort
       }}>
-      {children({ onSort })}
+      {children}
     </Context.Provider>
   </div>
 }

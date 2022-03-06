@@ -4,10 +4,10 @@ import DataProvider from './GridStoreNg';
 
 const GridHeadersNg = ({ children, className, style }) => {
   const { stats } = useContext(DataProvider)
-  const { total }  = stats
+  const { total, sort }  = stats
 
   return <div {...{ className }} style={{ ...style}}>
-    {children && children({ total })}
+    {children && children({ total, sort })}
     </div>
 }
 
