@@ -15,7 +15,10 @@ const GridRowsNg = ({ children, className, style }) => {
       .join(' '))
     setPresentColumns(grid
       .filter(gridItem => gridItem.header.visible)
-      .map(gridItem => ({ component: gridItem.row.component })))
+      .map(gridItem => ({
+        component: gridItem.row.component,
+        key: gridItem.row.key
+      })))
   }, [grid])
 
   return <div style={{
@@ -30,19 +33,23 @@ const GridRowsNg = ({ children, className, style }) => {
       height: '100%'
     }}
     >
-    <div {...{ className }} style={{
-      display: 'grid',
-      gridTemplateColumns,
-      ...style,
-    }}>
-      {children && data && children(data.map(dataItem => <>
-        {presentColumns.map(({component}) => <div>{component(dataItem)}</div>)}
-      </>))}
-    </div>
+      {children && data && children({
+        styleProps: {
+          display: 'grid',
+          gridTemplateColumns,
+        },
+        rowProps: {
+          className,
+        },
+        rows: data.map(dataItem => ({
+          key: dataItem.uuid,
+          component: <>
+            {presentColumns.map(({ component, key }) => <div key={key}>{component(dataItem)}</div>)}
+          </>
+        }))})}
     </div>
   </div>
 }
-
 
 GridRowsNg.propTypes = { children: PropTypes.func.isRequired }
 

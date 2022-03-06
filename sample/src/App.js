@@ -45,7 +45,7 @@ const App = () => {
         key: 'name',
 				width: '1fr',
 				visible: true,
-				component: <div style={{color: 'red'}}>Name</div>,
+				component: <>Name</>,
 			},
       row: {
         key: 'namer',
@@ -57,7 +57,7 @@ const App = () => {
         key: 'fullName',
 				width: '1fr',
 				visible: true,
-        component: <div style={{backgroundColor:'#CCC'}}>FullName</div>,
+        component: <>FullName</>,
         align: 'center',
 			},
       row: {
@@ -70,7 +70,7 @@ const App = () => {
         key: 'description',
 				width: '2fr',
 				visible: true,
-        component: <div>Description</div>,
+        component: <>Description</>,
         align: 'center',
 			},
       row: {
@@ -83,7 +83,7 @@ const App = () => {
         key: 'foo',
 				width: '1fr',
 				visible: false,
-				component: <div>Foo</div>,
+				component: <>Foo</>,
 			},
       row: {
         key:  'foor',
@@ -99,15 +99,24 @@ const App = () => {
       <div className={classes.containerWrapper}>
         <div id="outside" className={hideAll ? classes.containerClean : classes.container}>
           <Grid {...{ data, grid }}>
-            <GridHeadersNg style={{ borderBottom: '1px solid red', padding: '10px'}}>
-              {(headers) => headers.map(({ key, component }) => <Fragment key={key}>
-                {component}
+            <GridHeadersNg className={classes.headers}>
+              {headers => headers.map(({ key, component }) => <Fragment key={key}>
+                <Typography color="textPrimary" variant='subtitle2'>{component}</Typography>
               </Fragment>)}
             </GridHeadersNg>
             <GridRowsNg>
-              {(rows) => rows.map((row) => <Fragment>
-                {row}
-              </Fragment>)}
+              {({ rows, rowProps, styleProps }) => rows.map(({ key, component }) => <div
+                {...rowProps}
+                {...{
+                  key,
+                  style: {
+                    ...styleProps,
+                    borderBottom: '1px solid red',
+                    padding: '10px'
+                  }
+                }}>
+                {component}
+              </div>)}
             </GridRowsNg>
           </Grid>
           </div>
@@ -138,6 +147,11 @@ const useStyles = makeStyles(() => ({
     '& #Container-root .Row-isSelected': {
       backgroundColor: 'red',
     }
+  },
+  headers: {
+    backgroundColor: '#3f51b51c',
+    borderBottom: '1px solid red',
+    padding: '16px'
   },
   wrapper: {
     display: 'flex',
@@ -193,9 +207,11 @@ const useStyles = makeStyles(() => ({
   container: {
     flex: '1 0 auto',
     position: 'relative',
-    borderRadius: '8px',
+    borderRadius: '4px',
     overflow: 'hidden',
-    border: '1px solid #333',
+    border: '1px solid #CCC',
+    // border: '1px solid rgb(230, 230, 230)',
+    // borderTop: '4px solid rgb(204, 0, 0)',
   },
   containerClean: {
     flex: '1 0 auto',
