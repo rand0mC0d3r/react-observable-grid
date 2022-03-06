@@ -1,13 +1,14 @@
 import { Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { Fragment } from 'react';
 import GridHeadersNg from '../components/GridHeadersNg';
 
 const GridHeaders = () => {
   const theme = useTheme()
   const classes = gridHeadersStyles(theme)
   return <GridHeadersNg className={classes.headers}>
-    {headers => headers.map(({ key, component, sort, onSort }) => <>
-      <div className={classes.header} key={key}>
+    {headers => headers.map(({ key, component, sort, onSort, align }) => <Fragment key={key}>
+      <div className={classes.header} style={{ justifyContent: align ? align : 'flex-start'}}>
         <Typography
           onClick={() => onSort(key)}
           color={sort.active ? 'primary' : 'textPrimary'}
@@ -19,7 +20,7 @@ const GridHeaders = () => {
           <div className={classes.sortArrow}>{sort.direction === 'asc' ? '↑' : '↓'}</div>
         </>}
       </div>
-    </>)}
+    </Fragment>)}
   </GridHeadersNg>
 }
 
@@ -31,7 +32,7 @@ const gridHeadersStyles = makeStyles(() => ({
   },
   headers: {
     backgroundColor: '#3f51b51c',
-    borderBottom: '1px solid red',
+    borderBottom: '2px solid #999',
     padding: '16px'
   },
   header: {

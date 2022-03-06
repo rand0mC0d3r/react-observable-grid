@@ -72,7 +72,6 @@ const App = () => {
 				width: '1fr',
 				visible: true,
         component: <>FullName</>,
-        align: 'center',
 			},
       row: {
         key: 'fullNamer',
@@ -81,11 +80,22 @@ const App = () => {
 		},
 		{
       header: {
+        key: 'role',
+				width: '150px',
+				visible: true,
+        component: <>Role</>,
+			},
+      row: {
+        key: 'role',
+        component: (row) => <RoleRow {...{row}} />,
+			}
+		},
+		{
+      header: {
         key: 'description',
 				width: '2fr',
 				visible: true,
         component: <>Description</>,
-        align: 'center',
 			},
       row: {
         key:  'descriptionr',
@@ -94,14 +104,15 @@ const App = () => {
 		},
 		{
       header: {
-        key: 'foo',
-				width: '1fr',
-				visible: false,
-				component: <>Foo</>,
+        key: 'amount',
+				width: '100px',
+        visible: true,
+        align: 'flex-end',
+        component: <>Currency</>,
 			},
       row: {
-        key:  'foor',
-        component: (row) => <>{row.uuid}</>,
+        key:  'currency',
+        component: (row) => <CurrencyRow {...{row}} />,
 			}
 		}
 	]
@@ -115,15 +126,6 @@ const App = () => {
         <div id="outside" className={hideAll ? classes.containerClean : classes.container}>
           <Grid {...{ data, grid, global }}>
             <GridHeaders />
-            {/* <GridHeadersNg className={classes.headers}>
-              {headers => headers.map(({ key, component, sort, onSort }) => <div className={classes.header} key={key}>
-                <Typography
-                  onClick={() => onSort(key)}
-                  color={sort.active ? 'primary' : 'textPrimary'}
-                  variant='subtitle2'>{component}</Typography>
-                {sort.active && <div className={classes.sortArrow}>{sort.direction === 'asc' ? '↑' : '↓'}</div>}
-              </div>)}
-            </GridHeadersNg> */}
             <GridRowsNg>
               {({ rows, rowProps, styleProps }) => rows.map(({ key, component, alternating }) => <div
                 {...rowProps}
@@ -132,7 +134,7 @@ const App = () => {
                   style: {
                     ...styleProps,
                     borderBottom: '1px solid #DDD',
-                    padding: '10px',
+                    padding: '16px',
                     backgroundColor: alternating ? '#f0f0f0' : '#fff'
                   }
                 }}>

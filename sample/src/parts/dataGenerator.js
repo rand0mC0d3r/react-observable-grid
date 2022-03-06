@@ -16,6 +16,7 @@ export const dataGenerator = (count) => count === 0 ? [] : new Array(count).fill
   const randomName = `${['Mary', 'John', 'Robert', 'Michael', 'William', 'David', 'Richard', 'Joseph', 'Thomas', 'Charles'][Math.floor(Math.random() * 10)]}`
   const randomSurname = `${['Williams', 'Johnson', 'Jones', 'Brown', 'Davis', 'Miller', 'Wilson', 'Moore', 'Taylor', 'Anderson'][Math.floor(Math.random() * 10)]}`
   const randomCurrency = currencies[Math.floor(Math.random() * currencies.length)]
+  const randomPrice = Math.floor(Math.random() * randomSeed)
   return {
     uuid: `uuid_${i}`,
     name: randomName,
@@ -55,7 +56,8 @@ export const dataGenerator = (count) => count === 0 ? [] : new Array(count).fill
     ][Math.floor(Math.random() * 10)]}`,
     tiles: randomFlavors,
     tilesHash: randomFlavors.map(({ name }) => name).sort().join(''),
-    price: `${Math.floor(Math.random() * randomSeed)} ${randomCurrency}`,
+    price: `${randomPrice} ${randomCurrency}`,
+    amount: randomPrice,
     currency: randomCurrency,
   }
 });

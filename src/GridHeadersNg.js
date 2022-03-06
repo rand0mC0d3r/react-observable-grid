@@ -24,6 +24,7 @@ const GridHeadersNg = ({ children, className, style }) => {
           component: header.component,
           key: header.key,
           onSort,
+          align: header.align,
           sort: {
             direction: stats.sort.direction,
             active: stats.sort.column === header.key,
@@ -31,7 +32,6 @@ const GridHeadersNg = ({ children, className, style }) => {
         })))}
     </div>
 }
-
 
 GridHeadersNg.propTypes = { children: PropTypes.func.isRequired }
 

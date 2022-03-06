@@ -42,7 +42,10 @@ const Grid = ({ data, grid, global, children, ...props }) => {
   }, [data])
 
   useEffect(() => {
-    console.log('tiee')
+    console.log(data)
+  }, [data])
+
+  useEffect(() => {
     setStats(stats => ({
       ...stats, sort: {
         ...stats.sort,
