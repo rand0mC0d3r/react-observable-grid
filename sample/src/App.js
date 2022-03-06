@@ -24,6 +24,7 @@ import HeadlessDebugging from './components/HeadlessDebugging';
 import HeadlessRowList from './components/HeadlessRowList';
 import LocalObservableGrid from './components/ObservableGrid';
 import { dataGenerator } from './parts/dataGenerator';
+import { GridHeaders } from './parts/GridHeaders';
 import { ActionsRow, AvatarRow, Card, CurrencyRow, DescriptionRow, LastSeenRow, NamesRow, RoleRow, RowTabs, TilesRow } from './parts/SampleRow';
 import { ActionButtons } from './parts/Tooling';
 
@@ -113,7 +114,8 @@ const App = () => {
       <div className={classes.containerWrapper}>
         <div id="outside" className={hideAll ? classes.containerClean : classes.container}>
           <Grid {...{ data, grid, global }}>
-            <GridHeadersNg className={classes.headers}>
+            <GridHeaders />
+            {/* <GridHeadersNg className={classes.headers}>
               {headers => headers.map(({ key, component, sort, onSort }) => <div className={classes.header} key={key}>
                 <Typography
                   onClick={() => onSort(key)}
@@ -121,7 +123,7 @@ const App = () => {
                   variant='subtitle2'>{component}</Typography>
                 {sort.active && <div className={classes.sortArrow}>{sort.direction === 'asc' ? '↑' : '↓'}</div>}
               </div>)}
-            </GridHeadersNg>
+            </GridHeadersNg> */}
             <GridRowsNg>
               {({ rows, rowProps, styleProps }) => rows.map(({ key, component, alternating }) => <div
                 {...rowProps}
