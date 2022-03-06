@@ -53,9 +53,6 @@ const Grid = ({ data, grid, global, children, ...props }) => {
   }, [global])
 
 
-  useEffect(() => {
-    console.log(stats)
-  }, [stats])
 
   const onSort = (key) => {
     setStats(stats => ({
@@ -64,7 +61,8 @@ const Grid = ({ data, grid, global, children, ...props }) => {
         direction: stats.sort.direction === 'asc' ? 'desc' : 'asc',
         column: key,
       }
-      }))
+    }))
+    set_Data(sortData(data, key, stats.sort.direction))
   }
 
   // useEffect(() => {
