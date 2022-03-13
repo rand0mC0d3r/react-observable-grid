@@ -39,7 +39,7 @@ const Grid = ({ data, grid, global, children, ...props }) => {
     : naturalSort(data).desc([item => item[column]]))
 
   useEffect(() => {
-    setStats(stats => ({ ...stats, total: data.length }))
+    setStats(stats => ({ ...stats, total: data?.length || 0 }))
 
     set_Data(sortData(data, stats.sort.column, stats.sort.direction))
   }, [data])

@@ -6,10 +6,10 @@ import DataProvider from './GridStoreNg';
 const GridHeadersNg = ({ children, className, style }) => {
   const { grid, gridTemplateColumns, stats, onSort, global } = useContext(DataProvider)
 
-  const componentTypeCheck = (component) => {
+  const componentTypeCheck = (component, options) => {
     return typeof component === 'string' || typeof component.type === 'symbol'
       ? <div>{component}</div>
-      : component
+      : component({ ...options })
   }
 
   const classes = `
@@ -27,37 +27,51 @@ const GridHeadersNg = ({ children, className, style }) => {
     .grid-headers-grid > *:nth-child(${index + 1}) {
       justify-content: ${gridItem?.header?.align || 'flex-start'};
     }`).join('')}
+    .grid-headers-injected {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
   `
 
   return <>
     <style>{classes}</style>
-    <div
-      className={clsx(['grid-headers-grid', className])}
-      style={{ ...global.style, ...style, gap: 0 }}
-    >
+    <div {...{
+      className: clsx(['grid-headers-grid', className]),
+      style: { ...global.style, ...style, gap: 0 }
+    }}>
       {children
         ? children({
-          headers: grid
-            .filter(gridItem => gridItem.header.visible)
-            .map(({ header }) => ({
-              component: componentTypeCheck(header.component),
-              key: header.key,
-              onSort,
-              extraKeys: header.extraKeys,
-              align: header.align,
-              sort: {
-                direction: stats.sort.direction,
-                column: stats.sort.column,
-              }
-            }))
-        })
-        : <>{grid
+            headers: grid
+              .filter(gridItem => gridItem.header.visible)
+              .map(({ header }) => ({
+                component: componentTypeCheck(header.component, {
+                  onSort: () => onSort(header.key),
+                  sort: {
+                    direction: stats.sort.direction,
+                    column: stats.sort.column,
+                  }
+                }),
+                key: header.key,
+                onSort: () => onSort(header.key),
+                extraKeys: header.extraKeys,
+                align: header.align,
+                sort: {
+                  direction: stats.sort.direction,
+                  column: stats.sort.column,
+                }
+                }))})
+        : grid
           .filter(gridItem => gridItem.header.visible)
-          .map(({ header }) => <div>
+          .map(({ header }) => <div
+            className='grid-headers-injected'
+            onClick={() => onSort(header.key)}
+          >
             {componentTypeCheck(header.component)}
-            <div>arrow</div>
-          </div>)
-        }</>}
+            {stats.sort.column === header.key && <>
+              {stats.sort.direction === 'asc' ? '↑' : '↓'}
+            </>}
+          </div>)}
     </div>
   </>
 }

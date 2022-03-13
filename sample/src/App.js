@@ -1,48 +1,23 @@
-import { Button, Chip, Fab, IconButton, Slider, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
-import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
-import AddIcon from '@material-ui/icons/Add';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import GitHubIcon from '@material-ui/icons/GitHub';
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
-import SignalCellular3BarIcon from '@material-ui/icons/SignalCellular3Bar';
-import SubjectIcon from '@material-ui/icons/Subject';
-import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
-import { Fragment, useEffect, useMemo, useState } from 'react';
-import { ObservableGrid } from 'react-observable-grid';
+import { useEffect, useMemo, useState } from 'react';
 import GridColumnsNg from './components/GridColumnsNg';
-import GridDebug from './components/GridDebug';
 import GridHeadersNg from './components/GridHeadersNg';
 import GridRowsNg from './components/GridRowsNg';
 import GridStatsNg from './components/GridStatsNg';
 import { Grid } from './components/GridStoreNg';
-import HeadlessActionButtons from './components/HeadlessActionButtons';
-import HeadlessColumns from './components/HeadlessColumns';
-import HeadlessContainer from './components/HeadlessContainer';
-import HeadlessDebugging from './components/HeadlessDebugging';
-import HeadlessRowList from './components/HeadlessRowList';
-import LocalObservableGrid from './components/ObservableGrid';
-import { dataGenerator } from './parts/dataGenerator';
-import { GridHeaders } from './parts/GridHeaders';
 import { files } from './parts/sample';
-import { ActionsRow, AvatarRow, Card, CurrencyRow, DescriptionRow, LastSeenRow, NamesRow, RoleRow, RowTabs, TilesRow } from './parts/SampleRow';
-import { ActionButtons } from './parts/Tooling';
 
 const App = () => {
-  const [data, setData] = useState(files);
+  const [data, setData] = useState([]);
   const [hideAll, setHideAll] = useState(false);
 
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
 
-  const [value, setValue] = useState([-1,-1]);
-  const handleChange = (event, newValue) => {
-    event.preventDefault()
-    setValue(newValue);
-  };
-
+  useEffect(() => {
+    setData(files.tree)
+  }, [])
 
   const global =  {
 		alternatingRows: {
@@ -51,7 +26,7 @@ const App = () => {
     },
     sort: {
       initialDirection: 'asc',
-      initialColumn: 'name',
+      initialColumn: 'type',
     },
     style: {
       padding: '16px',
@@ -67,7 +42,7 @@ const App = () => {
         align: 'flex-start',
 				width: '100px',
 				visible: true,
-				component: 'Type',
+				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Type</Typography>,
 			},
       row: {
         key: 'type',
@@ -81,40 +56,11 @@ const App = () => {
         key: 'path',
 				width: '2fr',
 				visible: true,
-        component: <Typography color="textSecondary" variant="caption">Path</Typography>,
+        component:  () => <Typography color="textSecondary" variant="caption">Path</Typography>,
 			},
       row: {
         key: 'role',
         component: ({ path }) => <div>{path}</div>,
-			}
-		},
-    {
-      header: {
-        key: 'description',
-				width: '2fr',
-				visible: true,
-        component: <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <SubjectIcon />
-          <Typography variant="caption">Description</Typography>
-        </div>,
-			},
-      row: {
-        key:  'descriptionr',
-        component: (row) => <>{row.description}</>,
-			}
-		},
-		{
-      header: {
-        extraKeys: ['currency'],
-        key: 'amount',
-				width: '200px',
-        visible: true,
-        align: 'flex-end',
-        component: 'Currency',
-			},
-      row: {
-        key:  'currency',
-        component: (row) => <CurrencyRow {...{row}} />,
 			}
 		},
 		{
@@ -123,7 +69,7 @@ const App = () => {
 				width: '100px',
         visible: true,
         align: 'flex-end',
-        component: 'File size',
+        component:  () => <Typography color="textSecondary" variant="caption">File size</Typography>,
 			},
       row: {
         key:  'size',
@@ -136,7 +82,7 @@ const App = () => {
 				width: '300px',
         visible: true,
         align: 'flex-end',
-        component: <>SHA</>,
+        component: () =>  <Typography color="textSecondary" variant="caption">SHA</Typography>,
 			},
       row: {
         key: 'sha',
@@ -148,41 +94,37 @@ const App = () => {
 
 
   return <ThemeProvider {...{ theme }} >
-    <div className={hideAll ? classes.wrapperClean : classes.wrapper}>
-      <Button variant="outlined" onClick={() => setData(dataGenerator(50))}>Recreate</Button>
-      <div className={classes.containerWrapper}>
-        <div id="outside" className={hideAll ? classes.containerClean : classes.container}>
-          {console.log(data.tree)}
-          {1 === 1 && <Grid {...{ data: data.tree, grid, global }}>
-            <GridHeadersNg >
-              {/* {({ headers }) => headers.map(({ key, component }) => <Fragment key={key}>{component}</Fragment> )} */}
-            </GridHeadersNg>
-            <GridColumnsNg >
-              {/* {({ columns }) => columns.map(({ key, align }) => <div key={key}>|</div> )} */}
-            </GridColumnsNg>
-            <GridRowsNg>
-              {({ rows, rowProps, styleProps }) => rows.map(({ key, component, alternating }) => <div
-                {...rowProps}
-                {...{
-                  key,
-                  style: {
-                    ...styleProps,
-                    borderBottom: '1px solid #DDD',
-                    backgroundColor: alternating ? '#f0f0f077' : '#ffffff77'
-                  }
-                }}>
-                {component}
-              </div>)}
-            </GridRowsNg>
-            <GridStatsNg className={classes.stats}>
-              {({ total, sort }) => <div >
-                {total} {sort.column} {sort.direction}
-              </div>}
-            </GridStatsNg>
-          </Grid>}
-          </div>
-        </div>
-      </div>
+    {1 === 1 && <Grid {...{ data: data, grid, global }}>
+      {/* <GridHeadersNg >
+        {({ headers }) => headers.map(({ key, component, sort }) => <div key={key}>
+          {component}
+          {sort.column === key && <>{sort.direction === 'asc' ? '↑' : '↓'}</>}
+        </div>)}
+      </GridHeadersNg> */}
+      <GridHeadersNg />
+      <GridColumnsNg >
+        {/* {({ columns }) => columns.map(({ key, align }) => <div key={key}>|</div> )} */}
+      </GridColumnsNg>
+      <GridRowsNg>
+        {({ rows, rowProps, styleProps }) => rows.map(({ key, component, alternating }) => <div
+          {...rowProps}
+          {...{
+            key,
+            style: {
+              ...styleProps,
+              borderBottom: '1px solid #DDD',
+              backgroundColor: alternating ? '#f0f0f077' : '#ffffff77'
+            }
+          }}>
+          {component}
+        </div>)}
+      </GridRowsNg>
+      <GridStatsNg className={classes.stats}>
+        {({ total, sort }) => <div >
+          {total} {sort.column} {sort.direction}
+        </div>}
+      </GridStatsNg>
+    </Grid>}
   </ThemeProvider>
 }
 
