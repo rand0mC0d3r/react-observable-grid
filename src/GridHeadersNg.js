@@ -1,9 +1,16 @@
+import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import DataProvider from './GridStoreNg';
 
 const GridHeadersNg = ({ children, className, style }) => {
   const { grid, gridTemplateColumns, stats, onSort, global } = useContext(DataProvider)
+
+  const componentTypeCheck = (component) => {
+    return typeof component === 'string' || typeof component.type === 'symbol'
+      ? <div>{component}</div>
+      : component
+  }
 
   const classes = `
     .grid-headers-grid {
@@ -24,13 +31,16 @@ const GridHeadersNg = ({ children, className, style }) => {
 
   return <>
     <style>{classes}</style>
-    <div className={`grid-headers-grid ${className}`} style={{ ...global.style, ...style, gap: 0}}>
+    <div
+      className={clsx(['grid-headers-grid', className])}
+      style={{ ...global.style, ...style, gap: 0 }}
+    >
       {children
         ? children({
           headers: grid
             .filter(gridItem => gridItem.header.visible)
             .map(({ header }) => ({
-              component: header.component,
+              component: componentTypeCheck(header.component),
               key: header.key,
               onSort,
               extraKeys: header.extraKeys,
@@ -43,12 +53,7 @@ const GridHeadersNg = ({ children, className, style }) => {
         })
         : <>{grid
           .filter(gridItem => gridItem.header.visible)
-          .map(({ header }) => <>
-            {typeof header.component === 'string' || typeof header.component.type === 'symbol'
-              ? <div>{header.component}</div>
-              : header.component
-            }
-          </>)
+          .map(({ header }) => componentTypeCheck(header.component))
         }</>}
     </div>
   </>

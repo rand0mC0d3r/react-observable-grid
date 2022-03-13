@@ -1,7 +1,8 @@
+import clsx from 'clsx';
 import React, { useContext, useEffect, useState } from 'react';
 import DataProvider from './GridStoreNg';
 
-export default ({ style, className }) => {
+export default ({ children, style, className }) => {
   const { grid, gridTemplateColumns, global } = useContext(DataProvider)
   const [presentColumns, setPresentColumns] = useState([])
 
@@ -17,23 +18,38 @@ export default ({ style, className }) => {
     }))
   }, [grid])
 
-  return <div
-    {...{ className }}
+  const classes = `
+    .grid-columns-grid {
+      top: 0px;
+      left: 0px;
+      bottom: 0px;
+      right: 0px;
+      position: absolute;
+      display: grid;
+    }
+  `
+
+  return <>
+    <style>{classes}</style>
+    <div className={clsx(['grid-columns-grid', className])}
     style={{
-      top: '0px', left: '0px', bottom: '0px', right: '0px',
-      position: 'absolute',
-      display: 'grid',
       gridTemplateColumns,
       ...global.style,
       ...style,
       paddingTop: '0',
       paddingBottom: '0',
 		}}
-  >
-    {presentColumns.map((pcItem, index) => <div id={pcItem.align} key={pcItem.key} style={{
-      border: '0px none transparent',
-      borderRight: pcItem.border ? '1px solid #CCC' : '0px none',
-      margin: `0px -${(style?.gap?.replace('px', '') / 2) || 0}px`,
-    }} ></div>)}
-	</div>
+    >
+      {children
+        ? children({ columns: presentColumns.map(pc => ({ key: pc.key, align: pc.align})) })
+        : <>
+        {presentColumns.map(pcItem => <div key={pcItem.key} style={{
+          border: '0px none transparent',
+          borderRight: pcItem.border ? '1px solid #CCC' : '0px none',
+          margin: `0px -${(style?.gap?.replace('px', '') / 2) || 0}px`,
+        }}/>)}
+        </>}
+
+    </div>
+    </>
 }

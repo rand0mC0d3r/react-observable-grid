@@ -54,6 +54,7 @@ const App = () => {
     },
     style: {
       padding: '16px',
+      rowPadding: '8px 16px',
       gap: '8'
     }
   }
@@ -81,7 +82,7 @@ const App = () => {
         key: 'role',
 				width: '150px',
 				visible: true,
-        component: <>Role</>,
+        component: <Typography color="textSecondary" variant="caption">Role</Typography>,
 			},
       row: {
         key: 'role',
@@ -166,9 +167,11 @@ const App = () => {
         <div id="outside" className={hideAll ? classes.containerClean : classes.container}>
           <Grid {...{ data, grid, global }}>
             <GridHeadersNg >
-              {/* {({ headers }) => headers.map(({ key, component }) => <div key={key}>{component}</div> )} */}
+              {/* {({ headers }) => headers.map(({ key, component }) => <Fragment key={key}>{component}</Fragment> )} */}
             </GridHeadersNg>
-            {/* <GridColumnsNg /> */}
+            <GridColumnsNg >
+              {/* {({ columns }) => columns.map(({ key, align }) => <div key={key}>|</div> )} */}
+            </GridColumnsNg>
             <GridRowsNg>
               {({ rows, rowProps, styleProps }) => rows.map(({ key, component, alternating }) => <div
                 {...rowProps}
@@ -177,8 +180,6 @@ const App = () => {
                   style: {
                     ...styleProps,
                     borderBottom: '1px solid #DDD',
-                    padding: '16px',
-                    gap: '8px',
                     backgroundColor: alternating ? '#f0f0f077' : '#ffffff77'
                   }
                 }}>
