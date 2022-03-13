@@ -51,6 +51,10 @@ const App = () => {
     sort: {
       initialDirection: 'asc',
       initialColumn: 'name',
+    },
+    style: {
+      padding: '16px',
+      gap: '8px'
     }
   }
 
@@ -59,6 +63,7 @@ const App = () => {
       header: {
         extraKeys: ['name', 'surname'],
         key: 'fullName',
+        align: 'flex-start',
 				width: '1fr',
 				visible: true,
 				component: <>Name</>,
@@ -118,11 +123,23 @@ const App = () => {
 				width: '200px',
         visible: true,
         align: 'flex-end',
-        component: <>Currency</>,
+        component: 'Currency',
 			},
       row: {
         key:  'currency',
         component: (row) => <CurrencyRow {...{row}} />,
+			}
+		},
+		{
+      header: {
+        key: 'currency',
+				width: '200px',
+        visible: true,
+        component: <>Currency left</>,
+			},
+      row: {
+        key:  'currencyVal',
+        component: (row) => <>value</>
 			}
 		},
 		{
@@ -148,8 +165,10 @@ const App = () => {
       <div className={classes.containerWrapper}>
         <div id="outside" className={hideAll ? classes.containerClean : classes.container}>
           <Grid {...{ data, grid, global }}>
-            <GridHeaders />
-            <GridColumnsNg style={{ padding: '16px' }} />
+            <GridHeadersNg >
+              {({ headers }) => headers.map(({ key, component }) => <div key={key}>{component}</div> )}
+            </GridHeadersNg>
+            <GridColumnsNg />
             <GridRowsNg>
               {({ rows, rowProps, styleProps }) => rows.map(({ key, component, alternating }) => <div
                 {...rowProps}
@@ -159,6 +178,7 @@ const App = () => {
                     ...styleProps,
                     borderBottom: '1px solid #DDD',
                     padding: '16px',
+                    gap: '8px',
                     backgroundColor: alternating ? '#f0f0f077' : '#ffffff77'
                   }
                 }}>
