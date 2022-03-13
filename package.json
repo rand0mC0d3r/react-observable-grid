@@ -30,8 +30,11 @@
     "dom-to-image": "^2.6.0",
     "fast-sort": "^3.1.1",
     "prop-types": "^15.8.0",
+    "radium": "^0.26.2",
     "react-intersection-observer": "^8.33.1",
-    "serve": "13.0.2"
+    "react-jss": "^10.9.0",
+    "serve": "13.0.2",
+    "styled-components": "^5.3.3"
   },
   "files": [
     "LICENSE",
@@ -53,13 +56,13 @@
     "start": "serve -s build",
     "build": "echo 'building'",
     "build.sample": "rm -rf ./build && cd sample && npm install && npx react-scripts build && mv ./build ../",
-    "build.lib": "cd dist && rm -rf *.js && cd .. && rollup -c && cd dist && ls -al",
+    "build.lib": "cd dist && rm -rf *.* && cd .. && rollup -c && cd dist && ls -al",
     "build.all": "concurrently \"npm run build.sample\" \"npm run build.lib\"",
     "test": "react-scripts test",
     "clone.component": "clear && mkdir -p ./sample/src/components/ && cp -r src/* sample/src/components/ && echo 'Synchronized'",
     "tag": "npm run build.all && git commit -am 'built next version' && npm version patch && git push && git push --tags && npm publish",
     "ship": "rm -rf ./build && npm run build.sample && git commit -am 'built sample project' && git add . && git commit -am 'added build files' && git push",
-    "build.watch": "nodemon --watch \"src/**/*.js\" --exec \"npm run clone.component\""
+    "build.watch": "nodemon --watch \"src/**/*.*\" --exec \"npm run clone.component\""
   },
   "eslintConfig": {
     "extends": "react-app"

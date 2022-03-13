@@ -10,7 +10,7 @@
 		"**/.project": true,
 		"**/.settings": true,
 		"**/.factorypath": true,
-		"sample/src/components": true
+		"sample/src/components": false
 	},
 	"explorerExclude.backup": null
 }

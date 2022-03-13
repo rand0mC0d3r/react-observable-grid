@@ -54,7 +54,7 @@ const App = () => {
     },
     style: {
       padding: '16px',
-      gap: '8px'
+      gap: '8'
     }
   }
 
@@ -166,9 +166,9 @@ const App = () => {
         <div id="outside" className={hideAll ? classes.containerClean : classes.container}>
           <Grid {...{ data, grid, global }}>
             <GridHeadersNg >
-              {({ headers }) => headers.map(({ key, component }) => <div key={key}>{component}</div> )}
+              {/* {({ headers }) => headers.map(({ key, component }) => <div key={key}>{component}</div> )} */}
             </GridHeadersNg>
-            <GridColumnsNg />
+            {/* <GridColumnsNg /> */}
             <GridRowsNg>
               {({ rows, rowProps, styleProps }) => rows.map(({ key, component, alternating }) => <div
                 {...rowProps}
