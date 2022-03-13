@@ -53,7 +53,10 @@ const GridHeadersNg = ({ children, className, style }) => {
         })
         : <>{grid
           .filter(gridItem => gridItem.header.visible)
-          .map(({ header }) => componentTypeCheck(header.component))
+          .map(({ header }) => <div>
+            {componentTypeCheck(header.component)}
+            <div>arrow</div>
+          </div>)
         }</>}
     </div>
   </>

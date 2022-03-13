@@ -26,11 +26,12 @@ import HeadlessRowList from './components/HeadlessRowList';
 import LocalObservableGrid from './components/ObservableGrid';
 import { dataGenerator } from './parts/dataGenerator';
 import { GridHeaders } from './parts/GridHeaders';
+import { files } from './parts/sample';
 import { ActionsRow, AvatarRow, Card, CurrencyRow, DescriptionRow, LastSeenRow, NamesRow, RoleRow, RowTabs, TilesRow } from './parts/SampleRow';
 import { ActionButtons } from './parts/Tooling';
 
 const App = () => {
-  const [data, setData] = useState(dataGenerator(10));
+  const [data, setData] = useState(files);
   const [hideAll, setHideAll] = useState(false);
 
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
@@ -62,47 +63,32 @@ const App = () => {
 	const grid = [
 		{
       header: {
-        extraKeys: ['name', 'surname'],
-        key: 'fullName',
+        key: 'type',
         align: 'flex-start',
-				width: '1fr',
+				width: '100px',
 				visible: true,
-				component: <>Name</>,
+				component: 'Type',
 			},
       row: {
-        key: 'namer',
-        component: ({ name, surname }) => <div style={{ display: 'flex', gap: '8px'}}>
-          <AvatarRow {...{name, surname}}/>
-          <NamesRow {...{name, surname}} />
+        key: 'type',
+        component: ({ type }) => <div>
+          {type}
         </div>,
 			}
     },
     {
       header: {
-        key: 'role',
-				width: '150px',
+        key: 'path',
+				width: '2fr',
 				visible: true,
-        component: <Typography color="textSecondary" variant="caption">Role</Typography>,
+        component: <Typography color="textSecondary" variant="caption">Path</Typography>,
 			},
       row: {
         key: 'role',
-        component: (row) => <RoleRow {...{row}} />,
+        component: ({ path }) => <div>{path}</div>,
 			}
 		},
-		{
-      header: {
-        key: 'fullName',
-				width: '1fr',
-				visible: true,
-        component: <>FullName</>,
-			},
-      row: {
-        key: 'fullNamer',
-        component: (row) => <>{row.fullName}</>,
-			}
-		},
-
-		{
+    {
       header: {
         key: 'description',
 				width: '2fr',
@@ -133,27 +119,28 @@ const App = () => {
 		},
 		{
       header: {
-        key: 'currency',
-				width: '200px',
+        key: 'size',
+				width: '100px',
         visible: true,
-        component: <>Currency left</>,
+        align: 'flex-end',
+        component: 'File size',
 			},
       row: {
-        key:  'currencyVal',
-        component: (row) => <>value</>
+        key:  'size',
+        component: ({ size }) => <Typography variant="caption">{size}</Typography>
 			}
 		},
 		{
       header: {
-        key: 'lastSeen',
-				width: '200px',
+        key: 'sha',
+				width: '300px',
         visible: true,
         align: 'flex-end',
-        component: <>Last Seen</>,
+        component: <>SHA</>,
 			},
       row: {
-        key:  'lastSeen',
-        component: (row) => <LastSeenRow {...{row}} />,
+        key: 'sha',
+        component: ({ sha }) => <Typography variant="caption">{sha}</Typography>,
 			}
 		}
 	]
@@ -165,7 +152,8 @@ const App = () => {
       <Button variant="outlined" onClick={() => setData(dataGenerator(50))}>Recreate</Button>
       <div className={classes.containerWrapper}>
         <div id="outside" className={hideAll ? classes.containerClean : classes.container}>
-          <Grid {...{ data, grid, global }}>
+          {console.log(data.tree)}
+          {1 === 1 && <Grid {...{ data: data.tree, grid, global }}>
             <GridHeadersNg >
               {/* {({ headers }) => headers.map(({ key, component }) => <Fragment key={key}>{component}</Fragment> )} */}
             </GridHeadersNg>
@@ -191,7 +179,7 @@ const App = () => {
                 {total} {sort.column} {sort.direction}
               </div>}
             </GridStatsNg>
-          </Grid>
+          </Grid>}
           </div>
         </div>
       </div>
