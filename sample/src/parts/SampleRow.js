@@ -5,6 +5,29 @@ import TuneIcon from '@material-ui/icons/Tune';
 import { memo } from 'react';
 import stringToColor from 'string-to-color';
 
+export const searchString = (string, query) => {
+  const queryParts = query.split(' ')
+  let stringTmp = `${string}`
+  const parts = []
+  queryParts
+    .reduce((acc, curr) => {
+      acc = acc.toLowerCase().replaceAll(curr, `###${curr}###`)
+      return acc
+    }, string || '')
+    .split('###')
+    .filter((part) => part.length > 0)
+    .forEach((part, index) => {
+      const which = queryParts.find(qp => part.includes(qp))
+      if (which) {
+        parts.push({ type: 'highlight', id: `${part}-${index}`, string: `${stringTmp.substring(0, which.length)}` })
+      } else {
+        parts.push({ type: 'string', id: `${query}-${index}`, string: `${stringTmp.substring(0, part.length)}` })
+      }
+      stringTmp = stringTmp.length !== part.length ? stringTmp.substring(part.length) : stringTmp
+    })
+  return parts
+}
+
 const AvatarRow = memo(({ name, surname }) => <div style={{ display: 'flex', justifyContent: "center" }}>
     <Tooltip arrow title={`${name} ${surname}`}>
       <Avatar
@@ -20,6 +43,14 @@ const AvatarRow = memo(({ name, surname }) => <div style={{ display: 'flex', jus
     </Tooltip>
   </div>
 )
+
+
+const MetadataColumn = memo(({ value, searchTerm }) => <div style={{display: 'flex', gap: '2px', flexWrap: 'wrap' }}>
+  {searchString(value, searchTerm).map(({ type, id, string }) => <>
+    {type === 'string' && <Typography key={id} variant='body2' color="textSecondary">{string}</Typography>}
+    {type === 'highlight' && <Typography key={id} variant='body2' color="textPrimary">{string}</Typography>}
+  </>)}
+</div>)
 
 const NamesRow = ({ name, surname }) => {
   return <div style={{ display: 'flex', flexDirection: 'row', gap: '8px', alignItems: 'center' }}>
@@ -184,4 +215,8 @@ const avatarStyles = makeStyles((theme) => ({
   }
 }))
 
-export { AvatarRow, ActionsRow, RowTabs, CurrencyRow, TilesRow, DescriptionRow, NamesRow, RoleRow, Card, LastSeenRow };
+export {
+  AvatarRow, ActionsRow, RowTabs, CurrencyRow, TilesRow,
+  MetadataColumn, DescriptionRow, NamesRow,
+  RoleRow, Card, LastSeenRow
+};

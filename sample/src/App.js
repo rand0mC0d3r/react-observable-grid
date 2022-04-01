@@ -1,23 +1,63 @@
-import { Typography } from '@material-ui/core';
+import { Button, Chip, TextField, Tooltip, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import FolderOpenIcon from '@material-ui/icons/FolderOpen';
+import InsertDriveFileOutlinedIcon from '@material-ui/icons/InsertDriveFileOutlined';
 import { useEffect, useMemo, useState } from 'react';
 import GridColumnsNg from './components/GridColumnsNg';
 import GridHeadersNg from './components/GridHeadersNg';
 import GridRowsNg from './components/GridRowsNg';
 import GridStatsNg from './components/GridStatsNg';
 import { Grid } from './components/GridStoreNg';
+import { dataSample } from './parts/data';
 import { files } from './parts/sample';
+import { MetadataColumn } from './parts/SampleRow';
 
 const App = () => {
   const [data, setData] = useState([]);
-  const [hideAll, setHideAll] = useState(false);
+  const [dataNew, setDataNew] = useState([]);
+  const [currentFolder, setCurrentFolder] = useState('');
+  const [searchTerm, setSearchTerm] = useState('angular');
 
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
 
   useEffect(() => {
-    setData(files.tree)
-  }, [])
+    let processData = [
+      ...files.tree
+        .filter(file => file.type === 'tree')
+        .filter(file => currentFolder === ''
+          ? file.path.indexOf('/') === -1
+          : file.path.indexOf(currentFolder) === 0
+            && file.path !== currentFolder
+            && file.path.replace(`${currentFolder}/`, '').indexOf('/') === -1)
+        .map(file => ({ ...file, label: file.path?.replace(`${currentFolder}/`, '') })),
+      ...files.tree
+        .filter(file => file.type !== 'tree')
+        .filter(file => currentFolder === ''
+          ? file.path.indexOf('/') === -1
+          : file.path.indexOf(currentFolder) === 0
+            && file.path.replace(`${currentFolder}/`, '').indexOf('/') === -1)
+        .map(file => ({ ...file, label: file.path?.replace(`${currentFolder}/`, '') })),
+    ]
+
+    if (currentFolder !== '') {
+      processData = [{ type: 'tree', path: '', label: '..' }, ...processData ]
+    }
+
+    setData(processData)
+  }, [currentFolder])
+
+  useEffect(() => {
+    if (searchTerm !== '') {
+      fetch(`https://api.npms.io/v2/search?q=${searchTerm}&size=25`)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
+          setDataNew(data.results)
+        });
+    }
+    // setDataNew(dataSample.results)
+  }, [searchTerm]);
 
   const global =  {
 		alternatingRows: {
@@ -25,8 +65,8 @@ const App = () => {
 			stepping: (index) => index % 2 === 0,
     },
     sort: {
-      initialDirection: 'asc',
-      initialColumn: 'type',
+      initialDirection: '',
+      initialColumn: '',
     },
     style: {
       padding: '16px',
@@ -38,63 +78,168 @@ const App = () => {
 	const grid = [
 		{
       header: {
-        key: 'type',
-        align: 'flex-start',
-				width: '100px',
+        key: 'searchScore',
+        align: 'flex-end',
+				width: '120px',
 				visible: true,
-				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Type</Typography>,
+				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">SearchScore</Typography>,
 			},
       row: {
         key: 'type',
-        component: ({ type }) => <div>
-          {type}
+        component: ({ searchScore }, index) => <Tooltip title={`Position: ${index}`}><Chip variant="outlined" label={searchScore} /></Tooltip>,
+			}
+    },
+		{
+      header: {
+        key: 'package.name',
+        align: 'flex-end',
+				width: 'minmax(300px, 1fr)',
+				visible: true,
+				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">SearchScore</Typography>,
+			},
+      row: {
+        key: 'type',
+        component: (item, index) => <MetadataColumn {...{ value: item.package.name, searchTerm }} />,
+			}
+    },
+    {
+      header: {
+        key: 'Version',
+        align: 'flex-end',
+				width: '140px',
+				visible: true,
+				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Version</Typography>,
+			},
+      row: {
+        key: 'type',
+        component: (item) => <div>
+          <Tooltip title={`Last release: ${item.package.date}`}><Chip variant="outlined" label={item.package.version} /></Tooltip>
         </div>,
 			}
     },
     {
       header: {
-        key: 'path',
-				width: '2fr',
+        key: 'Version',
+        align: 'flex-end',
+				width: '140px',
 				visible: true,
-        component:  () => <Typography color="textSecondary" variant="caption">Path</Typography>,
+				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Scope</Typography>,
 			},
       row: {
-        key: 'role',
-        component: ({ path }) => <div>{path}</div>,
+        key: 'type',
+        component: (item) => <div>
+          <Tooltip title={`Last release: ${item.package.scope}`}><Chip variant="outlined" label={item.package.scope} /></Tooltip>
+        </div>,
 			}
-		},
+    },
+    {
+      header: {
+        key: 'Links',
+        align: 'flex-end',
+				width: 'minmax(440px, 2fr)',
+				visible: true,
+				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Links</Typography>,
+			},
+      row: {
+        key: 'type',
+        component: (item) => <div style={{display: 'flex', gap: '8px', flexWrap: 'wrap'}} >
+          {Object.entries(item.package.links).map(([key, value]) => <Chip size='small' variant="outlined" label={`${key}: ${value}`} />)}
+        </div>,
+			}
+    },
 		{
       header: {
-        key: 'size',
-				width: '100px',
-        visible: true,
+        key: 'package.description',
         align: 'flex-end',
-        component:  () => <Typography color="textSecondary" variant="caption">File size</Typography>,
+				width: 'minmax(300px, 2fr)',
+				visible: true,
+				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Description</Typography>,
 			},
       row: {
-        key:  'size',
-        component: ({ size }) => <Typography variant="caption">{size}</Typography>
+        key: 'type',
+        component: (item, index) => <MetadataColumn {...{ value: item.package.description, searchTerm }} />,
 			}
-		},
-		{
-      header: {
-        key: 'sha',
-				width: '300px',
-        visible: true,
-        align: 'flex-end',
-        component: () =>  <Typography color="textSecondary" variant="caption">SHA</Typography>,
-			},
-      row: {
-        key: 'sha',
-        component: ({ sha }) => <Typography variant="caption">{sha}</Typography>,
-			}
-		}
+    },
+    // {
+    //   header: {
+    //     key: 'name',
+		// 		width: '2fr',
+		// 		visible: true,
+    //     component:  () => <Typography color="textSecondary" variant="caption">Path</Typography>,
+		// 	},
+    //   row: {
+    //     key: 'path',
+    //     component: ({ type, label, path }) => <div style={{ display: 'flex', gap: '8px',  alignItems: 'center' }}>
+    //       <Typography
+    //         style={{ cursor: 'pointer' }}
+    //         color={currentFolder === path ? 'primary' : 'textSecondary'}
+    //         variant={type === 'tree' ? 'body1' : 'subtitle2'}
+    //         onClick={() => type === 'tree' && setCurrentFolder(path)}
+    //       >
+    //         {label}
+    //       </Typography>
+    //       {path && <Typography variant="caption" color="textSecondary">({path})</Typography>}
+    //       </div>,
+		// 	}
+		// },
+		// {
+    //   header: {
+    //     key: 'url',
+		// 		width: '600px',
+    //     visible: true,
+    //     component:  () => <Typography color="textSecondary" variant="caption">URL</Typography>,
+		// 	},
+    //   row: {
+    //     key:  'size',
+    //     component: ({ url }) => <>
+    //       {/* <iframe src={url} style={{ width: '300px', height: '300px' }} /> */}
+    //     </>
+		// 	}
+		// },
+		// {
+    //   header: {
+    //     key: 'size',
+		// 		width: '100px',
+    //     visible: true,
+    //     align: 'flex-end',
+    //     component:  () => <Typography color="textSecondary" variant="caption">File size</Typography>,
+		// 	},
+    //   row: {
+    //     key:  'size',
+    //     component: ({ size }) => <Typography variant="caption">{size}</Typography>
+		// 	}
+		// },
+		// {
+    //   header: {
+    //     key: 'sha',
+		// 		width: '300px',
+    //     visible: true,
+    //     align: 'flex-end',
+    //     component: () =>  <Typography color="textSecondary" variant="caption">SHA</Typography>,
+		// 	},
+    //   row: {
+    //     key: 'sha',
+    //     component: ({ sha }) => <Typography variant="caption">{sha}</Typography>,
+		// 	}
+		// }
 	]
 
 
 
   return <ThemeProvider {...{ theme }} >
-    {1 === 1 && <Grid {...{ data: data, grid, global }}>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '8px',
+      position: 'absolute',
+      top: '16px',
+      left: '16px',
+      right: '16px',
+      bottom: '16px',
+    }}>
+      <TextField variant='outlined' fullWidth value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
+      <div style={{    display: 'flex', flexDirection: 'column', gap: '8px'}}>
+    {1 === 1 && <Grid {...{ data: dataNew, grid, global }}>
       {/* <GridHeadersNg >
         {({ headers }) => headers.map(({ key, component, sort }) => <div key={key}>
           {component}
@@ -121,10 +266,12 @@ const App = () => {
       </GridRowsNg>
       <GridStatsNg className={classes.stats}>
         {({ total, sort }) => <div >
-          {total} {sort.column} {sort.direction}
+          {total} {sort.column} {sort.direction} {currentFolder}
         </div>}
       </GridStatsNg>
-    </Grid>}
+        </Grid>}
+        </div>
+      </div>
   </ThemeProvider>
 }
 

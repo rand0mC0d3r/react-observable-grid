@@ -66,10 +66,10 @@ const GridRowsNg = ({ children, className, style }) => {
           rowProps: {
             className: clsx(['grid-rows-grid', className]),
           },
-          rows: data.map((dataItem, index) => ({
+          rows: (data.length ? data : []).map((dataItem, index) => ({
             alternating: global.alternatingRows.stepping(index),
             key: dataItem.uuid,
-            component: presentColumns.map(({ component }) => componentTypeCheck(component(dataItem)))
+            component: presentColumns.map(({ component }) => componentTypeCheck(component(dataItem, index)))
           }))
         })}
       </div>
