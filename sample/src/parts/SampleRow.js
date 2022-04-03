@@ -1,4 +1,4 @@
-import { Avatar, Tooltip, Typography } from '@material-ui/core';
+import { Avatar, CircularProgress, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import TuneIcon from '@material-ui/icons/Tune';
@@ -48,7 +48,7 @@ const AvatarRow = memo(({ name, surname }) => <div style={{ display: 'flex', jus
 const MetadataColumn = memo(({ value, searchTerm }) => <div style={{display: 'flex', gap: '2px', flexWrap: 'wrap' }}>
   {searchString(value, searchTerm).map(({ type, id, string }) => <>
     {type === 'string' && <Typography key={id} variant='body2' color="textSecondary">{string}</Typography>}
-    {type === 'highlight' && <Typography key={id} variant='body2' color="textPrimary">{string}</Typography>}
+    {type === 'highlight' && <Typography style={{ borderBottom: '3px dashed #d6d600' }} key={id} variant='body2' color="textPrimary">{string}</Typography>}
   </>)}
 </div>)
 
@@ -58,6 +58,31 @@ const NamesRow = ({ name, surname }) => {
       <Typography variant='body2' color="textSecondary">{name} {surname}</Typography>
     </div>
   </div>
+}
+
+const CircularProgressBlock = ({ value, title, size = '30px' }) => {
+  return <Tooltip title={`${title}: ${value}`} arrow>
+    <div style={{position: 'relative'}}>
+      <CircularProgress
+        style={{ width: size , height: size  }}
+        variant="determinate"
+        value={(parseFloat(value).toFixed(2) * 100).toFixed(0)}
+      />
+      <Typography style={{
+        fontSize: '9px',
+        position: 'absolute',
+        top: '0px',
+        left: '0px',
+        right: '0px',
+        bottom: '0px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        lineHeight: '0px',
+        height: size,
+      }} variant='body2' color="textSecondary">{(parseFloat(value).toFixed(2) * 100).toFixed(0)}%</Typography>
+    </div>
+  </Tooltip>
 }
 
 const TilesRow = ({ row: { tiles }, selectedTiles, onSelectTile = () => {} }) => {
@@ -216,7 +241,7 @@ const avatarStyles = makeStyles((theme) => ({
 }))
 
 export {
-  AvatarRow, ActionsRow, RowTabs, CurrencyRow, TilesRow,
+  AvatarRow, ActionsRow, CircularProgressBlock, RowTabs, CurrencyRow, TilesRow,
   MetadataColumn, DescriptionRow, NamesRow,
   RoleRow, Card, LastSeenRow
 };

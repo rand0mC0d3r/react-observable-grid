@@ -1,16 +1,16 @@
-import { Button, Chip, TextField, Tooltip, Typography } from '@material-ui/core';
+import { faNpm } from '@fortawesome/free-brands-svg-icons';
+import { faBug, faCode, faHouseSignal } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Avatar, Chip, CircularProgress, TextField, Tooltip, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
-import FolderOpenIcon from '@material-ui/icons/FolderOpen';
-import InsertDriveFileOutlinedIcon from '@material-ui/icons/InsertDriveFileOutlined';
 import { useEffect, useMemo, useState } from 'react';
 import GridColumnsNg from './components/GridColumnsNg';
 import GridHeadersNg from './components/GridHeadersNg';
 import GridRowsNg from './components/GridRowsNg';
 import GridStatsNg from './components/GridStatsNg';
 import { Grid } from './components/GridStoreNg';
-import { dataSample } from './parts/data';
 import { files } from './parts/sample';
-import { MetadataColumn } from './parts/SampleRow';
+import { CircularProgressBlock, MetadataColumn } from './parts/SampleRow';
 
 const App = () => {
   const [data, setData] = useState([]);
@@ -86,7 +86,20 @@ const App = () => {
 			},
       row: {
         key: 'type',
-        component: ({ searchScore }, index) => <Tooltip title={`Position: ${index}`}><Chip variant="outlined" label={searchScore} /></Tooltip>,
+        component: (item, index) => <div style={{ display: 'flex', gap: '4px', flexDirection: 'column', alignItems: 'flex-end' }}>
+          <Tooltip title={`Position: ${index}`}>
+            <Typography color="textSecondary" variant="h6">
+             {(parseFloat(item.searchScore / 100).toFixed(2) * 100).toFixed(0)}%
+            </Typography>
+          </Tooltip>
+          <div style={{display: 'flex', gap: '4px'}}>
+            {[
+              { title: 'Quality', value: item.score.detail.quality },
+              { title: 'Popularity', value: item.score.detail.popularity },
+              { title: 'Maintenance', value: item.score.detail.maintenance },
+            ].map(({ title, value }) => <CircularProgressBlock {...{value, title }} />)}
+          </div>
+        </div>,
 			}
     },
 		{
@@ -95,7 +108,7 @@ const App = () => {
         align: 'flex-end',
 				width: 'minmax(300px, 1fr)',
 				visible: true,
-				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">SearchScore</Typography>,
+				component: ({onSort, align}) => <Typography onClick={() => onSort('package.name')} color="textSecondary" variant="subtitle2">Package Name {align}</Typography>,
 			},
       row: {
         key: 'type',
@@ -117,36 +130,21 @@ const App = () => {
         </div>,
 			}
     },
-    {
-      header: {
-        key: 'Version',
-        align: 'flex-end',
-				width: '140px',
-				visible: true,
-				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Scope</Typography>,
-			},
-      row: {
-        key: 'type',
-        component: (item) => <div>
-          <Tooltip title={`Last release: ${item.package.scope}`}><Chip variant="outlined" label={item.package.scope} /></Tooltip>
-        </div>,
-			}
-    },
-    {
-      header: {
-        key: 'Links',
-        align: 'flex-end',
-				width: 'minmax(440px, 2fr)',
-				visible: true,
-				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Links</Typography>,
-			},
-      row: {
-        key: 'type',
-        component: (item) => <div style={{display: 'flex', gap: '8px', flexWrap: 'wrap'}} >
-          {Object.entries(item.package.links).map(([key, value]) => <Chip size='small' variant="outlined" label={`${key}: ${value}`} />)}
-        </div>,
-			}
-    },
+    // {
+    //   header: {
+    //     key: 'scope',
+    //     align: 'flex-end',
+		// 		width: '140px',
+		// 		visible: true,
+		// 		component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Scope</Typography>,
+		// 	},
+    //   row: {
+    //     key: 'type',
+    //     component: (item) => <div>
+    //       <Typography>{item.package.scope}</Typography>
+    //     </div>,
+		// 	}
+    // },
 		{
       header: {
         key: 'package.description',
@@ -160,6 +158,61 @@ const App = () => {
         component: (item, index) => <MetadataColumn {...{ value: item.package.description, searchTerm }} />,
 			}
     },
+    {
+      header: {
+        key: 'Links',
+        align: 'flex-end',
+				width: 'minmax(440px, 2fr)',
+				visible: true,
+				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Links</Typography>,
+			},
+      row: {
+        key: 'type',
+        component: (item) => <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }} >
+          {Object.entries(item.package.links).map(([key, value]) => <>
+            <Chip size='small' variant="outlined" label={<div style={{ display: 'flex', gap: '4px'}}>
+              {key === 'npm' && <FontAwesomeIcon icon={faNpm} />}
+              {key === 'homepage' && <FontAwesomeIcon icon={faHouseSignal} />}
+              {key === 'repository' && <FontAwesomeIcon icon={faCode} />}
+              {key === 'bugs' && <FontAwesomeIcon icon={faBug} />}
+              {decodeURI(value)}
+            </div>} />
+          </>)}
+        </div>,
+			}
+    },
+    {
+      header: {
+        key: 'Author',
+        align: 'flex-end',
+				width: 'minmax(340px, 2fr)',
+				visible: true,
+				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Author</Typography>,
+			},
+      row: {
+        key: 'type',
+        component: (item) => <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }} >
+          <Avatar>{item.package.publisher.username.substring(0,2).toUpperCase()}</Avatar>
+
+          {/* {item.package.maintainers.length} */}
+          <div style={{display: 'flex'}}>
+            {item.package.maintainers.filter((maintainer, index) => index < 10).map((maintainer) => <Avatar
+              style={{
+                marginRight: '-12px',
+                fontSize: '10px',
+                backgroundColor: '#FFF',
+                boxShadow: '-1px 0px 1px 1px #aaa',
+                border: '1px solid #AAA'
+              }}
+            >
+              <Typography color="textSecondary">{maintainer.username.substring(0, 2).toUpperCase()}</Typography>
+            </Avatar>)}
+          </div>
+          {/* {Object.entries(item.package.links).map(([key, value]) => <Chip size='small' variant="outlined" label={`${key}: ${value}`} />)} */}
+        </div>,
+			}
+    },
+
     // {
     //   header: {
     //     key: 'name',
@@ -232,13 +285,13 @@ const App = () => {
       flexDirection: 'column',
       gap: '8px',
       position: 'absolute',
-      top: '16px',
-      left: '16px',
-      right: '16px',
-      bottom: '16px',
+      top: '24px',
+      left: '24px',
+      right: '24px',
+      bottom: '24px',
     }}>
       <TextField variant='outlined' fullWidth value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
-      <div style={{    display: 'flex', flexDirection: 'column', gap: '8px'}}>
+      <div style={{    display: 'flex', flexDirection: 'column', position: 'relative', gap: '8px', flex: '1 1 auto'}}>
     {1 === 1 && <Grid {...{ data: dataNew, grid, global }}>
       {/* <GridHeadersNg >
         {({ headers }) => headers.map(({ key, component, sort }) => <div key={key}>

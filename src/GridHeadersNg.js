@@ -7,6 +7,7 @@ const GridHeadersNg = ({ children, className, style }) => {
   const { grid, gridTemplateColumns, stats, onSort, global } = useContext(DataProvider)
 
   const componentTypeCheck = (component, options) => {
+    debugger
     return typeof component === 'string' || typeof component.type === 'symbol'
       ? <div>{component}</div>
       : component({ ...options })
@@ -45,29 +46,31 @@ const GridHeadersNg = ({ children, className, style }) => {
             headers: grid
               .filter(gridItem => gridItem.header.visible)
               .map(({ header }) => ({
-                component: componentTypeCheck(header.component, {
-                  onSort: () => onSort(header.key),
-                  sort: {
-                    direction: stats.sort.direction,
-                    column: stats.sort.column,
-                  }
-                }),
+                // composedNode: componentTypeCheck(header.component, {
+                //   title:"ddd",
+                //   onSort: (path) => onSort(path || header.key),
+                //   sort: {
+                //     direction: stats.sort.direction,
+                //     column: stats.sort.column,
+                //   }
+                // }),
                 key: header.key,
-                onSort: () => onSort(header.key),
                 extraKeys: header.extraKeys,
                 align: header.align,
-                sort: {
-                  direction: stats.sort.direction,
-                  column: stats.sort.column,
-                }
                 }))})
         : grid
           .filter(gridItem => gridItem.header.visible)
           .map(({ header }) => <div
             className='grid-headers-injected'
-            onClick={() => onSort(header.key)}
+            // onClick={() => onSort(header.key)}
           >
-            {componentTypeCheck(header.component)}
+            {componentTypeCheck(header.component, {
+              onSort: (path) => onSort(path || header.key),
+              sort: {
+                direction: stats.sort.direction,
+                column: stats.sort.column,
+              }
+            })}
             {stats.sort.column === header.key && <>
               {stats.sort.direction === 'asc' ? '↑' : '↓'}
             </>}

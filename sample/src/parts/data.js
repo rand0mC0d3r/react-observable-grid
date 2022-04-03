@@ -13,13 +13,31 @@ export const dataSample = JSON.parse(`
 		"repository":"https://github.com/getsentry/sentry-javascript",
 		"bugs":"https://github.com/getsentry/sentry-javascript/issues"
 	},
-	"author":
-	{
-		"name":"Sentry"},
-		"publisher":{"username":"sentry-bot","email":"accounts@sentry.io"},
-		"maintainers":[{"username":"benvinegar","email":"ben@benv.ca"},{"username":"billyvg","email":"npm@mmo.me"},{"username":"mitsuhiko","email":"armin.ronacher@active-4.com"},{"username":"haza","email":"daniel.griesser.86@gmail.com"},{"username":"kamilogorek","email":"kamil.ogorek@gmail.com"},{"username":"jauer","email":"account@jauer.org"},{"username":"sentry-bot","email":"accounts@sentry.io"},{"username":"evanpurkhiser","email":"evanpurkhiser@gmail.com"},{"username":"lynnagara","email":"lyn.nagara@gmail.com"},{"username":"leedongwei","email":"danny@dongwei.li"},{"username":"markstory","email":"mark@mark-story.com"},{"username":"zeeg","email":"dcramer@gmail.com"}]},
-		"score":{"final":0.7380515762262202,"detail":{"quality":0.8200198255653989,"popularity":0.4231014621757527,"maintenance":0.982743190843106}},
-		"searchScore":1.3245705
+	"author":{"name":"Sentry"},
+	"publisher":{
+		"username":"sentry-bot",
+		"email":"accounts@sentry.io"
+	},
+	"maintainers":[
+		{"username":"benvinegar","email":"ben@benv.ca"},
+		{"username":"billyvg","email":"npm@mmo.me"},
+		{"username":"mitsuhiko","email":"armin.ronacher@active-4.com"},{"username":"haza","email":"daniel.griesser.86@gmail.com"},
+		{"username":"kamilogorek","email":"kamil.ogorek@gmail.com"},
+		{"username":"jauer","email":"account@jauer.org"},
+		{"username":"sentry-bot","email":"accounts@sentry.io"},
+		{"username":"evanpurkhiser","email":"evanpurkhiser@gmail.com"},
+		{"username":"lynnagara","email":"lyn.nagara@gmail.com"},
+		{"username":"leedongwei","email":"danny@dongwei.li"},
+		{"username":"markstory","email":"mark@mark-story.com"},
+		{"username":"zeeg","email":"dcramer@gmail.com"}
+	]},
+	"score":{
+		"final":0.7380515762262202,
+		"detail":{
+			"quality":0.8200198255653989,
+			"popularity":0.4231014621757527,
+			"maintenance":0.982743190843106}},
+	"searchScore":1.3245705
 	},{
 		"package":{"name":"@ngrx/store-devtools","scope":"ngrx","version":"13.1.0","description":"Developer tools for @ngrx/store","keywords":["RxJS","Angular","Redux","Store","@ngrx/store"],"date":"2022-03-28T14:45:08.639Z","links":{"npm":"https://www.npmjs.com/package/%40ngrx%2Fstore-devtools","homepage":"https://github.com/ngrx/platform#readme","repository":"https://github.com/ngrx/platform","bugs":"https://github.com/ngrx/platform/issues"},"author":{"name":"NgRx"},"publisher":{"username":"brandonroberts","email":"robertsbt@gmail.com"},"maintainers":[{"username":"ngrxadmin","email":"robwormald@gmail.com"},{"username":"robwormald","email":"rob.wormald@innitapps.com"},{"username":"mikeryan52","email":"mike.ryan52@gmail.com"},{"username":"brandonroberts","email":"robertsbt@gmail.com"}]},"score":{"final":0.7946500633744646,"detail":{"quality":0.9106737195935063,"popularity":0.49047432910361116,"maintenance":0.9993769494575682}},"searchScore":1.2631851},{"package":{"name":"jest-preset-angular","scope":"unscoped","version":"11.0.1","description":"Jest preset configuration for Angular projects","keywords":["jest","typescript","angular","testing"],"date":"2021-11-22T11:38:45.396Z","links":{"npm":"https://www.npmjs.com/package/jest-preset-angular","homepage":"https://thymikee.github.io/jest-preset-angular","repository":"https://github.com/thymikee/jest-preset-angular","bugs":"https://github.com/thymikee/jest-preset-angular/issues"},"author":{"name":"Michał Pierzchała","email":"thymikee@gmail.com","username":"thymikee"},"publisher":{"username":"anhpnnd","email":"anhpnnd@gmail.com"},"maintainers":[{"username":"thymikee","email":"thymikee@gmail.com"},{"username":"wtho","email":"tho.wirth+npm@gmail.com"},{"username":"anhpnnd","email":"anhpnnd@gmail.com"}]},"score":{"final":0.7467962266480836,"detail":{"quality":0.9378191478092872,"popularity":0.33108874018673273,"maintenance":0.9987697806855459}},"searchScore":1.2536614}]}
 `)

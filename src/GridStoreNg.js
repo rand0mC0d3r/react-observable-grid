@@ -34,9 +34,13 @@ const Grid = ({ data, grid, global, children, ...props }) => {
     sort: {}
   })
 
-  const sortData = (data, column, direction) => (column === '' ? data : direction === 'asc'
-    ? naturalSort(data).asc([item => item[column]])
-    : naturalSort(data).desc([item => item[column]]))
+  const sortData = (data, column, direction) => {
+    return column === ''
+      ? data
+      : direction === 'asc'
+        ? naturalSort(data).asc([item => jsonPathToValue(item, column)])
+        : naturalSort(data).desc([item => jsonPathToValue(item, column)])
+  }
 
   useEffect(() => {
     setStats(stats => ({ ...stats, total: data?.length || 0 }))
@@ -78,6 +82,32 @@ const Grid = ({ data, grid, global, children, ...props }) => {
     set_Data(sortData(data, key, stats.sort.direction))
   }
 
+
+  const jsonPathToValue = (jsonData, path) => {
+    if (!(jsonData instanceof Object) || typeof (path) === "undefined") {
+      throw "Not valid argument:jsonData:" + jsonData + ", path:" + path;
+    }
+    // if (String(path.indexOf('.')) === -1) {
+      path = path.replace(/\[(\w+)\]/g, '.$1');
+      path = path.replace(/^\./, '');
+      var pathArray = path.split('.');
+      for (var i = 0, n = pathArray.length; i < n; ++i) {
+        var key = pathArray[i];
+        if (key in jsonData) {
+          if (jsonData[key] !== null) {
+            jsonData = jsonData[key];
+          } else {
+            return null;
+          }
+        } else {
+          return key;
+        }
+      }
+      return jsonData;
+    // } else {
+    //   return jsonData[path]
+    // }
+}
   // useEffect(() => {
   //   setStats(stats => { ...stats, global })
   // }, [grid])
@@ -88,6 +118,7 @@ const Grid = ({ data, grid, global, children, ...props }) => {
     position: 'absolute',
     width: '100%',
     height: '100%',
+    inset: '0px',
     flexDirection: 'column',
     overflow: 'hidden'
   }}>
