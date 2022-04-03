@@ -1,8 +1,9 @@
-import { faNpm } from '@fortawesome/free-brands-svg-icons';
+import { faGithub, faNpm } from '@fortawesome/free-brands-svg-icons';
 import { faBug, faCode, faHouseSignal } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Avatar, Chip, CircularProgress, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Avatar, Chip, CircularProgress, Fade, Popper, TextField, Tooltip, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import GitHubIcon from '@material-ui/icons/GitHub';
 import { useEffect, useMemo, useState } from 'react';
 import GridColumnsNg from './components/GridColumnsNg';
 import GridHeadersNg from './components/GridHeadersNg';
@@ -13,48 +14,55 @@ import { files } from './parts/sample';
 import { CircularProgressBlock, MetadataColumn } from './parts/SampleRow';
 
 const App = () => {
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState([]);
   const [dataNew, setDataNew] = useState([]);
-  const [currentFolder, setCurrentFolder] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+  // const [currentFolder, setCurrentFolder] = useState('');
   const [searchTerm, setSearchTerm] = useState('angular');
 
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
 
-  useEffect(() => {
-    let processData = [
-      ...files.tree
-        .filter(file => file.type === 'tree')
-        .filter(file => currentFolder === ''
-          ? file.path.indexOf('/') === -1
-          : file.path.indexOf(currentFolder) === 0
-            && file.path !== currentFolder
-            && file.path.replace(`${currentFolder}/`, '').indexOf('/') === -1)
-        .map(file => ({ ...file, label: file.path?.replace(`${currentFolder}/`, '') })),
-      ...files.tree
-        .filter(file => file.type !== 'tree')
-        .filter(file => currentFolder === ''
-          ? file.path.indexOf('/') === -1
-          : file.path.indexOf(currentFolder) === 0
-            && file.path.replace(`${currentFolder}/`, '').indexOf('/') === -1)
-        .map(file => ({ ...file, label: file.path?.replace(`${currentFolder}/`, '') })),
-    ]
+  // useEffect(() => {
+  //   let processData = [
+  //     ...files.tree
+  //       .filter(file => file.type === 'tree')
+  //       .filter(file => currentFolder === ''
+  //         ? file.path.indexOf('/') === -1
+  //         : file.path.indexOf(currentFolder) === 0
+  //           && file.path !== currentFolder
+  //           && file.path.replace(`${currentFolder}/`, '').indexOf('/') === -1)
+  //       .map(file => ({ ...file, label: file.path?.replace(`${currentFolder}/`, '') })),
+  //     ...files.tree
+  //       .filter(file => file.type !== 'tree')
+  //       .filter(file => currentFolder === ''
+  //         ? file.path.indexOf('/') === -1
+  //         : file.path.indexOf(currentFolder) === 0
+  //           && file.path.replace(`${currentFolder}/`, '').indexOf('/') === -1)
+  //       .map(file => ({ ...file, label: file.path?.replace(`${currentFolder}/`, '') })),
+  //   ]
 
-    if (currentFolder !== '') {
-      processData = [{ type: 'tree', path: '', label: '..' }, ...processData ]
-    }
+  //   if (currentFolder !== '') {
+  //     processData = [{ type: 'tree', path: '', label: '..' }, ...processData ]
+  //   }
 
-    setData(processData)
-  }, [currentFolder])
+  //   setData(processData)
+  // }, [currentFolder])
 
   useEffect(() => {
     if (searchTerm !== '') {
       fetch(`https://api.npms.io/v2/search?q=${searchTerm}&size=25`)
         .then(response => response.json())
         .then(data => {
-          console.log(data)
+          console.log('search', data)
           setDataNew(data.results)
         });
+      // fetch(`https://api.npms.io/v2/search/suggestions?q=${searchTerm}&size=25`)
+      //   .then(response => response.json())
+      //   .then(data => {
+      //     console.log('suggestions', data)
+      //     setSuggestions(data.results)
+      //   });
     }
     // setDataNew(dataSample.results)
   }, [searchTerm]);
@@ -82,7 +90,7 @@ const App = () => {
         align: 'flex-end',
 				width: '120px',
 				visible: true,
-				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">SearchScore</Typography>,
+				component: () => <Typography color="textSecondary" variant="subtitle2">SearchScore</Typography>,
 			},
       row: {
         key: 'type',
@@ -107,55 +115,47 @@ const App = () => {
         key: 'package.name',
         align: 'flex-end',
 				width: 'minmax(300px, 1fr)',
-				visible: true,
-				component: ({onSort, align}) => <Typography onClick={() => onSort('package.name')} color="textSecondary" variant="subtitle2">Package Name {align}</Typography>,
-			},
-      row: {
-        key: 'type',
-        component: (item, index) => <MetadataColumn {...{ value: item.package.name, searchTerm }} />,
-			}
-    },
-    {
-      header: {
-        key: 'Version',
-        align: 'flex-end',
-				width: '140px',
-				visible: true,
-				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Version</Typography>,
-			},
-      row: {
-        key: 'type',
-        component: (item) => <div>
-          <Tooltip title={`Last release: ${item.package.date}`}><Chip variant="outlined" label={item.package.version} /></Tooltip>
+        visible: true,
+        disableOnClick: true,
+        component: ({ onSort }) => <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+          <Typography onClick={() => onSort('package.version')} color="textSecondary" variant="subtitle2">Version</Typography>
+          <Typography color="primary">/</Typography>
+          <Typography onClick={() => onSort('package.name')} color="textSecondary" variant="subtitle2">Package Name</Typography>
         </div>,
+			},
+      row: {
+        key: 'type',
+        component: (item, index) => <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+          <Tooltip arrow title={`Last release: ${item.package.date}`}><Chip size="small" variant="outlined" label={item.package.version} /></Tooltip>
+          <MetadataColumn {...{ value: item.package.name, searchTerm }} />
+          </div>,
 			}
     },
-    // {
-    //   header: {
-    //     key: 'scope',
-    //     align: 'flex-end',
-		// 		width: '140px',
-		// 		visible: true,
-		// 		component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Scope</Typography>,
-		// 	},
-    //   row: {
-    //     key: 'type',
-    //     component: (item) => <div>
-    //       <Typography>{item.package.scope}</Typography>
-    //     </div>,
-		// 	}
-    // },
 		{
       header: {
         key: 'package.description',
-        align: 'flex-end',
 				width: 'minmax(300px, 2fr)',
-				visible: true,
-				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Description</Typography>,
+        visible: true,
+				component: () => <Typography color="textSecondary" variant="subtitle2">Description</Typography>,
 			},
       row: {
         key: 'type',
         component: (item, index) => <MetadataColumn {...{ value: item.package.description, searchTerm }} />,
+			}
+    },
+		{
+      header: {
+        key: 'package.keywords',
+				width: 'minmax(300px, 2fr)',
+        visible: true,
+        noSort: true,
+				component: () => <Typography color="textSecondary" variant="subtitle2">Keywords</Typography>,
+			},
+      row: {
+        key: 'type',
+        component: (item, index) => <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          {item?.package?.keywords?.map(keyword => <Chip key={keyword} variant="outlined" size="small" label={keyword} />)}
+        </div>,
 			}
     },
     {
@@ -168,12 +168,20 @@ const App = () => {
 			},
       row: {
         key: 'type',
-        component: (item) => <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }} >
-          {Object.entries(item.package.links).map(([key, value]) => <>
-            <Chip size='small' variant="outlined" label={<div style={{ display: 'flex', gap: '4px'}}>
+        component: (item) => <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          {Object
+            .entries(item.package.links)
+            .map(([key, value]) => ([
+              key,
+              value
+              .replace("https://www.npmjs.com/package", "")
+              .replace("https://github.com", "")
+            ]))
+            .map(([key, value]) => <>
+            <Chip size='small' variant="outlined" label={<div style={{ display: 'flex', gap: '4px', alignItems: 'center'}}>
               {key === 'npm' && <FontAwesomeIcon icon={faNpm} />}
               {key === 'homepage' && <FontAwesomeIcon icon={faHouseSignal} />}
-              {key === 'repository' && <FontAwesomeIcon icon={faCode} />}
+              {key === 'repository' && <FontAwesomeIcon icon={faGithub} />}
               {key === 'bugs' && <FontAwesomeIcon icon={faBug} />}
               {decodeURI(value)}
             </div>} />
@@ -185,7 +193,7 @@ const App = () => {
       header: {
         key: 'Author',
         align: 'flex-end',
-				width: 'minmax(340px, 2fr)',
+				width: 'minmax(340px, 1fr)',
 				visible: true,
 				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Author</Typography>,
 			},
@@ -193,8 +201,6 @@ const App = () => {
         key: 'type',
         component: (item) => <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }} >
           <Avatar>{item.package.publisher.username.substring(0,2).toUpperCase()}</Avatar>
-
-          {/* {item.package.maintainers.length} */}
           <div style={{display: 'flex'}}>
             {item.package.maintainers.filter((maintainer, index) => index < 10).map((maintainer) => <Avatar
               style={{
@@ -319,7 +325,7 @@ const App = () => {
       </GridRowsNg>
       <GridStatsNg className={classes.stats}>
         {({ total, sort }) => <div >
-          {total} {sort.column} {sort.direction} {currentFolder}
+          {total} {sort.column} {sort.direction}
         </div>}
       </GridStatsNg>
         </Grid>}

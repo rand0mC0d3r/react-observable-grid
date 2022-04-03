@@ -1,8 +1,8 @@
-import { Avatar, CircularProgress, Tooltip, Typography } from '@material-ui/core';
+import { Avatar, Chip, CircularProgress, Fade, Popper, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import TuneIcon from '@material-ui/icons/Tune';
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import stringToColor from 'string-to-color';
 
 export const searchString = (string, query) => {
@@ -44,13 +44,56 @@ const AvatarRow = memo(({ name, surname }) => <div style={{ display: 'flex', jus
   </div>
 )
 
+const MetadataColumn = memo(({ value, searchTerm }) => {
+  const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedText, setSelectedText] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
 
-const MetadataColumn = memo(({ value, searchTerm }) => <div style={{display: 'flex', gap: '2px', flexWrap: 'wrap' }}>
-  {searchString(value, searchTerm).map(({ type, id, string }) => <>
-    {type === 'string' && <Typography key={id} variant='body2' color="textSecondary">{string}</Typography>}
-    {type === 'highlight' && <Typography style={{ borderBottom: '3px dashed #d6d600' }} key={id} variant='body2' color="textPrimary">{string}</Typography>}
-  </>)}
-</div>)
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleMouseUp = () => {
+    const selection = window.getSelection();
+    const selectedText = selection.focusNode.data.substring(selection.anchorOffset, selection.focusOffset)
+    if (!selection || selection.anchorOffset === selection.focusOffset) {
+      handleClose();
+      return;
+    }
+
+    fetch(`https://api.npms.io/v2/search/suggestions?q=${selectedText}&size=25`)
+      .then(response => response.json())
+      .then(data => {
+        setSuggestions(data)
+      });
+    const getBoundingClientRect = () => selection.getRangeAt(0).getBoundingClientRect();
+
+    setOpen(true);
+    setSelectedText(selectedText)
+    setAnchorEl({
+      clientWidth: getBoundingClientRect().width,
+      clientHeight: getBoundingClientRect().height,
+      getBoundingClientRect,
+    });
+  };
+
+
+  return <div style={{ display: 'flex', gap: '2px', flexWrap: 'wrap' }}>
+    {searchString(value, searchTerm).map(({ type, id, string }) => <div onMouseLeave={handleClose}>
+      {type === 'string' && <Typography onMouseUp={handleMouseUp} key={id} variant='body2' color="textSecondary">{string}</Typography>}
+      {type === 'highlight' && <Typography onMouseUp={handleMouseUp} style={{ borderBottom: '3px dashed #d6d600' }} key={id} variant='body2' color="textPrimary">{string}</Typography>}
+      <Popper {...{ open, anchorEl }} placement="bottom-start">
+        <div style={{width: '600px', display: 'flex', padding: '8px', gap: '8px', backgroundColor: '#FFF', flexDirection: "column"}}>
+          <Typography>{selectedText}</Typography>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap'}}>
+            {suggestions.map(suggestion => <Chip variant="outlined" size="small" label={suggestion.package.name} />)}
+          </div>
+        </div>
+      </Popper>
+    </div>)}
+  </div>
+})
 
 const NamesRow = ({ name, surname }) => {
   return <div style={{ display: 'flex', flexDirection: 'row', gap: '8px', alignItems: 'center' }}>
@@ -61,12 +104,14 @@ const NamesRow = ({ name, surname }) => {
 }
 
 const CircularProgressBlock = ({ value, title, size = '30px' }) => {
+  const computedValue = (parseFloat(value).toFixed(2) * 100).toFixed(0)
   return <Tooltip title={`${title}: ${value}`} arrow>
     <div style={{position: 'relative'}}>
       <CircularProgress
+        color={computedValue < 50 ? 'secondary' :  'inherit'}
         style={{ width: size , height: size  }}
         variant="determinate"
-        value={(parseFloat(value).toFixed(2) * 100).toFixed(0)}
+        value={computedValue}
       />
       <Typography style={{
         fontSize: '9px',
@@ -80,7 +125,7 @@ const CircularProgressBlock = ({ value, title, size = '30px' }) => {
         justifyContent: 'center',
         lineHeight: '0px',
         height: size,
-      }} variant='body2' color="textSecondary">{(parseFloat(value).toFixed(2) * 100).toFixed(0)}%</Typography>
+      }} variant='body2' color="textSecondary">{computedValue}%</Typography>
     </div>
   </Tooltip>
 }
