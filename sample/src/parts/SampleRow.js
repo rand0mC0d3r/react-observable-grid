@@ -25,6 +25,7 @@ export const searchString = (string, query) => {
       }
       stringTmp = stringTmp.length !== part.length ? stringTmp.substring(part.length) : stringTmp
     })
+  console.log(parts)
   return parts
 }
 
@@ -79,16 +80,17 @@ const MetadataColumn = memo(({ value, searchTerm, setSearchTerm }) => {
   };
 
 
-  return <div style={{ display: 'flex', gap: '2px', flexWrap: 'wrap' }}>
-    {searchString(value, searchTerm).map(({ type, id, string }) => <div>
-      {type === 'string' && <Typography onMouseUp={handleMouseUp} key={id} variant='body2' color="textSecondary">{string}</Typography>}
-      {type === 'highlight' && <Typography onMouseUp={handleMouseUp} style={{ borderBottom: '3px dashed #d6d600' }} key={id} variant='body2' color="textPrimary">{string}</Typography>}
+  return <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+    {searchString(value, searchTerm).map(({ type, id, string }) => <>
+      {type === 'string' && <Typography onMouseUp={handleMouseUp} key={id} style={{ whiteSpace: 'wrap' }} variant='body2' color="textSecondary">{string} {" "}</Typography>}
+      {type === 'highlight' && <Typography onMouseUp={handleMouseUp} style={{ whiteSpace: 'wrap', borderBottom: '3px dashed #d6d600' }} key={id} variant='body2' color="textPrimary">{string}</Typography>}
       <Popper {...{ open, anchorEl }} placement="bottom-start">
         <div style={{width: '600px', display: 'flex', padding: '8px', gap: '8px', backgroundColor: '#FFF', flexDirection: "column"}}>
           <Typography>{selectedText}</Typography>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap'}}>
             {suggestions?.map(suggestion => <Chip
               variant="outlined"
+              key={suggestion.package.name}
               size="small"
               onClick={() => {
                 handleClose()
@@ -100,7 +102,7 @@ const MetadataColumn = memo(({ value, searchTerm, setSearchTerm }) => {
           <Button onClick={handleClose}>Close</Button>
         </div>
       </Popper>
-    </div>)}
+    </>)}
   </div>
 })
 
@@ -120,7 +122,7 @@ const CircularProgressBlock = ({ value, title, size = '30px' }) => {
         color={computedValue < 50 ? 'secondary' :  'inherit'}
         style={{ width: size , height: size  }}
         variant="determinate"
-        value={computedValue}
+        value={computedValue || 0}
       />
       <Typography style={{
         fontSize: '9px',

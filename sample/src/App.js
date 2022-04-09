@@ -1,9 +1,11 @@
 import { faGithub, faNpm } from '@fortawesome/free-brands-svg-icons';
-import { faBug, faCode, faHouseSignal } from '@fortawesome/free-solid-svg-icons';
+import { faBug, faCode, faHouse, faHouseSignal } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Avatar, Chip, CircularProgress, Fade, InputAdornment, Popper, TextField, Tooltip, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import GitHubIcon from '@material-ui/icons/GitHub';
+import HomeIcon from '@material-ui/icons/Home';
+import StarsIcon from '@material-ui/icons/Stars';
 import { useEffect, useMemo, useState } from 'react';
 import GridColumnsNg from './components/GridColumnsNg';
 import GridHeadersNg from './components/GridHeadersNg';
@@ -18,9 +20,10 @@ const App = () => {
   const [dataNew, setDataNew] = useState([]);
   const [terms, setTerms] = useState([]);
   // const [currentFolder, setCurrentFolder] = useState('');
-  const [searchTerm, setSearchTerm] = useState('angular');
+  const [searchTerm, setSearchTerm] = useState('react');
   const [suggestions, setSuggestions] = useState([]);
-
+  const [selectedRepo, setSelectedRepo] = useState(null);
+  const [richPayloads, setRichPayloads] = useState([]);
 
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
@@ -53,7 +56,7 @@ const App = () => {
 
   useEffect(() => {
     if (searchTerm !== '') {
-      fetch(`https://api.npms.io/v2/search?q=${searchTerm}&size=20`)
+      fetch(`https://api.npms.io/v2/search?q=${searchTerm}&size=10`)
         .then(response => response.json())
         .then(data => {
           const newTerms = Object.entries(data.results.reduce((acc, item) => {
@@ -71,28 +74,29 @@ const App = () => {
             .filter(item => item.count > 2 && item.term.length > 2 && item.term.toLowerCase() !== searchTerm.toLowerCase())
             .filter(item => !['for', 'a', 'all','of', 'and', 'with', 'to', 'the', 'in', 'into', 'that', 'by'].some(word => word.toLowerCase() === item.term.toLowerCase()))
           setTerms(newTerms)
-          setDataNew(data.results)
+          setDataNew(data.results.map(item => ({
+            ...item, custom: {
+            packageName: item.package.links.repository?.replace('https://github.com/', '')
+          } })))
         });
       fetch(`https://api.npms.io/v2/search/suggestions?q=${searchTerm}&size=25`)
         .then(response => response.json())
-        .then(data => {
-          // console.log('suggestions', data)
-          setSuggestions(data)
-        });
-
-      fetch(`https://api.npms.io/v2/search/suggestions?q=${searchTerm}&size=25`)
-        .then(response => response.json())
-        .then(data => {
-          // console.log('suggestions', data)
-          setSuggestions(data)
-        });
-
-
-      /algolia/react-instantsearch
+        .then(data => setSuggestions(data));
     }
-
-    // setDataNew(dataSample.results)
   }, [searchTerm]);
+
+  useEffect(() => {
+    if (selectedRepo) {
+      console.log('selectedRepo', selectedRepo)
+      fetch(`https://api.github.com/repos/${selectedRepo.replace('https://github.com/', '')}`)
+        .then(response => response.json())
+        .then(data => {
+          console.log('suggestions', data)
+          // setSuggestions(data)
+          setRichPayloads([...richPayloads, data])
+        });
+    }
+  }, [selectedRepo]);
 
   const global =  {
 		alternatingRows: {
@@ -152,10 +156,19 @@ const App = () => {
 			},
       row: {
         key: 'type',
-        component: (item, index) => <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-          <Tooltip arrow title={`Last release: ${item.package.date}`}><Chip size="small" variant="outlined" label={item.package.version} /></Tooltip>
-          <MetadataColumn {...{ value: item.package.name, searchTerm }} />
-          </div>,
+        component: (item, index) => {
+          const extraPayload = richPayloads.find(payload => payload.full_name === item.custom.packageName)
+          return <div style={{ display: 'flex', gap: '4px', alignItems: 'flex-end', flexDirection: 'column' }}>
+            {extraPayload?.organization?.avatar_url && <img src={extraPayload?.organization?.avatar_url} style={{ width: '24px', height: '24px', borderRadius: '50%' }} alt="avatar" />}
+            <MetadataColumn {...{ value: item.package.name, searchTerm }} />
+            <div>
+              <Tooltip arrow title={`Last release: ${item.package.date}`}>
+                <Chip size="small" variant="outlined" label={item.package.version} />
+              </Tooltip>
+              {extraPayload && <Chip key={extraPayload.full_name} size="small" label={extraPayload.stargazers_count} variant="outlined" color="primary" icon={<StarsIcon />} />}
+            </div>
+          </div>
+        },
 			}
     },
 		{
@@ -173,14 +186,14 @@ const App = () => {
 		{
       header: {
         key: 'package.keywords',
-				width: 'minmax(300px, 2fr)',
+				width: 'minmax(200px, 1fr)',
         visible: true,
         noSort: true,
 				component: () => <Typography color="textSecondary" variant="subtitle2">Keywords</Typography>,
 			},
       row: {
         key: 'type',
-        component: (item, index) => <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+        component: (item) => <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
           {item?.package?.keywords?.map(keyword => <Chip key={keyword} onClick={() => setSearchTerm(keyword)} variant="outlined" size="small" label={keyword} />)}
         </div>,
 			}
@@ -198,20 +211,21 @@ const App = () => {
         component: (item) => <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           {Object
             .entries(item.package.links)
-            .map(([key, value]) => ([
+            .map(([key, value]) => ({
               key,
-              value
-              .replace("https://www.npmjs.com/package", "")
-              .replace("https://github.com", "")
-            ]))
-            .map(([key, value]) => <>
+              value: value.replace("https://www.npmjs.com/package/", "").replace("https://github.com/", ""),
+              origValue: value
+            }))
+            .map(({ key, value, origValue }) => <>
+              <a href={origValue} target="_blank" rel="noreferrer">
             <Chip size='small' variant="outlined" label={<div style={{ display: 'flex', gap: '4px', alignItems: 'center'}}>
               {key === 'npm' && <FontAwesomeIcon icon={faNpm} />}
-              {key === 'homepage' && <FontAwesomeIcon icon={faHouseSignal} />}
+              {key === 'homepage' && <FontAwesomeIcon icon={faHouse} />}
               {key === 'repository' && <FontAwesomeIcon icon={faGithub} />}
               {key === 'bugs' && <FontAwesomeIcon icon={faBug} />}
               {decodeURI(value)}
-            </div>} />
+                </div>} />
+                </a>
           </>)}
         </div>,
 			}
@@ -222,27 +236,33 @@ const App = () => {
         align: 'flex-end',
 				width: 'minmax(340px, 1fr)',
 				visible: true,
-				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Author</Typography>,
+				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Author &amp; Watchers</Typography>,
 			},
       row: {
         key: 'type',
-        component: (item) => <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }} >
-          <Avatar>{item.package.publisher.username.substring(0,2).toUpperCase()}</Avatar>
-          <div style={{display: 'flex'}}>
-            {item.package.maintainers.filter((maintainer, index) => index < 10).map((maintainer) => <Avatar
-              style={{
-                marginRight: '-12px',
-                fontSize: '10px',
-                backgroundColor: '#FFF',
-                boxShadow: '-1px 0px 1px 1px #aaa',
-                border: '1px solid #AAA'
-              }}
-            >
-              <Typography color="textSecondary">{maintainer.username.substring(0, 2).toUpperCase()}</Typography>
-            </Avatar>)}
+        component: (item) => {
+          const extraPayload = richPayloads.find(payload => payload.full_name === item.custom.packageName)
+          return <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }} >
+            {extraPayload?.owner?.avatar_url && <Avatar>
+              <img src={extraPayload.owner.avatar_url} style={{ width: '24px', height: '24px', borderRadius: '50%' }} alt="avatar" />
+            </Avatar>}
+            <Avatar>{item.package.publisher.username.substring(0, 2).toUpperCase()}</Avatar>
+            <div style={{ display: 'flex' }}>
+              {item.package.maintainers.filter((maintainer, index) => index < 10).map((maintainer) => <Avatar
+                style={{
+                  marginRight: '-24px',
+                  fontSize: '10px',
+                  backgroundColor: '#FFF',
+                  boxShadow: '-1px 0px 1px 1px #aaa',
+                  border: '1px solid #AAA'
+                }}
+              >
+                <Typography color="textSecondary">{maintainer.username.substring(0, 2).toUpperCase()}</Typography>
+              </Avatar>)}
+            </div>
+            {/* {Object.entries(item.package.links).map(([key, value]) => <Chip size='small' variant="outlined" label={`${key}: ${value}`} />)} */}
           </div>
-          {/* {Object.entries(item.package.links).map(([key, value]) => <Chip size='small' variant="outlined" label={`${key}: ${value}`} />)} */}
-        </div>,
+        }
 			}
     },
 	]
@@ -262,11 +282,13 @@ const App = () => {
     }}>
       <TextField
         variant='outlined'
+        placeholder="Search term"
+        label="Search term"
         fullWidth
         value={searchTerm}
         onChange={e => setSearchTerm(e.target.value)}
         InputProps={{
-          endAdornment: <div style={{ display: 'flex', gap: '4px', margin: '4px', flexWrap: 'wrap' }}>
+          endAdornment: <div style={{ display: 'flex', gap: '4px', margin: '4px', flexWrap: 'nowrap' }}>
             {[...new Set(suggestions
               .map((suggestion => suggestion.package.name))
               .map(name => name
@@ -275,8 +297,7 @@ const App = () => {
                 .trim())
               .filter(name => name.length > 0)
               .sort()
-            )]?.map(suggestion => <Chip label={suggestion} size="small" variant="outlined" />)}
-            {/* {suggestions?.map(suggestion => <Chip label={suggestion.package.name} size="small" variant="outlined" />)} */}
+            )]?.filter((_, index) => index < 10).map(suggestion => <Chip key={suggestion} label={suggestion} size="small" variant="outlined" />)}
           </div>,
           }}
       />
@@ -284,8 +305,11 @@ const App = () => {
         providers
       </div>
       <div style={{display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-        {terms.map(term => <Chip avatar={<Avatar>{term.count}</Avatar>} variant="outlined" size="small" label={`${term.term}`}/>)}
+        {terms.map(term => <Chip key={term.term} avatar={<Avatar>{term.count}</Avatar>} variant="outlined" size="small" label={`${term.term}`}/>)}
       </div>
+      {/* <div>
+        {selectedRepo}
+      </div> */}
       <div style={{ display: 'flex', flexDirection: 'column', position: 'relative', gap: '8px', flex: '1 1 auto'}}>
     {1 === 1 && <Grid {...{ data: dataNew, grid, global }}>
       {/* <GridHeadersNg >
@@ -299,18 +323,15 @@ const App = () => {
         {/* {({ columns }) => columns.map(({ key, align }) => <div key={key}>|</div> )} */}
       </GridColumnsNg>
       <GridRowsNg>
-        {({ rows, rowProps, styleProps }) => rows.map(({ key, component, alternating }) => <div
-          {...rowProps}
-          {...{
-            key,
-            style: {
-              ...styleProps,
-              borderBottom: '1px solid #DDD',
-              backgroundColor: alternating ? '#f0f0f077' : '#ffffff77'
-            }
+        {({ rows, className, styleProps }) => rows.map(({ key, data, component, alternating }) => <>
+          <div
+            onMouseUp={() => setSelectedRepo(Object.entries(data.package.links).filter(([key, _]) => key === 'repository').map(([_, value]) => value)[0])}
+            className={`${className} ${classes.row} ${alternating ? classes.alternating : ''}`}
+            {...{ key, style: { ...styleProps, borderBottom: '1px solid #DDD', }
           }}>
-          {component}
-        </div>)}
+            {component}
+          </div>
+        </>)}
       </GridRowsNg>
       <GridStatsNg className={classes.stats}>
         {({ total, sort }) => <div >
@@ -353,6 +374,16 @@ const useStyles = makeStyles(() => ({
     right: '16px',
     padding: '16px',
     bottom: '16px'
+  },
+  row: {
+    backgroundColor: '#f0f0f077',
+
+    '&:hover': {
+      backgroundColor: '#e3e3e377',
+    }
+  },
+  alternating: {
+    backgroundColor: '#ffffff77',
   },
   wrapper: {
     display: 'flex',

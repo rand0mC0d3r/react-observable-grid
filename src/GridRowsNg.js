@@ -63,12 +63,14 @@ const GridRowsNg = ({ children, className, style }) => {
             padding: global.style.rowPadding || '0',
             gridTemplateColumns,
           },
-          rowProps: {
-            className: clsx(['grid-rows-grid', className]),
-          },
+          className: clsx(['grid-rows-grid', className]),
+          // rowProps: {
+
+          // },
           rows: (data.length ? data : []).map((dataItem, index) => ({
             alternating: global.alternatingRows.stepping(index),
             key: dataItem.uuid,
+            data: dataItem,
             component: presentColumns.map(({ component }) => componentTypeCheck(component(dataItem, index)))
           }))
         })}
