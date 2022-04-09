@@ -60,11 +60,14 @@ const GridHeadersNg = ({ children, className, style }) => {
               sort: {
                 direction: stats.sort.direction,
                 column: stats.sort.column,
-              }
+              },
+              directionComponent: (current) => <>{stats.sort.column === current ? <>
+                {stats.sort.direction === 'asc' ? '↑' : '↓'}
+              </> : null}</>
             })}
-            {stats.sort.column === header.key && <>
-              {stats.sort.direction === 'asc' ? '↑' : '↓'}
-            </>}
+            {/* {stats.sort.column === header.key && <>
+
+            </>} */}
           </div>)}
     </div>
   </>

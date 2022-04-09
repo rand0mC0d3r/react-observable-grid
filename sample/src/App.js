@@ -148,10 +148,22 @@ const App = () => {
 				width: 'minmax(300px, 1fr)',
         visible: true,
         disableOnClick: true,
-        component: ({ onSort }) => <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-          <Typography onClick={() => onSort('package.version')} color="textSecondary" variant="subtitle2">Version</Typography>
+        component: ({ onSort, sort, directionComponent }) => <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+          <Typography
+            onClick={() => onSort('package.version')}
+            color={'package.version' === sort.column ? 'primary' : 'textSecondary'}
+            variant="subtitle2">
+            Version
+          </Typography>
+          {directionComponent('package.version')}
           <Typography color="primary">/</Typography>
-          <Typography onClick={() => onSort('package.name')} color="textSecondary" variant="subtitle2">Package Name</Typography>
+          <Typography
+            onClick={() => onSort('package.name')}
+            color={'package.name' === sort.column ? 'primary' : 'textSecondary'}
+            variant="subtitle2">
+            Package Name
+          </Typography>
+          {directionComponent('package.name')}
         </div>,
 			},
       row: {
@@ -161,7 +173,7 @@ const App = () => {
           return <div style={{ display: 'flex', gap: '4px', alignItems: 'flex-end', flexDirection: 'column' }}>
             {extraPayload?.organization?.avatar_url && <img src={extraPayload?.organization?.avatar_url} style={{ width: '24px', height: '24px', borderRadius: '50%' }} alt="avatar" />}
             <MetadataColumn {...{ value: item.package.name, searchTerm }} />
-            <div>
+            <div style={{ display: 'flex', gap: '8px' }}>
               <Tooltip arrow title={`Last release: ${item.package.date}`}>
                 <Chip size="small" variant="outlined" label={item.package.version} />
               </Tooltip>
@@ -200,10 +212,11 @@ const App = () => {
     },
     {
       header: {
-        key: 'Links',
+        key: 'package.links',
         align: 'flex-end',
 				width: 'minmax(440px, 2fr)',
-				visible: true,
+        visible: true,
+        noSort: true,
 				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Links</Typography>,
 			},
       row: {
