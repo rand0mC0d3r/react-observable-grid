@@ -1,4 +1,4 @@
-import { Avatar, Chip, CircularProgress, Fade, Popper, Tooltip, Typography } from '@material-ui/core';
+import { Avatar, Button, Chip, CircularProgress, Fade, Popper, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import TuneIcon from '@material-ui/icons/Tune';
@@ -44,7 +44,7 @@ const AvatarRow = memo(({ name, surname }) => <div style={{ display: 'flex', jus
   </div>
 )
 
-const MetadataColumn = memo(({ value, searchTerm }) => {
+const MetadataColumn = memo(({ value, searchTerm, setSearchTerm }) => {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedText, setSelectedText] = useState('');
@@ -80,15 +80,24 @@ const MetadataColumn = memo(({ value, searchTerm }) => {
 
 
   return <div style={{ display: 'flex', gap: '2px', flexWrap: 'wrap' }}>
-    {searchString(value, searchTerm).map(({ type, id, string }) => <div onMouseLeave={handleClose}>
+    {searchString(value, searchTerm).map(({ type, id, string }) => <div>
       {type === 'string' && <Typography onMouseUp={handleMouseUp} key={id} variant='body2' color="textSecondary">{string}</Typography>}
       {type === 'highlight' && <Typography onMouseUp={handleMouseUp} style={{ borderBottom: '3px dashed #d6d600' }} key={id} variant='body2' color="textPrimary">{string}</Typography>}
       <Popper {...{ open, anchorEl }} placement="bottom-start">
         <div style={{width: '600px', display: 'flex', padding: '8px', gap: '8px', backgroundColor: '#FFF', flexDirection: "column"}}>
           <Typography>{selectedText}</Typography>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap'}}>
-            {suggestions.map(suggestion => <Chip variant="outlined" size="small" label={suggestion.package.name} />)}
+            {suggestions?.map(suggestion => <Chip
+              variant="outlined"
+              size="small"
+              onClick={() => {
+                handleClose()
+                setSearchTerm(`${searchTerm} ${suggestion.package.name}`)
+              }}
+              label={suggestion.package.name}
+            />)}
           </div>
+          <Button onClick={handleClose}>Close</Button>
         </div>
       </Popper>
     </div>)}

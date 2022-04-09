@@ -1,7 +1,7 @@
 import { faGithub, faNpm } from '@fortawesome/free-brands-svg-icons';
 import { faBug, faCode, faHouseSignal } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Avatar, Chip, CircularProgress, Fade, Popper, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Avatar, Chip, CircularProgress, Fade, InputAdornment, Popper, TextField, Tooltip, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import { useEffect, useMemo, useState } from 'react';
@@ -16,9 +16,11 @@ import { CircularProgressBlock, MetadataColumn } from './parts/SampleRow';
 const App = () => {
   // const [data, setData] = useState([]);
   const [dataNew, setDataNew] = useState([]);
-  const [suggestions, setSuggestions] = useState([]);
+  const [terms, setTerms] = useState([]);
   // const [currentFolder, setCurrentFolder] = useState('');
   const [searchTerm, setSearchTerm] = useState('angular');
+  const [suggestions, setSuggestions] = useState([]);
+
 
   const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
   const classes = useStyles()
@@ -51,19 +53,44 @@ const App = () => {
 
   useEffect(() => {
     if (searchTerm !== '') {
-      fetch(`https://api.npms.io/v2/search?q=${searchTerm}&size=25`)
+      fetch(`https://api.npms.io/v2/search?q=${searchTerm}&size=20`)
         .then(response => response.json())
         .then(data => {
-          console.log('search', data)
+          const newTerms = Object.entries(data.results.reduce((acc, item) => {
+            if (item?.package?.description) {
+              acc.push(...item?.package?.description?.split(' '))
+            }
+
+            return acc
+          }, []).reduce((count, word) => {
+            count[word] = (count[word] || 0) + 1;
+            return count;
+          }, {}))
+            .map(item => ({ term: item[0], count: item[1] }))
+            .sort((a, b) => b.count - a.count)
+            .filter(item => item.count > 2 && item.term.length > 2 && item.term.toLowerCase() !== searchTerm.toLowerCase())
+            .filter(item => !['for', 'a', 'all','of', 'and', 'with', 'to', 'the', 'in', 'into', 'that', 'by'].some(word => word.toLowerCase() === item.term.toLowerCase()))
+          setTerms(newTerms)
           setDataNew(data.results)
         });
-      // fetch(`https://api.npms.io/v2/search/suggestions?q=${searchTerm}&size=25`)
-      //   .then(response => response.json())
-      //   .then(data => {
-      //     console.log('suggestions', data)
-      //     setSuggestions(data.results)
-      //   });
+      fetch(`https://api.npms.io/v2/search/suggestions?q=${searchTerm}&size=25`)
+        .then(response => response.json())
+        .then(data => {
+          // console.log('suggestions', data)
+          setSuggestions(data)
+        });
+
+      fetch(`https://api.npms.io/v2/search/suggestions?q=${searchTerm}&size=25`)
+        .then(response => response.json())
+        .then(data => {
+          // console.log('suggestions', data)
+          setSuggestions(data)
+        });
+
+
+      /algolia/react-instantsearch
     }
+
     // setDataNew(dataSample.results)
   }, [searchTerm]);
 
@@ -140,7 +167,7 @@ const App = () => {
 			},
       row: {
         key: 'type',
-        component: (item, index) => <MetadataColumn {...{ value: item.package.description, searchTerm }} />,
+        component: (item, index) => <MetadataColumn {...{ value: item.package.description, searchTerm, setSearchTerm }} />,
 			}
     },
 		{
@@ -153,8 +180,8 @@ const App = () => {
 			},
       row: {
         key: 'type',
-        component: (item, index) => <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          {item?.package?.keywords?.map(keyword => <Chip key={keyword} variant="outlined" size="small" label={keyword} />)}
+        component: (item, index) => <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+          {item?.package?.keywords?.map(keyword => <Chip key={keyword} onClick={() => setSearchTerm(keyword)} variant="outlined" size="small" label={keyword} />)}
         </div>,
 			}
     },
@@ -218,69 +245,6 @@ const App = () => {
         </div>,
 			}
     },
-
-    // {
-    //   header: {
-    //     key: 'name',
-		// 		width: '2fr',
-		// 		visible: true,
-    //     component:  () => <Typography color="textSecondary" variant="caption">Path</Typography>,
-		// 	},
-    //   row: {
-    //     key: 'path',
-    //     component: ({ type, label, path }) => <div style={{ display: 'flex', gap: '8px',  alignItems: 'center' }}>
-    //       <Typography
-    //         style={{ cursor: 'pointer' }}
-    //         color={currentFolder === path ? 'primary' : 'textSecondary'}
-    //         variant={type === 'tree' ? 'body1' : 'subtitle2'}
-    //         onClick={() => type === 'tree' && setCurrentFolder(path)}
-    //       >
-    //         {label}
-    //       </Typography>
-    //       {path && <Typography variant="caption" color="textSecondary">({path})</Typography>}
-    //       </div>,
-		// 	}
-		// },
-		// {
-    //   header: {
-    //     key: 'url',
-		// 		width: '600px',
-    //     visible: true,
-    //     component:  () => <Typography color="textSecondary" variant="caption">URL</Typography>,
-		// 	},
-    //   row: {
-    //     key:  'size',
-    //     component: ({ url }) => <>
-    //       {/* <iframe src={url} style={{ width: '300px', height: '300px' }} /> */}
-    //     </>
-		// 	}
-		// },
-		// {
-    //   header: {
-    //     key: 'size',
-		// 		width: '100px',
-    //     visible: true,
-    //     align: 'flex-end',
-    //     component:  () => <Typography color="textSecondary" variant="caption">File size</Typography>,
-		// 	},
-    //   row: {
-    //     key:  'size',
-    //     component: ({ size }) => <Typography variant="caption">{size}</Typography>
-		// 	}
-		// },
-		// {
-    //   header: {
-    //     key: 'sha',
-		// 		width: '300px',
-    //     visible: true,
-    //     align: 'flex-end',
-    //     component: () =>  <Typography color="textSecondary" variant="caption">SHA</Typography>,
-		// 	},
-    //   row: {
-    //     key: 'sha',
-    //     component: ({ sha }) => <Typography variant="caption">{sha}</Typography>,
-		// 	}
-		// }
 	]
 
 
@@ -296,8 +260,33 @@ const App = () => {
       right: '24px',
       bottom: '24px',
     }}>
-      <TextField variant='outlined' fullWidth value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
-      <div style={{    display: 'flex', flexDirection: 'column', position: 'relative', gap: '8px', flex: '1 1 auto'}}>
+      <TextField
+        variant='outlined'
+        fullWidth
+        value={searchTerm}
+        onChange={e => setSearchTerm(e.target.value)}
+        InputProps={{
+          endAdornment: <div style={{ display: 'flex', gap: '4px', margin: '4px', flexWrap: 'wrap' }}>
+            {[...new Set(suggestions
+              .map((suggestion => suggestion.package.name))
+              .map(name => name
+                .replace(/[\W_]+/g, " ")
+                .replace(`${searchTerm}`, '')
+                .trim())
+              .filter(name => name.length > 0)
+              .sort()
+            )]?.map(suggestion => <Chip label={suggestion} size="small" variant="outlined" />)}
+            {/* {suggestions?.map(suggestion => <Chip label={suggestion.package.name} size="small" variant="outlined" />)} */}
+          </div>,
+          }}
+      />
+      <div>
+        providers
+      </div>
+      <div style={{display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        {terms.map(term => <Chip avatar={<Avatar>{term.count}</Avatar>} variant="outlined" size="small" label={`${term.term}`}/>)}
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', position: 'relative', gap: '8px', flex: '1 1 auto'}}>
     {1 === 1 && <Grid {...{ data: dataNew, grid, global }}>
       {/* <GridHeadersNg >
         {({ headers }) => headers.map(({ key, component, sort }) => <div key={key}>
