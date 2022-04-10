@@ -35,6 +35,12 @@ const GridRowsNg = ({ children, className, style }) => {
       })))
   }, [grid])
 
+
+  const textMap = [
+    { id: 'flex-start', text: 'left' },
+    { id: 'flex-end', text: 'right' },
+    { id: 'center', text: 'center' },
+  ]
   const classes = `
     .grid-rows-grid {
       display: grid;
@@ -49,11 +55,12 @@ const GridRowsNg = ({ children, className, style }) => {
     }
     .grid-rows-grid > *:nth-child(${index + 1}) {
       justify-content: ${gridItem?.header?.align || 'flex-start'};
-      ${gridItem?.row?.noWrapper ? `text-align: ${gridItem?.header?.align === 'flex-start' ? 'left' : 'right'}` : ''}
+      align-items: ${gridItem?.header?.align || 'flex-start'};
+      ${gridItem?.row?.noWrapper ? `text-align: ${(textMap.find(tm => tm.id === gridItem?.header?.align || '') || []).text}` : ''}
     }
     .grid-rows-grid > *:nth-child(${index + 1}) > * {
       justify-content: ${gridItem?.header?.align || 'flex-start'};
-      text-align: ${gridItem?.header?.align === 'flex-start' ? 'left' : 'right'};
+      text-align: ${(textMap.find(tm => tm.id === gridItem?.header?.align || '') || []).text};
     }
     `).join('')}
   `

@@ -135,30 +135,29 @@ const App = () => {
 			},
       row: {
         key: 'type',
-        component: (item, index) => <div style={{ display: 'flex', gap: '4px', flexDirection: 'column', alignItems: 'flex-end' }}>
+        component: (item, index) => <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
           <Tooltip title={`Position: ${index}`}>
-            <Typography color="textSecondary" variant="h6">
-             {(parseFloat(item.searchScore / 100).toFixed(2) * 100).toFixed(0)}%
+            <Typography color="textSecondary" variant="h6" style={{ flex: '1 1 100%'}}>
+             {`${(parseFloat(item.searchScore / 100).toFixed(2) * 100).toFixed(0)}%`}
             </Typography>
           </Tooltip>
-          <div style={{display: 'flex', gap: '4px'}}>
+          {/* <div style={{display: 'flex', gap: '4px'}}> */}
             {[
               { title: 'Quality', value: item.score.detail.quality },
               { title: 'Popularity', value: item.score.detail.popularity },
               { title: 'Maintenance', value: item.score.detail.maintenance },
             ].map(({ title, value }) => <CircularProgressBlock {...{value, title }} />)}
-          </div>
+          {/* </div> */}
         </div>,
 			}
     },
 		{
       header: {
         key: 'package.name',
-        align: 'flex-end',
 				width: 'minmax(250px, 1fr)',
         visible: true,
         disableOnClick: true,
-        component: ({ onSort, sort, directionComponent }) => <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+        component: ({ onSort, sort, directionComponent }) => <div style={{ display: 'flex', gap: '4px', alignItems: 'flex-start', flexDirection: 'column' }}>
           <Typography
             onClick={() => onSort('package.version')}
             color={'package.version' === sort.column ? 'primary' : 'textSecondary'}
@@ -166,7 +165,6 @@ const App = () => {
             Version
           </Typography>
           {directionComponent('package.version')}
-          <Typography color="primary">/</Typography>
           <Typography
             onClick={() => onSort('package.name')}
             color={'package.name' === sort.column ? 'primary' : 'textSecondary'}
@@ -179,8 +177,8 @@ const App = () => {
       row: {
         key: 'type',
         component: (item, index) => {
-          const extraPayload = richPayloads.find(payload => payload.full_name === item.custom.packageName)
-          return <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end', flexDirection: 'column' }}>
+          const extraPayload = richPayloads.filter(payload => payload.repo === item.custom.packageName).map(payload => payload.data)[0]
+          return <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', flexDirection: 'column' }}>
             <div style={{ display: 'flex', gap: '8px', flexDirection: 'row', alignItems: 'center' }}>
               {extraPayload?.organization?.avatar_url && <img src={extraPayload?.organization?.avatar_url} style={{ width: '24px', height: '24px', borderRadius: '50%' }} alt="avatar" />}
               <MetadataColumn {...{ value: item.package.name, searchTerm }} />
@@ -265,11 +263,12 @@ const App = () => {
 			},
       row: {
         key: 'type',
-        component: (item) =>  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }} >
+        component: (item) =>  <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
             {contributors
               .filter(contributor => contributor.repo === item.custom.packageName)
               .map(contributor => contributor.data.map(({ avatar_url, login }) => <Tooltip arrow title={login}>
-              <img
+                <img
+                className={classes.avatar}
                 key={`${item.custom.packageName}.${avatar_url}`}
                 src={avatar_url}
                 style={{ width: '24px', height: '24px', borderRadius: '50%' }}
@@ -378,6 +377,13 @@ const useStyles = makeStyles(() => ({
     },
     '& #Container-root .Row-isSelected': {
       backgroundColor: 'red',
+    }
+  },
+  avatar: {
+    opacity: 0.6,
+
+    '&:hover': {
+      opacity: 1,
     }
   },
   stats: {
