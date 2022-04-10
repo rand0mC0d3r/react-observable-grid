@@ -42,14 +42,20 @@ const GridRowsNg = ({ children, className, style }) => {
       align-items: center;
       grid-template-columns: ${gridTemplateColumns};
     }
+    ${grid.map((gridItem, index) => `
     .grid-rows-grid > * {
-      display: flex;
+      display: ${gridItem?.row?.noWrapper ? 'flex' : 'inline-block'};
       margin: 0px ${global?.style?.gap || '0'}px;
     }
-    ${grid.map((gridItem, index) => `
     .grid-rows-grid > *:nth-child(${index + 1}) {
       justify-content: ${gridItem?.header?.align || 'flex-start'};
-    }`).join('')}
+      ${gridItem?.row?.noWrapper ? `text-align: ${gridItem?.header?.align === 'flex-start' ? 'left' : 'right'}` : ''}
+    }
+    .grid-rows-grid > *:nth-child(${index + 1}) > * {
+      justify-content: ${gridItem?.header?.align || 'flex-start'};
+      text-align: ${gridItem?.header?.align === 'flex-start' ? 'left' : 'right'};
+    }
+    `).join('')}
   `
 
   return <>
@@ -64,9 +70,6 @@ const GridRowsNg = ({ children, className, style }) => {
             gridTemplateColumns,
           },
           className: clsx(['grid-rows-grid', className]),
-          // rowProps: {
-
-          // },
           rows: (data.length ? data : []).map((dataItem, index) => ({
             alternating: global.alternatingRows.stepping(index),
             key: dataItem.uuid,

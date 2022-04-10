@@ -91,12 +91,18 @@ const App = () => {
       fetch(`https://api.github.com/repos/${selectedRepo.replace('https://github.com/', '')}`)
         .then(response => response.json())
         .then(data => {
-          console.log('suggestions', data)
-          // setSuggestions(data)
-          setRichPayloads([...richPayloads, data])
+          setRichPayloads(richPayloads => [...richPayloads, data])
+          const currentRichPayloads = JSON.parse(localStorage.getItem('richPayloads') || '[]')
+          localStorage.setItem('richPayloads', JSON.stringify([...currentRichPayloads, data]))
         });
     }
   }, [selectedRepo]);
+
+  useEffect(() => {
+    const cachedRichPayloads = localStorage.getItem('richPayloads') || '[]'
+    setRichPayloads(JSON.parse(cachedRichPayloads))
+  }, [])
+
 
   const global =  {
 		alternatingRows: {
@@ -188,10 +194,12 @@ const App = () => {
         key: 'package.description',
 				width: 'minmax(300px, 2fr)',
         visible: true,
+        align: 'flex-end',
 				component: () => <Typography color="textSecondary" variant="subtitle2">Description</Typography>,
 			},
       row: {
         key: 'type',
+        noWrapper: true,
         component: (item, index) => <MetadataColumn {...{ value: item.package.description, searchTerm, setSearchTerm }} />,
 			}
     },
@@ -206,7 +214,17 @@ const App = () => {
       row: {
         key: 'type',
         component: (item) => <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-          {item?.package?.keywords?.map(keyword => <Chip key={keyword} onClick={() => setSearchTerm(keyword)} variant="outlined" size="small" label={keyword} />)}
+          {item?.package?.keywords?.map(keyword => <Chip
+            key={keyword}
+            onClick={() => setSearchTerm(keyword)}
+            variant="outlined"
+            size="small"
+            style={{
+              borderStyle: 'dotted'
+            }}
+            disabled={keyword.toLowerCase() === searchTerm.toLowerCase()}
+            label={keyword}
+          />)}
         </div>,
 			}
     },

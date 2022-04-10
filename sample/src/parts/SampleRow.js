@@ -1,11 +1,11 @@
-import { Avatar, Button, Chip, CircularProgress, Fade, Popper, Tooltip, Typography } from '@material-ui/core';
+import { Avatar, Button, Chip, CircularProgress, Popper, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import TuneIcon from '@material-ui/icons/Tune';
-import { memo, useState } from 'react';
+import { cloneElement, memo, useState } from 'react';
 import stringToColor from 'string-to-color';
 
-export const searchString = (string, query) => {
+export const searchString = (string, query, highlightComponent) => {
   const queryParts = query.split(' ')
   let stringTmp = `${string}`
   const parts = []
@@ -25,8 +25,10 @@ export const searchString = (string, query) => {
       }
       stringTmp = stringTmp.length !== part.length ? stringTmp.substring(part.length) : stringTmp
     })
-  console.log(parts)
-  return parts
+  return parts.reduce((acc, curr) => {
+    acc.push(curr.type === 'highlight' ? cloneElement(highlightComponent(curr.string), { style: { display: 'inline-block' } })  : curr.string)// acc = `${acc}${curr.string}`
+    return acc
+  }, [])
 }
 
 const AvatarRow = memo(({ name, surname }) => <div style={{ display: 'flex', justifyContent: "center" }}>
@@ -80,10 +82,12 @@ const MetadataColumn = memo(({ value, searchTerm, setSearchTerm }) => {
   };
 
 
-  return <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-    {searchString(value, searchTerm).map(({ type, id, string }) => <>
-      {type === 'string' && <Typography onMouseUp={handleMouseUp} key={id} style={{ whiteSpace: 'wrap' }} variant='body2' color="textSecondary">{string} {" "}</Typography>}
-      {type === 'highlight' && <Typography onMouseUp={handleMouseUp} style={{ whiteSpace: 'wrap', borderBottom: '3px dashed #d6d600' }} key={id} variant='body2' color="textPrimary">{string}</Typography>}
+  return <>
+      <Typography onMouseUp={handleMouseUp} color="textSecondary">{searchString(
+        value,
+        searchTerm,
+        (children) => <Typography color="secondary">{children}</Typography>)
+      }</Typography>
       <Popper {...{ open, anchorEl }} placement="bottom-start">
         <div style={{width: '600px', display: 'flex', padding: '8px', gap: '8px', backgroundColor: '#FFF', flexDirection: "column"}}>
           <Typography>{selectedText}</Typography>
@@ -102,8 +106,7 @@ const MetadataColumn = memo(({ value, searchTerm, setSearchTerm }) => {
           <Button onClick={handleClose}>Close</Button>
         </div>
       </Popper>
-    </>)}
-  </div>
+    </>
 })
 
 const NamesRow = ({ name, surname }) => {
