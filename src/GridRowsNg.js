@@ -48,7 +48,7 @@ const GridRowsNg = ({ children, className, style }) => {
       align-items: center;
       grid-template-columns: ${gridTemplateColumns};
     }
-    ${grid.map((gridItem, index) => `
+    ${grid.map((gridItem, index) => !gridItem.header.noColumn ? `
     .grid-rows-grid > * {
       display: ${gridItem?.row?.noWrapper ? 'flex' : 'inline-block'};
       margin: 0px ${global?.style?.gap || '0'}px;
@@ -62,7 +62,13 @@ const GridRowsNg = ({ children, className, style }) => {
       justify-content: ${gridItem?.header?.align || 'flex-start'};
       text-align: ${(textMap.find(tm => tm.id === gridItem?.header?.align || '') || []).text};
     }
-    `).join('')}
+    ` : '').join('')}
+    ${grid.map((gridItem, index) => gridItem?.header?.noColumn ? `
+    .grid-rows-grid > *:nth-child(${index + 1}) {
+      grid-column-start: 1;
+      grid-column-end: none;
+    }
+    `:'').join('')}
   `
 
   return <>

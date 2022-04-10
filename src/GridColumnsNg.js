@@ -3,11 +3,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import DataProvider from './GridStoreNg';
 
 export default ({ children, style, className }) => {
-  const { grid, gridTemplateColumns, global } = useContext(DataProvider)
+  const { grid, headerTemplateColumns, global } = useContext(DataProvider)
   const [presentColumns, setPresentColumns] = useState([])
 
   useEffect(() => {
-    const columnsVisible = grid.filter(gridItem => gridItem.header.visible)
+    const columnsVisible = grid
+      .filter(gridItem => gridItem.header.visible)
+      .filter(gridItem => !gridItem.header.noColumn)
     setPresentColumns(columnsVisible.map((gridItem, index) => {
       const { key, align } = gridItem.header
       return {
@@ -33,7 +35,7 @@ export default ({ children, style, className }) => {
     <style>{classes}</style>
     <div className={clsx(['grid-columns-grid', className])}
     style={{
-      gridTemplateColumns,
+      gridTemplateColumns: headerTemplateColumns,
       ...global.style,
       ...style,
       paddingTop: '0',

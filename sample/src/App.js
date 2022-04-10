@@ -1,7 +1,7 @@
 import { faGithub, faNpm } from '@fortawesome/free-brands-svg-icons';
 import { faBug, faCode, faHouse, faHouseSignal } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Avatar, Chip, CircularProgress, Fade, InputAdornment, Popper, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Avatar, Button, Chip, CircularProgress, Fade, InputAdornment, Popper, TextField, Tooltip, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import HomeIcon from '@material-ui/icons/Home';
@@ -25,6 +25,8 @@ const App = () => {
   const [selectedRepo, setSelectedRepo] = useState(null);
   const [richPayloads, setRichPayloads] = useState([]);
   const [contributors, setContributors] = useState([]);
+  const [openRows, setOpenRows] = useState([]);
+  const [contents, setContents] = useState([]);
 
   const theme = useMemo(() => createTheme({
     palette: { type: 'light', },
@@ -56,14 +58,14 @@ const App = () => {
             .map(item => ({ term: item[0], count: item[1] }))
             .sort((a, b) => b.count - a.count)
             .filter(item => item.count > 2 && item.term.length > 2 && item.term.toLowerCase() !== searchTerm.toLowerCase())
-            .filter(item => !['for', 'a', 'all','of', 'and', 'with', 'to', 'the', 'in', 'into', 'that', 'by'].some(word => word.toLowerCase() === item.term.toLowerCase()))
+            .filter(item => !['for', 'a', 'all','of', 'and', 'with', 'to',  'the', 'in', 'into', 'that', 'by'].some(word => word.toLowerCase() === item.term.toLowerCase()))
           setTerms(newTerms)
           setDataNew(data.results.map(item => ({
             ...item, custom: {
             packageName: item.package.links.repository?.replace('https://github.com/', '')
           } })))
         });
-      fetch(`https://api.npms.io/v2/search/suggestions?q=${searchTerm}&size=25`)
+      fetch(`https://api.npms.io/v2/search/suggestions?q=${searchTerm}&size=50`)
         .then(response => response.json())
         .then(data => setSuggestions(data));
     }
@@ -88,7 +90,6 @@ const App = () => {
     if (selectedRepo) {
       const repoName = selectedRepo.replace('https://github.com/', '')
       if (!contributors.some(item => item.repo === repoName)) {
-        console.log("call getting contributors", contributors)
         fetch(`https://api.github.com/repos/${repoName}/contributors`)
           .then(response => response.json())
           .then(data => {
@@ -127,6 +128,22 @@ const App = () => {
 	const grid = [
 		{
       header: {
+        key: 'openRow',
+        align: 'flex-end',
+				width: '80px',
+        visible: true,
+        noSort: true,
+				component: () => <Typography color="textSecondary" variant="subtitle2">File Tree</Typography>,
+			},
+      row: {
+        key: 'type',
+        component: (item, index) => <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+          <Button onClick={() => setOpenRows([...openRows.filter(openRow => openRow === item.custom.packageName), item.custom.packageName ])}>open</Button>
+        </div>,
+			}
+    },
+		{
+      header: {
         key: 'searchScore',
         align: 'flex-end',
 				width: '120px',
@@ -157,7 +174,7 @@ const App = () => {
 				width: 'minmax(250px, 1fr)',
         visible: true,
         disableOnClick: true,
-        component: ({ onSort, sort, directionComponent }) => <div style={{ display: 'flex', gap: '4px', alignItems: 'flex-start', flexDirection: 'column' }}>
+        component: ({ onSort, sort, directionComponent }) => <div style={{ display: 'flex', gap: '4px', alignItems: 'flex-start', flexDirection: 'row' }}>
           <Typography
             onClick={() => onSort('package.version')}
             color={'package.version' === sort.column ? 'primary' : 'textSecondary'}
@@ -178,12 +195,12 @@ const App = () => {
         key: 'type',
         component: (item, index) => {
           const extraPayload = richPayloads.filter(payload => payload.repo === item.custom.packageName).map(payload => payload.data)[0]
-          return <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', flexDirection: 'column' }}>
-            <div style={{ display: 'flex', gap: '8px', flexDirection: 'row', alignItems: 'center' }}>
+          return <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '8px', flexDirection: 'row', alignItems: 'center', flex: '1 1 100%' }}>
               {extraPayload?.organization?.avatar_url && <img src={extraPayload?.organization?.avatar_url} style={{ width: '24px', height: '24px', borderRadius: '50%' }} alt="avatar" />}
               <MetadataColumn {...{ value: item.package.name, searchTerm }} />
             </div>
-            <div style={{ display: 'flex', gap: '8px' }}>
+            {/* <div style={{ display: 'flex', gap: '8px' }}> */}
               <Tooltip arrow title={`Last release: ${item.package.date}`}>
                 <Chip size="small" variant="outlined" label={item.package.version} />
               </Tooltip>
@@ -195,7 +212,7 @@ const App = () => {
                 variant="outlined"
                 color="primary"
                 icon={<StarsIcon style={{color: 'orange'}} />} />}
-            </div>
+            {/* </div> */}
           </div>
         },
 			}
@@ -257,29 +274,45 @@ const App = () => {
       header: {
         key: 'Author',
         align: 'flex-end',
-				width: 'minmax(340px, 1fr)',
+				width: 'minmax(250px, 1fr)',
 				visible: true,
 				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Author &amp; Watchers</Typography>,
 			},
       row: {
         key: 'type',
-        component: (item) =>  <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-            {contributors
-              .filter(contributor => contributor.repo === item.custom.packageName)
-              .map(contributor => contributor.data.map(({ avatar_url, login }) => <Tooltip arrow title={login}>
-                <img
-                className={classes.avatar}
-                key={`${item.custom.packageName}.${avatar_url}`}
-                src={avatar_url}
-                style={{ width: '24px', height: '24px', borderRadius: '50%' }}
-                alt="avatar"
-              /></Tooltip>))}
+        component: (item) => <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+          {contributors
+          .filter(contributor => contributor.repo === item.custom.packageName)
+          .map(contributor => contributor.data
+            .filter((_, index) => index < 10)
+            .map(({ avatar_url, login }) => <Tooltip arrow title={login}>
+              <img
+              className={classes.avatar}
+              key={`${item.custom.packageName}.${avatar_url}`}
+              src={avatar_url}
+              style={{ width: '20px', height: '20px', borderRadius: '50%' }}
+              alt="avatar"
+            /></Tooltip>))}
           </div>
 			}
     },
+    {
+      header: {
+        key: 'Secondary:Column',
+        align: 'flex-end',
+				width: 'minmax(333px, 1fr)',
+        visible: true,
+        noColumn: true,
+				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Secondary</Typography>,
+			},
+      row: {
+        key: 'type',
+        component: (item) =>  openRows.some(openRow => openRow === item.package.name) ? <div style={{ display: 'flex', backgroundColor: '#EEE', height: '200px', gap: '4px', flexWrap: 'wrap' }}>
+          elem
+        </div> : <></>
+			}
+    },
 	]
-
-
 
   return <ThemeProvider {...{ theme }} >
     <div style={{
@@ -310,12 +343,14 @@ const App = () => {
               .filter(name => name.length > 0)
               .sort()
             )]?.filter((_, index) => index < 10).map(suggestion => <Chip key={suggestion} label={suggestion} size="small" variant="outlined" />)}
+            <Chip key='lengthOfDataNew' label={dataNew.length} size="small" variant="default" />
           </div>,
           }}
       />
-      <div>
-        providers
-      </div>
+      {/* <div>
+        {JSON.stringify(openRows)} */}
+        {/* {dataNew.map(item => <div key={item.package.name}>{item.package.publisher.username}</div>)} */}
+      {/* </div> */}
       <div style={{display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
         {terms.map(term => <Chip key={term.term} avatar={<Avatar>{term.count}</Avatar>} variant="outlined" size="small" label={`${term.term}`}/>)}
       </div>
@@ -324,26 +359,27 @@ const App = () => {
       </div> */}
       <div style={{ display: 'flex', flexDirection: 'column', position: 'relative', gap: '8px', flex: '1 1 auto'}}>
     {1 === 1 && <Grid {...{ data: dataNew, grid, global }}>
-      {/* <GridHeadersNg >
-        {({ headers }) => headers.map(({ key, component, sort }) => <div key={key}>
-          {component}
-          {sort.column === key && <>{sort.direction === 'asc' ? '↑' : '↓'}</>}
+      <GridHeadersNg className={classes.header} >
+        {({ headers }) => headers.map(({ key, component, sort, align }) => <div key={key}>
+            {component}
         </div>)}
-      </GridHeadersNg> */}
-      <GridHeadersNg />
+      </GridHeadersNg>
+      {/* <GridHeadersNg /> */}
       <GridColumnsNg >
         {/* {({ columns }) => columns.map(({ key, align }) => <div key={key}>|</div> )} */}
       </GridColumnsNg>
       <GridRowsNg>
-        {({ rows, className, styleProps }) => rows.map(({ key, data, component, alternating }) => <>
-          <div
-            onMouseUp={() => setSelectedRepo(Object.entries(data.package.links).filter(([key, _]) => key === 'repository').map(([_, value]) => value)[0])}
-            className={`${className} ${classes.row} ${alternating ? classes.alternating : ''}`}
-            {...{ key, style: { ...styleProps, borderBottom: '1px solid #DDD', }
-          }}>
+            {({ rows, className, styleProps }) => rows.map(({ key, data, component, alternating }) => <div
+              onClick={() => setOpenRows(openRows.includes(data.package.name)
+                ? openRows.filter(openRow => openRow !== data.package.name)
+                : [...openRows.filter(row => row !== data.package.name), data.package.name]
+              )}
+          onMouseUp={() => setSelectedRepo(Object.entries(data.package.links).filter(([key, _]) => key === 'repository').map(([_, value]) => value)[0])}
+          className={`${className} ${classes.row} ${alternating ? classes.alternating : ''}`}
+          {...{ key, style: { ...styleProps, borderBottom: '1px solid #DDD', }
+        }}>
             {component}
-          </div>
-        </>)}
+        </div>)}
       </GridRowsNg>
       <GridStatsNg className={classes.stats}>
         {({ total, sort }) => <div >
@@ -385,6 +421,10 @@ const useStyles = makeStyles(() => ({
     '&:hover': {
       opacity: 1,
     }
+  },
+  header: {
+    borderBottom: "1px solid #BBBBBB55",
+    boxShadow: '0px 0px 2px 2px #CCC'
   },
   stats: {
     position: 'absolute',

@@ -9,13 +9,13 @@ const Grid = ({ data, grid, global, children, ...props }) => {
   const naturalSort = createNewSortInstance({ comparer: collator.compare })
 
   const [_data, set_Data] = useState([])
+  const [_headerTemplateColumns, set_HeaderTemplateColumns] = useState('')
   const [_gridTemplateColumns, set_GridTemplateColumns] = useState('')
 
   const jsonPathToValue = (jsonData, path) => {
     if (!(jsonData instanceof Object) || typeof (path) === "undefined") {
       throw "Not valid argument:jsonData:" + jsonData + ", path:" + path;
     }
-    // if (String(path.indexOf('.')) === -1) {
       path = path.replace(/\[(\w+)\]/g, '.$1');
       path = path.replace(/^\./, '');
       var pathArray = path.split('.');
@@ -32,9 +32,6 @@ const Grid = ({ data, grid, global, children, ...props }) => {
         }
       }
       return jsonData;
-    // } else {
-    //   return jsonData[path]
-    // }
   }
 
   const [stats, setStats] = useState(props['facts'] || {
@@ -55,15 +52,19 @@ const Grid = ({ data, grid, global, children, ...props }) => {
 
   useEffect(() => {
     setStats(stats => ({ ...stats, total: data?.length || 0 }))
-    console.log('path', stats.sort.column)
     set_Data(sortData(data, stats.sort.column, stats.sort.direction))
   }, [data])
 
   useEffect(() => {
-    set_GridTemplateColumns(grid
-      .filter(gridItem => gridItem.header.visible)
-      .map(gridItem => gridItem.header.width)
-      .join(' '))
+    if (grid) {
+      const gridColumns = grid
+        .filter(gridItem => gridItem.header.visible)
+        .filter(gridItem => !gridItem.header.noColumn)
+        .map(gridItem => gridItem.header.width)
+        .join(' ')
+      set_HeaderTemplateColumns(gridColumns)
+      set_GridTemplateColumns(gridColumns)
+    }
   }, [grid])
 
   useEffect(() => {
@@ -80,8 +81,6 @@ const Grid = ({ data, grid, global, children, ...props }) => {
       }))
   }, [global])
 
-
-
   const onSort = (key) => {
     setStats(stats => ({
       ...stats, sort: {
@@ -92,12 +91,6 @@ const Grid = ({ data, grid, global, children, ...props }) => {
     }))
     set_Data(sortData(data, key, stats.sort.direction))
   }
-
-
-  // useEffect(() => {
-  //   setStats(stats => { ...stats, global })
-  // }, [grid])
-  // useEffect(() => setGridTemplateColumns(innerHeaders.filter(header => header.visible).map(header => header.width).join(' ')), [innerHeaders])
 
   return <div style={{
     display: 'flex',
@@ -113,6 +106,7 @@ const Grid = ({ data, grid, global, children, ...props }) => {
       value={{
         data: _data,
         gridTemplateColumns: _gridTemplateColumns,
+        headerTemplateColumns: _headerTemplateColumns,
         grid, stats, global,
 
         onSort

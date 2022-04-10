@@ -4,7 +4,7 @@ import React, { useContext } from 'react';
 import DataProvider from './GridStoreNg';
 
 const GridHeadersNg = ({ children, className, style }) => {
-  const { grid, gridTemplateColumns, stats, onSort, global } = useContext(DataProvider)
+  const { grid, headerTemplateColumns, stats, onSort, global } = useContext(DataProvider)
 
   const componentTypeCheck = (component, options) => {
     return typeof component === 'string' || typeof component.type === 'symbol'
@@ -17,7 +17,7 @@ const GridHeadersNg = ({ children, className, style }) => {
       display: grid;
       z-index: 1;
       align-items: center;
-      grid-template-columns: ${gridTemplateColumns};
+      grid-template-columns: ${headerTemplateColumns};
     }
     .grid-headers-grid > * {
       display: flex;
@@ -42,15 +42,27 @@ const GridHeadersNg = ({ children, className, style }) => {
     }}>
       {children
         ? children({
-            headers: grid
-              .filter(gridItem => gridItem.header.visible)
-              .map(({ header }) => ({
-                key: header.key,
-                extraKeys: header.extraKeys,
-                align: header.align,
-                }))})
+          headers: grid
+            .filter(gridItem => gridItem.header.visible)
+            .filter(gridItem => !gridItem.header.noColumn)
+            .map(({ header }) => ({
+              key: header.key,
+              extraKeys: header.extraKeys,
+              align: header.align,
+              component: componentTypeCheck(header.component, {
+              onSort: (path) => onSort(path !== undefined ? path : header.key),
+              sort: {
+                direction: stats.sort.direction,
+                column: stats.sort.column,
+              },
+              directionComponent: (current) => <>{stats.sort.column === current ? <>
+                {stats.sort.direction === 'asc' ? '↑' : '↓'}
+              </> : null}</>
+            }),
+          }))})
         : grid
           .filter(gridItem => gridItem.header.visible)
+          .filter(gridItem => !gridItem.header.noColumn)
           .map(({ header }) => <div
             className='grid-headers-injected'
             onClick={() => !header.disableOnClick && onSort(header.key)}

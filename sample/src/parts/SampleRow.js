@@ -146,7 +146,7 @@ const LinksColumn = memo(({ item }) => {
           {key === 'homepage' && <FontAwesomeIcon icon={faHouse} />}
           {key === 'repository' && <FontAwesomeIcon icon={faGithub} />}
           {key === 'bugs' && <FontAwesomeIcon icon={faBug} />}
-          {decodeURI(value)}
+          {value.length > 25 ? `${decodeURI(value).substring(0, 25)}...` : decodeURI(value)}
         </div>} />)}
     <Popper {...{ open, anchorEl }} placement="bottom-center">
         {/* <div style={{width: '600px', display: 'flex', padding: '8px', gap: '8px', backgroundColor: '#FFF', flexDirection: "column"}}> */}

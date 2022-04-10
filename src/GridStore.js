@@ -48,7 +48,12 @@ function Grid({ rows, headers, children, ...props }) {
   })
 
   useEffect(() => setFacts(() => ({ ...facts, total: rows.length })), [rows])
-  useEffect(() => setGridTemplateColumns(innerHeaders.filter(header => header.visible).map(header => header.width).join(' ')), [innerHeaders])
+  useEffect(() => setGridTemplateColumns(innerHeaders
+    .filter(header => header.visible)
+    .filter(header => header.noList)
+    .map(header => header.width)
+    .join(' c ')
+  ), [innerHeaders])
 
   return <div style={{
     display: 'flex',
