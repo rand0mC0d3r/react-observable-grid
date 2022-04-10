@@ -43,7 +43,7 @@ const App = () => {
 
   useEffect(() => {
     if (searchTerm !== '') {
-      fetch(`https://api.npms.io/v2/search?q=${searchTerm}&size=10`)
+      fetch(`https://api.npms.io/v2/search?q=${searchTerm}&size=15`)
         .then(response => response.json())
         .then(data => {
           const newTerms = Object.entries(data.results.reduce((acc, item) => {
@@ -133,12 +133,15 @@ const App = () => {
 				width: '80px',
         visible: true,
         noSort: true,
-				component: () => <Typography color="textSecondary" variant="subtitle2">File Tree</Typography>,
+				component: 'File Tree',
 			},
       row: {
         key: 'type',
         component: (item, index) => <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-          <Button onClick={() => setOpenRows([...openRows.filter(openRow => openRow === item.custom.packageName), item.custom.packageName ])}>open</Button>
+          <Button onClick={() => setOpenRows(openRows.includes(item.package.name)
+                ? openRows.filter(openRow => openRow !== item.package.name)
+                : [...openRows.filter(row => row !== item.package.name), item.package.name]
+              )}>open</Button>
         </div>,
 			}
     },
@@ -148,14 +151,15 @@ const App = () => {
         align: 'flex-end',
 				width: '120px',
 				visible: true,
-				component: () => <Typography color="textSecondary" variant="subtitle2">SearchScore</Typography>,
+				component: 'Search Score',
 			},
       row: {
         key: 'type',
         component: (item, index) => <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
           <Tooltip title={`Position: ${index}`}>
             <Typography color="textSecondary" variant="h6" style={{ flex: '1 1 100%'}}>
-             {`${(parseFloat(item.searchScore / 100).toFixed(2) * 100).toFixed(0)}%`}
+             {/* {`${(parseFloat(item.searchScore / 100).toFixed(2) * 100).toFixed(0)}%`} */}
+             {`${(parseFloat(((item.score.detail.quality + item.score.detail.popularity + item.score.detail.maintenance) / 3) * 100).toFixed(2))}%`}
             </Typography>
           </Tooltip>
           {/* <div style={{display: 'flex', gap: '4px'}}> */}
@@ -174,21 +178,17 @@ const App = () => {
 				width: 'minmax(250px, 1fr)',
         visible: true,
         disableOnClick: true,
-        component: ({ onSort, sort, directionComponent }) => <div style={{ display: 'flex', gap: '4px', alignItems: 'flex-start', flexDirection: 'row' }}>
-          <Typography
-            onClick={() => onSort('package.version')}
-            color={'package.version' === sort.column ? 'primary' : 'textSecondary'}
-            variant="subtitle2">
-            Version
-          </Typography>
-          {directionComponent('package.version')}
-          <Typography
-            onClick={() => onSort('package.name')}
-            color={'package.name' === sort.column ? 'primary' : 'textSecondary'}
-            variant="subtitle2">
-            Package Name
-          </Typography>
-          {directionComponent('package.name')}
+        component: ({ onSort, sort, directionComponent }) => <div style={{ display: 'flex', gap: '4px', alignItems: 'flex-start', flexDirection: 'column' }}>
+          {[{ key: 'package.version', label: 'Version' }, { key: 'package.name', label: 'Package Name' }].map(item => <div style={{ display: 'flex', gap: '8px'}}>
+            <Typography
+              onClick={() => onSort(item.key)}
+              style={{ cursor: 'pointer' }}
+              color={item.key === sort.column ? 'primary' : 'textSecondary'}
+              variant="subtitle2">
+              {item.label}
+            </Typography>
+            {directionComponent(item.key)}
+          </div>)}
         </div>,
 			},
       row: {
@@ -204,7 +204,7 @@ const App = () => {
               <Tooltip arrow title={`Last release: ${item.package.date}`}>
                 <Chip size="small" variant="outlined" label={item.package.version} />
               </Tooltip>
-              {extraPayload && <Chip
+              {extraPayload?.stargazers_count && <Chip
                 style={{ borderColor: "orange", borderStyle: 'dotted' }}
                 key={extraPayload.full_name}
                 size="small"
@@ -223,7 +223,14 @@ const App = () => {
 				width: 'minmax(200px, 1fr)',
         visible: true,
         align: 'flex-end',
-				component: () => <Typography color="textSecondary" variant="subtitle2">Description</Typography>,
+        component: ({ onSort, sort, directionComponent }) => <div>
+          <Typography
+            onClick={() => onSort('package.description')}
+            color={'package.description' === sort.column ? 'primary' : 'textSecondary'}
+            variant="subtitle2"
+          >Description</Typography>
+          {/* {directionComponent('package.description')} */}
+        </div>,
 			},
       row: {
         key: 'type',
@@ -260,7 +267,7 @@ const App = () => {
       header: {
         key: 'package.links',
         align: 'flex-end',
-				width: 'minmax(440px, 2fr)',
+				width: 'minmax(300px, 1fr)',
         visible: true,
         noSort: true,
 				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Links</Typography>,
@@ -272,20 +279,19 @@ const App = () => {
     },
     {
       header: {
-        key: 'Author',
+        key: 'Collaborators',
         align: 'flex-end',
-				width: 'minmax(250px, 1fr)',
-				visible: true,
-				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Author &amp; Watchers</Typography>,
+				width: 'minmax(150px, 1fr)',
+        visible: true,
+        noSort: true,
+				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Collaborators</Typography>,
 			},
       row: {
         key: 'type',
         component: (item) => <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
           {contributors
-          .filter(contributor => contributor.repo === item.custom.packageName)
-          .map(contributor => contributor.data
-            .filter((_, index) => index < 10)
-            .map(({ avatar_url, login }) => <Tooltip arrow title={login}>
+            .filter(contributor => contributor.repo === item.custom.packageName)
+            .map(contributor => (contributor?.data.length > 0 ? contributor.data : []).filter((_,i) => i < 10).map(({ avatar_url, login }) => <Tooltip arrow title={login}>
               <img
               className={classes.avatar}
               key={`${item.custom.packageName}.${avatar_url}`}
@@ -359,21 +365,22 @@ const App = () => {
       </div> */}
       <div style={{ display: 'flex', flexDirection: 'column', position: 'relative', gap: '8px', flex: '1 1 auto'}}>
     {1 === 1 && <Grid {...{ data: dataNew, grid, global }}>
-      <GridHeadersNg className={classes.header} >
-        {({ headers }) => headers.map(({ key, component, sort, align }) => <div key={key}>
-            {component}
-        </div>)}
-      </GridHeadersNg>
-      {/* <GridHeadersNg /> */}
+      {/* <GridHeadersNg className={classes.header} >
+        {({ headers }) => headers.map(({ key, component, sort, align }) => component)}
+      </GridHeadersNg> */}
+      <GridHeadersNg
+        className={classes.header}
+        fallbackComponent={(component) => <Typography variant="caption" color="textSecondary">{component}</Typography>}
+      />
       <GridColumnsNg >
         {/* {({ columns }) => columns.map(({ key, align }) => <div key={key}>|</div> )} */}
       </GridColumnsNg>
       <GridRowsNg>
             {({ rows, className, styleProps }) => rows.map(({ key, data, component, alternating }) => <div
-              onClick={() => setOpenRows(openRows.includes(data.package.name)
-                ? openRows.filter(openRow => openRow !== data.package.name)
-                : [...openRows.filter(row => row !== data.package.name), data.package.name]
-              )}
+              // onClick={() => setOpenRows(openRows.includes(data.package.name)
+              //   ? openRows.filter(openRow => openRow !== data.package.name)
+              //   : [...openRows.filter(row => row !== data.package.name), data.package.name]
+              // )}
           onMouseUp={() => setSelectedRepo(Object.entries(data.package.links).filter(([key, _]) => key === 'repository').map(([_, value]) => value)[0])}
           className={`${className} ${classes.row} ${alternating ? classes.alternating : ''}`}
           {...{ key, style: { ...styleProps, borderBottom: '1px solid #DDD', }
@@ -424,7 +431,7 @@ const useStyles = makeStyles(() => ({
   },
   header: {
     borderBottom: "1px solid #BBBBBB55",
-    boxShadow: '0px 0px 2px 2px #CCC'
+    // boxShadow: '0px 0px 2px 2px #CCC'
   },
   stats: {
     position: 'absolute',

@@ -68,11 +68,12 @@ const MetadataColumn = memo(({ value, searchTerm, setSearchTerm }) => {
       return;
     }
 
-    fetch(`https://api.npms.io/v2/search/suggestions?q=${selectedText}&size=25`)
+    fetch(`https://api.npms.io/v2/search/suggestions?q=${selectedText}&size=10`)
       .then(response => response.json())
       .then(data => {
-        setSuggestions(data)
+        setSuggestions(data.map(dataItem => dataItem.package.name))
       });
+
     const getBoundingClientRect = () => selection.getRangeAt(0).getBoundingClientRect();
 
     setOpen(true);
@@ -92,21 +93,22 @@ const MetadataColumn = memo(({ value, searchTerm, setSearchTerm }) => {
         (children) => <Typography variant="subtitle2" color="primary" style={{ display: 'inline-block', borderBottom: '2px dashed #3f51b5'}}>{children}</Typography>)
       }</Typography>
       <Popper {...{ open, anchorEl }} placement="bottom-start">
-        <div style={{width: '600px', display: 'flex', padding: '8px', gap: '8px', backgroundColor: '#FFF', flexDirection: "column"}}>
+        <div style={{width: '600px', display: 'flex', border: '1px solid #CCC', borderRadius: '8px', padding: '8px', gap: '8px', backgroundColor: '#FFF', flexDirection: "column"}}>
           <Typography>{selectedText}</Typography>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap'}}>
-            {suggestions?.map(suggestion => <Chip
+            {[...new Set([selectedText, ...suggestions].sort().map(suggestion => suggestion.toLowerCase()))].map(suggestion => <Chip
               variant="outlined"
-              key={suggestion.package.name}
+              style={{ borderStyle: 'dotted'}}
+              key={suggestion}
               size="small"
               onClick={() => {
                 handleClose()
-                setSearchTerm(`${searchTerm} ${suggestion.package.name}`)
+                setSearchTerm(`${searchTerm} ${suggestion}`)
               }}
-              label={suggestion.package.name}
+              label={suggestion}
             />)}
           </div>
-          <Button onClick={handleClose}>Close</Button>
+          <Button variant="outlined" onClick={handleClose}>Close</Button>
         </div>
       </Popper>
     </>
@@ -149,9 +151,19 @@ const LinksColumn = memo(({ item }) => {
           {value.length > 25 ? `${decodeURI(value).substring(0, 25)}...` : decodeURI(value)}
         </div>} />)}
     <Popper {...{ open, anchorEl }} placement="bottom-center">
-        {/* <div style={{width: '600px', display: 'flex', padding: '8px', gap: '8px', backgroundColor: '#FFF', flexDirection: "column"}}> */}
-          <iframe src={url} title="Preview of website resource" style={{ margin: '8px', backgroundColor: '#FFF', boxShadow: '0px 4px 0px 1px #77777733', border: '2px dotted #777', borderRadius: '8px', width: '600px', height: '600px'}}/>
-        {/* </div> */}
+      <iframe
+        src={url}
+        title="Preview of website resource"
+        style={{
+          zIndex: '1000',
+          margin: '8px',
+          backgroundColor: '#FFF',
+          boxShadow: '0px 4px 0px 1px #77777733',
+          border: '2px dotted #777',
+          borderRadius: '8px',
+          width: '800px',
+          height: '750px'
+        }} />
       </Popper>
         </div>
 })
@@ -166,7 +178,7 @@ const NamesRow = ({ name, surname }) => {
 
 const CircularProgressBlock = ({ value, title, size = '30px' }) => {
   const computedValue = (parseFloat(value).toFixed(2) * 100).toFixed(0)
-  return <Tooltip title={`${title}: ${value}`} arrow>
+  return <Tooltip title={`${title}: ${computedValue}%`} arrow>
     <div style={{position: 'relative'}}>
       <CircularProgress
         color={computedValue < 50 ? 'secondary' :  'inherit'}

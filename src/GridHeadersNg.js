@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import DataProvider from './GridStoreNg';
 
-const GridHeadersNg = ({ children, className, style }) => {
+const GridHeadersNg = ({ children, className, style, fallbackComponent }) => {
   const { grid, headerTemplateColumns, stats, onSort, global } = useContext(DataProvider)
 
   const componentTypeCheck = (component, options) => {
     return typeof component === 'string' || typeof component.type === 'symbol'
-      ? <div>{component}</div>
+      ? <>{fallbackComponent(component)}</>
       : component({ ...options })
   }
 
@@ -65,21 +65,18 @@ const GridHeadersNg = ({ children, className, style }) => {
           .filter(gridItem => !gridItem.header.noColumn)
           .map(({ header }) => <div
             className='grid-headers-injected'
-            onClick={() => !header.disableOnClick && onSort(header.key)}
+            onClick={() => !header.noSort && !header.disableOnClick && onSort(header.key)}
           >
             {componentTypeCheck(header.component, {
-              onSort: (path) => onSort(path !== undefined ? path : header.key),
+              onSort: (path) => !header.noSort && onSort(path !== undefined ? path : header.key) ,
               sort: {
-                direction: stats.sort.direction,
-                column: stats.sort.column,
+                direction: !header.noSort && stats.sort.direction,
+                column: !header.noSort && stats.sort.column,
               },
-              directionComponent: (current) => <>{stats.sort.column === current ? <>
+              directionComponent: (current) => <>{!header.noSort && stats.sort.column === current ? <>
                 {stats.sort.direction === 'asc' ? '↑' : '↓'}
               </> : null}</>
             })}
-            {/* {stats.sort.column === header.key && <>
-
-            </>} */}
           </div>)}
     </div>
   </>

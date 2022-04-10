@@ -68,7 +68,7 @@ const Grid = ({ data, grid, global, children, ...props }) => {
   }, [grid])
 
   useEffect(() => {
-    console.log(data)
+    // console.log(data)
   }, [data])
 
   useEffect(() => {
