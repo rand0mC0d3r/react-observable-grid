@@ -1,3 +1,6 @@
+import { faGithub, faNpm } from '@fortawesome/free-brands-svg-icons';
+import { faBug, faCode, faHouse, faHouseSignal } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Avatar, Button, Chip, CircularProgress, Popper, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
@@ -26,7 +29,7 @@ export const searchString = (string, query, highlightComponent) => {
       stringTmp = stringTmp.length !== part.length ? stringTmp.substring(part.length) : stringTmp
     })
   return parts.reduce((acc, curr) => {
-    acc.push(curr.type === 'highlight' ? cloneElement(highlightComponent(curr.string), { style: { display: 'inline-block' } })  : curr.string)// acc = `${acc}${curr.string}`
+    acc.push(curr.type === 'highlight' ? highlightComponent(curr.string)  : curr.string)// acc = `${acc}${curr.string}`
     return acc
   }, [])
 }
@@ -83,10 +86,10 @@ const MetadataColumn = memo(({ value, searchTerm, setSearchTerm }) => {
 
 
   return <>
-      <Typography onMouseUp={handleMouseUp} color="textSecondary">{searchString(
+      <Typography variant="subtitle2" onMouseUp={handleMouseUp} color="textSecondary">{searchString(
         value,
         searchTerm,
-        (children) => <Typography color="secondary">{children}</Typography>)
+        (children) => <Typography variant="subtitle2" color="primary" style={{ display: 'inline-block', borderBottom: '2px dashed #3f51b5'}}>{children}</Typography>)
       }</Typography>
       <Popper {...{ open, anchorEl }} placement="bottom-start">
         <div style={{width: '600px', display: 'flex', padding: '8px', gap: '8px', backgroundColor: '#FFF', flexDirection: "column"}}>
@@ -107,6 +110,50 @@ const MetadataColumn = memo(({ value, searchTerm, setSearchTerm }) => {
         </div>
       </Popper>
     </>
+})
+
+const LinksColumn = memo(({ item }) => {
+  const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [url, setUrl] = useState(null);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleMouseUp = (event, url) => {
+    setOpen(!open);
+    setUrl(url);
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
+
+  return <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+    {Object
+      .entries(item.package.links)
+      .map(([key, value]) => ({
+        key,
+        value: value.replace("https://www.npmjs.com/package/", "").replace("https://github.com/", ""),
+        origValue: value
+      }))
+      .map(({ key, value, origValue }) =>  <Chip
+          size='small'
+          variant="outlined"
+          onClick={event => handleMouseUp(event, origValue)}
+          label={<div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}
+        >
+          {key === 'npm' && <FontAwesomeIcon icon={faNpm} />}
+          {key === 'homepage' && <FontAwesomeIcon icon={faHouse} />}
+          {key === 'repository' && <FontAwesomeIcon icon={faGithub} />}
+          {key === 'bugs' && <FontAwesomeIcon icon={faBug} />}
+          {decodeURI(value)}
+        </div>} />)}
+    <Popper {...{ open, anchorEl }} placement="bottom-center">
+        {/* <div style={{width: '600px', display: 'flex', padding: '8px', gap: '8px', backgroundColor: '#FFF', flexDirection: "column"}}> */}
+          <iframe src={url} title="Preview of website resource" style={{ margin: '8px', backgroundColor: '#FFF', boxShadow: '0px 4px 0px 1px #77777733', border: '2px dotted #777', borderRadius: '8px', width: '600px', height: '600px'}}/>
+        {/* </div> */}
+      </Popper>
+        </div>
 })
 
 const NamesRow = ({ name, surname }) => {
@@ -300,7 +347,7 @@ const avatarStyles = makeStyles((theme) => ({
 }))
 
 export {
-  AvatarRow, ActionsRow, CircularProgressBlock, RowTabs, CurrencyRow, TilesRow,
+  AvatarRow, ActionsRow, LinksColumn, CircularProgressBlock, RowTabs, CurrencyRow, TilesRow,
   MetadataColumn, DescriptionRow, NamesRow,
   RoleRow, Card, LastSeenRow
 };

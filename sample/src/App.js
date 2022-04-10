@@ -13,7 +13,7 @@ import GridRowsNg from './components/GridRowsNg';
 import GridStatsNg from './components/GridStatsNg';
 import { Grid } from './components/GridStoreNg';
 import { files } from './parts/sample';
-import { CircularProgressBlock, MetadataColumn } from './parts/SampleRow';
+import { CircularProgressBlock, LinksColumn, MetadataColumn } from './parts/SampleRow';
 
 const App = () => {
   // const [data, setData] = useState([]);
@@ -24,35 +24,20 @@ const App = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [selectedRepo, setSelectedRepo] = useState(null);
   const [richPayloads, setRichPayloads] = useState([]);
+  const [contributors, setContributors] = useState([]);
 
-  const theme = useMemo(() => createTheme({ palette: { type: 'light', } }), [])
+  const theme = useMemo(() => createTheme({
+    palette: { type: 'light', },
+    props: {
+      MuiButtonBase: {
+        disableRipple: true,
+      },
+      MuiChip: {
+        disableRipple: true,
+      }
+    }
+  }), [])
   const classes = useStyles()
-
-  // useEffect(() => {
-  //   let processData = [
-  //     ...files.tree
-  //       .filter(file => file.type === 'tree')
-  //       .filter(file => currentFolder === ''
-  //         ? file.path.indexOf('/') === -1
-  //         : file.path.indexOf(currentFolder) === 0
-  //           && file.path !== currentFolder
-  //           && file.path.replace(`${currentFolder}/`, '').indexOf('/') === -1)
-  //       .map(file => ({ ...file, label: file.path?.replace(`${currentFolder}/`, '') })),
-  //     ...files.tree
-  //       .filter(file => file.type !== 'tree')
-  //       .filter(file => currentFolder === ''
-  //         ? file.path.indexOf('/') === -1
-  //         : file.path.indexOf(currentFolder) === 0
-  //           && file.path.replace(`${currentFolder}/`, '').indexOf('/') === -1)
-  //       .map(file => ({ ...file, label: file.path?.replace(`${currentFolder}/`, '') })),
-  //   ]
-
-  //   if (currentFolder !== '') {
-  //     processData = [{ type: 'tree', path: '', label: '..' }, ...processData ]
-  //   }
-
-  //   setData(processData)
-  // }, [currentFolder])
 
   useEffect(() => {
     if (searchTerm !== '') {
@@ -63,7 +48,6 @@ const App = () => {
             if (item?.package?.description) {
               acc.push(...item?.package?.description?.split(' '))
             }
-
             return acc
           }, []).reduce((count, word) => {
             count[word] = (count[word] || 0) + 1;
@@ -87,22 +71,42 @@ const App = () => {
 
   useEffect(() => {
     if (selectedRepo) {
-      console.log('selectedRepo', selectedRepo)
-      fetch(`https://api.github.com/repos/${selectedRepo.replace('https://github.com/', '')}`)
-        .then(response => response.json())
-        .then(data => {
-          setRichPayloads(richPayloads => [...richPayloads, data])
-          const currentRichPayloads = JSON.parse(localStorage.getItem('richPayloads') || '[]')
-          localStorage.setItem('richPayloads', JSON.stringify([...currentRichPayloads, data]))
-        });
+      const repoName = selectedRepo.replace('https://github.com/', '')
+      if (!richPayloads.some(item => item.repo === repoName)) {
+        fetch(`https://api.github.com/repos/${repoName}`)
+          .then(response => response.json())
+          .then(data => {
+            setRichPayloads(richPayloads => [...richPayloads, { repo: repoName, data }])
+            const currentRichPayloads = JSON.parse(localStorage.getItem('richPayloads') || '[]')
+            localStorage.setItem('richPayloads', JSON.stringify([...currentRichPayloads, { repo: repoName, data }]))
+          });
+      }
     }
-  }, [selectedRepo]);
+  }, [selectedRepo, richPayloads]);
 
   useEffect(() => {
-    const cachedRichPayloads = localStorage.getItem('richPayloads') || '[]'
-    setRichPayloads(JSON.parse(cachedRichPayloads))
-  }, [])
+    if (selectedRepo) {
+      const repoName = selectedRepo.replace('https://github.com/', '')
+      if (!contributors.some(item => item.repo === repoName)) {
+        console.log("call getting contributors", contributors)
+        fetch(`https://api.github.com/repos/${repoName}/contributors`)
+          .then(response => response.json())
+          .then(data => {
+            setContributors(state => [
+              ...state.filter(contributor => contributor.repo !== repoName),
+              { repo: repoName, data }
+            ])
+            const currentContributors = JSON.parse(localStorage.getItem('contributors') || '[]')
+            localStorage.setItem('contributors', JSON.stringify([...currentContributors, { repo: repoName, data }]))
+          });
+      }
+    }
+  }, [selectedRepo, contributors])
 
+  useEffect(() => {
+    setRichPayloads(JSON.parse(localStorage.getItem('richPayloads') || '[]'))
+    setContributors(JSON.parse(localStorage.getItem('contributors') || '[]'))
+  }, [])
 
   const global =  {
 		alternatingRows: {
@@ -151,7 +155,7 @@ const App = () => {
       header: {
         key: 'package.name',
         align: 'flex-end',
-				width: 'minmax(300px, 1fr)',
+				width: 'minmax(250px, 1fr)',
         visible: true,
         disableOnClick: true,
         component: ({ onSort, sort, directionComponent }) => <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
@@ -176,14 +180,23 @@ const App = () => {
         key: 'type',
         component: (item, index) => {
           const extraPayload = richPayloads.find(payload => payload.full_name === item.custom.packageName)
-          return <div style={{ display: 'flex', gap: '4px', alignItems: 'flex-end', flexDirection: 'column' }}>
-            {extraPayload?.organization?.avatar_url && <img src={extraPayload?.organization?.avatar_url} style={{ width: '24px', height: '24px', borderRadius: '50%' }} alt="avatar" />}
-            <MetadataColumn {...{ value: item.package.name, searchTerm }} />
+          return <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', gap: '8px', flexDirection: 'row', alignItems: 'center' }}>
+              {extraPayload?.organization?.avatar_url && <img src={extraPayload?.organization?.avatar_url} style={{ width: '24px', height: '24px', borderRadius: '50%' }} alt="avatar" />}
+              <MetadataColumn {...{ value: item.package.name, searchTerm }} />
+            </div>
             <div style={{ display: 'flex', gap: '8px' }}>
               <Tooltip arrow title={`Last release: ${item.package.date}`}>
                 <Chip size="small" variant="outlined" label={item.package.version} />
               </Tooltip>
-              {extraPayload && <Chip key={extraPayload.full_name} size="small" label={extraPayload.stargazers_count} variant="outlined" color="primary" icon={<StarsIcon />} />}
+              {extraPayload && <Chip
+                style={{ borderColor: "orange", borderStyle: 'dotted' }}
+                key={extraPayload.full_name}
+                size="small"
+                label={extraPayload.stargazers_count}
+                variant="outlined"
+                color="primary"
+                icon={<StarsIcon style={{color: 'orange'}} />} />}
             </div>
           </div>
         },
@@ -192,7 +205,7 @@ const App = () => {
 		{
       header: {
         key: 'package.description',
-				width: 'minmax(300px, 2fr)',
+				width: 'minmax(200px, 1fr)',
         visible: true,
         align: 'flex-end',
 				component: () => <Typography color="textSecondary" variant="subtitle2">Description</Typography>,
@@ -239,26 +252,7 @@ const App = () => {
 			},
       row: {
         key: 'type',
-        component: (item) => <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          {Object
-            .entries(item.package.links)
-            .map(([key, value]) => ({
-              key,
-              value: value.replace("https://www.npmjs.com/package/", "").replace("https://github.com/", ""),
-              origValue: value
-            }))
-            .map(({ key, value, origValue }) => <>
-              <a href={origValue} target="_blank" rel="noreferrer">
-            <Chip size='small' variant="outlined" label={<div style={{ display: 'flex', gap: '4px', alignItems: 'center'}}>
-              {key === 'npm' && <FontAwesomeIcon icon={faNpm} />}
-              {key === 'homepage' && <FontAwesomeIcon icon={faHouse} />}
-              {key === 'repository' && <FontAwesomeIcon icon={faGithub} />}
-              {key === 'bugs' && <FontAwesomeIcon icon={faBug} />}
-              {decodeURI(value)}
-                </div>} />
-                </a>
-          </>)}
-        </div>,
+        component: (item) => <LinksColumn item={item} />,
 			}
     },
     {
@@ -271,29 +265,17 @@ const App = () => {
 			},
       row: {
         key: 'type',
-        component: (item) => {
-          const extraPayload = richPayloads.find(payload => payload.full_name === item.custom.packageName)
-          return <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }} >
-            {extraPayload?.owner?.avatar_url && <Avatar>
-              <img src={extraPayload.owner.avatar_url} style={{ width: '24px', height: '24px', borderRadius: '50%' }} alt="avatar" />
-            </Avatar>}
-            <Avatar>{item.package.publisher.username.substring(0, 2).toUpperCase()}</Avatar>
-            <div style={{ display: 'flex' }}>
-              {item.package.maintainers.filter((maintainer, index) => index < 10).map((maintainer) => <Avatar
-                style={{
-                  marginRight: '-24px',
-                  fontSize: '10px',
-                  backgroundColor: '#FFF',
-                  boxShadow: '-1px 0px 1px 1px #aaa',
-                  border: '1px solid #AAA'
-                }}
-              >
-                <Typography color="textSecondary">{maintainer.username.substring(0, 2).toUpperCase()}</Typography>
-              </Avatar>)}
-            </div>
-            {/* {Object.entries(item.package.links).map(([key, value]) => <Chip size='small' variant="outlined" label={`${key}: ${value}`} />)} */}
+        component: (item) =>  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }} >
+            {contributors
+              .filter(contributor => contributor.repo === item.custom.packageName)
+              .map(contributor => contributor.data.map(({ avatar_url, login }) => <Tooltip arrow title={login}>
+              <img
+                key={`${item.custom.packageName}.${avatar_url}`}
+                src={avatar_url}
+                style={{ width: '24px', height: '24px', borderRadius: '50%' }}
+                alt="avatar"
+              /></Tooltip>))}
           </div>
-        }
 			}
     },
 	]
