@@ -1,5 +1,5 @@
 import { faGithub, faNpm } from '@fortawesome/free-brands-svg-icons';
-import { faBug, faCode, faHouse, faHouseSignal } from '@fortawesome/free-solid-svg-icons';
+import { faBug, faCode, faHouse, faHouseSignal, faLink, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Avatar, Button, Chip, CircularProgress, Fade, InputAdornment, Popper, TextField, Tooltip, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
@@ -20,6 +20,7 @@ const App = () => {
   const [dataNew, setDataNew] = useState([]);
   const [terms, setTerms] = useState([]);
   // const [currentFolder, setCurrentFolder] = useState('');
+  const [total, setTotal] = useState(null);
   const [searchTerm, setSearchTerm] = useState('react');
   const [suggestions, setSuggestions] = useState([]);
   const [selectedRepo, setSelectedRepo] = useState(null);
@@ -60,12 +61,13 @@ const App = () => {
             .filter(item => item.count > 2 && item.term.length > 2 && item.term.toLowerCase() !== searchTerm.toLowerCase())
             .filter(item => !['for', 'a', 'all','of', 'and', 'with', 'to',  'the', 'in', 'into', 'that', 'by'].some(word => word.toLowerCase() === item.term.toLowerCase()))
           setTerms(newTerms)
+          setTotal(data.total)
           setDataNew(data.results.map(item => ({
             ...item, custom: {
             packageName: item.package.links.repository?.replace('https://github.com/', '')
           } })))
         });
-      fetch(`https://api.npms.io/v2/search/suggestions?q=${searchTerm}&size=50`)
+      fetch(`https://api.npms.io/v2/search/suggestions?q=${searchTerm}&size=10`)
         .then(response => response.json())
         .then(data => setSuggestions(data));
     }
@@ -341,15 +343,26 @@ const App = () => {
         InputProps={{
           endAdornment: <div style={{ display: 'flex', gap: '4px', margin: '4px', flexWrap: 'nowrap' }}>
             {[...new Set(suggestions
-              .map((suggestion => suggestion.package.name))
-              .map(name => name
-                .replace(/[\W_]+/g, " ")
-                .replace(`${searchTerm}`, '')
-                .trim())
+              .map((suggestion => suggestion.package.name.toLowerCase()))
+              // .map(name => name
+              //   .replace(/[\W_]+/g, " ")
+              //   .replace(`${searchTerm}`, '')
+              //   .trim())
               .filter(name => name.length > 0)
+              .filter(name => name !== searchTerm)
               .sort()
-            )]?.filter((_, index) => index < 10).map(suggestion => <Chip key={suggestion} label={suggestion} size="small" variant="outlined" />)}
-            <Chip key='lengthOfDataNew' label={dataNew.length} size="small" variant="default" />
+            )]?.filter((_, index) => index < 10)
+              .map(suggestion => <Chip icon={<FontAwesomeIcon
+                icon={suggestion.includes(searchTerm.toLowerCase()) ? faLink : faMagnifyingGlass} />}
+                key={suggestion}
+                style={{ borderStyle: 'dotted'}}
+                onClick={() => setSearchTerm(suggestion)}
+                label={suggestion}
+                size="small"
+                variant="outlined"
+              />)}
+            <Chip label={dataNew.length} size="small" color="primary" variant="outlined" />
+            <Chip label={total} size="small" color="primary" variant="outlined" />
           </div>,
           }}
       />
@@ -361,7 +374,7 @@ const App = () => {
         {terms.map(term => <Chip key={term.term} avatar={<Avatar>{term.count}</Avatar>} variant="outlined" size="small" label={`${term.term}`}/>)}
       </div>
       {/* <div>
-        {selectedRepo}
+        total {total}
       </div> */}
       <div style={{ display: 'flex', flexDirection: 'column', position: 'relative', gap: '8px', flex: '1 1 auto'}}>
     {1 === 1 && <Grid {...{ data: dataNew, grid, global }}>
