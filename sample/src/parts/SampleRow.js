@@ -187,7 +187,7 @@ const CircularProgressBlock = ({ value, title, size = '30px' }) => {
         color={computedValue < 50 ? 'secondary' :  'inherit'}
         style={{ width: size , height: size  }}
         variant="determinate"
-        value={computedValue || 0}
+        value={parseFloat(computedValue) || 0}
       />
       <Typography style={{
         fontSize: '9px',

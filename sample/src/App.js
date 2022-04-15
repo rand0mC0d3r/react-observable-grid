@@ -143,7 +143,7 @@ const App = () => {
       row: {
         key: 'type',
         component: (item, index) => <>
-          {index % (~~(Math.random() * 6) + 1) === 0 && <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+          {index % 3 === 0 && <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
             <Button onClick={() => setOpenRows(openRows.includes(item.package.name)
               ? openRows.filter(openRow => openRow !== item.package.name)
               : [...openRows.filter(row => row !== item.package.name), item.package.name]
@@ -314,16 +314,40 @@ const App = () => {
       header: {
         key: 'Secondary:Column',
         align: 'flex-end',
-				width: 'minmax(333px, 1fr)',
         visible: true,
         noColumn: true,
-				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Secondary</Typography>,
 			},
       row: {
         key: 'type',
-        component: (item) =>  openRows.some(openRow => openRow === item.package.name) ? <div style={{ display: 'flex', backgroundColor: '#EEE', height: '200px', gap: '4px', flexWrap: 'wrap' }}>
-          elem
+        component: (item) => openRows.some(openRow => openRow === item.package.name) ? <div style={{ display: 'flex', backgroundColor: '#EEE', gap: '4px', flexWrap: 'wrap' }}>
+          <iframe
+            src={'https://www.react-spring.io/'}
+            title="Preview of website resource"
+            style={{
+              margin: '8px',
+              backgroundColor: '#FFF',
+              boxShadow: '0px 4px 0px 1px #77777733',
+              border: '2px dotted #777',
+              borderRadius: '8px',
+              width: '100%',
+              height: '350px'
+            }} />
         </div> : <></>
+			}
+    },
+    {
+      header: {
+        key: 'Secondary:ColumnText',
+        align: 'flex-end',
+        visible: true,
+        noColumn: true,
+        fullWidth: true,
+			},
+      row: {
+        key: 'type',
+        component: (item) => <div style={{ display: 'flex', backgroundColor: '#EEE', gap: '4px', flexWrap: 'wrap' }}>
+          header custom
+        </div>
 			}
     },
 	]

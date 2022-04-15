@@ -29,6 +29,7 @@ const GridHeadersNg = ({ children, className, style, upComponent, downComponent,
     }`).join('')}
     .grid-headers-injected {
       display: flex;
+      user-select: none;
       gap: 4px;
       align-items: center;
     }
@@ -64,8 +65,13 @@ const GridHeadersNg = ({ children, className, style, upComponent, downComponent,
           .filter(gridItem => gridItem.header.visible)
           .filter(gridItem => !gridItem.header.noColumn)
           .map(({ header }) => <div
+            key={header.key}
             className='grid-headers-injected'
             onClick={() => !header.noSort && !header.disableOnClick && onSort(header.key)}
+            onContextMenu={(e) => {
+              e.preventDefault()
+              !header.noSort && !header.disableOnClick && onSort('')
+            }}
           >
             {componentTypeCheck(
               header.component,
@@ -90,6 +96,6 @@ const GridHeadersNg = ({ children, className, style, upComponent, downComponent,
   </>
 }
 
-GridHeadersNg.propTypes = { children: PropTypes.func.isRequired }
+GridHeadersNg.propTypes = { children: PropTypes.func }
 
 export default GridHeadersNg
