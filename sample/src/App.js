@@ -211,17 +211,14 @@ const App = () => {
         component: (item, index) => <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
           <Tooltip title={`Position: ${index}`}>
             <Typography color="textSecondary" variant="h6" style={{ flex: '1 1 100%'}}>
-             {/* {`${(parseFloat(item.searchScore / 100).toFixed(2) * 100).toFixed(0)}%`} */}
              {`${(parseFloat(((item.score.detail.quality + item.score.detail.popularity + item.score.detail.maintenance) / 3) * 100).toFixed(2))}%`}
             </Typography>
           </Tooltip>
-          {/* <div style={{display: 'flex', gap: '4px'}}> */}
             {[
               { title: 'Quality', value: item.score.detail.quality },
               { title: 'Popularity', value: item.score.detail.popularity },
               { title: 'Maintenance', value: item.score.detail.maintenance },
             ].map(({ title, value }) => <CircularProgressBlock {...{value, title }} />)}
-          {/* </div> */}
         </div>,
 			}
     },
@@ -367,7 +364,7 @@ const App = () => {
         key: 'type',
         component: (item) => openRows.some(openRow => openRow === item.package.name) ? <div style={{ display: 'flex', backgroundColor: '#EEE', gap: '4px', flexWrap: 'wrap' }}>
           <iframe
-            src={'https://www.react-spring.io/'}
+            src={item?.package?.links.homepage}
             title="Preview of website resource"
             style={{
               margin: '8px',
@@ -545,7 +542,7 @@ const useStyles = makeStyles(() => ({
     backgroundColor: '#ffffff77',
   },
   selected: {
-    backgroundColor: '#ecefff !important',
+    backgroundColor: '#c9d2ff77 !important',
   },
   wrapper: {
     display: 'flex',
