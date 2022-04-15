@@ -3,8 +3,10 @@ import { faBug, faCode, faHouse, faHouseSignal, faLink, faMagnifyingGlass } from
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Avatar, Button, Checkbox, Chip, CircularProgress, Fade, InputAdornment, Popper, TextField, Tooltip, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import ChevronRightSharpIcon from '@material-ui/icons/ChevronRightSharp';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import HomeIcon from '@material-ui/icons/Home';
+import KeyboardArrowDownSharpIcon from '@material-ui/icons/KeyboardArrowDownSharp';
 import StarsIcon from '@material-ui/icons/Stars';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import GridColumnsNg from './components/GridColumnsNg';
@@ -190,7 +192,7 @@ const App = () => {
             <Button onClick={() => setOpenRows(openRows.includes(item.package.name)
               ? openRows.filter(openRow => openRow !== item.package.name)
               : [...openRows.filter(row => row !== item.package.name), item.package.name]
-            )}>open</Button>
+            )}>{openRows.includes(item.package.name) ? <KeyboardArrowDownSharpIcon /> : <ChevronRightSharpIcon />}</Button>
           </div>}
         </>,
 			}
@@ -389,7 +391,7 @@ const App = () => {
       row: {
         // fullWidth: true,
         columnStart: 3,
-        columnEnd: 9,
+        columnEnd: 10,
         component: (item) => <div style={{ display: 'flex', backgroundColor: '#FFF', border: '1px solid #EEE', padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
           <Typography color="textSecondary" variant="caption">footer</Typography>
         </div>
