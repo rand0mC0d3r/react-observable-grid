@@ -158,7 +158,7 @@ const App = () => {
       header: {
         key: 'selection',
         align: 'flex-end',
-				width: '40px',
+				width: '60px',
         visible: true,
         noSort: true,
 				component: '',
@@ -390,8 +390,8 @@ const App = () => {
         // fullWidth: true,
         columnStart: 3,
         columnEnd: 9,
-        component: (item) => <div style={{ display: 'flex', backgroundColor: '#DDD', border: '1px solid #EEE', padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
-          footer
+        component: (item) => <div style={{ display: 'flex', backgroundColor: '#FFF', border: '1px solid #EEE', padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
+          <Typography color="textSecondary" variant="caption">footer</Typography>
         </div>
 			}
     },
@@ -543,7 +543,7 @@ const useStyles = makeStyles(() => ({
     backgroundColor: '#ffffff77',
   },
   selected: {
-    backgroundColor: '#red',
+    backgroundColor: '#ecefff !important',
   },
   wrapper: {
     display: 'flex',
