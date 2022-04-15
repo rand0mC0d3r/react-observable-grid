@@ -130,7 +130,26 @@ const App = () => {
     }
   }
 
-	const grid = [
+  const grid = [
+    {
+      header: {
+        key: 'custom.section.header',
+        align: 'flex-end',
+        visible: true,
+        noColumn: true,
+			},
+      row: {
+        fullWidth: true,
+        component: (item, index) => {
+          const count = 3;
+          return <>
+            {index % count === 0 && <div style={{ display: 'flex', backgroundColor: "#EEE", padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
+              <Typography variant="caption" color="textSecondary">Header from {index + 1} - {index + count}</Typography>
+            </div>}
+          </>
+        }
+			}
+    },
 		{
       header: {
         key: 'openRow',
@@ -337,16 +356,15 @@ const App = () => {
     },
     {
       header: {
-        key: 'Secondary:ColumnText',
+        key: 'custom.section.footer',
         align: 'flex-end',
         visible: true,
         noColumn: true,
-        fullWidth: true,
 			},
       row: {
-        key: 'type',
-        component: (item) => <div style={{ display: 'flex', backgroundColor: '#EEE', gap: '4px', flexWrap: 'wrap' }}>
-          header custom
+        fullWidth: true,
+        component: (item) => <div style={{ display: 'flex', border: '1px solid #EEE', padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
+          footer
         </div>
 			}
     },

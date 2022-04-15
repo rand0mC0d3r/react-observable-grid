@@ -24,7 +24,7 @@ const GridHeadersNg = ({ children, className, style, upComponent, downComponent,
       margin: 0px ${global?.style?.gap || '0'}px;
     }
     ${grid.map((gridItem, index) => `
-    .grid-headers-grid > *:nth-child(${index + 1}) {
+    .grid-headers-grid > *:nth-child(${index}) {
       justify-content: ${gridItem?.header?.align || 'flex-start'};
     }`).join('')}
     .grid-headers-injected {
