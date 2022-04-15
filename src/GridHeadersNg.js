@@ -1,14 +1,14 @@
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React, { cloneElement, useContext } from 'react';
 import DataProvider from './GridStoreNg';
 
-const GridHeadersNg = ({ children, className, style, fallbackComponent }) => {
+const GridHeadersNg = ({ children, className, style, upComponent, downComponent, fallbackComponent }) => {
   const { grid, headerTemplateColumns, stats, onSort, global } = useContext(DataProvider)
 
-  const componentTypeCheck = (component, options) => {
+  const componentTypeCheck = (component, onClick, options) => {
     return typeof component === 'string' || typeof component.type === 'symbol'
-      ? <>{fallbackComponent(component)}</>
+      ? <>{cloneElement(fallbackComponent(component, options), { style: { cursor: onClick ? 'pointer' : 'default'}})}</>
       : component({ ...options })
   }
 
@@ -67,16 +67,24 @@ const GridHeadersNg = ({ children, className, style, fallbackComponent }) => {
             className='grid-headers-injected'
             onClick={() => !header.noSort && !header.disableOnClick && onSort(header.key)}
           >
-            {componentTypeCheck(header.component, {
-              onSort: (path) => !header.noSort && onSort(path !== undefined ? path : header.key) ,
-              sort: {
-                direction: !header.noSort && stats.sort.direction,
-                column: !header.noSort && stats.sort.column,
-              },
-              directionComponent: (current) => <>{!header.noSort && stats.sort.column === current ? <>
-                {stats.sort.direction === 'asc' ? '↑' : '↓'}
-              </> : null}</>
-            })}
+            {componentTypeCheck(
+              header.component,
+              !header.noSort && !header.disableOnClick,
+              {
+                onSort: (path) => !header.noSort && onSort(path !== undefined ? path : header.key) ,
+                sort: {
+                  direction: !header.noSort && stats.sort.direction,
+                  column: !header.noSort && stats.sort.column,
+                  isActive: !header.noSort && stats.sort.column === header.key,
+                },
+                directionComponent: (current) => <>{!header.noSort && stats.sort.column === current ? <>
+                  {stats.sort.direction === 'asc' ? '↑' : '↓'}
+                </> : null}</>
+              }
+            )}
+            {!header.noSort && stats.sort.column === header.key && <>
+              {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
+            </>}
           </div>)}
     </div>
   </>

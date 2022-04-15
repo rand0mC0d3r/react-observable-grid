@@ -55,11 +55,13 @@ const GridRowsNg = ({ children, className, style }) => {
     }
     .grid-rows-grid > *:nth-child(${index + 1}) {
       justify-content: ${gridItem?.header?.align || 'flex-start'};
+      justify-items: ${gridItem?.header?.align || 'flex-start'};
       align-items: ${gridItem?.header?.align || 'flex-start'};
       ${gridItem?.row?.noWrapper ? `text-align: ${(textMap.find(tm => tm.id === gridItem?.header?.align || '') || []).text}` : ''}
     }
     .grid-rows-grid > *:nth-child(${index + 1}) > * {
       justify-content: ${gridItem?.header?.align || 'flex-start'};
+      justify-items: ${gridItem?.header?.align || 'flex-start'};
       text-align: ${(textMap.find(tm => tm.id === gridItem?.header?.align || '') || []).text};
     }
     ` : '').join('')}

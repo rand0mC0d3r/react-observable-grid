@@ -87,10 +87,10 @@ const MetadataColumn = memo(({ value, searchTerm, setSearchTerm }) => {
 
 
   return <>
-      <Typography variant="subtitle2" onMouseUp={handleMouseUp} color="textSecondary">{searchString(
+      <Typography variant="caption" onMouseUp={handleMouseUp} color="textSecondary">{searchString(
         value,
         searchTerm,
-        (children) => <Typography variant="subtitle2" color="primary" style={{ display: 'inline-block', borderBottom: '2px dashed #3f51b5'}}>{children}</Typography>)
+        (children) => <Typography variant="caption" color="primary" style={{ display: 'inline-block', borderBottom: '2px dashed #3f51b5'}}>{children}</Typography>)
       }</Typography>
       <Popper {...{ open, anchorEl }} placement="bottom-start">
         <div style={{width: '600px', display: 'flex', border: '1px solid #CCC', borderRadius: '8px', padding: '8px', gap: '8px', backgroundColor: '#FFF', flexDirection: "column"}}>
@@ -119,6 +119,13 @@ const LinksColumn = memo(({ item }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [url, setUrl] = useState(null);
 
+  const iconMap = [
+    { key: 'npm', icon: faNpm, },
+    { key: 'homepage', icon: faHouse, },
+    { key: 'repository', icon: faGithub, },
+    { key: 'bugs', icon: faBug, },
+  ]
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -130,7 +137,7 @@ const LinksColumn = memo(({ item }) => {
   };
 
 
-  return <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+  return <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
     {Object
       .entries(item.package.links)
       .map(([key, value]) => ({
@@ -138,19 +145,15 @@ const LinksColumn = memo(({ item }) => {
         value: value.replace("https://www.npmjs.com/package/", "").replace("https://github.com/", ""),
         origValue: value
       }))
-      .map(({ key, value, origValue }) =>  <Chip
-          size='small'
-          variant="outlined"
-          onClick={event => handleMouseUp(event, origValue)}
-          label={<div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}
-        >
-          {key === 'npm' && <FontAwesomeIcon icon={faNpm} />}
-          {key === 'homepage' && <FontAwesomeIcon icon={faHouse} />}
-          {key === 'repository' && <FontAwesomeIcon icon={faGithub} />}
-          {key === 'bugs' && <FontAwesomeIcon icon={faBug} />}
-          {value.length > 25 ? `${decodeURI(value).substring(0, 25)}...` : decodeURI(value)}
-        </div>} />)}
-    <Popper {...{ open, anchorEl }} placement="bottom-center">
+      .map(({ key, value, origValue }) => <Tooltip arrow title={`Open ${value}`}>
+        <span>
+          <FontAwesomeIcon
+            as="span"
+            onClick={event => handleMouseUp(event, origValue)}
+            icon={iconMap.find(icon => icon.key === key).icon} />
+          </span>
+        </Tooltip>)}
+    <Popper {...{ open, anchorEl }} placement="bottom">
       <iframe
         src={url}
         title="Preview of website resource"

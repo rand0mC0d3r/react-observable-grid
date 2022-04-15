@@ -6,7 +6,7 @@ import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles
 import GitHubIcon from '@material-ui/icons/GitHub';
 import HomeIcon from '@material-ui/icons/Home';
 import StarsIcon from '@material-ui/icons/Stars';
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import GridColumnsNg from './components/GridColumnsNg';
 import GridHeadersNg from './components/GridHeadersNg';
 import GridRowsNg from './components/GridRowsNg';
@@ -31,6 +31,9 @@ const App = () => {
 
   const theme = useMemo(() => createTheme({
     palette: { type: 'light', },
+    transitions: {
+      create: () => 'none',
+    },
     props: {
       MuiButtonBase: {
         disableRipple: true,
@@ -139,12 +142,14 @@ const App = () => {
 			},
       row: {
         key: 'type',
-        component: (item, index) => <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-          <Button onClick={() => setOpenRows(openRows.includes(item.package.name)
-                ? openRows.filter(openRow => openRow !== item.package.name)
-                : [...openRows.filter(row => row !== item.package.name), item.package.name]
-              )}>open</Button>
-        </div>,
+        component: (item, index) => <>
+          {index % (~~(Math.random() * 6) + 1) === 0 && <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+            <Button onClick={() => setOpenRows(openRows.includes(item.package.name)
+              ? openRows.filter(openRow => openRow !== item.package.name)
+              : [...openRows.filter(row => row !== item.package.name), item.package.name]
+            )}>open</Button>
+          </div>}
+        </>,
 			}
     },
 		{
@@ -225,14 +230,7 @@ const App = () => {
 				width: 'minmax(200px, 1fr)',
         visible: true,
         align: 'flex-end',
-        component: ({ onSort, sort, directionComponent }) => <div>
-          <Typography
-            onClick={() => onSort('package.description')}
-            color={'package.description' === sort.column ? 'primary' : 'textSecondary'}
-            variant="subtitle2"
-          >Description</Typography>
-          {/* {directionComponent('package.description')} */}
-        </div>,
+        component: 'Description',
 			},
       row: {
         key: 'type',
@@ -246,33 +244,39 @@ const App = () => {
 				width: 'minmax(200px, 1fr)',
         visible: true,
         noSort: true,
-				component: () => <Typography color="textSecondary" variant="subtitle2">Keywords</Typography>,
+				component: 'Keywords',
 			},
       row: {
         key: 'type',
         component: (item) => <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-          {item?.package?.keywords?.map(keyword => <Chip
+          {item?.package?.keywords?.map(keyword => <Tooltip arrow title={`Search by ${keyword}`}><div
             key={keyword}
             onClick={() => setSearchTerm(keyword)}
-            variant="outlined"
-            size="small"
             style={{
-              borderStyle: 'dotted'
+              fontSize: '11px',
+              borderRadius: '12px',
+              borderColor: keyword.toLowerCase() === searchTerm.toLowerCase() ? '#CCC' : '#000',
+              color: keyword.toLowerCase() === searchTerm.toLowerCase() ? '#CCC' : '#000',
+              borderWidth: '1px',
+              cursor: 'pointer',
+              padding: '4px 8px',
+              borderStyle: 'dashed'
             }}
-            disabled={keyword.toLowerCase() === searchTerm.toLowerCase()}
-            label={keyword}
-          />)}
+          >
+            {keyword}
+          </div>
+          </Tooltip>)}
         </div>,
 			}
     },
     {
       header: {
         key: 'package.links',
-        align: 'flex-end',
-				width: 'minmax(300px, 1fr)',
+        align: 'center',
+				width: 'minmax(140px, 160px)',
         visible: true,
         noSort: true,
-				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Links</Typography>,
+				component: 'Links',
 			},
       row: {
         key: 'type',
@@ -283,24 +287,26 @@ const App = () => {
       header: {
         key: 'Collaborators',
         align: 'flex-end',
-				width: 'minmax(150px, 1fr)',
+				width: 'minmax(140px, 160px)',
         visible: true,
         noSort: true,
-				component: ({onSort}) => <Typography onClick={onSort} color="textSecondary" variant="subtitle2">Collaborators</Typography>,
+				component: 'Collaborators',
 			},
       row: {
         key: 'type',
-        component: (item) => <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+        component: (item) => <div style={{ display: 'grid', gap: '4px', gridTemplateColumns: 'repeat(5, minmax(20px, 30px))' }}>
           {contributors
             .filter(contributor => contributor.repo === item.custom.packageName)
-            .map(contributor => (contributor?.data.length > 0 ? contributor.data : []).filter((_,i) => i < 10).map(({ avatar_url, login }) => <Tooltip arrow title={login}>
-              <img
-              className={classes.avatar}
-              key={`${item.custom.packageName}.${avatar_url}`}
-              src={avatar_url}
-              style={{ width: '20px', height: '20px', borderRadius: '50%' }}
-              alt="avatar"
-            /></Tooltip>))}
+            .map(contributor => (contributor?.data.length > 0 ? contributor.data : []).filter((_, i) => i < 10).map(({ avatar_url, login }) => <Fragment key={`${item.custom.packageName}.${avatar_url}`}>
+              <Tooltip arrow title={login}>
+                <img
+                  className={classes.avatar}
+                  src={avatar_url}
+                  style={{ width: '20px', height: '20px', borderRadius: '50%' }}
+                  alt="avatar"
+                />
+              </Tooltip>
+            </Fragment>))}
           </div>
 			}
     },
@@ -383,7 +389,9 @@ const App = () => {
       </GridHeadersNg> */}
       <GridHeadersNg
         className={classes.header}
-        fallbackComponent={(component) => <Typography variant="caption" color="textSecondary">{component}</Typography>}
+        // upComponent={<>UP</>}
+        // downComponent={<>DOWN</>}
+        fallbackComponent={(component, { sort }) => <Typography variant="caption" color={sort.isActive ? 'primary' : 'textSecondary'}>{component}</Typography>}
       />
       <GridColumnsNg >
         {/* {({ columns }) => columns.map(({ key, align }) => <div key={key}>|</div> )} */}
