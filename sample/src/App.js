@@ -1,7 +1,7 @@
 import { faGithub, faNpm } from '@fortawesome/free-brands-svg-icons';
 import { faBug, faCode, faHouse, faHouseSignal, faLink, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Avatar, Button, Chip, CircularProgress, Fade, InputAdornment, Popper, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Avatar, Button, Checkbox, Chip, CircularProgress, Fade, InputAdornment, Popper, TextField, Tooltip, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import HomeIcon from '@material-ui/icons/Home';
@@ -21,6 +21,7 @@ const App = () => {
   const [terms, setTerms] = useState([]);
   // const [currentFolder, setCurrentFolder] = useState('');
   const [total, setTotal] = useState(null);
+  const [selectedRows, setSelectedRows] = useState([]);
   const [searchTerm, setSearchTerm] = useState('react');
   const [suggestions, setSuggestions] = useState([]);
   const [selectedRepo, setSelectedRepo] = useState(null);
@@ -39,6 +40,9 @@ const App = () => {
         disableRipple: true,
       },
       MuiChip: {
+        disableRipple: true,
+      },
+      MuiCheckbox: {
         disableRipple: true,
       }
     }
@@ -150,6 +154,26 @@ const App = () => {
         }
 			}
     },
+    {
+      header: {
+        key: 'selection',
+        align: 'flex-end',
+				width: '80px',
+        visible: true,
+        noSort: true,
+				component: 'Selection',
+			},
+      row: {
+        key: 'type',
+        component: (item, index) => <Checkbox
+          color="primary"
+          fullWidth={false}
+          checked={selectedRows.some(sr => sr === item.package.name)}
+          onClick={() => setSelectedRows(selectedRows.some(sr => sr === item.package.name)
+            ? [...selectedRows.filter(sr => sr !== item.package.name)]
+            : [...selectedRows, item.package.name])} />,
+			}
+    },
 		{
       header: {
         key: 'openRow',
@@ -171,6 +195,7 @@ const App = () => {
         </>,
 			}
     },
+
 		{
       header: {
         key: 'searchScore',
@@ -439,13 +464,14 @@ const App = () => {
         {/* {({ columns }) => columns.map(({ key, align }) => <div key={key}>|</div> )} */}
       </GridColumnsNg>
       <GridRowsNg>
-            {({ rows, className, styleProps }) => rows.map(({ key, data, component, alternating }) => <div
+            {({ rows, className, styleProps }) => rows.map(({ key, data, component, alternating, index }) => <div
               // onClick={() => setOpenRows(openRows.includes(data.package.name)
               //   ? openRows.filter(openRow => openRow !== data.package.name)
               //   : [...openRows.filter(row => row !== data.package.name), data.package.name]
               // )}
+
           onMouseUp={() => setSelectedRepo(Object.entries(data.package.links).filter(([key, _]) => key === 'repository').map(([_, value]) => value)[0])}
-          className={`${className} ${classes.row} ${alternating ? classes.alternating : ''}`}
+          className={`${className} ${classes.row} ${alternating ? classes.alternating : ''} ${selectedRows.includes(data.package.name) ? classes.selected : ''}`}
           {...{ key, style: { ...styleProps, borderBottom: '1px solid #DDD', }
         }}>
             {component}
@@ -513,6 +539,9 @@ const useStyles = makeStyles(() => ({
   },
   alternating: {
     backgroundColor: '#ffffff77',
+  },
+  selected: {
+    backgroundColor: '#red',
   },
   wrapper: {
     display: 'flex',

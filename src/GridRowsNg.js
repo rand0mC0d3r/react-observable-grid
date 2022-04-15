@@ -92,6 +92,7 @@ const GridRowsNg = ({ children, className, style }) => {
           },
           className: clsx(['grid-rows-grid', className]),
           rows: (data.length ? data : []).map((dataItem, index) => ({
+            index,
             alternating: global.alternatingRows.stepping(index),
             key: dataItem.uuid,
             data: dataItem,
