@@ -53,7 +53,7 @@ const App = () => {
 
   useEffect(() => {
     if (searchTerm !== '') {
-      fetch(`https://api.npms.io/v2/search?q=${searchTerm}&size=15`)
+      fetch(`https://api.npms.io/v2/search?q=${searchTerm}&size=25`)
         .then(response => response.json())
         .then(data => {
           const newTerms = Object.entries(data.results.reduce((acc, item) => {
@@ -188,7 +188,7 @@ const App = () => {
       row: {
         key: 'type',
         component: (item, index) => <>
-          {index % 3 === 0 && <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+          {index % 2 === 0 && <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
             <Button onClick={() => setOpenRows(openRows.includes(item.package.name)
               ? openRows.filter(openRow => openRow !== item.package.name)
               : [...openRows.filter(row => row !== item.package.name), item.package.name]
@@ -386,11 +386,29 @@ const App = () => {
         noColumn: true,
 			},
       row: {
-        // fullWidth: true,
-        columnStart: 3,
-        columnEnd: 10,
+        columnStart: 7,
+        columnEnd: 'none',
+        rowStart: 3,
+        rowEnd: 3,
         component: (item) => <div style={{ display: 'flex', backgroundColor: '#FFF', border: '1px solid #EEE', padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
-          <Typography color="textSecondary" variant="caption">footer</Typography>
+          <Typography color="textSecondary" variant="caption">footer 7 to none</Typography>
+        </div>
+			}
+    },
+    {
+      header: {
+        key: 'custom.section.footer2',
+        align: 'flex-end',
+        visible: true,
+        noColumn: true,
+			},
+      row: {
+        columnStart: 0,
+        columnEnd: 4,
+        rowStart: 3,
+        rowEnd: 3,
+        component: (item) => <div style={{ display: 'flex', backgroundColor: '#FFF', border: '1px solid #EEE', padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
+          <Typography color="textSecondary" variant="caption">footer none to 4</Typography>
         </div>
 			}
     },

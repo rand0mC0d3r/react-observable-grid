@@ -35,12 +35,12 @@ const GridRowsNg = ({ children, className, style }) => {
       })))
   }, [grid])
 
-
   const textMap = [
     { id: 'flex-start', text: 'left' },
     { id: 'flex-end', text: 'right' },
     { id: 'center', text: 'center' },
   ]
+
   const classes = `
     .grid-rows-grid {
       display: grid;
@@ -75,11 +75,13 @@ const GridRowsNg = ({ children, className, style }) => {
     .grid-rows-grid > *:nth-child(${index + 1}) {
       margin:
       ${index !== 0 ? '0' : `-${global.style.rowPadding.split(" ")[0]}`}
-      -${(gridItem?.row?.columnEnd && gridItem?.row?.columnEnd !== grid.length - 1) ? 0 : global.style.rowPadding.split(" ")[1]}
+      -${(gridItem?.row?.columnEnd && gridItem?.row?.columnEnd !== 'none') ? 0 : global.style.rowPadding.split(" ")[1]}
       ${index === 0 ? '0' : `-${global.style.rowPadding.split(" ")[0]}`}
       -${(gridItem?.row?.columnStart && gridItem?.row?.columnStart !== 0) ? 0 : global.style.rowPadding.split(" ")[1]} !important;
       grid-column-start: ${gridItem?.row?.columnStart || '1'};
       grid-column-end: ${gridItem?.row?.columnEnd || 'none'};
+      grid-row-start: ${gridItem?.row?.rowStart || '0'};
+      grid-row-end: ${gridItem?.row?.rowEnd || '0'};
     }
     `:'').join('')}
   `
