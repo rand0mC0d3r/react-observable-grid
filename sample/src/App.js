@@ -158,10 +158,10 @@ const App = () => {
       header: {
         key: 'selection',
         align: 'flex-end',
-				width: '80px',
+				width: '40px',
         visible: true,
         noSort: true,
-				component: 'Selection',
+				component: '',
 			},
       row: {
         key: 'type',
@@ -387,8 +387,10 @@ const App = () => {
         noColumn: true,
 			},
       row: {
-        fullWidth: true,
-        component: (item) => <div style={{ display: 'flex', border: '1px solid #EEE', padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
+        // fullWidth: true,
+        columnStart: 3,
+        columnEnd: 9,
+        component: (item) => <div style={{ display: 'flex', backgroundColor: '#DDD', border: '1px solid #EEE', padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
           footer
         </div>
 			}

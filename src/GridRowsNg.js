@@ -73,8 +73,9 @@ const GridRowsNg = ({ children, className, style }) => {
     `).join('')}
     ${grid.map((gridItem, index) => gridItem?.header?.noColumn ? `
     .grid-rows-grid > *:nth-child(${index + 1}) {
-      grid-column-start: 1;
-      grid-column-end: none;
+      margin: ${index !== 0 ? '0' : `-${global.style.rowPadding.split(" ")[0]}`} -${gridItem?.row?.columnEnd ? 0 : global.style.rowPadding.split(" ")[1]} ${index === 0 ? '0' : `-${global.style.rowPadding.split(" ")[0]}`} -${(gridItem?.row?.columnStart && gridItem?.row?.columnStart !== 0)  ? 0 : global.style.rowPadding.split(" ")[1]} !important;
+      grid-column-start: ${gridItem?.row?.columnStart || '1'};
+      grid-column-end: ${gridItem?.row?.columnEnd || 'none'};
     }
     `:'').join('')}
   `
