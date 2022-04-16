@@ -165,14 +165,14 @@ const App = () => {
 		{
       header: {
         key: 'openRow',
-        align: 'flex-end',
+        align: 'flex-start',
 				width: '80px',
         noSort: true,
 				component: () => <AccountTreeSharpIcon />,
 			},
       row: {
         key: 'selection',
-        component: (item, index) => <SelectionAndOpenColumn {...{item, index, setOpenRows, openRows}} />,
+        component: (item, index) => <SelectionAndOpenColumn {...{item, index, setOpenRows, openRows, selectedRows, setSelectedRows}} />,
 			}
     },
 

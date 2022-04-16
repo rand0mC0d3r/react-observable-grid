@@ -1,7 +1,7 @@
 import { faGithub, faNpm } from '@fortawesome/free-brands-svg-icons';
 import { faBug, faHouse } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Chip, CircularProgress, Popper, Tooltip, Typography } from '@material-ui/core';
+import { Button, Checkbox, Chip, CircularProgress, IconButton, Popper, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import ChevronRightSharpIcon from '@material-ui/icons/ChevronRightSharp';
 import KeyboardArrowDownSharpIcon from '@material-ui/icons/KeyboardArrowDownSharp';
@@ -98,19 +98,30 @@ const MetadataColumn = memo(({ item, value, searchTerm, setSearchTerm }) => {
     </>
 })
 
-const SelectionAndOpenColumn = memo(({item, index, setOpenRows, openRows}) => {
-  return <>
-    {index % 1 === 0 && <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-      <Button disableRipple onClick={() => setOpenRows(openRows.includes(item.package.name)
-        ? openRows.filter(openRow => openRow !== item.package.name)
-        : [...openRows.filter(row => row !== item.package.name), item.package.name]
-      )}>
+const SelectionAndOpenColumn = memo(({item, index, setOpenRows,openRows, selectedRows, setSelectedRows}) => {
+  return <div style={{ display: 'flex', alignItems: 'center' }}>
+    <Checkbox
+      disableRipple
+      color="primary"
+      checked={selectedRows.some(sr => sr === item.package.name)}
+      onClick={() => setSelectedRows(selectedRows.some(sr => sr === item.package.name)
+        ? [...selectedRows.filter(sr => sr !== item.package.name)]
+        : [...selectedRows, item.package.name])} />
+    {index % 2 === 0 && <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+      <IconButton
+        size="small"
+        disableRipple
+        onClick={() => setOpenRows(openRows.includes(item.package.name)
+          ? openRows.filter(openRow => openRow !== item.package.name)
+          : [...openRows.filter(row => row !== item.package.name), item.package.name]
+        )}>
         {openRows.includes(item.package.name)
           ? <KeyboardArrowDownSharpIcon />
           : <ChevronRightSharpIcon />}
-      </Button>
+      </IconButton>
     </div>}
-  </>
+
+  </div>
 })
 const SearchScoreColumn = memo(({ item, index, setOpenRows, openRows }) => {
   const theme = useTheme()
