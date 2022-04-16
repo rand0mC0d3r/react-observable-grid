@@ -44,7 +44,7 @@ const GridHeadersNg = ({ children, className, style, upComponent, downComponent,
       {children
         ? children({
           headers: grid
-            .filter(gridItem => gridItem.header.visible)
+            .filter(gridItem => gridItem.header.visible || true)
             .filter(gridItem => !gridItem.header.noColumn)
             .map(({ header }) => ({
               key: header.key,
@@ -62,7 +62,7 @@ const GridHeadersNg = ({ children, className, style, upComponent, downComponent,
             }),
           }))})
         : grid
-          .filter(gridItem => gridItem.header.visible)
+          .filter(gridItem => gridItem.header.visible || true)
           .filter(gridItem => !gridItem.header.noColumn)
           .map(({ header }) => <div
             key={header.key}

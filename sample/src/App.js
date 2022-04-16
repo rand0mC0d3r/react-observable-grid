@@ -129,10 +129,7 @@ const App = () => {
         key: 'custom.section.row',
         fullWidth: true,
         component: (item, index, count = 3) => <div key={`header.${item.package.name}`}>
-            {index % count === 0 && <div
-              key={`header.${item.package.name}`}
-              style={{ display: 'flex', backgroundColor: "#EEE", padding: '8px', gap: '4px', flexWrap: 'wrap' }}
-            >
+            {index % count === 0 && <div style={{ display: 'flex', backgroundColor: "#EEE", padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
               <Typography variant="caption" color="textSecondary">Header from {index + 1} - {index + count}</Typography>
             </div>}
         </div>
@@ -187,44 +184,44 @@ const App = () => {
         component: item => <SearchScoreColumn {...{item}} />,
 			}
     },
-		// {
-    //   header: {
-    //     key: 'package.name',
-		// 		width: 'minmax(250px, 1fr)',
-    //     visible: true,
-    //     disableOnClick: true,
-    //     component: ({ onSort, sort, directionComponent }) => <div style={{ display: 'flex', gap: '4px', alignItems: 'flex-start', flexDirection: 'column' }}>
-    //       {[{ key: 'package.version', label: 'Version' }, { key: 'package.name', label: 'Package Name' }].map(item => <div style={{ display: 'flex', gap: '8px'}}>
-    //         <Typography
-    //           onClick={() => onSort(item.key)}
-    //           style={{ cursor: 'pointer' }}
-    //           color={item.key === sort.column ? 'primary' : 'textSecondary'}
-    //           variant="subtitle2">
-    //           {item.label}
-    //         </Typography>
-    //         {directionComponent(item.key)}
-    //       </div>)}
-    //     </div>,
-		// 	},
-    //   row: {
-    //     key: 'type',
-    //     component: item => <NameColumn {...{ item, searchTerm, richPayloads}} />
-		// 	}
-    // },
-		// {
-    //   header: {
-    //     key: 'package.description',
-		// 		width: 'minmax(200px, 1fr)',
-    //     visible: true,
-    //     align: 'flex-end',
-    //     component: 'Description',
-		// 	},
-    //   row: {
-    //     key: 'description',
-    //     noWrapper: true,
-    //     component: item => <MetadataColumn {...{ item, value: item.package.description, searchTerm, setSearchTerm }} />,
-		// 	}
-    // },
+		{
+      header: {
+        key: 'package.name',
+				width: 'minmax(250px, 1fr)',
+        visible: true,
+        disableOnClick: true,
+        component: ({ onSort, sort, directionComponent }) => <div style={{ display: 'flex', gap: '4px', alignItems: 'flex-start', flexDirection: 'column' }}>
+          {[{ key: 'package.version', label: 'Version' }, { key: 'package.name', label: 'Package Name' }].map(item => <div key={item.key} style={{ display: 'flex', gap: '8px'}}>
+            <Typography
+              onClick={() => onSort(item.key)}
+              style={{ cursor: 'pointer' }}
+              color={item.key === sort.column ? 'primary' : 'textSecondary'}
+              variant="subtitle2">
+              {item.label}
+            </Typography>
+            {directionComponent(item.key)}
+          </div>)}
+        </div>,
+			},
+      row: {
+        key: 'type',
+        component: item => <NameColumn {...{ item, searchTerm, richPayloads }} />
+			}
+    },
+		{
+      header: {
+        key: 'package.description',
+        width: 'minmax(200px, 1fr)',
+        visible: true,
+        align: 'flex-end',
+        component: 'Description',
+			},
+      row: {
+        key: 'description',
+        noWrapper: true,
+        component: item => <MetadataColumn {...{ item, value: item.package.description, searchTerm, setSearchTerm }} />,
+			}
+    },
 		{
       header: {
         key: 'package.keywords',

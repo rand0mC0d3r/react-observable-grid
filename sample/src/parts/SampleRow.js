@@ -6,7 +6,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import ChevronRightSharpIcon from '@material-ui/icons/ChevronRightSharp';
 import KeyboardArrowDownSharpIcon from '@material-ui/icons/KeyboardArrowDownSharp';
 import StarsIcon from '@material-ui/icons/Stars';
-import { Fragment, memo, useState } from 'react';
+import { cloneElement, memo, useState } from 'react';
 
 export const searchString = (string, query, highlightComponent) => {
   const queryParts = query.split(' ')
@@ -29,7 +29,7 @@ export const searchString = (string, query, highlightComponent) => {
       stringTmp = stringTmp.length !== part.length ? stringTmp.substring(part.length) : stringTmp
     })
   return parts.reduce((acc, curr) => {
-    acc.push(curr.type === 'highlight' ? highlightComponent(curr.string)  : curr.string)// acc = `${acc}${curr.string}`
+    acc.push(curr.type === 'highlight' ? cloneElement(highlightComponent(curr.string), { key: curr.id})  : curr.string)// acc = `${acc}${curr.string}`
     return acc
   }, [])
 }
@@ -70,14 +70,13 @@ const MetadataColumn = memo(({ item, value, searchTerm, setSearchTerm }) => {
     });
   };
 
-
   return <>
-      <Typography variant="caption" key={`${item.package.name}.${value}`} onMouseUp={handleMouseUp} color="textSecondary">{searchString(
+      <Typography key={`${item.package.name}.${value}`} variant="caption"  onMouseUp={handleMouseUp} color="textSecondary">{searchString(
         value,
         searchTerm,
         (children) => <Typography variant="caption" color="primary" style={{ display: 'inline-block', borderBottom: '2px dashed #3f51b5'}}>{children}</Typography>)
       }</Typography>
-      {/* <Popper {...{ open, anchorEl }} placement="bottom-start">
+      <Popper {...{ open, anchorEl }} placement="bottom-start">
         <div style={{width: '600px', display: 'flex', border: '1px solid #CCC', borderRadius: '8px', padding: '8px', gap: '8px', backgroundColor: '#FFF', flexDirection: "column"}}>
           <Typography>{selectedText}</Typography>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap'}}>
@@ -95,7 +94,7 @@ const MetadataColumn = memo(({ item, value, searchTerm, setSearchTerm }) => {
           </div>
           <Button variant="outlined" onClick={handleClose}>Close</Button>
         </div>
-      </Popper> */}
+      </Popper>
     </>
 })
 
@@ -173,8 +172,8 @@ const collaboratorsColumnStyles = makeStyles((theme) => ({
 
 const NameColumn = memo(({ item, searchTerm, richPayloads }) => {
   const extraPayload = richPayloads.filter(payload => payload.repo === item.custom.packageName).map(payload => payload.data)[0]
-  return <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-    <div style={{ display: 'flex', gap: '8px', flexDirection: 'row', alignItems: 'center', flex: '1 1 100%' }}>
+  return <div key={`name.${item.package.name}`} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+    {/* <div style={{ display: 'flex', gap: '8px', flexDirection: 'row', alignItems: 'center', flex: '1 1 100%' }}>
       {extraPayload?.organization?.avatar_url && <img src={extraPayload?.organization?.avatar_url} style={{ width: '24px', height: '24px', borderRadius: '50%' }} alt="avatar" />}
       <MetadataColumn {...{ value: item.package.name, searchTerm }} />
     </div>
@@ -188,7 +187,7 @@ const NameColumn = memo(({ item, searchTerm, richPayloads }) => {
         label={extraPayload.stargazers_count}
         variant="outlined"
         color="primary"
-        icon={<StarsIcon style={{color: 'orange'}} />} />}
+        icon={<StarsIcon style={{color: 'orange'}} />} />} */}
   </div>
 })
 
