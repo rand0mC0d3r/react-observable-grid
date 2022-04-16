@@ -17,11 +17,14 @@ import {
 } from './parts/SampleRow';
 
 const App = () => {
+  let queryTimeout
+
   const [dataNew, setDataNew] = useState([]);
   const [terms, setTerms] = useState([]);
   const [total, setTotal] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
   const [searchTerm, setSearchTerm] = useState('react');
+  const [currentSearchTerm, setCurrentSearchTerm] = useState('react');
   const [suggestions, setSuggestions] = useState([]);
   const [selectedRepo, setSelectedRepo] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -39,8 +42,8 @@ const App = () => {
   const classes = useStyles()
 
   useEffect(() => {
-    if (searchTerm !== '') {
-      fetch(`https://api.npms.io/v2/search?q=${searchTerm}&size=10`)
+    if (currentSearchTerm !== '') {
+      fetch(`https://api.npms.io/v2/search?q=${currentSearchTerm}&size=10`)
         .then(response => response.json())
         .then(data => {
           const newTerms = Object.entries(data.results.reduce((acc, item) => {
@@ -54,7 +57,7 @@ const App = () => {
           }, {}))
             .map(item => ({ term: item[0], count: item[1] }))
             .sort((a, b) => b.count - a.count)
-            .filter(item => item.count > 2 && item.term.length > 2 && item.term.toLowerCase() !== searchTerm.toLowerCase())
+            .filter(item => item.count > 2 && item.term.length > 2 && item.term.toLowerCase() !== currentSearchTerm.toLowerCase())
             .filter(item => !['for', 'a', 'all','of', 'and', 'with', 'to',  'the', 'in', 'into', 'that', 'by'].some(word => word.toLowerCase() === item.term.toLowerCase()))
           setTerms(newTerms)
           setTotal(data.total)
@@ -63,11 +66,11 @@ const App = () => {
             packageName: item.package.links.repository?.replace('https://github.com/', '')
           } })))
         });
-      fetch(`https://api.npms.io/v2/search/suggestions?q=${searchTerm}&size=10`)
+      fetch(`https://api.npms.io/v2/search/suggestions?q=${currentSearchTerm}&size=10`)
         .then(response => response.json())
         .then(data => setSuggestions(data));
     }
-  }, [searchTerm]);
+  }, [currentSearchTerm]);
 
   const accumulateData = useCallback((repoUrl, accumulator, accumulatorName, setAccumulator) => {
     if (selectedItem) {
@@ -82,6 +85,11 @@ const App = () => {
       }
     }
   }, [selectedItem])
+
+  const doQuery = (value) => {
+    clearTimeout(queryTimeout)
+    queryTimeout = setTimeout(() => { setCurrentSearchTerm(value) }, 500)
+  }
 
   useEffect(() => {
     accumulateData((repoName) => `https://api.github.com/repos/${repoName}`, richPayloads, 'richPayloads', (payload) => setRichPayloads(payload))
@@ -229,19 +237,19 @@ const App = () => {
         component: item => <KeywordsColumn {...{item, searchTerm, setSearchTerm}} />,
 			}
     },
-    {
-      header: {
-        key: 'package.links',
-        align: 'center',
-				width: 'minmax(140px, 160px)',
-        noSort: true,
-				component: 'Links',
-			},
-      row: {
-        key: 'links',
-        component: (item) => <LinksColumn item={item} />,
-			}
-    },
+    // {
+    //   header: {
+    //     key: 'package.links',
+    //     align: 'center',
+		// 		width: 'minmax(140px, 160px)',
+    //     noSort: true,
+		// 		component: 'Links',
+		// 	},
+    //   row: {
+    //     key: 'links',
+    //     component: (item) => <LinksColumn item={item} />,
+		// 	}
+    // },
     {
       header: {
         key: 'Collaborators',
@@ -332,7 +340,7 @@ const App = () => {
         label="Search term"
         fullWidth
         value={searchTerm}
-        onChange={e => setSearchTerm(e.target.value)}
+        onChange={e => { setSearchTerm(e.target.value); doQuery(e.target.value) }}
         InputProps={{
           endAdornment: <div style={{ display: 'flex', gap: '4px', margin: '4px', flexWrap: 'nowrap' }}>
             {[...new Set(suggestions
@@ -349,7 +357,7 @@ const App = () => {
                 icon={suggestion.includes(searchTerm.toLowerCase()) ? faLink : faMagnifyingGlass} />}
                 key={suggestion}
                 style={{ borderStyle: 'dotted'}}
-                onClick={() => setSearchTerm(suggestion)}
+                onClick={() => { setSearchTerm(suggestion); setCurrentSearchTerm(suggestion) }}
                 label={suggestion}
                 size="small"
                 variant="outlined"

@@ -171,11 +171,11 @@ const collaboratorsColumnStyles = makeStyles((theme) => ({
 }))
 
 const NameColumn = memo(({ item, searchTerm, richPayloads }) => {
-  const extraPayload = richPayloads.filter(payload => payload.repo === item.custom.packageName).map(payload => payload.data)[0]
+  const extraPayload = richPayloads.filter(payload => payload.repo === item.package.name).map(payload => payload.data)[0]
   return <div key={`name.${item.package.name}`} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-    {/* <div style={{ display: 'flex', gap: '8px', flexDirection: 'row', alignItems: 'center', flex: '1 1 100%' }}>
+    <div style={{ display: 'flex', gap: '8px', flexDirection: 'row', alignItems: 'center', flex: '1 1 100%' }}>
       {extraPayload?.organization?.avatar_url && <img src={extraPayload?.organization?.avatar_url} style={{ width: '24px', height: '24px', borderRadius: '50%' }} alt="avatar" />}
-      <MetadataColumn {...{ value: item.package.name, searchTerm }} />
+      <MetadataColumn {...{ item, value: item.package.name, searchTerm }} />
     </div>
       <Tooltip arrow title={`Last release: ${item.package.date}`}>
         <Chip size="small" variant="outlined" label={item.package.version} />
@@ -187,18 +187,19 @@ const NameColumn = memo(({ item, searchTerm, richPayloads }) => {
         label={extraPayload.stargazers_count}
         variant="outlined"
         color="primary"
-        icon={<StarsIcon style={{color: 'orange'}} />} />} */}
+        icon={<StarsIcon style={{color: 'orange'}} />} />}
   </div>
 })
 
 const KeywordsColumn = memo(({ item, searchTerm, setSearchTerm }) => {
-  return <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-    {item?.package?.keywords?.map(keyword => <Tooltip
-      arrow
-      title={`Search by ${keyword}`}
-      key={`${item.package.name}.${keyword}`}
-    >
-      <div
+  return <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }} key={`${item.package.name}.${item.searchScore}`}>
+    {[...new Set((item?.package?.keywords || []))]
+      .sort()
+      .filter(( _, i ) => i < 10)
+      .map(keyword => <div
+        key={`${item.package.name}.${item.searchScore}.${keyword}`}
+        id={`${item.package.name}.${item.searchScore}.${keyword}`}
+        title={`Search by ${keyword}`}
         onClick={() => setSearchTerm(keyword)}
         style={{
           fontSize: '11px',
@@ -212,8 +213,7 @@ const KeywordsColumn = memo(({ item, searchTerm, setSearchTerm }) => {
         }}
       >
         {keyword}
-      </div>
-    </Tooltip>)}
+      </div>)}
   </div>
 })
 
