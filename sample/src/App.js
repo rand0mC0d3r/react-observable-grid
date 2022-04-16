@@ -13,7 +13,7 @@ import GridStatsNg from './components/GridStatsNg';
 import { Grid } from './components/GridStoreNg';
 import {
   CircularProgressBlock, CollaboratorsColumn, KeywordsColumn, LinksColumn,
-  MetadataColumn, NameColumn, SelectionAndOpenColumn
+  MetadataColumn, NameColumn, SearchScoreColumn, SelectionAndOpenColumn
 } from './parts/SampleRow';
 
 const App = () => {
@@ -118,25 +118,25 @@ const App = () => {
   }
 
   const grid = [
-    // {
-    //   header: {
-    //     key: 'custom.section.header',
-    //     align: 'flex-end',
-    //     visible: true,
-    //     noColumn: true,
-		// 	},
-    //   row: {
-    //     fullWidth: true,
-    //     component: (item, index) => {
-    //       const count = 3;
-    //       return <>
-    //         {index % count === 0 && <div style={{ display: 'flex', backgroundColor: "#EEE", padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
-    //           <Typography variant="caption" color="textSecondary">Header from {index + 1} - {index + count}</Typography>
-    //         </div>}
-    //       </>
-    //     }
-		// 	}
-    // },
+    {
+      header: {
+        key: 'custom.section.header',
+        align: 'flex-end',
+        visible: true,
+        noColumn: true,
+			},
+      row: {
+        fullWidth: true,
+        component: (item, index) => {
+          const count = 3;
+          return <>
+            {index % count === 0 && <div style={{ display: 'flex', backgroundColor: "#EEE", padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
+              <Typography variant="caption" color="textSecondary">Header from {index + 1} - {index + count}</Typography>
+            </div>}
+          </>
+        }
+			}
+    },
     // {
     //   header: {
     //     key: 'selection',
@@ -167,35 +167,25 @@ const App = () => {
 				component: () => <AccountTreeSharpIcon />,
 			},
       row: {
-        key: 'type',
+        key: 'selection',
         component: (item, index) => <SelectionAndOpenColumn {...{item, index, setOpenRows, openRows}} />,
 			}
     },
 
-		// {
-    //   header: {
-    //     key: 'searchScore',
-    //     align: 'flex-end',
-		// 		width: '120px',
-		// 		visible: true,
-		// 		component: 'Search Score',
-		// 	},
-    //   row: {
-    //     key: 'type',
-    //     component: (item, index) => <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-    //       <Tooltip title={`Position: ${index}`}>
-    //         <Typography color="textSecondary" variant="h6" style={{ flex: '1 1 100%'}}>
-    //          {`${(parseFloat(((item.score.detail.quality + item.score.detail.popularity + item.score.detail.maintenance) / 3) * 100).toFixed(2))}%`}
-    //         </Typography>
-    //       </Tooltip>
-    //         {[
-    //           { title: 'Quality', value: item.score.detail.quality },
-    //           { title: 'Popularity', value: item.score.detail.popularity },
-    //           { title: 'Maintenance', value: item.score.detail.maintenance },
-    //         ].map(({ title, value }) => <CircularProgressBlock {...{value, title }} />)}
-    //     </div>,
-		// 	}
-    // },
+		{
+      header: {
+        key: 'searchScore',
+        align: 'flex-end',
+				width: '120px',
+				visible: true,
+				component: 'Search Score',
+			},
+      row: {
+        key: 'scores',
+        noWrapper: true,
+        component: item => <SearchScoreColumn {...{item}} />,
+			}
+    },
 		// {
     //   header: {
     //     key: 'package.name',
@@ -220,33 +210,33 @@ const App = () => {
     //     component: item => <NameColumn {...{ item, searchTerm, richPayloads}} />
 		// 	}
     // },
-		// {
-    //   header: {
-    //     key: 'package.description',
-		// 		width: 'minmax(200px, 1fr)',
-    //     visible: true,
-    //     align: 'flex-end',
-    //     component: 'Description',
-		// 	},
-    //   row: {
-    //     key: 'type',
-    //     noWrapper: true,
-    //     component: (item, index) => <MetadataColumn {...{ value: item.package.description, searchTerm, setSearchTerm }} />,
-		// 	}
-    // },
-		// {
-    //   header: {
-    //     key: 'package.keywords',
-		// 		width: 'minmax(200px, 1fr)',
-    //     visible: true,
-    //     noSort: true,
-		// 		component: 'Keywords',
-		// 	},
-    //   row: {
-    //     key: 'type',
-    //     component: (item) => <KeywordsColumn {...{item, searchTerm, setSearchTerm}} />,
-		// 	}
-    // },
+		{
+      header: {
+        key: 'package.description',
+				width: 'minmax(200px, 1fr)',
+        visible: true,
+        align: 'flex-end',
+        component: 'Description',
+			},
+      row: {
+        key: 'description',
+        noWrapper: true,
+        component: item => <MetadataColumn {...{ item, value: item.package.description, searchTerm, setSearchTerm }} />,
+			}
+    },
+		{
+      header: {
+        key: 'package.keywords',
+				width: 'minmax(200px, 1fr)',
+        visible: true,
+        noSort: true,
+				component: 'Keywords',
+			},
+      row: {
+        key: 'keywords',
+        component: item => <KeywordsColumn {...{item, searchTerm, setSearchTerm}} />,
+			}
+    },
     {
       header: {
         key: 'package.links',
@@ -261,45 +251,45 @@ const App = () => {
         component: (item) => <LinksColumn item={item} />,
 			}
     },
-    // {
-    //   header: {
-    //     key: 'Collaborators',
-    //     align: 'flex-end',
-		// 		width: 'minmax(140px, 160px)',
-    //     visible: true,
-    //     noSort: true,
-		// 		component: 'Collaborators',
-		// 	},
-    //   row: {
-    //     key: 'type',
-    //     component: (item) => <CollaboratorsColumn {...{item, contributors}} />
-		// 	}
-    // },
-    // {
-    //   header: {
-    //     key: 'Secondary:Column',
-    //     align: 'flex-end',
-    //     visible: true,
-    //     noColumn: true,
-		// 	},
-    //   row: {
-    //     key: 'type',
-    //     component: (item) => openRows.some(openRow => openRow === item.package.name) ? <div style={{ display: 'flex', backgroundColor: '#EEE', gap: '4px', flexWrap: 'wrap' }}>
-    //       <iframe
-    //         src={item?.package?.links.homepage}
-    //         title="Preview of website resource"
-    //         style={{
-    //           margin: '8px',
-    //           backgroundColor: '#FFF',
-    //           boxShadow: '0px 4px 0px 1px #77777733',
-    //           border: '2px dotted #777',
-    //           borderRadius: '8px',
-    //           width: '100%',
-    //           height: '350px'
-    //         }} />
-    //     </div> : <></>
-		// 	}
-    // },
+    {
+      header: {
+        key: 'Collaborators',
+        align: 'flex-end',
+				width: 'minmax(140px, 160px)',
+        visible: true,
+        noSort: true,
+				component: 'Collaborators',
+			},
+      row: {
+        key: 'collabs',
+        component: (item) => <CollaboratorsColumn {...{item, contributors}} />
+			}
+    },
+    {
+      header: {
+        key: 'Secondary:Column',
+        align: 'flex-end',
+        visible: true,
+        noColumn: true,
+			},
+      row: {
+        key: 'type',
+        component: (item) => openRows.some(openRow => openRow === item.package.name) ? <div style={{ display: 'flex', backgroundColor: '#EEE', gap: '4px', flexWrap: 'wrap' }}>
+          <iframe
+            src={item?.package?.links.homepage}
+            title="Preview of website resource"
+            style={{
+              margin: '8px',
+              backgroundColor: '#FFF',
+              boxShadow: '0px 4px 0px 1px #77777733',
+              border: '2px dotted #777',
+              borderRadius: '8px',
+              width: '100%',
+              height: '350px'
+            }} />
+        </div> : <></>
+			}
+    },
     // {
     //   header: {
     //     key: 'custom.section.footer',
@@ -412,7 +402,13 @@ const App = () => {
               name: data.package.name,
             })
           }}
-          className={`${className} ${classes.row} ${alternating ? classes.alternating : ''} ${selectedRows.includes(data.package.name) ? classes.selected : ''}`}
+          className={`
+          ${className}
+          ${classes.row}
+          ${alternating ? classes.alternating : ''}
+          ${selectedRows.includes(data.package.name) ? classes.selected : ''}
+          ${(selectedItem?.name === data.package.name && !richPayloads.some(rp => rp.repo === data.package.name)) ? classes.isBusy : ''}
+          `}
           {...{ id: data.package.name, key: data.package.name, style: { ...styleProps, borderBottom: '1px solid #DDD', }
           }}>
           {component}
@@ -480,6 +476,9 @@ const useStyles = makeStyles(() => ({
   },
   alternating: {
     backgroundColor: '#ffffff77',
+  },
+  isBusy: {
+    filter: 'blur(3px)',
   },
   selected: {
     backgroundColor: '#c9d2ff77 !important',

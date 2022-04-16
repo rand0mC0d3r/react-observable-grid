@@ -23,7 +23,7 @@ const GridRowsNg = ({ children, className, style, generateKey }) => {
   const componentTypeCheck = (component, key) => {
     return typeof component === 'string' || typeof component.type === 'symbol'
       ? <div>{component}</div>
-      : <div id={key} key={key}>{component}</div>
+      : <Fragment key={key}>{component}</Fragment>
   }
 
   useEffect(() => {

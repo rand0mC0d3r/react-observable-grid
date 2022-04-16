@@ -35,7 +35,7 @@ export const searchString = (string, query, highlightComponent) => {
 }
 
 
-const MetadataColumn = memo(({ value, searchTerm, setSearchTerm }) => {
+const MetadataColumn = memo(({ item, value, searchTerm, setSearchTerm }) => {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedText, setSelectedText] = useState('');
@@ -72,12 +72,12 @@ const MetadataColumn = memo(({ value, searchTerm, setSearchTerm }) => {
 
 
   return <>
-      <Typography variant="caption" onMouseUp={handleMouseUp} color="textSecondary">{searchString(
+      <Typography variant="caption" key={`${item.package.name}.${value}`} onMouseUp={handleMouseUp} color="textSecondary">{searchString(
         value,
         searchTerm,
         (children) => <Typography variant="caption" color="primary" style={{ display: 'inline-block', borderBottom: '2px dashed #3f51b5'}}>{children}</Typography>)
       }</Typography>
-      <Popper {...{ open, anchorEl }} placement="bottom-start">
+      {/* <Popper {...{ open, anchorEl }} placement="bottom-start">
         <div style={{width: '600px', display: 'flex', border: '1px solid #CCC', borderRadius: '8px', padding: '8px', gap: '8px', backgroundColor: '#FFF', flexDirection: "column"}}>
           <Typography>{selectedText}</Typography>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap'}}>
@@ -95,7 +95,7 @@ const MetadataColumn = memo(({ value, searchTerm, setSearchTerm }) => {
           </div>
           <Button variant="outlined" onClick={handleClose}>Close</Button>
         </div>
-      </Popper>
+      </Popper> */}
     </>
 })
 
@@ -113,34 +113,61 @@ const SelectionAndOpenColumn = memo(({item, index, setOpenRows, openRows}) => {
     </div>}
   </>
 })
+const SearchScoreColumn = memo(({ item, index, setOpenRows, openRows }) => {
+  const theme = useTheme()
+  const classes = searchScoreColumnStyles(theme)
+  return <div className={classes.container}>
+    <Tooltip title={`Position: ${index}`}>
+      <Typography color="textSecondary" variant="h6" style={{ flex: '1 1 100%'}}>
+        {`${(parseFloat(((item.score.detail.quality + item.score.detail.popularity + item.score.detail.maintenance) / 3) * 100).toFixed(2))}%`}
+      </Typography>
+    </Tooltip>
+    {[
+      { title: 'Quality', value: item.score.detail.quality },
+      { title: 'Popularity', value: item.score.detail.popularity },
+      { title: 'Maintenance', value: item.score.detail.maintenance },
+    ].map(({ title, value }) => <CircularProgressBlock key={`${title}.${item.package.name}`} {...{value, title }} />)}
+  </div>
+})
 
-const CollaboratorsColumn = memo(({ item, contributors }) => {
+const searchScoreColumnStyles = makeStyles((theme) => ({
+  container: {
+    display: 'flex !important',
+    gap: '4px',
+    flexWrap: 'wrap',
+
+    '& > *': {
+      position: 'relative',
+    }
+  }
+}))
+
+const CollaboratorsColumn = ({ item, contributors }) => {
+  const groups = 5
   const theme = useTheme()
   const classes = collaboratorsColumnStyles(theme)
-  return <div style={{ display: 'grid', gap: '4px', gridTemplateColumns: 'repeat(5, minmax(20px, 30px))' }}>
-    {/* {contributors
+  return <div style={{ display: 'grid', gap: '4px', gridTemplateColumns: `repeat(${groups}, minmax(20px, 30px))` }}>
+    {contributors
       .filter(contributor => contributor.repo === item.package.name)
       .map(contributor => (contributor?.data.length > 0 ? contributor.data : []).filter((_, i) => i < 10)
-      .map(({ avatar_url, login }) =>
-        <div key={`${item.package.name}.${avatar_url}`} id={`${login}`}>
-        <Tooltip arrow title={login}>
+      .map(({ avatar_url, login }) => <Tooltip key={`${item.package.name}.${avatar_url}`} arrow title={login}>
           <img
             className={classes.avatar}
             src={avatar_url}
             style={{ width: '20px', height: '20px', borderRadius: '50%' }}
             alt="avatar"
           />
-        </Tooltip>
-      </div>))} */}
+        </Tooltip>))}
     </div>
-})
-
+}
 
 const collaboratorsColumnStyles = makeStyles((theme) => ({
-  opacity: 0.6,
+  avatar: {
+    opacity: 0.6,
 
     '&:hover': {
       opacity: 1,
+    }
   }
 }))
 
@@ -167,22 +194,26 @@ const NameColumn = memo(({ item, searchTerm, richPayloads }) => {
 
 const KeywordsColumn = memo(({ item, searchTerm, setSearchTerm }) => {
   return <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-    {item?.package?.keywords?.map(keyword => <Tooltip arrow title={`Search by ${keyword}`}><div
-      key={keyword}
-      onClick={() => setSearchTerm(keyword)}
-      style={{
-        fontSize: '11px',
-        borderRadius: '12px',
-        borderColor: keyword.toLowerCase() === searchTerm.toLowerCase() ? '#CCC' : '#000',
-        color: keyword.toLowerCase() === searchTerm.toLowerCase() ? '#CCC' : '#000',
-        borderWidth: '1px',
-        cursor: 'pointer',
-        padding: '4px 8px',
-        borderStyle: 'dashed'
-      }}
+    {item?.package?.keywords?.map(keyword => <Tooltip
+      arrow
+      title={`Search by ${keyword}`}
+      key={`${item.package.name}.${keyword}`}
     >
-      {keyword}
-    </div>
+      <div
+        onClick={() => setSearchTerm(keyword)}
+        style={{
+          fontSize: '11px',
+          borderRadius: '12px',
+          borderColor: keyword.toLowerCase() === searchTerm.toLowerCase() ? '#CCC' : '#000',
+          color: keyword.toLowerCase() === searchTerm.toLowerCase() ? '#CCC' : '#000',
+          borderWidth: '1px',
+          cursor: 'pointer',
+          padding: '4px 8px',
+          borderStyle: 'dashed'
+        }}
+      >
+        {keyword}
+      </div>
     </Tooltip>)}
   </div>
 })
@@ -245,21 +276,23 @@ const LinksColumn = memo(({ item }) => {
 })
 
 
-const CircularProgressBlock = ({ value, title, size = '30px' }) => {
+const CircularProgressBlock = ({ value, title, uniqueKey, size = '30px' }) => {
   const computedValue = (parseFloat(value).toFixed(2) * 100).toFixed(0)
-  return <Tooltip title={`${title}: ${computedValue}%`} arrow>
-    <div style={{position: 'relative'}}>
-      <CircularProgress
-        color={computedValue < 50 ? 'secondary' :  'inherit'}
-        style={{ width: size , height: size  }}
-        variant="determinate"
-        value={parseFloat(computedValue) || 0}
-      />
+  return <div style={{position: 'relative'}}>
+    <CircularProgress
+      id={uniqueKey}
+      color={computedValue < 50 ? 'secondary' :  'inherit'}
+      style={{ width: size , height: size  }}
+      variant="determinate"
+      value={parseFloat(computedValue) || 0}
+    />
+    <Tooltip title={`${title}: ${computedValue}%`} arrow>
       <Typography style={{
         fontSize: '9px',
         position: 'absolute',
         top: '0px',
         left: '0px',
+        cursor: 'pointer',
         right: '0px',
         bottom: '0px',
         display: 'flex',
@@ -267,12 +300,12 @@ const CircularProgressBlock = ({ value, title, size = '30px' }) => {
         justifyContent: 'center',
         lineHeight: '0px',
         height: size,
-      }} variant='body2' color="textSecondary">{computedValue}%</Typography>
-    </div>
-  </Tooltip>
+      }} variant='body2' color={computedValue > 95 ? 'primary' : 'textSecondary'}>{`${computedValue}%`}</Typography>
+      </Tooltip>
+  </div>
 }
 
 
 export {
-  LinksColumn, CircularProgressBlock, MetadataColumn, KeywordsColumn, NameColumn, SelectionAndOpenColumn, CollaboratorsColumn
+  LinksColumn, CircularProgressBlock, MetadataColumn, KeywordsColumn, NameColumn, SelectionAndOpenColumn, CollaboratorsColumn, SearchScoreColumn
 };
