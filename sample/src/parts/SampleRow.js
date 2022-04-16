@@ -118,9 +118,11 @@ const CollaboratorsColumn = memo(({ item, contributors }) => {
   const theme = useTheme()
   const classes = collaboratorsColumnStyles(theme)
   return <div style={{ display: 'grid', gap: '4px', gridTemplateColumns: 'repeat(5, minmax(20px, 30px))' }}>
-    {contributors
+    {/* {contributors
       .filter(contributor => contributor.repo === item.package.name)
-      .map(contributor => (contributor?.data.length > 0 ? contributor.data : []).filter((_, i) => i < 10).map(({ avatar_url, login }) => <div id={`${item.package.name}.${avatar_url}`} key={`${item.package.name}.${avatar_url}`}>
+      .map(contributor => (contributor?.data.length > 0 ? contributor.data : []).filter((_, i) => i < 10)
+      .map(({ avatar_url, login }) =>
+        <div key={`${item.package.name}.${avatar_url}`} id={`${login}`}>
         <Tooltip arrow title={login}>
           <img
             className={classes.avatar}
@@ -129,7 +131,7 @@ const CollaboratorsColumn = memo(({ item, contributors }) => {
             alt="avatar"
           />
         </Tooltip>
-      </div>))}
+      </div>))} */}
     </div>
 })
 
@@ -216,7 +218,7 @@ const LinksColumn = memo(({ item }) => {
         value: value.replace("https://www.npmjs.com/package/", "").replace("https://github.com/", ""),
         origValue: value
       }))
-      .map(({ key, value, origValue }) => <Tooltip arrow title={`Open ${value}`}>
+      .map(({ key, value, origValue }) => <Tooltip key={key} arrow title={`Open ${value}`}>
         <span>
           <FontAwesomeIcon
             as="span"

@@ -247,20 +247,20 @@ const App = () => {
     //     component: (item) => <KeywordsColumn {...{item, searchTerm, setSearchTerm}} />,
 		// 	}
     // },
-    // {
-    //   header: {
-    //     key: 'package.links',
-    //     align: 'center',
-		// 		width: 'minmax(140px, 160px)',
-    //     visible: true,
-    //     noSort: true,
-		// 		component: 'Links',
-		// 	},
-    //   row: {
-    //     key: 'type',
-    //     component: (item) => <LinksColumn item={item} />,
-		// 	}
-    // },
+    {
+      header: {
+        key: 'package.links',
+        align: 'center',
+				width: 'minmax(140px, 160px)',
+        visible: true,
+        noSort: true,
+				component: 'Links',
+			},
+      row: {
+        key: 'links',
+        component: (item) => <LinksColumn item={item} />,
+			}
+    },
     // {
     //   header: {
     //     key: 'Collaborators',
@@ -413,7 +413,7 @@ const App = () => {
             })
           }}
           className={`${className} ${classes.row} ${alternating ? classes.alternating : ''} ${selectedRows.includes(data.package.name) ? classes.selected : ''}`}
-          {...{ key: data.package.name, style: { ...styleProps, borderBottom: '1px solid #DDD', }
+          {...{ id: data.package.name, key: data.package.name, style: { ...styleProps, borderBottom: '1px solid #DDD', }
           }}>
           {component}
         </div>)}

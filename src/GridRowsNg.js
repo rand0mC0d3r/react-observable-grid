@@ -22,8 +22,8 @@ const GridRowsNg = ({ children, className, style, generateKey }) => {
 
   const componentTypeCheck = (component, key) => {
     return typeof component === 'string' || typeof component.type === 'symbol'
-      ? <div id="a" key={key}>{component}</div>
-      : <div id="b" key={key}>{component}</div>
+      ? <div>{component}</div>
+      : <div id={key} key={key}>{component}</div>
   }
 
   useEffect(() => {
@@ -102,7 +102,8 @@ const GridRowsNg = ({ children, className, style, generateKey }) => {
             index,
             alternating: global.alternatingRows.stepping(index),
             data: dataItem,
-            component: presentColumns.map(({ component }) => componentTypeCheck(component(dataItem, index), `${component.key}${generateKey(dataItem)}`))
+            key: `${index}.${generateKey(dataItem)}`,
+            component: presentColumns.map(({ component, key }) => componentTypeCheck(component(dataItem, index), `${index}.${key}.${generateKey(dataItem)}`))
           }))
         })}
       </div>
