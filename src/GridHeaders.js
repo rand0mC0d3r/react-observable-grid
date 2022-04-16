@@ -7,7 +7,7 @@ const GridHeaders = ({ children, style, className }) => {
 
   return <div {...{className}} style={{
     display: 'grid',
-    gridTemplateColumns: innerHeaders.map(header => header.visible ? header.width : '0px').join(' '),
+    gridTemplateColumns: innerHeaders.map(header => (header.visible || true) ? header.width : '0px').join(' '),
     ...style,
   }}>{children && children(innerHeaders)}</div>
 }

@@ -58,7 +58,7 @@ const Grid = ({ data, grid, global, children, ...props }) => {
   useEffect(() => {
     if (grid) {
       const gridColumns = grid
-        .filter(gridItem => gridItem.header.visible)
+        .filter(gridItem => gridItem.header.visible || true)
         .filter(gridItem => !gridItem.header.noColumn)
         .map(gridItem => gridItem.header.width)
         .join(' ')

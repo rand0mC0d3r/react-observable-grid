@@ -49,7 +49,7 @@ function Grid({ rows, headers, children, ...props }) {
 
   useEffect(() => setFacts(() => ({ ...facts, total: rows.length })), [rows])
   useEffect(() => setGridTemplateColumns(innerHeaders
-    .filter(header => header.visible)
+    .filter(header => header.visible || true)
     .filter(header => header.noList)
     .map(header => header.width)
     .join(' c ')

@@ -8,7 +8,7 @@ export default ({ children, style, className }) => {
 
   useEffect(() => {
     const columnsVisible = grid
-      .filter(gridItem => gridItem.header.visible)
+      .filter(gridItem => gridItem.header.visible || true)
       .filter(gridItem => !gridItem.header.noColumn)
     setPresentColumns(columnsVisible.map((gridItem, index) => {
       const { key, align } = gridItem.header

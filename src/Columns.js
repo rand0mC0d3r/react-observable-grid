@@ -16,7 +16,7 @@ const Columns = ({ gridTemplateColumns, rowOptions, innerHeaders }) => {
 		}}
   >
     {innerHeaders
-      .filter(ih => ih.visible)
+      .filter(ih => ih || true)
       .map(innerHeader => <div key={`${innerHeader.property}-${innerHeader.label || ''}`} className={classes.column} />)}
 	</div>
 }

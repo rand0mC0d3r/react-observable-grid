@@ -122,7 +122,6 @@ const App = () => {
       header: {
         key: 'custom.section.header',
         align: 'flex-end',
-        visible: true,
         noColumn: true,
 			},
       row: {
@@ -160,7 +159,6 @@ const App = () => {
         key: 'openRow',
         align: 'flex-end',
 				width: '80px',
-        visible: true,
         noSort: true,
 				component: () => <AccountTreeSharpIcon />,
 			},
@@ -175,7 +173,6 @@ const App = () => {
         key: 'searchScore',
         align: 'flex-end',
 				width: '120px',
-				visible: true,
 				component: 'Search Score',
 			},
       row: {
@@ -188,7 +185,6 @@ const App = () => {
       header: {
         key: 'package.name',
 				width: 'minmax(250px, 1fr)',
-        visible: true,
         disableOnClick: true,
         component: ({ onSort, sort, directionComponent }) => <div style={{ display: 'flex', gap: '4px', alignItems: 'flex-start', flexDirection: 'column' }}>
           {[{ key: 'package.version', label: 'Version' }, { key: 'package.name', label: 'Package Name' }].map(item => <div key={item.key} style={{ display: 'flex', gap: '8px'}}>
@@ -212,7 +208,6 @@ const App = () => {
       header: {
         key: 'package.description',
         width: 'minmax(200px, 1fr)',
-        visible: true,
         align: 'flex-end',
         component: 'Description',
 			},
@@ -226,7 +221,6 @@ const App = () => {
       header: {
         key: 'package.keywords',
 				width: 'minmax(200px, 1fr)',
-        visible: true,
         noSort: true,
 				component: 'Keywords',
 			},
@@ -240,7 +234,6 @@ const App = () => {
         key: 'package.links',
         align: 'center',
 				width: 'minmax(140px, 160px)',
-        visible: true,
         noSort: true,
 				component: 'Links',
 			},
@@ -254,7 +247,6 @@ const App = () => {
         key: 'Collaborators',
         align: 'flex-end',
 				width: 'minmax(140px, 160px)',
-        visible: true,
         noSort: true,
 				component: 'Collaborators',
 			},
@@ -267,7 +259,6 @@ const App = () => {
       header: {
         key: 'Secondary:Column',
         align: 'flex-end',
-        visible: true,
         noColumn: true,
 			},
       row: {
