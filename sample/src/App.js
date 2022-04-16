@@ -43,7 +43,7 @@ const App = () => {
 
   useEffect(() => {
     if (currentSearchTerm !== '') {
-      fetch(`https://api.npms.io/v2/search?q=${currentSearchTerm}&size=10`)
+      fetch(`https://api.npms.io/v2/search?q=${currentSearchTerm}&size=15`)
         .then(response => response.json())
         .then(data => {
           const newTerms = Object.entries(data.results.reduce((acc, item) => {
@@ -254,7 +254,7 @@ const App = () => {
       header: {
         key: 'Collaborators',
         align: 'flex-end',
-				width: 'minmax(140px, 160px)',
+				width: 'minmax(120px, 145px)',
         noSort: true,
 				component: 'Collaborators',
 			},

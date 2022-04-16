@@ -145,7 +145,7 @@ const CollaboratorsColumn = ({ item, contributors }) => {
   const groups = 5
   const theme = useTheme()
   const classes = collaboratorsColumnStyles(theme)
-  return <div style={{ display: 'grid', gap: '4px', gridTemplateColumns: `repeat(${groups}, minmax(20px, 30px))` }}>
+  return <div style={{ display: 'grid', gap: '4px', gridTemplateColumns: `repeat(${groups}, minmax(20px, 25px))` }}>
     {contributors
       .filter(contributor => contributor.repo === item.package.name)
       .map(contributor => (contributor?.data.length > 0 ? contributor.data : []).filter((_, i) => i < 10)
