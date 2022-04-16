@@ -126,15 +126,16 @@ const App = () => {
         noColumn: true,
 			},
       row: {
+        key: 'custom.section.row',
         fullWidth: true,
-        component: (item, index) => {
-          const count = 3;
-          return <>
-            {index % count === 0 && <div style={{ display: 'flex', backgroundColor: "#EEE", padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
+        component: (item, index, count = 3) => <div key={`header.${item.package.name}`}>
+            {index % count === 0 && <div
+              key={`header.${item.package.name}`}
+              style={{ display: 'flex', backgroundColor: "#EEE", padding: '8px', gap: '4px', flexWrap: 'wrap' }}
+            >
               <Typography variant="caption" color="textSecondary">Header from {index + 1} - {index + count}</Typography>
             </div>}
-          </>
-        }
+        </div>
 			}
     },
     // {
@@ -210,20 +211,20 @@ const App = () => {
     //     component: item => <NameColumn {...{ item, searchTerm, richPayloads}} />
 		// 	}
     // },
-		{
-      header: {
-        key: 'package.description',
-				width: 'minmax(200px, 1fr)',
-        visible: true,
-        align: 'flex-end',
-        component: 'Description',
-			},
-      row: {
-        key: 'description',
-        noWrapper: true,
-        component: item => <MetadataColumn {...{ item, value: item.package.description, searchTerm, setSearchTerm }} />,
-			}
-    },
+		// {
+    //   header: {
+    //     key: 'package.description',
+		// 		width: 'minmax(200px, 1fr)',
+    //     visible: true,
+    //     align: 'flex-end',
+    //     component: 'Description',
+		// 	},
+    //   row: {
+    //     key: 'description',
+    //     noWrapper: true,
+    //     component: item => <MetadataColumn {...{ item, value: item.package.description, searchTerm, setSearchTerm }} />,
+		// 	}
+    // },
 		{
       header: {
         key: 'package.keywords',
@@ -273,9 +274,10 @@ const App = () => {
         noColumn: true,
 			},
       row: {
-        key: 'type',
-        component: (item) => openRows.some(openRow => openRow === item.package.name) ? <div style={{ display: 'flex', backgroundColor: '#EEE', gap: '4px', flexWrap: 'wrap' }}>
-          <iframe
+        key: 'preview',
+        component: (item) => openRows.some(openRow => openRow === item.package.name)
+          && <iframe
+            key={item.package.name}
             src={item?.package?.links.homepage}
             title="Preview of website resource"
             style={{
@@ -287,8 +289,7 @@ const App = () => {
               width: '100%',
               height: '350px'
             }} />
-        </div> : <></>
-			}
+      }
     },
     // {
     //   header: {
@@ -478,7 +479,7 @@ const useStyles = makeStyles(() => ({
     backgroundColor: '#ffffff77',
   },
   isBusy: {
-    filter: 'blur(3px)',
+    filter: 'blur(1px) grayscale(1)',
   },
   selected: {
     backgroundColor: '#c9d2ff77 !important',
