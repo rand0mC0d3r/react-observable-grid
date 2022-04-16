@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { Fragment, useContext, useEffect, useState } from 'react';
 import DataProvider from './GridStoreNg';
 
 const wrapperStyle = {
@@ -16,14 +16,14 @@ const scrollerStyle = {
   height: '100%'
 }
 
-const GridRowsNg = ({ children, className, style }) => {
+const GridRowsNg = ({ children, className, style, generateKey }) => {
   const { data, gridTemplateColumns, grid, global } = useContext(DataProvider)
   const [presentColumns, setPresentColumns] = useState([])
 
-  const componentTypeCheck = (component) => {
+  const componentTypeCheck = (component, key) => {
     return typeof component === 'string' || typeof component.type === 'symbol'
-      ? <div>{component}</div>
-      : component
+      ? <div id="a" key={key}>{component}</div>
+      : <div id="b" key={key}>{component}</div>
   }
 
   useEffect(() => {
@@ -101,9 +101,8 @@ const GridRowsNg = ({ children, className, style }) => {
           rows: (data.length ? data : []).map((dataItem, index) => ({
             index,
             alternating: global.alternatingRows.stepping(index),
-            key: dataItem.uuid,
             data: dataItem,
-            component: presentColumns.map(({ component }) => componentTypeCheck(component(dataItem, index)))
+            component: presentColumns.map(({ component }) => componentTypeCheck(component(dataItem, index), `${component.key}${generateKey(dataItem)}`))
           }))
         })}
       </div>
