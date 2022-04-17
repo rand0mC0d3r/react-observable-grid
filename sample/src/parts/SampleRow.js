@@ -99,15 +99,8 @@ const MetadataColumn = memo(({ item, value, searchTerm, setSearchTerm }) => {
 })
 
 const SelectionAndOpenColumn = memo(({item, index, setOpenRows,openRows, selectedRows, setSelectedRows}) => {
-  return <div style={{ display: 'flex', alignItems: 'center' }}>
-    <Checkbox
-      disableRipple
-      color="primary"
-      checked={selectedRows.some(sr => sr === item.package.name)}
-      onClick={() => setSelectedRows(selectedRows.some(sr => sr === item.package.name)
-        ? [...selectedRows.filter(sr => sr !== item.package.name)]
-        : [...selectedRows, item.package.name])} />
-    {index % 2 === 0 && <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+  return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+    {!item.package.links.homepage.includes('github.com') && <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
       <IconButton
         size="small"
         disableRipple
@@ -120,7 +113,14 @@ const SelectionAndOpenColumn = memo(({item, index, setOpenRows,openRows, selecte
           : <ChevronRightSharpIcon />}
       </IconButton>
     </div>}
-
+    <Checkbox
+      size='small'
+      disableRipple
+      color="primary"
+      checked={selectedRows.some(sr => sr === item.package.name)}
+      onClick={() => setSelectedRows(selectedRows.some(sr => sr === item.package.name)
+        ? [...selectedRows.filter(sr => sr !== item.package.name)]
+        : [...selectedRows, item.package.name])} />
   </div>
 })
 const SearchScoreColumn = memo(({ item, index, setOpenRows, openRows }) => {
@@ -215,8 +215,8 @@ const KeywordsColumn = memo(({ item, searchTerm, setSearchTerm }) => {
         style={{
           fontSize: '11px',
           borderRadius: '12px',
-          borderColor: keyword.toLowerCase() === searchTerm.toLowerCase() ? '#CCC' : '#000',
-          color: keyword.toLowerCase() === searchTerm.toLowerCase() ? '#CCC' : '#000',
+          borderColor: keyword.toLowerCase() === searchTerm.toLowerCase() ? '#CCC' : '#777',
+          color: keyword.toLowerCase() === searchTerm.toLowerCase() ? '#CCC' : '#777',
           borderWidth: '1px',
           cursor: 'pointer',
           padding: '4px 8px',

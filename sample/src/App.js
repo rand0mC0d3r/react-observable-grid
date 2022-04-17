@@ -5,6 +5,7 @@ import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles
 import AccountTreeSharpIcon from '@material-ui/icons/AccountTreeSharp';
 import ChevronRightSharpIcon from '@material-ui/icons/ChevronRightSharp';
 import KeyboardArrowDownSharpIcon from '@material-ui/icons/KeyboardArrowDownSharp';
+import PhotoSizeSelectActualIcon from '@material-ui/icons/PhotoSizeSelectActual';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import GridColumnsNg from './components/GridColumnsNg';
 import GridHeadersNg from './components/GridHeadersNg';
@@ -165,8 +166,8 @@ const App = () => {
 		{
       header: {
         key: 'openRow',
-        align: 'flex-start',
-				width: '80px',
+        align: 'center',
+				width: '90px',
         noSort: true,
 				component: () => <AccountTreeSharpIcon />,
 			},
@@ -175,7 +176,21 @@ const App = () => {
         component: (item, index) => <SelectionAndOpenColumn {...{item, index, setOpenRows, openRows, selectedRows, setSelectedRows}} />,
 			}
     },
-
+		{
+      header: {
+        key: 'thumbnails',
+        align: 'center',
+				width: '90px',
+        noSort: true,
+				component: () => <PhotoSizeSelectActualIcon />,
+			},
+      row: {
+        key: 'thumbnails.row',
+        component: (item, index) => <>
+          thumbnail
+        </>,
+			}
+    },
 		{
       header: {
         key: 'searchScore',
@@ -237,19 +252,19 @@ const App = () => {
         component: item => <KeywordsColumn {...{item, searchTerm, setSearchTerm}} />,
 			}
     },
-    // {
-    //   header: {
-    //     key: 'package.links',
-    //     align: 'center',
-		// 		width: 'minmax(140px, 160px)',
-    //     noSort: true,
-		// 		component: 'Links',
-		// 	},
-    //   row: {
-    //     key: 'links',
-    //     component: (item) => <LinksColumn item={item} />,
-		// 	}
-    // },
+    {
+      header: {
+        key: 'package.links',
+        align: 'center',
+				width: 'minmax(140px, 160px)',
+        noSort: true,
+				component: 'Links',
+			},
+      row: {
+        key: 'links',
+        component: (item) => <LinksColumn item={item} />,
+			}
+    },
     {
       header: {
         key: 'Collaborators',
