@@ -44,7 +44,7 @@ const GridHeadersNg = ({ children, className, style, upComponent, downComponent,
       {children
         ? children({
           headers: grid
-            .filter(gridItem => gridItem.header.visible || true)
+            .filter(gridItem => gridItem.header.visible ? gridItem.header.visible : true)
             .filter(gridItem => !gridItem.header.noColumn)
             .map(({ header }) => ({
               key: header.key,
@@ -62,7 +62,7 @@ const GridHeadersNg = ({ children, className, style, upComponent, downComponent,
             }),
           }))})
         : grid
-          .filter(gridItem => gridItem.header.visible || true)
+          .filter(gridItem => gridItem.header.visible ? gridItem.header.visible : true)
           .filter(gridItem => !gridItem.header.noColumn)
           .map(({ header }) => <div
             key={header.key}
@@ -70,6 +70,7 @@ const GridHeadersNg = ({ children, className, style, upComponent, downComponent,
             onClick={() => !header.noSort && !header.disableOnClick && onSort(header.key)}
             onContextMenu={(e) => {
               e.preventDefault()
+              // console.log('onContextMenu', header)
               !header.noSort && !header.disableOnClick && onSort('')
             }}
           >

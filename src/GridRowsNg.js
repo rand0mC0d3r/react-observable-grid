@@ -28,7 +28,7 @@ const GridRowsNg = ({ children, className, style, generateKey }) => {
 
   useEffect(() => {
     setPresentColumns(grid
-      .filter(gridItem => gridItem.header.visible || true)
+      .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
       .map(gridItem => ({
         component: gridItem.row.component,
         key: gridItem.row.key

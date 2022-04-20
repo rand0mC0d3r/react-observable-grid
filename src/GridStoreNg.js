@@ -56,15 +56,13 @@ const Grid = ({ data, grid, global, children, ...props }) => {
   }, [data])
 
   useEffect(() => {
-    if (grid) {
-      const gridColumns = grid
-        .filter(gridItem => gridItem.header.visible || true)
-        .filter(gridItem => !gridItem.header.noColumn)
-        .map(gridItem => gridItem.header.width)
-        .join(' ')
-      set_HeaderTemplateColumns(gridColumns)
-      set_GridTemplateColumns(gridColumns)
-    }
+    const gridColumns = grid
+      .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
+      .filter(gridItem => !gridItem.header.noColumn)
+      .map(gridItem => gridItem.header.width)
+      .join(' ')
+    set_HeaderTemplateColumns(gridColumns)
+    set_GridTemplateColumns(gridColumns)
   }, [grid])
 
   useEffect(() => {

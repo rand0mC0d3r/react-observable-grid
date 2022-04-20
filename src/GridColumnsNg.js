@@ -8,7 +8,7 @@ export default ({ children, style, className }) => {
 
   useEffect(() => {
     const columnsVisible = grid
-      .filter(gridItem => gridItem.header.visible || true)
+      .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
       .filter(gridItem => !gridItem.header.noColumn)
     setPresentColumns(columnsVisible.map((gridItem, index) => {
       const { key, align } = gridItem.header
@@ -51,7 +51,6 @@ export default ({ children, style, className }) => {
           margin: `0px -${(style?.gap?.replace('px', '') / 2) || 0}px`,
         }}/>)}
         </>}
-
     </div>
-    </>
+  </>
 }
