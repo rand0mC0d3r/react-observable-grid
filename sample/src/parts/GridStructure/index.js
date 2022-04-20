@@ -1,6 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { Typography } from '@material-ui/core';
 import AccountTreeSharpIcon from '@material-ui/icons/AccountTreeSharp';
+import PhotoSizeSelectActualIcon from '@material-ui/icons/PhotoSizeSelectActual';
 import { useEffect, useMemo } from 'react';
 import {
 	CollaboratorsColumn, KeywordsColumn, LinksColumn,
@@ -25,7 +26,7 @@ export default ({
 				key: 'custom.section.row',
 				fullWidth: true,
 				component: (item, index, count = 3) => index % count === 0 ?
-					<div key={`header.${item.package.name}`} style={{ display: 'flex', backgroundColor: "#EEE", padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
+					<div key={`header.${item.package.name}`} style={{ display: 'flex', backgroundColor: "#EEEEEE77", padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
 						<Typography variant="caption" color="textSecondary">Header from {index + 1} - {index + count}</Typography>
 				</div> : null
 			}
@@ -63,31 +64,32 @@ export default ({
 				component: (item, index) => <SelectionAndOpenColumn {...{ item, index, setOpenRows, openRows, selectedRows, setSelectedRows }} />,
 			}
 		},
-		// {
-		//   header: {
-		//     key: 'thumbnails',
-		//     align: 'center',
-		// 		width: '170px',
-		//     noSort: true,
-		// 		component: () => <PhotoSizeSelectActualIcon />,
-		// 	},
-		//   row: {
-		//     key: 'thumbnails.row',
-		//     component: (item, index) => <div style={{width: '150px', height: '150px', overflow: 'hidden'}}>
-		//       <iframe
-		//         key={item.package.name}
-		//         src={item?.package?.links.homepage}
-		//         title="Preview of website resource"
-		//         style={{
-		//           backgroundColor: '#FFF',
-		//           width: '300px',
-		//           height: '300px',
-		//           transform: 'scale(0.5)',
-		//           transformOrigin: 'center'
-		//         }} />
-		//     </div>,
-		// 	}
-		// },
+		{
+		  header: {
+		    key: 'thumbnails',
+		    align: 'center',
+				width: '170px',
+				visible: false,
+		    noSort: true,
+				component: () => <PhotoSizeSelectActualIcon />,
+			},
+		  row: {
+		    key: 'thumbnails.row',
+		    component: (item, index) => <div style={{width: '150px', height: '150px', overflow: 'hidden'}}>
+		      <iframe
+		        key={item.package.name}
+		        src={item?.package?.links.homepage}
+		        title="Preview of website resource"
+		        style={{
+		          backgroundColor: '#FFF',
+		          width: '300px',
+		          height: '300px',
+		          transform: 'scale(0.5)',
+		          transformOrigin: 'center'
+		        }} />
+		    </div>,
+			}
+		},
 		{
 			header: {
 				key: 'searchScore',
@@ -186,7 +188,7 @@ export default ({
 				component: (item) => openRows.some(openRow => openRow === item.package.name)
 					&& <iframe
 						key={item.package.name}
-						src={item?.package?.links.homepage}
+						src={`https://octo-repo-visualization.vercel.app/?repo=${item?.package?.links.repository.replace('https://github.com/', '')}`}
 						title="Preview of website resource"
 						style={{
 							margin: '8px',

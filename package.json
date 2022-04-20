@@ -33,6 +33,7 @@
     "radium": "^0.26.2",
     "react-intersection-observer": "^8.33.1",
     "react-jss": "^10.9.0",
+    "react-localforage": "^1.0.1",
     "serve": "13.0.2",
     "styled-components": "^5.3.3"
   },

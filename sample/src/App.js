@@ -34,6 +34,7 @@ const App = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [selectedRepo, setSelectedRepo] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedRow, setSelectedRow] = useState(null);
   const [richPayloads, setRichPayloads] = useState([]);
   const [contributors, setContributors] = useState([]);
   const [trees, setTrees] = useState([]);
@@ -83,9 +84,8 @@ const App = () => {
       right: '24px',
       bottom: '24px',
       }}>
-        <Flexbox container direction='row' justifyContent='space-between' alignItems='center' wrap="nowrap">
+        <Flexbox style={{ gap: '8px' }} container direction='row' justifyContent='space-between' alignItems='center' wrap="nowrap">
           <SearchField {...{ searchTerm, suggestions, setSearchTerm, setCurrentSearchTerm }} />
-          {/* <div>{selectedRows}</div> */}
           <ColumnManager {...{ processedGrid, setProcessedGrid }} />
         </Flexbox>
       {/* <div> */}
@@ -112,20 +112,23 @@ const App = () => {
       <GridColumnsNg >
         {/* {({ columns }) => columns.map(({ key, align }) => <div key={key}>|</div> )} */}
       </GridColumnsNg>
-      <GridRowsNg generateKey={(row) => row.package.name}>
-        {({ rows, className, styleProps }) => rows.map(({ data, component, alternating, index }) => <div
+      <GridRowsNg selectedRow={selectedRow} generateKey={(row) => row.package.name}>
+        {({ rows, className, styleProps }) => rows.map(({ style, data, component, alternating, index }) => <div
           onMouseUp={() => {
+            setSelectedRow(index)
             setSelectedItem({
               url: Object.entries(data.package.links).filter(([key, _]) => key === 'repository').map(([_, value]) => value)[0],
               name: data.package.name,
             })
           }}
+          style={style}
           className={[
           className,
           classes.row,
           alternating ? classes.alternating : '',
           selectedRows.includes(data.package.name) ? classes.selected : '',
-          (selectedItem?.name === data.package.name && !richPayloads.some(rp => rp.repo === data.package.name)) ? classes.isBusy : ''
+          (selectedItem?.name === data.package.name && !richPayloads.some(rp => rp.repo === data.package.name)) ? classes.isBusy : '',
+          index === selectedRow ? classes.focused : '',
           ].filter(Boolean).join(' ')}
           {...{ id: data.package.name, key: data.package.name, style: { ...styleProps, borderBottom: '1px solid #DDD', }
           }}>
@@ -200,6 +203,9 @@ const useStyles = makeStyles(() => ({
   },
   alternating: {
     backgroundColor: '#ffffff77',
+  },
+  focused: {
+    boxShadow: 'inset 0px 0px 0px 1px #4052b5',
   },
   isBusy: {
     filter: 'blur(1px) grayscale(1)',

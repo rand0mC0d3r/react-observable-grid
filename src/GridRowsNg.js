@@ -16,9 +16,9 @@ const scrollerStyle = {
   height: '100%'
 }
 
-const GridRowsNg = ({ children, className, style, generateKey }) => {
+const GridRowsNg = ({ children, className, style, generateKey, selectedRow }) => {
   const { data, gridTemplateColumns, grid, global } = useContext(DataProvider)
-  const [selectedIndex, setSelectedIndex] = useState(null)
+  // const [selectedIndex, setSelectedIndex] = useState(null)
   const [presentColumns, setPresentColumns] = useState([])
 
   const componentTypeCheck = (component, key, index) => {

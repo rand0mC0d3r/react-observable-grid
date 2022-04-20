@@ -52,8 +52,8 @@ export default ({ processedGrid, setProcessedGrid }) => {
   const classes = styles(theme)
 
   return <div>
-    <Button variant="outlined" color="primary" onClick={handleClick}>
-        Toggle columns
+    <Button variant="outlined" size="large" color="primary" onClick={handleClick}>
+        Columns
     </Button>
     <Popover
         id={id}

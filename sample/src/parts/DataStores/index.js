@@ -1,17 +1,16 @@
 /* eslint-disable import/no-anonymous-default-export */
+import localforage from 'localforage';
 import { useCallback, useEffect } from 'react';
 
 export default ({
   currentSearchTerm, setTotal, setCurrentSearchTerm,
-  setDataNew, setTerms, suggestions, setSuggestions,
+  setDataNew, setTerms, setSuggestions,
   richPayloads, selectedItem, setRichPayloads, trees, setTrees,
   contributors, setContributors }) => {
 
-  let queryTimeout
-
   useEffect(() => {
     if (currentSearchTerm !== '') {
-      fetch(`https://api.npms.io/v2/search?q=${currentSearchTerm}&size=15`)
+      fetch(`https://api.npms.io/v2/search?q=${currentSearchTerm}&size=25`)
         .then(response => response.json())
         .then(data => {
           const newTerms = Object.entries(data.results.reduce((acc, item) => {
@@ -43,21 +42,17 @@ export default ({
   const accumulateData = useCallback((repoUrl, accumulator, accumulatorName, setAccumulator) => {
     if (selectedItem) {
       if (!accumulator.some(item => item.repo === selectedItem.name)) {
-        fetch(repoUrl(selectedItem.url.replace('https://github.com/', '')))
+        fetch(repoUrl(selectedItem?.url?.replace('https://github.com/', '')))
           .then(response => response.json())
           .then(data => {
             setAccumulator(() => [...accumulator, { repo: selectedItem.name, data }])
-            const newArray = JSON.parse(localStorage.getItem(accumulatorName) || '[]')
-            localStorage.setItem(accumulatorName, JSON.stringify([...newArray, { repo: selectedItem.name, data }]))
+            localforage.getItem(accumulatorName).then(dataStored => {
+              localforage.setItem(accumulatorName, [...(dataStored || []), { repo: selectedItem.name, data }])
+            })
           });
       }
     }
   }, [selectedItem])
-
-  const doQuery = (value) => {
-    clearTimeout(queryTimeout)
-    queryTimeout = setTimeout(() => { setCurrentSearchTerm(value) }, 500)
-  }
 
   useEffect(() => {
     accumulateData((repoName) => `https://api.github.com/repos/${repoName}`, richPayloads, 'richPayloads', (payload) => setRichPayloads(payload))
@@ -72,12 +67,10 @@ export default ({
   }, [selectedItem, trees, accumulateData, setTrees])
 
   useEffect(() => {
-    setRichPayloads(JSON.parse(localStorage.getItem('richPayloads') || '[]'))
-    setContributors(JSON.parse(localStorage.getItem('contributors') || '[]'))
-    setTrees(JSON.parse(localStorage.getItem('trees') || '[]'))
+      localforage.getItem('richPayloads').then(data => setRichPayloads(data))
+      localforage.getItem('contributors').then(data => setContributors(data))
+      localforage.getItem('trees').then(data => setTrees(data))
   }, [setContributors, setRichPayloads, setTrees])
-
-
 
   return null
 }

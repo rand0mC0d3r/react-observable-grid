@@ -101,7 +101,7 @@ const MetadataColumn = memo(({ item, value, searchTerm, setSearchTerm, setCurren
 
 const SelectionAndOpenColumn = memo(({item, index, setOpenRows, openRows, selectedRows, setSelectedRows}) => {
   return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-    {!item.package?.links?.homepage?.includes('github.com') && <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+    {<div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
       <IconButton
         size="small"
         disableRipple
@@ -186,7 +186,7 @@ const collaboratorsColumnStyles = makeStyles((theme) => ({
 }))
 
 const NameColumn = memo(({ item, searchTerm, richPayloads }) => {
-  const extraPayload = richPayloads.filter(payload => payload.repo === item.package.name).map(payload => payload.data)[0]
+  const extraPayload = richPayloads?.filter(payload => payload.repo === item.package.name).map(payload => payload.data)[0]
   return <div
     key={`name.${item.package.name}`}
     style={{

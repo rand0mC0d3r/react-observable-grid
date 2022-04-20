@@ -2,6 +2,7 @@
 import { faLink, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Chip, TextField } from '@material-ui/core';
+import HistoryManager from '../HistoryManager';
 
 export default ({ searchTerm, suggestions, setSearchTerm, setCurrentSearchTerm }) => {
   let queryTimeout
@@ -15,9 +16,11 @@ export default ({ searchTerm, suggestions, setSearchTerm, setCurrentSearchTerm }
     variant='outlined'
     placeholder="Search term"
     label="Search term"
+    fullWidth
     value={searchTerm}
     onChange={e => { setSearchTerm(e.target.value); doQuery(e.target.value) }}
     InputProps={{
+      startAdornment: <><HistoryManager {...{searchTerm, setSearchTerm, setCurrentSearchTerm}} /></>,
       endAdornment: <div style={{ display: 'flex', gap: '4px', margin: '4px', flexWrap: 'nowrap' }}>
         {[...new Set(suggestions
           .map((suggestion => suggestion.package.name.toLowerCase()))
