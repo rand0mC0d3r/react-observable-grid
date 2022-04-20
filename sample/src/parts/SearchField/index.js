@@ -3,7 +3,14 @@ import { faLink, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Chip, TextField } from '@material-ui/core';
 
-export default ({ searchTerm, suggestions, setSearchTerm, doQuery, setCurrentSearchTerm }) => {
+export default ({ searchTerm, suggestions, setSearchTerm, setCurrentSearchTerm }) => {
+  let queryTimeout
+
+  const doQuery = (value) => {
+    clearTimeout(queryTimeout)
+    queryTimeout = setTimeout(() => { setCurrentSearchTerm(value) }, 500)
+  }
+
   return <TextField
     variant='outlined'
     placeholder="Search term"

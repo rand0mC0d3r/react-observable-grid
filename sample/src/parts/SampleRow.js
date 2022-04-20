@@ -186,7 +186,16 @@ const collaboratorsColumnStyles = makeStyles((theme) => ({
 
 const NameColumn = memo(({ item, searchTerm, richPayloads }) => {
   const extraPayload = richPayloads.filter(payload => payload.repo === item.package.name).map(payload => payload.data)[0]
-  return <div key={`name.${item.package.name}`} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+  return <div
+    key={`name.${item.package.name}`}
+    style={{
+      display: 'flex',
+      gap: '8px',
+      flexWrap: 'wrap',
+      alignItems: 'center',
+      alignSelf: 'stretch',
+      backgroundColor: extraPayload?.stargazers_count > 100000 ? '#f0e4cf' : 'transparent'
+    }}>
     <div style={{ display: 'flex', gap: '8px', flexDirection: 'row', alignItems: 'center', flex: '1 1 100%' }}>
       {extraPayload?.organization?.avatar_url && <img src={extraPayload?.organization?.avatar_url} style={{ width: '24px', height: '24px', borderRadius: '50%' }} alt="avatar" />}
       <MetadataColumn {...{ item, value: item.package.name, searchTerm }} />
@@ -205,7 +214,7 @@ const NameColumn = memo(({ item, searchTerm, richPayloads }) => {
   </div>
 })
 
-const KeywordsColumn = memo(({ item, searchTerm, setSearchTerm }) => {
+const KeywordsColumn = memo(({ item, searchTerm, setSearchTerm, setCurrentSearchTerm }) => {
   return <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }} key={`${item.package.name}.${item.searchScore}`}>
     {[...new Set((item?.package?.keywords || []))]
       .sort()
@@ -214,7 +223,7 @@ const KeywordsColumn = memo(({ item, searchTerm, setSearchTerm }) => {
         key={`${item.package.name}.${item.searchScore}.${keyword}`}
         id={`${item.package.name}.${item.searchScore}.${keyword}`}
         title={`Search by ${keyword}`}
-        onClick={() => setSearchTerm(keyword)}
+        onClick={() => { setSearchTerm(keyword); setCurrentSearchTerm(keyword) }}
         style={{
           fontSize: '11px',
           borderRadius: '12px',
@@ -243,13 +252,9 @@ const LinksColumn = memo(({ item }) => {
     { key: 'bugs', icon: faBug, },
   ]
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleMouseUp = (event, url) => {
+  const handleClick = (event, url) => {
     setOpen(!open);
-    setUrl(url);
+    setUrl(!open ? url : null);
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
@@ -265,17 +270,16 @@ const LinksColumn = memo(({ item }) => {
       .map(({ key, value, origValue }) => <Tooltip key={key} arrow title={`Open ${value}`}>
         <span>
           <FontAwesomeIcon
-            as="span"
-            onClick={event => handleMouseUp(event, origValue)}
+            color={origValue === url ? '#3f51b5' : '#000'}
+            onClick={event => handleClick(event, origValue)}
             icon={iconMap.find(icon => icon.key === key).icon} />
           </span>
         </Tooltip>)}
-    <Popper {...{ open, anchorEl }} placement="bottom">
+    <Popper {...{ open, anchorEl }} placement="left" style={{zIndex: '2'}}>
       <iframe
         src={url}
         title="Preview of website resource"
         style={{
-          zIndex: '1000',
           margin: '8px',
           backgroundColor: '#FFF',
           boxShadow: '0px 4px 0px 1px #77777733',
@@ -283,9 +287,9 @@ const LinksColumn = memo(({ item }) => {
           borderRadius: '8px',
           width: '800px',
           height: '750px'
-        }} />
-      </Popper>
-        </div>
+          }} />
+    </Popper>
+  </div>
 })
 
 

@@ -25,7 +25,7 @@ export default ({
           }, {}))
             .map(item => ({ term: item[0], count: item[1] }))
             .sort((a, b) => b.count - a.count)
-            .filter(item => item.count > 2 && item.term.length > 2 && item.term.toLowerCase() !== currentSearchTerm.toLowerCase())
+            .filter(item => item.count > 1 && item.term.length > 2 && item.term.toLowerCase() !== currentSearchTerm.toLowerCase())
             .filter(item => !['for', 'a', 'all','of', 'and', 'with', 'to',  'the', 'in', 'into', 'that', 'by'].some(word => word.toLowerCase() === item.term.toLowerCase()))
           setTerms(newTerms)
           setTotal(data.total)

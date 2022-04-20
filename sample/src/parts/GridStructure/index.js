@@ -7,7 +7,10 @@ import {
 	MetadataColumn, NameColumn, SearchScoreColumn, SelectionAndOpenColumn
 } from '../SampleRow';
 
-export default ({ searchTerm, setOpenRows, openRows, selectedRows, setSelectedRows, richPayloads, processedGrid, setSearchTerm, contributors, setProcessedGrid}) => {
+export default ({
+	searchTerm, setOpenRows, setCurrentSearchTerm,
+	openRows, selectedRows, setSelectedRows, richPayloads, processedGrid,
+	setSearchTerm, contributors, setProcessedGrid }) => {
 	// const grid = useMemo(() => , [contributors, openRows, richPayloads, searchTerm, selectedRows, setOpenRows, setSearchTerm, setSelectedRows])
 
 	useEffect(() => {
@@ -143,7 +146,7 @@ export default ({ searchTerm, setOpenRows, openRows, selectedRows, setSelectedRo
 			},
 			row: {
 				key: 'keywords',
-				component: item => <KeywordsColumn {...{ item, searchTerm, setSearchTerm }} />,
+				component: item => <KeywordsColumn {...{ item, searchTerm, setSearchTerm, setCurrentSearchTerm }} />,
 			}
 		},
 		{

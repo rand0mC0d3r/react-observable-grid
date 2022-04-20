@@ -47,11 +47,6 @@ const App = () => {
   }), [])
   const classes = useStyles()
 
-  const doQuery = (value) => {
-    clearTimeout(queryTimeout)
-    queryTimeout = setTimeout(() => { setCurrentSearchTerm(value) }, 500)
-  }
-
   const global =  {
 		alternatingRows: {
 			enabled: true,
@@ -69,7 +64,10 @@ const App = () => {
   }
 
   return <>
-    <GridStructure {...{ processedGrid, searchTerm, setOpenRows, openRows, selectedRows, setSelectedRows, richPayloads, setSearchTerm, contributors, setProcessedGrid }} />
+    <GridStructure {...{
+      processedGrid, searchTerm, setOpenRows, openRows, selectedRows, setSelectedRows, richPayloads, setCurrentSearchTerm,
+      setSearchTerm, contributors, setProcessedGrid
+    }} />
     <DataStores {...{currentSearchTerm, setTotal, setCurrentSearchTerm,
       setDataNew, setTerms, suggestions, setSuggestions,
       richPayloads, selectedItem, setRichPayloads, trees, setTrees,
@@ -86,7 +84,7 @@ const App = () => {
       bottom: '24px',
       }}>
         <Flexbox container direction='row' justifyContent='space-between' alignItems='center' wrap="nowrap">
-          <SearchField {...{ searchTerm, suggestions, setSearchTerm, doQuery, setCurrentSearchTerm }} />
+          <SearchField {...{ searchTerm, suggestions, setSearchTerm, setCurrentSearchTerm }} />
           {/* <div>{selectedRows}</div> */}
           <ColumnManager {...{ processedGrid, setProcessedGrid }} />
         </Flexbox>

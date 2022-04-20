@@ -1,5 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { Button, Popover } from '@material-ui/core';
+import { Button, Popover, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -67,7 +67,11 @@ export default ({ processedGrid, setProcessedGrid }) => {
         {processedGrid.map(({ header, row }, index) => <div key={header.key} className={classes.container}>
           <ChevronLeftIcon onClick={() => swapWithPreviousIndex(index)} />
           <ChevronRightIcon onClick={() => swapWithNextIndex(index)} />
-          <div style={{ flex: '1 1 auto' }}>{index} . {header.key}</div>
+          <Typography
+            variant="subtitle2"
+            color={header.visible === undefined || header.visible ? 'primary' : 'textSecondary'}
+            style={{ flex: '1 1 auto' }}
+          >{index} . {header.key}</Typography>
             {header.visible === undefined
               ? <VisibilityIcon onClick={() => toggleVisibility(header.key)} />
               : (header.visible
