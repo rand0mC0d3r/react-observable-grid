@@ -110,3 +110,15 @@ const headers = [
 	rowRenderer={row => <SampleRow {...{ row }} />}
 />
 ```
+
+
+TODO:
+
+- full row colors
+- transparent cells
+- cell based inView observer
+- row uuid generator function (default uuidv4)
+- column custom order
+- keyboard focus navigation
+- fix column
+- fix row

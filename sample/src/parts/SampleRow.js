@@ -98,9 +98,9 @@ const MetadataColumn = memo(({ item, value, searchTerm, setSearchTerm }) => {
     </>
 })
 
-const SelectionAndOpenColumn = memo(({item, index, setOpenRows,openRows, selectedRows, setSelectedRows}) => {
+const SelectionAndOpenColumn = memo(({item, index, setOpenRows, openRows, selectedRows, setSelectedRows}) => {
   return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-    {!item.package.links.homepage.includes('github.com') && <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+    {!item.package?.links?.homepage?.includes('github.com') && <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
       <IconButton
         size="small"
         disableRipple

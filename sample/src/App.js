@@ -1,6 +1,6 @@
 import { faLink, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Avatar, Button, Checkbox, Chip, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Avatar, Button, Checkbox, Chip, Grid as Flexbox, TextField, Tooltip, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import AccountTreeSharpIcon from '@material-ui/icons/AccountTreeSharp';
 import ChevronRightSharpIcon from '@material-ui/icons/ChevronRightSharp';
@@ -12,15 +12,18 @@ import GridHeadersNg from './components/GridHeadersNg';
 import GridRowsNg from './components/GridRowsNg';
 import GridStatsNg from './components/GridStatsNg';
 import { Grid } from './components/GridStoreNg';
+import GridStructure from './parts/GridStructure';
 import {
   CircularProgressBlock, CollaboratorsColumn, KeywordsColumn, LinksColumn,
   MetadataColumn, NameColumn, SearchScoreColumn, SelectionAndOpenColumn
 } from './parts/SampleRow';
+import SearchField from './parts/SearchField';
 
 const App = () => {
   let queryTimeout
 
   const [dataNew, setDataNew] = useState([]);
+  const [processedGrid, setProcessedGrid] = useState([]);
   const [terms, setTerms] = useState([]);
   const [total, setTotal] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -126,219 +129,10 @@ const App = () => {
     }
   }
 
-  const grid = [
-    {
-      header: {
-        key: 'custom.section.header',
-        align: 'flex-end',
-        noColumn: true,
-			},
-      row: {
-        key: 'custom.section.row',
-        fullWidth: true,
-        component: (item, index, count = 3) => <div key={`header.${item.package.name}`}>
-            {index % count === 0 && <div style={{ display: 'flex', backgroundColor: "#EEE", padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
-              <Typography variant="caption" color="textSecondary">Header from {index + 1} - {index + count}</Typography>
-            </div>}
-        </div>
-			}
-    },
-    // {
-    //   header: {
-    //     key: 'selection',
-    //     align: 'flex-end',
-		// 		width: '60px',
-    //     visible: true,
-    //     noSort: true,
-		// 		component: '',
-		// 	},
-    //   row: {
-    //     key: 'type',
-    //     component: (item, index) => <Checkbox
-    //       color="primary"
-    //       fullWidth={false}
-    //       checked={selectedRows.some(sr => sr === item.package.name)}
-    //       onClick={() => setSelectedRows(selectedRows.some(sr => sr === item.package.name)
-    //         ? [...selectedRows.filter(sr => sr !== item.package.name)]
-    //         : [...selectedRows, item.package.name])} />,
-		// 	}
-    // },
-		{
-      header: {
-        key: 'openRow',
-        align: 'center',
-				width: '90px',
-        noSort: true,
-				component: () => <AccountTreeSharpIcon />,
-			},
-      row: {
-        key: 'selection',
-        component: (item, index) => <SelectionAndOpenColumn {...{item, index, setOpenRows, openRows, selectedRows, setSelectedRows}} />,
-			}
-    },
-		{
-      header: {
-        key: 'thumbnails',
-        align: 'center',
-				width: '90px',
-        noSort: true,
-				component: () => <PhotoSizeSelectActualIcon />,
-			},
-      row: {
-        key: 'thumbnails.row',
-        component: (item, index) => <>
-          thumbnail
-        </>,
-			}
-    },
-		{
-      header: {
-        key: 'searchScore',
-        align: 'flex-end',
-				width: '120px',
-				component: 'Search Score',
-			},
-      row: {
-        key: 'scores',
-        noWrapper: true,
-        component: item => <SearchScoreColumn {...{item}} />,
-			}
-    },
-		{
-      header: {
-        key: 'package.name',
-				width: 'minmax(250px, 1fr)',
-        disableOnClick: true,
-        component: ({ onSort, sort, directionComponent }) => <div style={{ display: 'flex', gap: '4px', alignItems: 'flex-start', flexDirection: 'column' }}>
-          {[{ key: 'package.version', label: 'Version' }, { key: 'package.name', label: 'Package Name' }].map(item => <div key={item.key} style={{ display: 'flex', gap: '8px'}}>
-            <Typography
-              onClick={() => onSort(item.key)}
-              style={{ cursor: 'pointer' }}
-              color={item.key === sort.column ? 'primary' : 'textSecondary'}
-              variant="subtitle2">
-              {item.label}
-            </Typography>
-            {directionComponent(item.key)}
-          </div>)}
-        </div>,
-			},
-      row: {
-        key: 'type',
-        component: item => <NameColumn {...{ item, searchTerm, richPayloads }} />
-			}
-    },
-		{
-      header: {
-        key: 'package.description',
-        width: 'minmax(200px, 1fr)',
-        align: 'flex-end',
-        component: 'Description',
-			},
-      row: {
-        key: 'description',
-        noWrapper: true,
-        component: item => <MetadataColumn {...{ item, value: item.package.description, searchTerm, setSearchTerm }} />,
-			}
-    },
-		{
-      header: {
-        key: 'package.keywords',
-				width: 'minmax(200px, 1fr)',
-        noSort: true,
-				component: 'Keywords',
-			},
-      row: {
-        key: 'keywords',
-        component: item => <KeywordsColumn {...{item, searchTerm, setSearchTerm}} />,
-			}
-    },
-    {
-      header: {
-        key: 'package.links',
-        align: 'center',
-				width: 'minmax(140px, 160px)',
-        noSort: true,
-				component: 'Links',
-			},
-      row: {
-        key: 'links',
-        component: (item) => <LinksColumn item={item} />,
-			}
-    },
-    {
-      header: {
-        key: 'Collaborators',
-        align: 'flex-end',
-				width: 'minmax(120px, 145px)',
-        noSort: true,
-				component: 'Collaborators',
-			},
-      row: {
-        key: 'collabs',
-        component: (item) => <CollaboratorsColumn {...{item, contributors}} />
-			}
-    },
-    {
-      header: {
-        key: 'Secondary:Column',
-        align: 'flex-end',
-        noColumn: true,
-			},
-      row: {
-        key: 'preview',
-        component: (item) => openRows.some(openRow => openRow === item.package.name)
-          && <iframe
-            key={item.package.name}
-            src={item?.package?.links.homepage}
-            title="Preview of website resource"
-            style={{
-              margin: '8px',
-              backgroundColor: '#FFF',
-              boxShadow: '0px 4px 0px 1px #77777733',
-              border: '2px dotted #777',
-              borderRadius: '8px',
-              width: '100%',
-              height: '350px'
-            }} />
-      }
-    },
-    // {
-    //   header: {
-    //     key: 'custom.section.footer',
-    //     align: 'flex-end',
-    //     visible: true,
-    //     noColumn: true,
-		// 	},
-    //   row: {
-    //     columnStart: 7,
-    //     columnEnd: 'none',
-    //     rowStart: 3,
-    //     rowEnd: 3,
-    //     component: (item) => <div style={{ display: 'flex', backgroundColor: '#FFF', border: '1px solid #EEE', padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
-    //       <Typography color="textSecondary" variant="caption">footer 7 to none</Typography>
-    //     </div>
-		// 	}
-    // },
-    // {
-    //   header: {
-    //     key: 'custom.section.footer2',
-    //     align: 'flex-end',
-    //     visible: true,
-    //     noColumn: true,
-		// 	},
-    //   row: {
-    //     columnStart: 2,
-    //     columnEnd: 4,
-    //     rowStart: 3,
-    //     rowEnd: 3,
-    //     component: (item) => <div style={{ display: 'flex', backgroundColor: '#FFF', border: '1px solid #EEE', padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
-    //       <Typography color="textSecondary" variant="caption">footer none to 4</Typography>
-    //     </div>
-		// 	}
-    // },
-	]
 
-  return <ThemeProvider {...{ theme }} >
+  return <>
+    <GridStructure {...{searchTerm, setOpenRows, openRows, selectedRows, setSelectedRows, richPayloads, setSearchTerm, contributors, setProcessedGrid}} />
+    <ThemeProvider {...{ theme }} >
     <div style={{
       display: 'flex',
       flexDirection: 'column',
@@ -349,39 +143,8 @@ const App = () => {
       right: '24px',
       bottom: '24px',
     }}>
-      <TextField
-        variant='outlined'
-        placeholder="Search term"
-        label="Search term"
-        fullWidth
-        value={searchTerm}
-        onChange={e => { setSearchTerm(e.target.value); doQuery(e.target.value) }}
-        InputProps={{
-          endAdornment: <div style={{ display: 'flex', gap: '4px', margin: '4px', flexWrap: 'nowrap' }}>
-            {[...new Set(suggestions
-              .map((suggestion => suggestion.package.name.toLowerCase()))
-              // .map(name => name
-              //   .replace(/[\W_]+/g, " ")
-              //   .replace(`${searchTerm}`, '')
-              //   .trim())
-              .filter(name => name.length > 0)
-              .filter(name => name !== searchTerm)
-              .sort()
-            )]?.filter((_, index) => index < 10)
-              .map(suggestion => <Chip icon={<FontAwesomeIcon
-                icon={suggestion.includes(searchTerm.toLowerCase()) ? faLink : faMagnifyingGlass} />}
-                key={suggestion}
-                style={{ borderStyle: 'dotted'}}
-                onClick={() => { setSearchTerm(suggestion); setCurrentSearchTerm(suggestion) }}
-                label={suggestion}
-                size="small"
-                variant="outlined"
-              />)}
-            <Chip label={dataNew.length} size="small" color="primary" variant="outlined" />
-            <Chip label={total} size="small" color="primary" variant="outlined" />
-          </div>,
-          }}
-      />
+      <SearchField {...{ searchTerm, suggestions, setSearchTerm, doQuery, setCurrentSearchTerm }} />
+        <div>{selectedRows}</div>
       {/* <div>
         {JSON.stringify(openRows)} */}
         {/* {dataNew.map(item => <div key={item.package.name}>{item.package.publisher.username}</div>)} */}
@@ -393,7 +156,7 @@ const App = () => {
         total {total}
       </div> */}
       <div style={{ display: 'flex', flexDirection: 'column', position: 'relative', gap: '8px', flex: '1 1 auto'}}>
-    {1 === 1 && <Grid {...{ data: dataNew, grid, global }}>
+    {1 === 1 && <Grid {...{ data: dataNew, grid: processedGrid, global }}>
       {/* <GridHeadersNg className={classes.header} >
         {({ headers }) => headers.map(({ key, component, sort, align }) => component)}
       </GridHeadersNg> */}
@@ -434,7 +197,8 @@ const App = () => {
         </Grid>}
         </div>
       </div>
-  </ThemeProvider>
+    </ThemeProvider>
+    </>
 }
 
 const useStyles = makeStyles(() => ({
