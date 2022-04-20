@@ -98,7 +98,7 @@ const App = () => {
       {/* <div>
         total {total}
       </div> */}
-      <div style={{ display: 'flex', flexDirection: 'column', position: 'relative', gap: '8px', flex: '1 1 auto'}}>
+      <div className={classes.backgroundContainer} style={{ display: 'flex', flexDirection: 'column', position: 'relative', gap: '8px', flex: '1 1 auto'}}>
     {1 === 1 && <Grid {...{ data: dataNew, grid: processedGrid, global }}>
       {/* <GridHeadersNg className={classes.header} >
         {({ headers }) => headers.map(({ key, component, sort, align }) => component)}
@@ -120,13 +120,13 @@ const App = () => {
               name: data.package.name,
             })
           }}
-          className={`
-          ${className}
-          ${classes.row}
-          ${alternating ? classes.alternating : ''}
-          ${selectedRows.includes(data.package.name) ? classes.selected : ''}
-          ${(selectedItem?.name === data.package.name && !richPayloads.some(rp => rp.repo === data.package.name)) ? classes.isBusy : ''}
-          `}
+          className={[
+          className,
+          classes.row,
+          alternating ? classes.alternating : '',
+          selectedRows.includes(data.package.name) ? classes.selected : '',
+          (selectedItem?.name === data.package.name && !richPayloads.some(rp => rp.repo === data.package.name)) ? classes.isBusy : ''
+          ].filter(Boolean).join(' ')}
           {...{ id: data.package.name, key: data.package.name, style: { ...styleProps, borderBottom: '1px solid #DDD', }
           }}>
           {component}
@@ -174,8 +174,13 @@ const useStyles = makeStyles(() => ({
       opacity: 1,
     }
   },
+  backgroundContainer: {
+    // backgroundColor: '#e5e5f7',
+    // background: 'linear-gradient(135deg, #444cf711 25%, transparent 25%) -10px 0/ 20px 20px, linear-gradient(225deg, #444cf711 25%, transparent 25%) -10px 0/ 20px 20px, linear-gradient(315deg, #444cf711 25%, transparent 25%) 0px 0/ 20px 20px, linear-gradient(45deg, #444cf711 25%, #e5e5f711 25%) 0px 0/ 20px 20px',
+  },
   header: {
     borderBottom: "1px solid #BBBBBB55",
+    backgroundColor: "#c7d0ff8a",
     // boxShadow: '0px 0px 2px 2px #CCC'
   },
   stats: {

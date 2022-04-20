@@ -115,7 +115,7 @@ export default ({
 							variant="subtitle2">
 							{item.label}
 						</Typography>
-						{directionComponent(item.key)}
+						{item.key === sort.column && directionComponent(item.key)}
 					</div>)}
 				</div>,
 			},
@@ -134,7 +134,7 @@ export default ({
 			row: {
 				key: 'description',
 				noWrapper: true,
-				component: item => <MetadataColumn {...{ item, value: item.package.description, searchTerm, setSearchTerm }} />,
+				component: item => <MetadataColumn {...{ item, value: item.package.description, searchTerm, setSearchTerm, setCurrentSearchTerm }} />,
 			}
 		},
 		{

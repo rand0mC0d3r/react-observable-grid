@@ -90,7 +90,7 @@ const GridHeadersNg = ({ children, className, style, upComponent, downComponent,
                 </> : null}</>
               }
             )}
-            {!header.noSort && stats.sort.column === header.key && <>
+            {(typeof header.component === 'string' || typeof header.component.type === 'symbol') && !header.noSort && stats.sort.column === header.key && <>
               {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
             </>}
           </div>)}

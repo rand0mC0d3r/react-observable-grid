@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import React, { Fragment, useContext, useEffect, useState } from 'react';
+import React, { cloneElement, Fragment, useContext, useEffect, useState } from 'react';
 import DataProvider from './GridStoreNg';
 
 const wrapperStyle = {
@@ -18,21 +18,21 @@ const scrollerStyle = {
 
 const GridRowsNg = ({ children, className, style, generateKey }) => {
   const { data, gridTemplateColumns, grid, global } = useContext(DataProvider)
+  const [selectedIndex, setSelectedIndex] = useState(null)
   const [presentColumns, setPresentColumns] = useState([])
 
-  const componentTypeCheck = (component, key) => {
+  const componentTypeCheck = (component, key, index) => {
     if (component === null) {
-      return <div key={key} style={{ margin: '0px', padding: '0px'}} id="auto-generated" />
+      return <div onClick={() => setSelectedIndex(index)} key={key} style={{ margin: '0px', padding: '0px'}} id="auto-generated" />
     }
     return typeof component === 'string' || typeof component.type === 'symbol'
-      ? <div>{component}</div>
+      ? <div onClick={() => setSelectedIndex(index)}>{component}</div>
       : <Fragment key={key}>{component}</Fragment>
   }
 
   useEffect(() => {
     setPresentColumns(grid
       .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
-      // .filter(gridItem => !gridItem.header.noColumn)
       .map(gridItem => ({
         component: gridItem.row.component,
         key: gridItem.row.key
@@ -116,7 +116,7 @@ const GridRowsNg = ({ children, className, style, generateKey }) => {
             alternating: global.alternatingRows.stepping(index),
             data: dataItem,
             key: `${index}.${generateKey(dataItem)}`,
-            component: presentColumns.map(({ component, key }) => componentTypeCheck(component(dataItem, index), `${index}.${key}.${generateKey(dataItem)}`))
+            component: presentColumns.map(({ component, key }) => componentTypeCheck(component(dataItem, index), `${index}.${key}.${generateKey(dataItem)}`, index))
           }))
         })}
       </div>

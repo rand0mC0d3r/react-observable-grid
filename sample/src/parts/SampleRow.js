@@ -35,7 +35,7 @@ export const searchString = (string, query, highlightComponent) => {
 }
 
 
-const MetadataColumn = memo(({ item, value, searchTerm, setSearchTerm }) => {
+const MetadataColumn = memo(({ item, value, searchTerm, setSearchTerm, setCurrentSearchTerm }) => {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedText, setSelectedText] = useState('');
@@ -76,7 +76,7 @@ const MetadataColumn = memo(({ item, value, searchTerm, setSearchTerm }) => {
         searchTerm,
         (children) => <Typography variant="caption" color="primary" style={{ display: 'inline-block', borderBottom: '2px dashed #3f51b5'}}>{children}</Typography>)
       }</Typography>
-      <Popper {...{ open, anchorEl }} placement="bottom-start">
+      <Popper {...{ open, anchorEl }} placement="bottom-start" style={{zIndex: 1}}>
         <div style={{width: '600px', display: 'flex', border: '1px solid #CCC', borderRadius: '8px', padding: '8px', gap: '8px', backgroundColor: '#FFF', flexDirection: "column"}}>
           <Typography>{selectedText}</Typography>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap'}}>
@@ -88,6 +88,7 @@ const MetadataColumn = memo(({ item, value, searchTerm, setSearchTerm }) => {
               onClick={() => {
                 handleClose()
                 setSearchTerm(`${searchTerm} ${suggestion}`)
+                setCurrentSearchTerm(`${searchTerm} ${suggestion}`)
               }}
               label={suggestion}
             />)}
@@ -129,7 +130,7 @@ const SearchScoreColumn = memo(({ item, index }) => {
   const classes = searchScoreColumnStyles(theme)
 
   const average = parseFloat(((item.score.detail.quality + item.score.detail.popularity + item.score.detail.maintenance) / 3) * 100).toFixed(2)
-  return <div className={classes.container} style={{ backgroundColor: average > 90 ? '#e3e7fe' : 'transparent'}}>
+  return <div className={classes.container} style={{ backgroundColor: average > 90 ? '#e3e7fe77' : 'transparent'}}>
     <Tooltip title={`Position: ${index}`}>
       <Typography color="textSecondary" variant="h6" style={{ flex: '1 1 100%'}}>
         {`${average}%`}
@@ -194,7 +195,7 @@ const NameColumn = memo(({ item, searchTerm, richPayloads }) => {
       flexWrap: 'wrap',
       alignItems: 'center',
       alignSelf: 'stretch',
-      backgroundColor: extraPayload?.stargazers_count > 100000 ? '#f0e4cf' : 'transparent'
+      backgroundColor: extraPayload?.stargazers_count > 100000 ? '#f0e4cf77' : 'transparent'
     }}>
     <div style={{ display: 'flex', gap: '8px', flexDirection: 'row', alignItems: 'center', flex: '1 1 100%' }}>
       {extraPayload?.organization?.avatar_url && <img src={extraPayload?.organization?.avatar_url} style={{ width: '24px', height: '24px', borderRadius: '50%' }} alt="avatar" />}
