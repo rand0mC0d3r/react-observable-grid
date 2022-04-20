@@ -84,14 +84,16 @@ const App = () => {
       left: '24px',
       right: '24px',
       bottom: '24px',
-    }}>
-      <SearchField {...{ searchTerm, suggestions, setSearchTerm, doQuery, setCurrentSearchTerm }} />
-        <div>{selectedRows}</div>
-        <div><ColumnManager {...{ processedGrid, setProcessedGrid}}  /></div>
-      <div>
-        {JSON.stringify(processedGrid.map(row => `${row.header.key} ${row.header.visible}`))}
+      }}>
+        <Flexbox container direction='row' justifyContent='space-between' alignItems='center' wrap="nowrap">
+          <SearchField {...{ searchTerm, suggestions, setSearchTerm, doQuery, setCurrentSearchTerm }} />
+          {/* <div>{selectedRows}</div> */}
+          <ColumnManager {...{ processedGrid, setProcessedGrid }} />
+        </Flexbox>
+      {/* <div> */}
+        {/* {JSON.stringify(processedGrid.map(row => `${row.header.key} ${row.header.visible}`))} */}
         {/* {dataNew.map(item => <div key={item.package.name}>{item.package.publisher.username}</div>)} */}
-      </div>
+      {/* </div> */}
       <div style={{display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
         {terms.map(term => <Chip key={term.term} avatar={<Avatar>{term.count}</Avatar>} variant="outlined" size="small" label={`${term.term}`}/>)}
       </div>

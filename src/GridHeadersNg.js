@@ -23,7 +23,9 @@ const GridHeadersNg = ({ children, className, style, upComponent, downComponent,
       display: flex;
       margin: 0px ${global?.style?.gap || '0'}px;
     }
-    ${grid.map((gridItem, index) => `
+    ${grid
+      .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
+      .map((gridItem, index) => `
     .grid-headers-grid > *:nth-child(${index}) {
       justify-content: ${gridItem?.header?.align || 'flex-start'};
     }`).join('')}
@@ -44,7 +46,7 @@ const GridHeadersNg = ({ children, className, style, upComponent, downComponent,
       {children
         ? children({
           headers: grid
-            .filter(gridItem => gridItem.header.visible ? gridItem.header.visible : true)
+            .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
             .filter(gridItem => !gridItem.header.noColumn)
             .map(({ header }) => ({
               key: header.key,
@@ -62,7 +64,7 @@ const GridHeadersNg = ({ children, className, style, upComponent, downComponent,
             }),
           }))})
         : grid
-          .filter(gridItem => gridItem.header.visible ? gridItem.header.visible : true)
+          .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
           .filter(gridItem => !gridItem.header.noColumn)
           .map(({ header }) => <div
             key={header.key}
@@ -70,7 +72,6 @@ const GridHeadersNg = ({ children, className, style, upComponent, downComponent,
             onClick={() => !header.noSort && !header.disableOnClick && onSort(header.key)}
             onContextMenu={(e) => {
               e.preventDefault()
-              // console.log('onContextMenu', header)
               !header.noSort && !header.disableOnClick && onSort('')
             }}
           >

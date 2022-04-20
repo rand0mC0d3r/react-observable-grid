@@ -8,7 +8,6 @@ export default ({ searchTerm, suggestions, setSearchTerm, doQuery, setCurrentSea
     variant='outlined'
     placeholder="Search term"
     label="Search term"
-    fullWidth
     value={searchTerm}
     onChange={e => { setSearchTerm(e.target.value); doQuery(e.target.value) }}
     InputProps={{

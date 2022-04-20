@@ -232,7 +232,7 @@ export default ({ searchTerm, setOpenRows, openRows, selectedRows, setSelectedRo
 		// 	}
 		// },
 	])
-	}, [setProcessedGrid, setOpenRows, openRows, selectedRows, setSelectedRows, searchTerm, richPayloads, setSearchTerm, contributors])
+	}, [setProcessedGrid,  setOpenRows, openRows, selectedRows, setSelectedRows, searchTerm, richPayloads, setSearchTerm, contributors])
 
 	return null
 }
