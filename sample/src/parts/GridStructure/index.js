@@ -21,11 +21,10 @@ export default ({ searchTerm, setOpenRows, openRows, selectedRows, setSelectedRo
 			row: {
 				key: 'custom.section.row',
 				fullWidth: true,
-				component: (item, index, count = 3) => <div key={`header.${item.package.name}`}>
-					{index % count === 0 && <div style={{ display: 'flex', backgroundColor: "#EEE", padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
+				component: (item, index, count = 3) => index % count === 0 ?
+					<div key={`header.${item.package.name}`} style={{ display: 'flex', backgroundColor: "#EEE", padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
 						<Typography variant="caption" color="textSecondary">Header from {index + 1} - {index + count}</Typography>
-					</div>}
-				</div>
+				</div> : null
 			}
 		},
 		// {

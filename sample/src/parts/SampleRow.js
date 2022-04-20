@@ -129,7 +129,7 @@ const SearchScoreColumn = memo(({ item, index }) => {
   const classes = searchScoreColumnStyles(theme)
 
   const average = parseFloat(((item.score.detail.quality + item.score.detail.popularity + item.score.detail.maintenance) / 3) * 100).toFixed(2)
-  return <div className={classes.container} style={{ backgroundColor: average > 90 ? 'red' : 'transparent'}}>
+  return <div className={classes.container} style={{ backgroundColor: average > 90 ? '#e3e7fe' : 'transparent'}}>
     <Tooltip title={`Position: ${index}`}>
       <Typography color="textSecondary" variant="h6" style={{ flex: '1 1 100%'}}>
         {`${average}%`}

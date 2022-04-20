@@ -21,6 +21,9 @@ const GridRowsNg = ({ children, className, style, generateKey }) => {
   const [presentColumns, setPresentColumns] = useState([])
 
   const componentTypeCheck = (component, key) => {
+    if (component === null) {
+      return <div key={key} style={{ margin: '0px', padding: '0px'}} id="auto-generated" />
+    }
     return typeof component === 'string' || typeof component.type === 'symbol'
       ? <div>{component}</div>
       : <Fragment key={key}>{component}</Fragment>
@@ -29,6 +32,7 @@ const GridRowsNg = ({ children, className, style, generateKey }) => {
   useEffect(() => {
     setPresentColumns(grid
       .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
+      // .filter(gridItem => !gridItem.header.noColumn)
       .map(gridItem => ({
         component: gridItem.row.component,
         key: gridItem.row.key
@@ -54,7 +58,8 @@ const GridRowsNg = ({ children, className, style, generateKey }) => {
       ? `
         .grid-rows-grid > *:nth-child(${index}) {
           display: ${gridItem?.row?.noWrapper ? 'flex' : 'inline-block'};
-          margin: 0px ${(global?.style?.gap || '0')}px;
+          padding: ${global.style.rowPadding.split(" ")[0]} ${(global?.style?.gap || '0')}px;
+          margin: -${(global?.style?.gap || '0')}px 0px;
         }
         .grid-rows-grid > *:nth-child(${index + 1}) {
           justify-content: ${gridItem?.header?.align || 'flex-start'};
@@ -77,15 +82,19 @@ const GridRowsNg = ({ children, className, style, generateKey }) => {
     .filter(gridItem => gridItem.header.visible === undefined ? true : gridItem.header.visible)
     .map((gridItem, index) => gridItem?.header?.noColumn ? `
     .grid-rows-grid > *:nth-child(${index + 1}) {
+      ${gridItem.row.component !== null && `
       margin:
-      ${index !== 0 ? '0' : `-${global.style.rowPadding.split(" ")[0]}`}
-      -${(gridItem?.row?.columnEnd && gridItem?.row?.columnEnd !== 'none') ? 0 : global.style.rowPadding.split(" ")[1]}
-      ${index === 0 ? '0' : `-${global.style.rowPadding.split(" ")[0]}`}
-      -${(gridItem?.row?.columnStart && gridItem?.row?.columnStart !== 0) ? 0 : global.style.rowPadding.split(" ")[1]} !important;
+        ${index !== 0 ? '0' : `-${global.style.rowPadding.split(" ")[0]}`}
+        -${(gridItem?.row?.columnEnd && gridItem?.row?.columnEnd !== 'none') ? 0 : global.style.rowPadding.split(" ")[1]}
+        ${index === 0 ? '0' : `-${global.style.rowPadding.split(" ")[0]}`}
+        -${(gridItem?.row?.columnStart && gridItem?.row?.columnStart !== 0) ? 0 : global.style.rowPadding.split(" ")[1]} !important;
+      `
+      }
       grid-column-start: ${gridItem?.row?.columnStart || '1'};
       grid-column-end: ${gridItem?.row?.columnEnd || 'none'};
       grid-row-start: ${gridItem?.row?.rowStart || '0'};
       grid-row-end: ${gridItem?.row?.rowEnd || '0'};
+      z-index: 1;
     }
     `:'').join('')}
   `
