@@ -92,7 +92,7 @@ const Grid = ({ data, grid, global, children, ...props }) => {
 
   return <div style={{
     display: 'flex',
-    position: 'absolute',
+    position: 'relative',
     width: '100%',
     height: '100%',
     inset: '0px',

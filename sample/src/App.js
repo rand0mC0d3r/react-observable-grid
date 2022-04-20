@@ -11,6 +11,7 @@ import GridColumnsNg from './components/GridColumnsNg';
 import GridHeadersNg from './components/GridHeadersNg';
 import GridRowsNg from './components/GridRowsNg';
 import GridStatsNg from './components/GridStatsNg';
+import GridSticky from './components/GridSticky';
 import { Grid } from './components/GridStoreNg';
 import ColumnManager from './parts/ColumnManager';
 import DataStores from './parts/DataStores';
@@ -100,47 +101,48 @@ const App = () => {
       </div> */}
       <div className={classes.backgroundContainer} style={{ display: 'flex', flexDirection: 'column', position: 'relative', gap: '8px', flex: '1 1 auto'}}>
     {1 === 1 && <Grid {...{ data: dataNew, grid: processedGrid, global }}>
-      {/* <GridHeadersNg className={classes.header} >
-        {({ headers }) => headers.map(({ key, component, sort, align }) => component)}
-      </GridHeadersNg> */}
-      <GridHeadersNg
-        className={classes.header}
-        // upComponent={<>UP</>}
-        // downComponent={<>DOWN</>}
-        fallbackComponent={(component, { sort }) => <Typography variant="caption" color={sort.isActive ? 'primary' : 'textSecondary'}>{component}</Typography>}
-      />
-      <GridColumnsNg >
-        {/* {({ columns }) => columns.map(({ key, align }) => <div key={key}>|</div> )} */}
-      </GridColumnsNg>
-      <GridRowsNg selectedRow={selectedRow} generateKey={(row) => row.package.name}>
-        {({ rows, className, styleProps }) => rows.map(({ style, data, component, alternating, index }) => <div
-          onMouseUp={() => {
-            setSelectedRow(index)
-            setSelectedItem({
-              url: Object.entries(data.package.links).filter(([key, _]) => key === 'repository').map(([_, value]) => value)[0],
-              name: data.package.name,
-            })
-          }}
-          style={style}
-          className={[
-          className,
-          classes.row,
-          alternating ? classes.alternating : '',
-          selectedRows.includes(data.package.name) ? classes.selected : '',
-          (selectedItem?.name === data.package.name && !richPayloads.some(rp => rp.repo === data.package.name)) ? classes.isBusy : '',
-          index === selectedRow ? classes.focused : '',
-          ].filter(Boolean).join(' ')}
-          {...{ id: data.package.name, key: data.package.name, style: { ...styleProps, borderBottom: '1px solid #DDD', }
-          }}>
-          {component}
-        </div>)}
-      </GridRowsNg>
-      <GridStatsNg className={classes.stats}>
-        {({ total, sort }) => <div >
-          {total} {sort.column} {sort.direction}
-        </div>}
-      </GridStatsNg>
-        </Grid>}
+            {/* <GridHeadersNg className={classes.header} >
+              {({ headers }) => headers.map(({ key, component, sort, align }) => component)}
+            </GridHeadersNg> */}
+            <GridHeadersNg
+              className={classes.header}
+              // upComponent={<>UP</>}
+              // downComponent={<>DOWN</>}
+              fallbackComponent={(component, { sort }) => <Typography variant="caption" color={sort.isActive ? 'primary' : 'textSecondary'}>{component}</Typography>}
+            />
+            <GridColumnsNg >
+              {/* {({ columns }) => columns.map(({ key, align }) => <div key={key}>|</div> )} */}
+            </GridColumnsNg>
+            <GridRowsNg selectedRow={selectedRow} generateKey={(row) => row.package.name}>
+              {({ rows, className, styleProps }) => rows.map(({ style, data, component, alternating, index }) => <div
+                onMouseUp={() => {
+                  setSelectedRow(index)
+                  setSelectedItem({
+                    url: Object.entries(data.package.links).filter(([key, _]) => key === 'repository').map(([_, value]) => value)[0],
+                    name: data.package.name,
+                  })
+                }}
+                style={style}
+                className={[
+                className,
+                classes.row,
+                alternating ? classes.alternating : '',
+                selectedRows.includes(data.package.name) ? classes.selected : '',
+                (selectedItem?.name === data.package.name && !richPayloads.some(rp => rp.repo === data.package.name)) ? classes.isBusy : '',
+                index === selectedRow ? classes.focused : '',
+                ].filter(Boolean).join(' ')}
+                {...{ id: data.package.name, key: data.package.name, style: { ...styleProps, borderBottom: '1px solid #DDD', }
+                }}>
+                {component}
+              </div>)}
+            </GridRowsNg>
+            <GridStatsNg className={classes.stats}>
+              {({ total, sort }) => <div >
+                {total} {sort.column} {sort.direction}
+              </div>}
+            </GridStatsNg>
+            <GridSticky style={{backgroundColor: '#FFF', border: '1px solid #c7d0ff8a'}}/>
+          </Grid>}
         </div>
       </div>
     </ThemeProvider>
@@ -192,7 +194,7 @@ const useStyles = makeStyles(() => ({
     border: '1px solid #888',
     right: '16px',
     padding: '16px',
-    bottom: '16px'
+    bottom: '60px'
   },
   row: {
     backgroundColor: '#f0f0f077',

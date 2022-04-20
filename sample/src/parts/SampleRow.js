@@ -6,6 +6,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import ChevronRightSharpIcon from '@material-ui/icons/ChevronRightSharp';
 import KeyboardArrowDownSharpIcon from '@material-ui/icons/KeyboardArrowDownSharp';
 import StarsIcon from '@material-ui/icons/Stars';
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import { cloneElement, memo, useState } from 'react';
 
 export const searchString = (string, query, highlightComponent) => {
@@ -130,11 +131,12 @@ const SearchScoreColumn = memo(({ item, index }) => {
   const classes = searchScoreColumnStyles(theme)
 
   const average = parseFloat(((item.score.detail.quality + item.score.detail.popularity + item.score.detail.maintenance) / 3) * 100).toFixed(2)
-  return <div className={classes.container} style={{ backgroundColor: average > 90 ? '#e3e7fe77' : 'transparent'}}>
+  return <div className={classes.container} style={{ backgroundColor: item.searchScore > 100 ? '#e3fee399' : 'transparent'}}>
     <Tooltip title={`Position: ${index}`}>
-      <Typography color="textSecondary" variant="h6" style={{ flex: '1 1 100%'}}>
-        {`${average}%`}
-      </Typography>
+      <div style={{ flex: '1 1 100%', display: 'flex', gap: '8px', alignItems: 'center' }}>
+        {item.searchScore > 100 && <ThumbUpIcon color="action" />}
+        <Typography color="textSecondary" variant="h6">{`${average}%`}</Typography>
+      </div>
     </Tooltip>
     {[
       { title: 'Quality', value: item.score.detail.quality },
@@ -148,6 +150,8 @@ const searchScoreColumnStyles = makeStyles((theme) => ({
   container: {
     display: 'flex !important',
     gap: '4px',
+    alignItems: 'center !important',
+    alignSelf: 'stretch',
     flexWrap: 'wrap',
 
     '& > *': {

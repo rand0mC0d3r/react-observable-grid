@@ -26,7 +26,7 @@ export default ({
 				key: 'custom.section.row',
 				fullWidth: true,
 				component: (item, index, count = 3) => index % count === 0 ?
-					<div key={`header.${item.package.name}`} style={{ display: 'flex', backgroundColor: "#EEEEEE77", padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
+					<div key={`header.${item.package.name}`} style={{ display: 'flex', backgroundColor: "#EEEEEE", padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
 						<Typography variant="caption" color="textSecondary">Header from {index + 1} - {index + count}</Typography>
 				</div> : null
 			}

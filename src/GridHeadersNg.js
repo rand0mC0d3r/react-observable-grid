@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { cloneElement, useContext } from 'react';
 import DataProvider from './GridStoreNg';
 
-const GridHeadersNg = ({ children, className, style, upComponent, downComponent, fallbackComponent }) => {
+const GridHeadersNg = ({ children, className, style, upComponent, downComponent, fallbackComponent = <></> }) => {
   const { grid, headerTemplateColumns, stats, onSort, global } = useContext(DataProvider)
 
   const componentTypeCheck = (component, onClick, options) => {
