@@ -48,7 +48,9 @@ const GridRowsNg = ({ children, className, style, generateKey }) => {
       align-items: center;
       grid-template-columns: ${gridTemplateColumns};
     }
-    ${grid.map((gridItem, index) => !gridItem.header.noColumn
+    ${grid
+      .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
+      .map((gridItem, index) => !gridItem.header.noColumn
       ? `
         .grid-rows-grid > *:nth-child(${index}) {
           display: ${gridItem?.row?.noWrapper ? 'flex' : 'inline-block'};
@@ -71,7 +73,9 @@ const GridRowsNg = ({ children, className, style, generateKey }) => {
           margin: ${index !== 0 ? '0' : `-${global.style.rowPadding.split(" ")[0]}`} -${global.style.rowPadding.split(" ")[1]} ${index === 0 ? '0' : `-${global.style.rowPadding.split(" ")[0]}`} -${global.style.rowPadding.split(" ")[1]} !important;
         }
     `).join('')}
-    ${grid.map((gridItem, index) => gridItem?.header?.noColumn ? `
+    ${grid
+    .filter(gridItem => gridItem.header.visible === undefined ? true : gridItem.header.visible)
+    .map((gridItem, index) => gridItem?.header?.noColumn ? `
     .grid-rows-grid > *:nth-child(${index + 1}) {
       margin:
       ${index !== 0 ? '0' : `-${global.style.rowPadding.split(" ")[0]}`}

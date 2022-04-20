@@ -69,7 +69,7 @@ const App = () => {
   }
 
   return <>
-    <GridStructure {...{ searchTerm, setOpenRows, openRows, selectedRows, setSelectedRows, richPayloads, setSearchTerm, contributors, setProcessedGrid }} />
+    <GridStructure {...{ processedGrid, searchTerm, setOpenRows, openRows, selectedRows, setSelectedRows, richPayloads, setSearchTerm, contributors, setProcessedGrid }} />
     <DataStores {...{currentSearchTerm, setTotal, setCurrentSearchTerm,
       setDataNew, setTerms, suggestions, setSuggestions,
       richPayloads, selectedItem, setRichPayloads, trees, setTrees,
@@ -89,7 +89,7 @@ const App = () => {
         <div>{selectedRows}</div>
         <div><ColumnManager {...{ processedGrid, setProcessedGrid}}  /></div>
       <div>
-        {/* {console.log(processedGrid.map(row => `${row.header.key} ${row.header.visible}`))} */}
+        {JSON.stringify(processedGrid.map(row => `${row.header.key} ${row.header.visible}`))}
         {/* {dataNew.map(item => <div key={item.package.name}>{item.package.publisher.username}</div>)} */}
       </div>
       <div style={{display: 'flex', gap: '8px', flexWrap: 'wrap' }}>

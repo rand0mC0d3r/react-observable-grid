@@ -1,17 +1,32 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { faLink, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Chip, TextField } from '@material-ui/core';
+import { Button, Popover } from '@material-ui/core';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import { useState } from 'react';
 
 export default ({ processedGrid, setProcessedGrid }) => {
+
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
 
   const toggleVisibility = (key) => {
     setProcessedGrid(processedGrid.map(({ header, row}) => {
       if (header.key === key) {
         return {
-          header: { ...header, visible: header.visible ? !header.visible : true },
+          header: { ...header, visible: header.visible === undefined ? false : !header.visible },
           row: row
         }
       }
@@ -33,18 +48,49 @@ export default ({ processedGrid, setProcessedGrid }) => {
     setProcessedGrid(newProcessedGrid)
   }
 
-  return <>
-    {processedGrid.map(({ header, row }, index) => <Chip
-      variant="outlined"
-      size="small"
-      label={<div style={{display: 'flex', gap: '8px', flexWrap: 'nowrap'}}>
-        <div onClick={() => swapWithPreviousIndex(index)}>UP</div>
-        <div onClick={() => swapWithNextIndex(index)}>DOWN</div>
-        {index} . {header.key}
-      </div>}
-      key={header.key}
-      onDelete={() => toggleVisibility(header.key)}
-      deleteIcon={<>{header.visible === undefined ? <VisibilityIcon /> : (header.visible ? <VisibilityIcon /> : <VisibilityOffIcon />)}</>}
-    />)}
-  </>
+  const theme = useTheme()
+  const classes = styles(theme)
+
+  return <div>
+    <Button variant="outlined" color="primary" onClick={handleClick}>
+        Toggle columns
+    </Button>
+    <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center',}}
+        transformOrigin={{ vertical: 'top', horizontal: 'center',}}
+    >
+      <div style={{ border: '1px solid #CCC', display: 'flex', flexDirection: 'column', gap: '8px', margin: '8px' }}>
+        {processedGrid.map(({ header, row }, index) => <div key={header.key} className={classes.container}>
+          <ChevronLeftIcon onClick={() => swapWithPreviousIndex(index)} />
+          <ChevronRightIcon onClick={() => swapWithNextIndex(index)} />
+          <div style={{ flex: '1 1 auto' }}>{index} . {header.key}</div>
+            {header.visible === undefined
+              ? <VisibilityIcon onClick={() => toggleVisibility(header.key)} />
+              : (header.visible
+                ? <VisibilityIcon onClick={() => toggleVisibility(header.key)} />
+                : <VisibilityOffIcon onClick={() => toggleVisibility(header.key)} />)}
+        </div>)}
+        </div>
+      </Popover>
+
+  </div>
+
 }
+
+const styles = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+    gap: '4px',
+    flexWrap: 'nowrap',
+    padding: '8px',
+    alignItems: 'center',
+
+    '&:hover': {
+      backgroundColor: '#eaedfe'
+    }
+  }
+}))

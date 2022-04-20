@@ -118,11 +118,12 @@ const SelectionAndOpenColumn = memo(({item, index, setOpenRows, openRows, select
       disableRipple
       color="primary"
       checked={selectedRows.some(sr => sr === item.package.name)}
-      onClick={() => setSelectedRows(selectedRows.some(sr => sr === item.package.name)
+      onClick={() => setSelectedRows(() => selectedRows.some(sr => sr === item.package.name)
         ? [...selectedRows.filter(sr => sr !== item.package.name)]
         : [...selectedRows, item.package.name])} />
   </div>
 })
+
 const SearchScoreColumn = memo(({ item, index, setOpenRows, openRows }) => {
   const theme = useTheme()
   const classes = searchScoreColumnStyles(theme)

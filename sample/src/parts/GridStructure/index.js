@@ -7,8 +7,11 @@ import {
 	MetadataColumn, NameColumn, SearchScoreColumn, SelectionAndOpenColumn
 } from '../SampleRow';
 
-export default ({ searchTerm, setOpenRows, openRows, selectedRows, setSelectedRows, richPayloads, setSearchTerm, contributors, setProcessedGrid}) => {
-	const grid = useMemo(() => [
+export default ({ searchTerm, setOpenRows, openRows, selectedRows, setSelectedRows, richPayloads, processedGrid, setSearchTerm, contributors, setProcessedGrid}) => {
+	// const grid = useMemo(() => , [contributors, openRows, richPayloads, searchTerm, selectedRows, setOpenRows, setSearchTerm, setSelectedRows])
+
+	useEffect(() => {
+		setProcessedGrid(() => [
 		{
 			header: {
 				key: 'custom.section.header',
@@ -228,11 +231,8 @@ export default ({ searchTerm, setOpenRows, openRows, selectedRows, setSelectedRo
 		//     </div>
 		// 	}
 		// },
-	], [contributors, openRows, richPayloads, searchTerm, selectedRows, setOpenRows, setSearchTerm, setSelectedRows])
-
-	useEffect(() => {
-		setProcessedGrid(grid)
-	}, [grid, setProcessedGrid])
+	])
+	}, [setProcessedGrid, setOpenRows, openRows, selectedRows, setSelectedRows, searchTerm, richPayloads, setSearchTerm, contributors])
 
 	return null
 }
