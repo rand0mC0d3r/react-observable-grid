@@ -1,16 +1,16 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useState } from 'react';
-import DataProvider from './GridStoreNg';
+import React, { useContext } from 'react';
+import DataProvider from './GridStore';
 
-const GridHeadersNg = ({ children, className, style }) => {
+const GridStats = ({ children, className, style }) => {
   const { stats } = useContext(DataProvider)
   const { total, sort }  = stats
 
   return <div {...{ className }} style={{ ...style, zIndex: 2}}>
     {children && children({ total, sort })}
-    </div>
+  </div>
 }
 
-GridHeadersNg.propTypes = { children: PropTypes.func.isRequired }
+GridStats.propTypes = { children: PropTypes.func.isRequired }
 
-export default GridHeadersNg
+export default GridStats

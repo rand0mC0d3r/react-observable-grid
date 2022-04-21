@@ -9,8 +9,6 @@ import DataStores from './parts/DataStores';
 import GridStructure from './parts/GridStructure';
 import SearchField from './parts/SearchField';
 
-
-
 const App = () => {
   let queryTimeout
 
