@@ -10,15 +10,17 @@ export default ({ children, style, className }) => {
     const columnsVisible = grid
       .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
       .filter(gridItem => !gridItem.header.noColumn)
-    setPresentColumns(columnsVisible.map((gridItem, index) => {
+    const mappedColumns = columnsVisible.map((gridItem, index) => {
       const { key, align } = gridItem.header
       return {
         key: key,
         align: align,
         border: index !== columnsVisible.length - 1,
       }
-    }))
-  }, [grid])
+    })
+    if (presentColumns.length !== 0 || JSON.stringify(mappedColumns) === JSON.stringify(presentColumns)) return
+    setPresentColumns(mappedColumns)
+  }, [grid, presentColumns])
 
   const classes = `
     .grid-columns-grid {
@@ -29,13 +31,19 @@ export default ({ children, style, className }) => {
       position: absolute;
       display: grid;
     }
-    .grid-columns-grid > * {
-      border-top-style: none !important;
-      border-left-style: none !important;
-      border-bottom-style: none !important;
+    ${!children && `
+      .grid-columns-grid > * {
+        border-top-style: none !important;
+        border-left-style: none !important;
+        border-bottom-style: none !important;
+      }
+      .grid-columns-grid > *:last-child {
+        border-right-style: none !important;
+      }`
     }
-    .grid-columns-grid > *:last-child {
-      border-right-style: none !important;
+    .grid-column {
+      border: 0px none transparent;
+      border-right: 1px solid #CCC;
     }
   `
 
@@ -45,20 +53,17 @@ export default ({ children, style, className }) => {
       style={{
         gridTemplateColumns: headerTemplateColumns,
         ...global.style,
-        ...style,
         paddingTop: '0',
         paddingBottom: '0',
       }}
     >
       {children
-        ? children({ columns: presentColumns.map(pc => ({ key: pc.key, align: pc.align})) })
-        : <>
-        {presentColumns.map(pcItem => <div key={pcItem.key} style={{
-          border: '0px none transparent',
-          borderRight: pcItem.border ? '1px solid #CCC' : '0px none',
-          margin: `0px -${(style?.gap?.replace('px', '') / 2) || 0}px`,
-        }}/>)}
-        </>}
+        ? children({ columns: presentColumns.map(({ key, align }) => ({ key, align })) })
+        : presentColumns.map(({ key }) => <div {...{
+          key,
+          className: 'grid-column',
+          style: { ...style, margin: `0px -${(style?.gap?.replace('px', '') / 2) || 0}px` }
+        }} />)}
     </div>
   </>
 }

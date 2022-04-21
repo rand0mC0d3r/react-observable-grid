@@ -11,6 +11,8 @@ const Grid = ({ data, grid, global, children, ...props }) => {
   const [_headerTemplateColumns, set_HeaderTemplateColumns] = useState('')
   const [_gridTemplateColumns, set_GridTemplateColumns] = useState('')
 
+  const _defaultWidth = '1fr'
+
   const jsonPathToValue = (jsonData, path) => {
     if (!(jsonData instanceof Object) || typeof (path) === "undefined") {
       throw "Not valid argument:jsonData:" + jsonData + ", path:" + path;
@@ -38,7 +40,10 @@ const Grid = ({ data, grid, global, children, ...props }) => {
     filtered: '2',
     order: 'asc',
     orderBy: '',
-    sort: {}
+    sort: {
+      direction: 'asc',
+      column: ''
+    }
   })
 
   const sortData = (data, column, direction) => {
@@ -50,34 +55,26 @@ const Grid = ({ data, grid, global, children, ...props }) => {
   }
 
   useEffect(() => {
-    setStats(stats => ({ ...stats, total: data?.length || 0 }))
-    set_Data(sortData(data, stats.sort.column, stats.sort.direction))
-  }, [data])
-
-  useEffect(() => {
-    console.log('computing grid', grid)
-    const gridColumns = grid
-      .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
-      .filter(gridItem => !gridItem.header.noColumn)
-      .map(gridItem => gridItem.header.width)
-      .join(' ')
-    set_HeaderTemplateColumns(gridColumns)
-    set_GridTemplateColumns(gridColumns)
-  }, [grid])
-
-  useEffect(() => {
-    // console.log(data)
-  }, [data])
-
-  useEffect(() => {
-    setStats(stats => ({
-      ...stats, sort: {
-        ...stats.sort,
+    setStats(prevStats => ({
+      ...prevStats, sort: {
+        ...prevStats.sort,
+        total: data?.length || 0,
         direction: global?.sort?.initialDirection || 'asc',
         column: global?.sort?.initialColumn || '',
       }
       }))
-  }, [global])
+    set_Data(sortData(data, stats.sort.column, stats.sort.direction))
+  }, [data, global])
+
+  useEffect(() => {
+    const gridColumns = grid
+      .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
+      .filter(gridItem => !gridItem.header.noColumn)
+      .map(gridItem => gridItem.header.width || _defaultWidth)
+      .join(' ')
+    set_HeaderTemplateColumns(gridColumns)
+    set_GridTemplateColumns(gridColumns)
+  }, [grid])
 
   const onSort = (key) => {
     setStats(stats => ({
@@ -105,9 +102,7 @@ const Grid = ({ data, grid, global, children, ...props }) => {
         data: _data,
         gridTemplateColumns: _gridTemplateColumns,
         headerTemplateColumns: _headerTemplateColumns,
-        grid, stats, global,
-
-        onSort
+        grid, stats, global, onSort
       }}>
       {children}
     </Context.Provider>

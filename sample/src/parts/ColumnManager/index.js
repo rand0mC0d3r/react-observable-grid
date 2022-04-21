@@ -21,7 +21,11 @@ export default ({ processedGrid, setProcessedGrid, columnsState, setColumnsState
 
   useEffect(() => {
     if (columnsState.length === 0) {
-      setColumnsState(processedGrid.map(({ header }) => ({ key: header.key, visible: header.visible === undefined ? true : header.visible })))
+      setColumnsState(processedGrid.map(({ header }) => ({
+        key: header.key,
+        align: header.align,
+        visible: header.visible === undefined ? true : header.visible
+      })))
     }
   }, [processedGrid, columnsState, setColumnsState]);
 
@@ -33,6 +37,7 @@ export default ({ processedGrid, setProcessedGrid, columnsState, setColumnsState
       if (header.key === key) {
         return {
           key: header.key,
+          align: header.align,
           visible: header.visible === undefined ? false : !header.visible,
         }
       }
@@ -71,14 +76,14 @@ export default ({ processedGrid, setProcessedGrid, columnsState, setColumnsState
         transformOrigin={{ vertical: 'top', horizontal: 'center',}}
     >
       <div style={{ border: '1px solid #CCC', display: 'flex', flexDirection: 'column', gap: '8px', margin: '8px' }}>
-        {columnsState.map(({ key, visible }, index) => <div key={key} className={classes.container}>
+        {columnsState.map(({ key, visible, align }, index) => <div key={key} className={classes.container}>
           <ChevronLeftIcon onClick={() => swapWithPreviousIndex(index)} />
           <ChevronRightIcon onClick={() => swapWithNextIndex(index)} />
           <Typography
             variant="subtitle2"
             color={visible === undefined || visible ? 'primary' : 'textSecondary'}
             style={{ flex: '1 1 auto' }}
-          >{index} . {key}</Typography>
+          >{index} . {align} . {key}</Typography>
             {visible === undefined
               ? <VisibilityIcon onClick={() => toggleVisibility(key)} />
               : (visible
@@ -87,9 +92,7 @@ export default ({ processedGrid, setProcessedGrid, columnsState, setColumnsState
         </div>)}
         </div>
       </Popover>
-
   </div>
-
 }
 
 const styles = makeStyles((theme) => ({
@@ -99,7 +102,6 @@ const styles = makeStyles((theme) => ({
     flexWrap: 'nowrap',
     padding: '8px',
     alignItems: 'center',
-
     '&:hover': {
       backgroundColor: '#eaedfe'
     }

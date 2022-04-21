@@ -3,12 +3,16 @@ import PropTypes from 'prop-types';
 import { cloneElement, useContext } from 'react';
 import DataProvider from './GridStore';
 
-const GridHeaders = ({ children, className, style, upComponent, downComponent, fallbackComponent = <></> }) => {
+const GridHeaders = ({ children, className, style, upComponent, downComponent, fallbackComponent }) => {
   const { grid, headerTemplateColumns, stats, onSort, global } = useContext(DataProvider)
 
-  const componentTypeCheck = (component, onClick, options) => {
+  const componentTypeCheck = (component, options) => {
+    const theFallback = fallbackComponent
+      ? <>{fallbackComponent(component, options)}</>
+      : <>{component}</>
+
     return typeof component === 'string' || typeof component.type === 'symbol'
-      ? <>{cloneElement(fallbackComponent(component, options), { style: { cursor: onClick ? 'pointer' : 'default'}})}</>
+      ? <>{theFallback}</>
       : component({ ...options })
   }
 
@@ -24,16 +28,19 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
       margin: 0px ${global?.style?.gap || '0'}px;
     }
     ${grid
-      // .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
+      .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
       .filter(gridItem => !gridItem.header.noColumn)
       .map((gridItem, index) => `
-    .grid-headers-grid > *:nth-child(${index}) {
-      justify-content: ${gridItem?.header?.align || 'flex-start'};
-    }`).join('')}
+        .grid-headers-grid > *:nth-child(${index + 1}) {
+          content: '${gridItem.header.key}';
+          justify-content: ${gridItem?.header?.align || 'flex-start'};
+        }`).join('')}
     .grid-headers-injected {
       display: flex;
+      overflow: hidden;
       user-select: none;
       gap: 4px;
+      font-size: 0.9em;
       align-items: center;
     }
   `
@@ -70,15 +77,17 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
           .map(({ header }) => <div
             key={header.key}
             className='grid-headers-injected'
+            style={{
+              cursor: !header.noSort && !header.disableOnClick ? 'pointer' : 'default'
+            }}
             onClick={() => !header.noSort && !header.disableOnClick && onSort(header.key)}
             onContextMenu={(e) => {
               e.preventDefault()
               !header.noSort && !header.disableOnClick && onSort('')
             }}
           >
-            {componentTypeCheck(
+            {header.component !== undefined ? componentTypeCheck(
               header.component,
-              !header.noSort && !header.disableOnClick,
               {
                 onSort: (path) => !header.noSort && onSort(path !== undefined ? path : header.key) ,
                 sort: {
@@ -90,10 +99,11 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
                   {stats.sort.direction === 'asc' ? '↑' : '↓'}
                 </> : null}</>
               }
-            )}
-            {(typeof header.component === 'string' || typeof header.component.type === 'symbol') && !header.noSort && stats.sort.column === header.key && <>
+            ) : header.key}
+            {(header.component === undefined || typeof header.component === 'string' || typeof header.component.type === 'symbol')
+              && !header.noSort && stats.sort.column === header.key && <span>
               {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
-            </>}
+            </span>}
           </div>)}
     </div>
   </>

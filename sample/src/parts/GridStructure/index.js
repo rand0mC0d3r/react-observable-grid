@@ -16,21 +16,21 @@ export default ({
 
 	useEffect(() => {
 		const grid = [
-			{
-				header: {
-					key: 'custom.section.header',
-					align: 'flex-end',
-					noColumn: true,
-				},
-				row: {
-					key: 'custom.section.row',
-					fullWidth: true,
-					component: (item, index, count = 3) => index % count === 0 ?
-						<div key={`header.${item.package.name}`} style={{ display: 'flex', backgroundColor: "#EEEEEE", padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
-							<Typography variant="caption" color="textSecondary">Header from {index + 1} - {index + count}</Typography>
-					</div> : null
-				}
-			},
+			// {
+			// 	header: {
+			// 		key: 'custom.section.header',
+			// 		align: 'flex-end',
+			// 		noColumn: true,
+			// 	},
+			// 	row: {
+			// 		key: 'custom.section.row',
+			// 		fullWidth: true,
+			// 		component: (item, index, count = 3) => index % count === 0 ?
+			// 			<div key={`header.${item.package.name}`} style={{ display: 'flex', backgroundColor: "#EEEEEE", padding: '8px', gap: '4px', flexWrap: 'wrap' }}>
+			// 				<Typography variant="caption" color="textSecondary">Header from {index + 1} - {index + count}</Typography>
+			// 		</div> : null
+			// 	}
+			// },
 			// {
 			//   header: {
 			//     key: 'selection',
@@ -62,6 +62,17 @@ export default ({
 				row: {
 					key: 'selection',
 					component: (item, index) => <SelectionAndOpenColumn {...{ item, index, setOpenRows, openRows, selectedRows, setSelectedRows }} />,
+				}
+			},
+			{
+				header: {
+					key: 'package.description',
+					align: 'center',
+					noSort: true,
+				},
+				row: {
+					key: 'selectddion',
+					component: item => item.package.description,
 				}
 			},
 			{

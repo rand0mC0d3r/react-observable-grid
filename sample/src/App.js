@@ -13,7 +13,7 @@ const App = () => {
   let queryTimeout
 
   const [isLive, setIsLive] = useState(false)
-  const [dataNew, setDataNew] = useState([]);
+  const [data, setData] = useState([]);
   const [columnsState, setColumnsState] = useState([]);
   const [processedGrid, setProcessedGrid] = useState([]);
   const [terms, setTerms] = useState([]);
@@ -60,7 +60,7 @@ const App = () => {
       setSearchTerm, contributors, setProcessedGrid, columnsState,
     }} />
     <DataStores {...{currentSearchTerm, setTotal, setCurrentSearchTerm,
-      setDataNew, setTerms, suggestions, setSuggestions,
+      setDataNew: setData, setTerms, suggestions, setSuggestions,
       richPayloads, selectedItem, setRichPayloads, trees, setTrees,
       contributors, setContributors}} />
     <ThemeProvider {...{ theme }} >
@@ -87,57 +87,50 @@ const App = () => {
         total {total}
       </div> */}
         <div className={classes.backgroundContainer} style={{ display: 'flex', flexDirection: 'column', position: 'relative', gap: '8px', flex: '1 1 auto' }}>
-
           {isLive ? <>
-            <GridLive>
-
-            </GridLive>
+            live
             </>
-            : <>
-      {processedGrid.length > 0 && <Grid {...{ data: dataNew, grid: processedGrid, global }}>
-            {/* <GridHeadersNg className={classes.header} >
-              {({ headers }) => headers.map(({ key, component, sort, align }) => component)}
-            </GridHeadersNg> */}
-            <GridHeaders
-              className={classes.header}
-              // upComponent={<>UP</>}
-              // downComponent={<>DOWN</>}
-              fallbackComponent={(component, { sort }) => <Typography variant="caption" color={sort.isActive ? 'primary' : 'textSecondary'}>{component}</Typography>}
-            />
-            <GridColumns>
-              {/* {({ columns }) => columns.map(({ key, align }) => <div key={key}>|</div> )} */}
-            </GridColumns>
-            <GridRows selectedRow={selectedRow} generateKey={(row) => row.package.name}>
-              {({ rows, className, styleProps }) => rows.map(({ style, data, component, alternating, index }) => <div
-                onMouseUp={() => {
-                  setSelectedRow(index)
-                  setSelectedItem({
-                    url: Object.entries(data.package.links).filter(([key, _]) => key === 'repository').map(([_, value]) => value)[0],
-                    name: data.package.name,
-                  })
-                }}
-                style={style}
-                className={[
-                className,
-                classes.row,
-                alternating ? classes.alternating : '',
-                selectedRows.includes(data.package.name) ? classes.selected : '',
-                (selectedItem?.name === data.package.name && !richPayloads.some(rp => rp.repo === data.package.name)) ? classes.isBusy : '',
-                index === selectedRow ? classes.focused : '',
-                ].filter(Boolean).join(' ')}
-                {...{ id: data.package.name, key: data.package.name, style: { ...styleProps, borderBottom: '1px solid #DDD', }
-                }}>
-                {component}
-              </div>)}
-            </GridRows>
-            <GridStats className={classes.stats}>
-              {({ total, sort }) => <div >
-                {total} {sort.column} {sort.direction}
-              </div>}
-            </GridStats>
-            <GridSticky style={{backgroundColor: '#FFF', border: '1px solid #c7d0ff8a'}}/>
+            : <Grid {...{ data, grid: processedGrid, global }}>
+                <GridHeaders
+                  className={classes.header}
+                  fallbackComponent={(component, { sort }) => <Typography variant="caption" color={sort.isActive ? 'primary' : 'textSecondary'}>{component}</Typography>}
+                />
+                <GridHeaders />
+                <GridColumns />
+                {/* <GridColumns style={{border: '1px dotted red'}} /> */}
+                {/* <GridColumns>
+                  {({ columns }) => columns.map(({ key }) => <div style={{ borderRight: '1px dotted red' }} key={key}></div>)}
+                </GridColumns> */}
+                <GridRows selectedRow={selectedRow} generateKey={(row) => row.package.name}>
+                  {({ rows, className, styleProps }) => rows.map(({ style, data, component, alternating, index }) => <div
+                    onMouseUp={() => {
+                      setSelectedRow(index)
+                      setSelectedItem({
+                        url: Object.entries(data.package.links).filter(([key, _]) => key === 'repository').map(([_, value]) => value)[0],
+                        name: data.package.name,
+                      })
+                    }}
+                    style={style}
+                    className={[
+                    className,
+                    classes.row,
+                    alternating ? classes.alternating : '',
+                    selectedRows.includes(data.package.name) ? classes.selected : '',
+                    (selectedItem?.name === data.package.name && !richPayloads.some(rp => rp.repo === data.package.name)) ? classes.isBusy : '',
+                    index === selectedRow ? classes.focused : '',
+                    ].filter(Boolean).join(' ')}
+                    {...{ id: data.package.name, key: data.package.name, style: { ...styleProps, borderBottom: '1px solid #DDD', }
+                    }}>
+                    {component}
+                  </div>)}
+                </GridRows>
+                {/* <GridStats className={classes.stats}>
+                  {({ total, sort }) => <div >
+                    {total} {sort.column} {sort.direction}
+                  </div>}
+                </GridStats>
+                <GridSticky style={{backgroundColor: '#FFF', border: '1px solid #c7d0ff8a'}}/> */}
               </Grid>}
-            </>}
         </div>
       </div>
     </ThemeProvider>
