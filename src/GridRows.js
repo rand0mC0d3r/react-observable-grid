@@ -44,10 +44,13 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
 
   const componentTypeCheck = (component, key, index) => {
     if (component === null) {
-      return <div onClick={() => setSelectedIndex(index)} key={key} style={{ margin: '0px', padding: '0px'}} id="auto-generated" />
+      return <div key={key} style={{ margin: '0px', padding: '0px'}} id="auto-generated" />
+    }
+    if (!!component.length) {
+      return <div key={key} className="grid-row-inferred">{component}</div>
     }
     return typeof component === 'string' || typeof component.type === 'symbol'
-      ? <div className='grid-row-inferred' onClick={() => setSelectedIndex(index)}>{component}</div>
+      ? <div className='grid-row-inferred'>{component}</div>
       : <Fragment key={key}>{component}</Fragment>
   }
 
@@ -69,6 +72,7 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
   const classes = `
     .grid-row-inferred {
       word-break: break-all;
+      white-space: pre-wrap;
     }
     .grid-rows-grid {
       display: grid;
@@ -143,7 +147,7 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
             component: presentColumns.map(({ component, key }) => componentTypeCheck(
               typeof component !== 'string'
                 ? component(dataItem, index)
-                : JSON.stringify(jsonPathToValue(dataItem, key)),
+                : jsonPathToValue(dataItem, key),
               `${index}.${key}.${generateKey(dataItem)}`,
               index))
           }))

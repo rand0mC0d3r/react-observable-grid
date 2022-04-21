@@ -21,8 +21,8 @@ export default ({ processedGrid, setProcessedGrid, columnsState, setColumnsState
 
   useEffect(() => {
     if (columnsState.length === 0) {
-      setColumnsState(processedGrid.map(({ header }) => ({
-        key: header.key,
+      setColumnsState(processedGrid.map(({ header, key }) => ({
+        key,
         align: header.align,
         visible: header.visible === undefined ? true : header.visible
       })))

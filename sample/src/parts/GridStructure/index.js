@@ -52,28 +52,30 @@ export default ({
 			// 	}
 			// },
 			{
+				key: 'openRow',
 				header: {
-					key: 'openRow',
 					align: 'center',
 					width: '90px',
 					noSort: true,
 					component: () => <AccountTreeSharpIcon />,
 				},
 				row: {
-					key: 'selection',
 					component: (item, index) => <SelectionAndOpenColumn {...{ item, index, setOpenRows, openRows, selectedRows, setSelectedRows }} />,
 				}
 			},
 			{
-				key: 'package.keywords',
+				key: 'package.text',
 				header: {
 					noSort: true,
 					component: 'Packet Description',
 				},
+				row: {
+					component: () => 'fff'
+				}
 			},
 			{
+				key: 'thumbnails',
 				header: {
-					key: 'thumbnails',
 					align: 'center',
 					width: '270px',
 					visible: false,
@@ -81,7 +83,6 @@ export default ({
 					component: () => <PhotoSizeSelectActualIcon />,
 				},
 				row: {
-					key: 'thumbnails.row',
 					component: item => <div style={{ width: '250px', height: '150px', display: 'block', overflow: 'hidden' }}>
 						<iframe
 							key={item.package.name}
@@ -99,21 +100,20 @@ export default ({
 				}
 			},
 			{
+				key: 'searchScore',
 				header: {
-					key: 'searchScore',
 					align: 'flex-end',
 					width: '120px',
 					component: 'Search Score',
 				},
 				row: {
-					key: 'scores',
 					noWrapper: true,
 					component: item => <SearchScoreColumn {...{ item }} />,
 				}
 			},
 			{
+				key: 'package.name',
 				header: {
-					key: 'package.name',
 					width: 'minmax(250px, 1fr)',
 					disableOnClick: true,
 					component: ({ onSort, sort, directionComponent }) => <div style={{ display: 'flex', gap: '4px', alignItems: 'flex-start', flexDirection: 'column' }}>
@@ -130,69 +130,63 @@ export default ({
 					</div>,
 				},
 				row: {
-					key: 'type',
 					component: item => <NameColumn {...{ item, searchTerm, richPayloads }} />
 				}
 			},
 			{
+				key: 'package.descriptionxx',
 				header: {
-					key: 'package.description',
 					width: 'minmax(200px, 1fr)',
 					align: 'flex-end',
 					component: 'Description',
 				},
 				row: {
-					key: 'description',
 					noWrapper: true,
 					component: item => <MetadataColumn {...{ item, value: item.package.description, searchTerm, setSearchTerm, setCurrentSearchTerm }} />,
 				}
 			},
 			{
+				key: 'package.keywords',
 				header: {
-					key: 'package.keywords',
 					width: 'minmax(200px, 1fr)',
 					noSort: true,
 					component: 'Keywords',
 				},
 				row: {
-					key: 'keywords',
 					component: item => <KeywordsColumn {...{ item, searchTerm, setSearchTerm, setCurrentSearchTerm }} />,
 				}
 			},
 			{
+				key: 'package.links',
 				header: {
-					key: 'package.links',
 					align: 'center',
 					width: 'minmax(140px, 160px)',
 					noSort: true,
 					component: 'Links',
 				},
 				row: {
-					key: 'links',
 					component: (item) => <LinksColumn item={item} />,
 				}
 			},
 			{
+				key: 'Collaborators',
 				header: {
-					key: 'Collaborators',
 					align: 'flex-end',
 					width: 'minmax(120px, 145px)',
 					noSort: true,
 					component: 'Collaborators',
 				},
 				row: {
-					key: 'collabs',
 					component: (item) => <CollaboratorsColumn {...{ item, contributors }} />
 				}
 			},
 			{
+				key: 'Secondary:Column',
 				header: {
-					key: 'Secondary:Column',
 					align: 'flex-end',
 					noColumn: true,
 				},
 				row: {
-					key: 'preview',
 					component: (item) => openRows.some(openRow => openRow === item.package.name)
 						&& <iframe
 							key={item.package.name}
@@ -247,13 +241,13 @@ export default ({
 
 		const newGrid = grid
 			.map(column => {
-				if (columnsState.some(cs => cs.key === column.header.key)) {
+				if (columnsState.some(cs => cs.key === column.key)) {
 
 				return {
 					...column,
 					header: {
 						...column.header,
-						visible: columnsState.find(cs => cs.key === column.header.key).visible,
+						visible: columnsState.find(cs => cs.key === column.key).visible,
 					},
 					row: {
 						...column.row,

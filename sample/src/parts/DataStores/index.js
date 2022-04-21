@@ -9,7 +9,6 @@ export default ({
   contributors, setContributors }) => {
 
   useEffect(() => {
-    console.log("started")
     if (currentSearchTerm !== '') {
       fetch(`https://api.npms.io/v2/search?q=${currentSearchTerm}&size=25`)
         .then(response => response.json())
@@ -33,7 +32,6 @@ export default ({
             .filter(item => item.count > 1 && item.term.length > 2 && item.term.toLowerCase() !== currentSearchTerm.toLowerCase())
             .filter(item => !['for', 'a', 'all','of', 'and', 'with', 'to',  'the', 'in', 'into', 'that', 'by'].some(word => word.toLowerCase() === item.term.toLowerCase())))
           setTotal(data.total)
-          console.log("done")
         });
       fetch(`https://api.npms.io/v2/search/suggestions?q=${currentSearchTerm}&size=10`)
         .then(response => response.json())

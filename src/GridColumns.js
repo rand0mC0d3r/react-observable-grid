@@ -10,17 +10,18 @@ export default ({ children, style, className }) => {
     const columnsVisible = grid
       .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
       .filter(gridItem => !gridItem.header.noColumn)
-    const mappedColumns = columnsVisible.map((gridItem, index) => {
-      const { key, align } = gridItem.header
-      return {
-        key: key,
-        align: align,
-        border: index !== columnsVisible.length - 1,
-      }
-    })
-    if (presentColumns.length !== 0 || JSON.stringify(mappedColumns) === JSON.stringify(presentColumns)) return
-    setPresentColumns(mappedColumns)
-  }, [grid, presentColumns])
+    setPresentColumns(() => grid
+      .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
+      .filter(gridItem => !gridItem.header.noColumn)
+      .map((gridItem, index) => {
+        const { key, align } = gridItem.header
+        return {
+          key: key,
+          align: align,
+          border: index !== columnsVisible.length - 1,
+        }
+      }))
+  }, [grid, headerTemplateColumns])
 
   const classes = `
     .grid-columns-grid {
