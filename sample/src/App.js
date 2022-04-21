@@ -1,20 +1,20 @@
-import { Avatar, Chip, Grid as Flexbox, Typography } from '@material-ui/core';
+import { Avatar, Button, Chip, Grid as Flexbox, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import { useMemo, useState } from 'react';
-import GridColumnsNg from './components/GridColumnsNg';
-import GridHeadersNg from './components/GridHeadersNg';
-import GridRowsNg from './components/GridRowsNg';
-import GridStatsNg from './components/GridStatsNg';
-import GridSticky from './components/GridSticky';
-import { Grid } from './components/GridStoreNg';
+// import { GridStoreNg as GridLive } from 'react-observable-grid';
+import { Grid, GridColumns, GridHeaders, GridRows, GridStats, GridSticky } from './components';
+// import { Grid } from './components/GridStoreNg';
 import ColumnManager from './parts/ColumnManager';
 import DataStores from './parts/DataStores';
 import GridStructure from './parts/GridStructure';
 import SearchField from './parts/SearchField';
 
+
+
 const App = () => {
   let queryTimeout
 
+  const [isLive, setIsLive] = useState(false)
   const [dataNew, setDataNew] = useState([]);
   const [columnsState, setColumnsState] = useState([]);
   const [processedGrid, setProcessedGrid] = useState([]);
@@ -78,6 +78,8 @@ const App = () => {
       }}>
         <Flexbox style={{ gap: '8px' }} container direction='row' justifyContent='space-between' alignItems='center' wrap="nowrap">
           <SearchField {...{ searchTerm, suggestions, setSearchTerm, setCurrentSearchTerm }} />
+          <Button disabled={isLive} onClick={() => setIsLive(true)}>Live</Button>
+          <Button disabled={!isLive} onClick={() => setIsLive(false)}>Sandbox</Button>
           <ColumnManager {...{ processedGrid, setProcessedGrid, columnsState, setColumnsState }} />
         </Flexbox>
       <div style={{display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
@@ -86,21 +88,28 @@ const App = () => {
       {/* <div>
         total {total}
       </div> */}
-      <div className={classes.backgroundContainer} style={{ display: 'flex', flexDirection: 'column', position: 'relative', gap: '8px', flex: '1 1 auto'}}>
+        <div className={classes.backgroundContainer} style={{ display: 'flex', flexDirection: 'column', position: 'relative', gap: '8px', flex: '1 1 auto' }}>
+
+          {isLive ? <>
+            <GridLive>
+
+            </GridLive>
+            </>
+            : <>
       {processedGrid.length > 0 && <Grid {...{ data: dataNew, grid: processedGrid, global }}>
             {/* <GridHeadersNg className={classes.header} >
               {({ headers }) => headers.map(({ key, component, sort, align }) => component)}
             </GridHeadersNg> */}
-            <GridHeadersNg
+            <GridHeaders
               className={classes.header}
               // upComponent={<>UP</>}
               // downComponent={<>DOWN</>}
               fallbackComponent={(component, { sort }) => <Typography variant="caption" color={sort.isActive ? 'primary' : 'textSecondary'}>{component}</Typography>}
             />
-            <GridColumnsNg >
+            <GridColumns>
               {/* {({ columns }) => columns.map(({ key, align }) => <div key={key}>|</div> )} */}
-            </GridColumnsNg>
-            <GridRowsNg selectedRow={selectedRow} generateKey={(row) => row.package.name}>
+            </GridColumns>
+            <GridRows selectedRow={selectedRow} generateKey={(row) => row.package.name}>
               {({ rows, className, styleProps }) => rows.map(({ style, data, component, alternating, index }) => <div
                 onMouseUp={() => {
                   setSelectedRow(index)
@@ -122,14 +131,15 @@ const App = () => {
                 }}>
                 {component}
               </div>)}
-            </GridRowsNg>
-            <GridStatsNg className={classes.stats}>
+            </GridRows>
+            <GridStats className={classes.stats}>
               {({ total, sort }) => <div >
                 {total} {sort.column} {sort.direction}
               </div>}
-            </GridStatsNg>
+            </GridStats>
             <GridSticky style={{backgroundColor: '#FFF', border: '1px solid #c7d0ff8a'}}/>
-          </Grid>}
+              </Grid>}
+            </>}
         </div>
       </div>
     </ThemeProvider>
