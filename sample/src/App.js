@@ -1,7 +1,7 @@
 import { Avatar, Button, Chip, Grid as Flexbox, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import { useMemo, useState } from 'react';
-// import { GridStoreNg as GridLive } from 'react-observable-grid';
+// import { Grid, GridColumns, GridHeaders, GridRows, GridStats, GridSticky } from 'react-observable-grid';
 import { Grid, GridColumns, GridHeaders, GridRows, GridStats, GridSticky } from './components';
 // import { Grid } from './components/GridStoreNg';
 import ColumnManager from './parts/ColumnManager';
