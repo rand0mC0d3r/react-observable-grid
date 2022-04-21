@@ -1,6 +1,5 @@
 import { createNewSortInstance } from 'fast-sort'
 import { createContext, useEffect, useState } from 'react'
-import HeadlessProcessing from './HeadlessProcessing'
 
 const Context = createContext()
 
