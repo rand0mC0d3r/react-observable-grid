@@ -9,11 +9,17 @@ export default ({
   contributors, setContributors }) => {
 
   useEffect(() => {
+    console.log("started")
     if (currentSearchTerm !== '') {
       fetch(`https://api.npms.io/v2/search?q=${currentSearchTerm}&size=25`)
         .then(response => response.json())
         .then(data => {
-          const newTerms = Object.entries(data.results.reduce((acc, item) => {
+          setDataNew(data.results.map(item => ({
+            ...item, custom: {
+            packageName: item.package.links.repository?.replace('https://github.com/', '')
+            }
+          })))
+          setTerms(Object.entries(data.results.reduce((acc, item) => {
             if (item?.package?.description) {
               acc.push(...item?.package?.description?.split(' '))
             }
@@ -25,13 +31,9 @@ export default ({
             .map(item => ({ term: item[0], count: item[1] }))
             .sort((a, b) => b.count - a.count)
             .filter(item => item.count > 1 && item.term.length > 2 && item.term.toLowerCase() !== currentSearchTerm.toLowerCase())
-            .filter(item => !['for', 'a', 'all','of', 'and', 'with', 'to',  'the', 'in', 'into', 'that', 'by'].some(word => word.toLowerCase() === item.term.toLowerCase()))
-          setTerms(newTerms)
+            .filter(item => !['for', 'a', 'all','of', 'and', 'with', 'to',  'the', 'in', 'into', 'that', 'by'].some(word => word.toLowerCase() === item.term.toLowerCase())))
           setTotal(data.total)
-          setDataNew(data.results.map(item => ({
-            ...item, custom: {
-            packageName: item.package.links.repository?.replace('https://github.com/', '')
-          } })))
+          console.log("done")
         });
       fetch(`https://api.npms.io/v2/search/suggestions?q=${currentSearchTerm}&size=10`)
         .then(response => response.json())
@@ -45,10 +47,12 @@ export default ({
         fetch(repoUrl(selectedItem?.url?.replace('https://github.com/', '')))
           .then(response => response.json())
           .then(data => {
-            setAccumulator(() => [...accumulator, { repo: selectedItem.name, data }])
-            localforage.getItem(accumulatorName).then(dataStored => {
-              localforage.setItem(accumulatorName, [...(dataStored || []), { repo: selectedItem.name, data }])
-            })
+            if (!data.message) {
+              setAccumulator(() => [...accumulator, { repo: selectedItem.name, data }])
+              localforage.getItem(accumulatorName).then(dataStored => {
+                localforage.setItem(accumulatorName, [...(dataStored || []), { repo: selectedItem.name, data }])
+              })
+            }
           });
       }
     }
@@ -67,9 +71,9 @@ export default ({
   }, [selectedItem, trees, accumulateData, setTrees])
 
   useEffect(() => {
-      localforage.getItem('richPayloads').then(data => setRichPayloads(data))
-      localforage.getItem('contributors').then(data => setContributors(data))
-      localforage.getItem('trees').then(data => setTrees(data))
+      localforage.getItem('richPayloads').then(data => setRichPayloads(data || []));
+      localforage.getItem('contributors').then(data => setContributors(data || []));
+      localforage.getItem('trees').then(data => setTrees(data || []));
   }, [setContributors, setRichPayloads, setTrees])
 
   return null
