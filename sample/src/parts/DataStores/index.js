@@ -71,9 +71,9 @@ export default ({
   }, [selectedItem, trees, accumulateData, setTrees])
 
   useEffect(() => {
-      localforage.getItem('richPayloads').then(data => setRichPayloads(data || []));
-      localforage.getItem('contributors').then(data => setContributors(data || []));
-      localforage.getItem('trees').then(data => setTrees(data || []));
+    localforage.getItem('richPayloads').then(data => setRichPayloads(data || []));
+    localforage.getItem('contributors').then(data => setContributors(data || []));
+    localforage.getItem('trees').then(data => setTrees(data || []));
   }, [setContributors, setRichPayloads, setTrees])
 
   return null

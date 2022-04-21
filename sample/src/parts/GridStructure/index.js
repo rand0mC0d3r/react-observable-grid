@@ -65,29 +65,30 @@ export default ({
 			}
 		},
 		{
-		  header: {
-		    key: 'thumbnails',
-		    align: 'center',
-				width: '170px',
+			header: {
+				key: 'thumbnails',
+				align: 'center',
+				width: '270px',
 				visible: false,
-		    noSort: true,
+				noSort: true,
 				component: () => <PhotoSizeSelectActualIcon />,
 			},
-		  row: {
-		    key: 'thumbnails.row',
-		    component: (item, index) => <div style={{width: '150px', height: '150px', overflow: 'hidden'}}>
-		      <iframe
-		        key={item.package.name}
-		        src={item?.package?.links.homepage}
-		        title="Preview of website resource"
-		        style={{
-		          backgroundColor: '#FFF',
-		          width: '300px',
-		          height: '300px',
-		          transform: 'scale(0.5)',
-		          transformOrigin: 'center'
-		        }} />
-		    </div>,
+			row: {
+				key: 'thumbnails.row',
+				component: item => <div style={{ width: '250px', height: '150px', display: 'block', overflow: 'hidden' }}>
+					<iframe
+						key={item.package.name}
+						src={item?.package?.links.npm}
+						title="Preview of website resource"
+						style={{
+							backgroundColor: '#FFF',
+							width: '500px',
+							border: '0px none',
+							height: '300px',
+							transform: 'scale(0.5)',
+							transformOrigin: '0% 0%'
+						}} />
+				</div>,
 			}
 		},
 		{
