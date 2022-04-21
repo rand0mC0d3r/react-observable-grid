@@ -18,8 +18,29 @@ const scrollerStyle = {
 
 const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
   const { data, gridTemplateColumns, grid, global } = useContext(DataProvider)
-  // const [selectedIndex, setSelectedIndex] = useState(null)
   const [presentColumns, setPresentColumns] = useState([])
+
+  const jsonPathToValue = (jsonData, path) => {
+    if (!(jsonData instanceof Object) || typeof (path) === "undefined") {
+      throw "Not valid argument:jsonData:" + jsonData + ", path:" + path;
+    }
+      path = path.replace(/\[(\w+)\]/g, '.$1');
+      path = path.replace(/^\./, '');
+      var pathArray = path.split('.');
+      for (var i = 0, n = pathArray.length; i < n; ++i) {
+        var key = pathArray[i];
+        if (key in jsonData) {
+          if (jsonData[key] !== null) {
+            jsonData = jsonData[key];
+          } else {
+            return null;
+          }
+        } else {
+          return key;
+        }
+      }
+      return jsonData;
+  }
 
   const componentTypeCheck = (component, key, index) => {
     if (component === null) {
@@ -34,8 +55,8 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
     setPresentColumns(grid
       .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
       .map(gridItem => ({
-        component: gridItem.row.component,
-        key: gridItem.row.key
+        component: gridItem?.row?.component !== undefined ? gridItem?.row?.component : gridItem.key,
+        key: gridItem.key
       })))
   }, [grid])
 
@@ -116,7 +137,12 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
             alternating: global?.alternatingRows?.stepping(index),
             data: dataItem,
             key: `${index}.${generateKey(dataItem)}`,
-            component: presentColumns.map(({ component, key }) => componentTypeCheck(component(dataItem, index), `${index}.${key}.${generateKey(dataItem)}`, index))
+            component: presentColumns.map(({ component, key }) => componentTypeCheck(
+              typeof component !== 'string'
+                ? component(dataItem, index)
+                : JSON.stringify(jsonPathToValue(dataItem, key)),
+              `${index}.${key}.${generateKey(dataItem)}`,
+              index))
           }))
         })}
       </div>

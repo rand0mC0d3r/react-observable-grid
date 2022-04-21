@@ -65,15 +65,11 @@ export default ({
 				}
 			},
 			{
+				key: 'package.keywords',
 				header: {
-					key: 'package.description',
-					align: 'center',
 					noSort: true,
+					component: 'Packet Description',
 				},
-				row: {
-					key: 'selectddion',
-					component: item => item.package.description,
-				}
 			},
 			{
 				header: {
