@@ -1,12 +1,6 @@
-import { faLink, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Avatar, Button, Checkbox, Chip, Grid as Flexbox, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Avatar, Chip, Grid as Flexbox, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
-import AccountTreeSharpIcon from '@material-ui/icons/AccountTreeSharp';
-import ChevronRightSharpIcon from '@material-ui/icons/ChevronRightSharp';
-import KeyboardArrowDownSharpIcon from '@material-ui/icons/KeyboardArrowDownSharp';
-import PhotoSizeSelectActualIcon from '@material-ui/icons/PhotoSizeSelectActual';
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import GridColumnsNg from './components/GridColumnsNg';
 import GridHeadersNg from './components/GridHeadersNg';
 import GridRowsNg from './components/GridRowsNg';
@@ -16,10 +10,6 @@ import { Grid } from './components/GridStoreNg';
 import ColumnManager from './parts/ColumnManager';
 import DataStores from './parts/DataStores';
 import GridStructure from './parts/GridStructure';
-import {
-  CircularProgressBlock, CollaboratorsColumn, KeywordsColumn, LinksColumn,
-  MetadataColumn, NameColumn, SearchScoreColumn, SelectionAndOpenColumn
-} from './parts/SampleRow';
 import SearchField from './parts/SearchField';
 
 const App = () => {
