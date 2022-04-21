@@ -18,6 +18,10 @@ export default ({ searchTerm, setSearchTerm, setCurrentSearchTerm }) => {
   };
 
   useEffect(() => {
+
+  }, [historicalItems])
+
+  useEffect(() => {
     if (searchTerm) {
       // setHistoricalItems(historicalItems => historicalItems.filter(item => item.searchTerm !== searchTerm))
       setHistoricalItems(historicalItems => [{ searchTerm, date: new Date() }, ...historicalItems])
