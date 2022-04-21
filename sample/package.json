@@ -20,7 +20,7 @@
     "react-dom": "^17.0.2",
     "react-localforage": "^1.0.1",
     "react-material-ui-carousel": "^2.3.8",
-    "react-observable-grid": "0.0.58",
+    "react-observable-grid": "0.0.59",
     "react-scripts": "^4.0.3",
     "serve": "13.0.2",
     "string-to-color": "^2.2.2",
