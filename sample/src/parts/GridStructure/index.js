@@ -64,7 +64,7 @@ export default ({
 				}
 			},
 			{
-				key: 'package.text',
+				key: 'package.description',
 				header: {
 					noSort: true,
 					component: 'Packet Description',
