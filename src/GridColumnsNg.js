@@ -29,18 +29,26 @@ export default ({ children, style, className }) => {
       position: absolute;
       display: grid;
     }
+    .grid-columns-grid > * {
+      border-top-style: none !important;
+      border-left-style: none !important;
+      border-bottom-style: none !important;
+    }
+    .grid-columns-grid > *:last-child {
+      border-right-style: none !important;
+    }
   `
 
   return <>
     <style>{classes}</style>
     <div className={clsx(['grid-columns-grid', className])}
-    style={{
-      gridTemplateColumns: headerTemplateColumns,
-      ...global.style,
-      ...style,
-      paddingTop: '0',
-      paddingBottom: '0',
-		}}
+      style={{
+        gridTemplateColumns: headerTemplateColumns,
+        ...global.style,
+        ...style,
+        paddingTop: '0',
+        paddingBottom: '0',
+      }}
     >
       {children
         ? children({ columns: presentColumns.map(pc => ({ key: pc.key, align: pc.align})) })

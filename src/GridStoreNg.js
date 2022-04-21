@@ -56,6 +56,7 @@ const Grid = ({ data, grid, global, children, ...props }) => {
   }, [data])
 
   useEffect(() => {
+    console.log('computing grid', grid)
     const gridColumns = grid
       .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
       .filter(gridItem => !gridItem.header.noColumn)
@@ -73,8 +74,8 @@ const Grid = ({ data, grid, global, children, ...props }) => {
     setStats(stats => ({
       ...stats, sort: {
         ...stats.sort,
-        direction: global.sort.initialDirection || 'asc',
-        column: global.sort.initialColumn || '',
+        direction: global?.sort?.initialDirection || 'asc',
+        column: global?.sort?.initialColumn || '',
       }
       }))
   }, [global])

@@ -107,13 +107,13 @@ const GridRowsNg = ({ children, className, style, generateKey, selectedRow }) =>
           styleProps: {
             display: 'grid',
             alignItems: 'center',
-            padding: global.style.rowPadding || '0',
+            padding: global?.style?.rowPadding || '0',
             gridTemplateColumns,
           },
           className: clsx(['grid-rows-grid', className]),
           rows: (data.length ? data : []).map((dataItem, index) => ({
             index,
-            alternating: global.alternatingRows.stepping(index),
+            alternating: global?.alternatingRows?.stepping(index),
             data: dataItem,
             key: `${index}.${generateKey(dataItem)}`,
             component: presentColumns.map(({ component, key }) => componentTypeCheck(component(dataItem, index), `${index}.${key}.${generateKey(dataItem)}`, index))

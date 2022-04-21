@@ -24,7 +24,8 @@ const GridHeadersNg = ({ children, className, style, upComponent, downComponent,
       margin: 0px ${global?.style?.gap || '0'}px;
     }
     ${grid
-      .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
+      // .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
+      .filter(gridItem => !gridItem.header.noColumn)
       .map((gridItem, index) => `
     .grid-headers-grid > *:nth-child(${index}) {
       justify-content: ${gridItem?.header?.align || 'flex-start'};

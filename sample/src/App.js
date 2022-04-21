@@ -26,6 +26,7 @@ const App = () => {
   let queryTimeout
 
   const [dataNew, setDataNew] = useState([]);
+  const [columnsState, setColumnsState] = useState([]);
   const [processedGrid, setProcessedGrid] = useState([]);
   const [terms, setTerms] = useState([]);
   const [total, setTotal] = useState(null);
@@ -68,7 +69,7 @@ const App = () => {
   return <>
     <GridStructure {...{
       processedGrid, searchTerm, setOpenRows, openRows, selectedRows, setSelectedRows, richPayloads, setCurrentSearchTerm,
-      setSearchTerm, contributors, setProcessedGrid
+      setSearchTerm, contributors, setProcessedGrid, columnsState,
     }} />
     <DataStores {...{currentSearchTerm, setTotal, setCurrentSearchTerm,
       setDataNew, setTerms, suggestions, setSuggestions,
@@ -87,12 +88,8 @@ const App = () => {
       }}>
         <Flexbox style={{ gap: '8px' }} container direction='row' justifyContent='space-between' alignItems='center' wrap="nowrap">
           <SearchField {...{ searchTerm, suggestions, setSearchTerm, setCurrentSearchTerm }} />
-          <ColumnManager {...{ processedGrid, setProcessedGrid }} />
+          <ColumnManager {...{ processedGrid, setProcessedGrid, columnsState, setColumnsState }} />
         </Flexbox>
-      {/* <div> */}
-        {/* {JSON.stringify(processedGrid.map(row => `${row.header.key} ${row.header.visible}`))} */}
-        {/* {dataNew.map(item => <div key={item.package.name}>{item.package.publisher.username}</div>)} */}
-      {/* </div> */}
       <div style={{display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
         {terms.map(term => <Chip key={term.term} avatar={<Avatar>{term.count}</Avatar>} variant="outlined" size="small" label={`${term.term}`}/>)}
       </div>
@@ -100,7 +97,7 @@ const App = () => {
         total {total}
       </div> */}
       <div className={classes.backgroundContainer} style={{ display: 'flex', flexDirection: 'column', position: 'relative', gap: '8px', flex: '1 1 auto'}}>
-    {1 === 1 && <Grid {...{ data: dataNew, grid: processedGrid, global }}>
+      {processedGrid.length > 0 && <Grid {...{ data: dataNew, grid: processedGrid, global }}>
             {/* <GridHeadersNg className={classes.header} >
               {({ headers }) => headers.map(({ key, component, sort, align }) => component)}
             </GridHeadersNg> */}
