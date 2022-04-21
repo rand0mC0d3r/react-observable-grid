@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import React, { cloneElement, useContext } from 'react';
+import { cloneElement, useContext } from 'react';
 import DataProvider from './GridStore';
 
 const GridHeaders = ({ children, className, style, upComponent, downComponent, fallbackComponent = <></> }) => {
