@@ -47,7 +47,7 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
       return <div onClick={() => setSelectedIndex(index)} key={key} style={{ margin: '0px', padding: '0px'}} id="auto-generated" />
     }
     return typeof component === 'string' || typeof component.type === 'symbol'
-      ? <div onClick={() => setSelectedIndex(index)}>{component}</div>
+      ? <div className='grid-row-inferred' onClick={() => setSelectedIndex(index)}>{component}</div>
       : <Fragment key={key}>{component}</Fragment>
   }
 
@@ -67,6 +67,9 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
   ]
 
   const classes = `
+    .grid-row-inferred {
+      word-break: break-all;
+    }
     .grid-rows-grid {
       display: grid;
       z-index: 1;
