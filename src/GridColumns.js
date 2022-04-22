@@ -8,16 +8,13 @@ export default ({ children, style, className }) => {
 
   useEffect(() => {
     const columnsVisible = grid
-      .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
-      .filter(gridItem => !gridItem.header.noColumn)
-    setPresentColumns(() => grid
-      .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
-      .filter(gridItem => !gridItem.header.noColumn)
+      .filter(gridItem => gridItem?.header?.visible === undefined  ? true : gridItem?.header?.visible)
+      .filter(gridItem => !gridItem?.header?.noColumn)
+    setPresentColumns(() => columnsVisible
       .map((gridItem, index) => {
-        const { key, align } = gridItem.header
         return {
-          key: key,
-          align: align,
+          key: gridItem.key,
+          align: gridItem?.header?.align || 'flex-start',
           border: index !== columnsVisible.length - 1,
         }
       }))

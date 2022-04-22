@@ -56,7 +56,7 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
 
   useEffect(() => {
     setPresentColumns(grid
-      .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
+      .filter(gridItem => gridItem?.header?.visible === undefined  ? true : gridItem?.header?.visible)
       .map(gridItem => ({
         component: gridItem?.row?.component !== undefined ? gridItem?.row?.component : gridItem.key,
         key: gridItem.key
@@ -71,7 +71,7 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
 
   const classes = `
     .grid-row-inferred {
-      word-break: break-all;
+      word-break: break-word;
       white-space: pre-wrap;
     }
     .grid-rows-grid {
@@ -81,10 +81,10 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
       grid-template-columns: ${gridTemplateColumns};
     }
     ${grid
-      .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
-      .map((gridItem, index) => !gridItem.header.noColumn
+      .filter(gridItem => gridItem?.header?.visible === undefined  ? true : gridItem?.header?.visible)
+      .map((gridItem, index) => !gridItem?.header?.noColumn
       ? `
-        .grid-rows-grid > *:nth-child(${index}) {
+        .grid-rows-grid > *:nth-child(${index + 1}) {
           display: ${gridItem?.row?.noWrapper ? 'flex' : 'inline-block'};
           padding: ${global.style.rowPadding.split(" ")[0]} ${(global?.style?.gap || '0')}px;
           margin: -${(global?.style?.gap || '0')}px 0px;
@@ -107,7 +107,7 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
         }
     `).join('')}
     ${grid
-    .filter(gridItem => gridItem.header.visible === undefined ? true : gridItem.header.visible)
+    .filter(gridItem => gridItem?.header?.visible === undefined ? true : gridItem?.header?.visible)
     .map((gridItem, index) => gridItem?.header?.noColumn ? `
     .grid-rows-grid > *:nth-child(${index + 1}) {
       ${gridItem.row.component !== null && `

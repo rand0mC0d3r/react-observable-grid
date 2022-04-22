@@ -68,9 +68,9 @@ const Grid = ({ data, grid, global, children, ...props }) => {
 
   useEffect(() => {
     const gridColumns = grid
-      .filter(gridItem => gridItem.header.visible === undefined  ? true : gridItem.header.visible)
-      .filter(gridItem => !gridItem.header.noColumn)
-      .map(gridItem => gridItem.header.width || _defaultWidth)
+      .filter(gridItem => gridItem?.header?.visible === undefined  ? true : gridItem?.header?.visible)
+      .filter(gridItem => !gridItem?.header?.noColumn)
+      .map(gridItem => gridItem?.header?.width || _defaultWidth)
       .join(' ')
     set_HeaderTemplateColumns(gridColumns)
     set_GridTemplateColumns(gridColumns)

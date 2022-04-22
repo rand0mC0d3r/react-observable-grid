@@ -23,8 +23,8 @@ export default ({ processedGrid, setProcessedGrid, columnsState, setColumnsState
     if (columnsState.length === 0) {
       setColumnsState(processedGrid.map(({ header, key }) => ({
         key,
-        align: header.align,
-        visible: header.visible === undefined ? true : header.visible
+        align: header?.align,
+        visible: header?.visible === undefined ? true : header?.visible
       })))
     }
   }, [processedGrid, columnsState, setColumnsState]);
@@ -36,9 +36,9 @@ export default ({ processedGrid, setProcessedGrid, columnsState, setColumnsState
     setColumnsState(columnsState.map(header => {
       if (header.key === key) {
         return {
-          key: header.key,
-          align: header.align,
-          visible: header.visible === undefined ? false : !header.visible,
+          key: header?.key,
+          align: header?.align,
+          visible: header?.visible === undefined ? false : !header?.visible,
         }
       }
       return header

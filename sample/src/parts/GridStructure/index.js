@@ -2,7 +2,7 @@
 import { Typography } from '@material-ui/core';
 import AccountTreeSharpIcon from '@material-ui/icons/AccountTreeSharp';
 import PhotoSizeSelectActualIcon from '@material-ui/icons/PhotoSizeSelectActual';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import {
 	CollaboratorsColumn, KeywordsColumn, LinksColumn,
 	MetadataColumn, NameColumn, SearchScoreColumn, SelectionAndOpenColumn
@@ -65,86 +65,90 @@ export default ({
 			},
 			{
 				key: 'package.description',
-				header: {
-					noSort: true,
-					component: 'Packet Description',
-				},
-				row: {
-					component: () => 'fff'
-				}
+				// header: {
+					// noSort: true,
+					// component: 'Packet Description',
+				// },
 			},
-			{
-				key: 'thumbnails',
-				header: {
-					align: 'center',
-					width: '270px',
-					visible: false,
-					noSort: true,
-					component: () => <PhotoSizeSelectActualIcon />,
-				},
-				row: {
-					component: item => <div style={{ width: '250px', height: '150px', display: 'block', overflow: 'hidden' }}>
-						<iframe
-							key={item.package.name}
-							src={item?.package?.links.npm}
-							title="Preview of website resource"
-							style={{
-								backgroundColor: '#FFF',
-								width: '500px',
-								border: '0px none',
-								height: '300px',
-								transform: 'scale(0.5)',
-								transformOrigin: '0% 0%'
-							}} />
-					</div>,
-				}
-			},
-			{
-				key: 'searchScore',
-				header: {
-					align: 'flex-end',
-					width: '120px',
-					component: 'Search Score',
-				},
-				row: {
-					noWrapper: true,
-					component: item => <SearchScoreColumn {...{ item }} />,
-				}
-			},
-			{
-				key: 'package.name',
-				header: {
-					width: 'minmax(250px, 1fr)',
-					disableOnClick: true,
-					component: ({ onSort, sort, directionComponent }) => <div style={{ display: 'flex', gap: '4px', alignItems: 'flex-start', flexDirection: 'column' }}>
-						{[{ key: 'package.version', label: 'Version' }, { key: 'package.name', label: 'Package Name' }].map(item => <div key={item.key} style={{ display: 'flex', gap: '8px' }}>
-							<Typography
-								onClick={() => onSort(item.key)}
-								style={{ cursor: 'pointer' }}
-								color={item.key === sort.column ? 'primary' : 'textSecondary'}
-								variant="subtitle2">
-								{item.label}
-							</Typography>
-							{item.key === sort.column && directionComponent(item.key)}
-						</div>)}
-					</div>,
-				},
-				row: {
-					component: item => <NameColumn {...{ item, searchTerm, richPayloads }} />
-				}
-			},
-			{
-				key: 'package.descriptionxx',
-				header: {
-					width: 'minmax(200px, 1fr)',
-					align: 'flex-end',
-					component: 'Description',
-				},
-				row: {
-					noWrapper: true,
-					component: item => <MetadataColumn {...{ item, value: item.package.description, searchTerm, setSearchTerm, setCurrentSearchTerm }} />,
-				}
-			},
+			// {
+			// 	key: 'package.name',
+			// 	header: {
+			// 		noSort: true,
+			// 		component: 'Packet Name',
+			// 	},
+			// },
+			// {
+			// 	key: 'thumbnails',
+			// 	header: {
+			// 		align: 'center',
+			// 		width: '270px',
+			// 		visible: false,
+			// 		noSort: true,
+			// 		component: () => <PhotoSizeSelectActualIcon />,
+			// 	},
+			// 	row: {
+			// 		component: item => <div style={{ width: '250px', height: '150px', display: 'block', overflow: 'hidden' }}>
+			// 			<iframe
+			// 				key={item.package.name}
+			// 				src={item?.package?.links.npm}
+			// 				title="Preview of website resource"
+			// 				style={{
+			// 					backgroundColor: '#FFF',
+			// 					width: '500px',
+			// 					border: '0px none',
+			// 					height: '300px',
+			// 					transform: 'scale(0.5)',
+			// 					transformOrigin: '0% 0%'
+			// 				}} />
+			// 		</div>,
+			// 	}
+			// },
+			// {
+			// 	key: 'searchScore',
+			// 	header: {
+			// 		align: 'flex-end',
+			// 		width: '120px',
+			// 		component: 'Search Score',
+			// 	},
+			// 	row: {
+			// 		noWrapper: true,
+			// 		component: item => <SearchScoreColumn {...{ item }} />,
+			// 	}
+			// },
+			// {
+			// 	key: 'package.name',
+			// 	header: {
+			// 		width: 'minmax(250px, 1fr)',
+			// 		disableOnClick: true,
+			// 		component: ({ onSort, sort, directionComponent }) => <div style={{ display: 'flex', gap: '4px', alignItems: 'flex-start', flexDirection: 'column' }}>
+			// 			{[{ key: 'package.version', label: 'Version' }, { key: 'package.name', label: 'Package Name' }].map(item => <div key={item.key} style={{ display: 'flex', gap: '8px' }}>
+			// 				<Typography
+			// 					onClick={() => onSort(item.key)}
+			// 					style={{ cursor: 'pointer' }}
+			// 					color={item.key === sort.column ? 'primary' : 'textSecondary'}
+			// 					variant="subtitle2">
+			// 					{item.label}
+			// 				</Typography>
+			// 				{item.key === sort.column && directionComponent(item.key)}
+			// 			</div>)}
+			// 		</div>,
+			// 	},
+			// 	row: {
+			// 		component: item => <NameColumn {...{ item, searchTerm, richPayloads }} />
+			// 	}
+			// },
+			// {
+			// 	key: 'package.descriptionxx',
+			// 	header: {
+			// 		width: 'minmax(200px, 1fr)',
+			// 		align: 'flex-end',
+			// 		component: 'Description',
+			// 	},
+			// 	row: {
+			// 		noWrapper: true,
+			// 		component: item => <MetadataColumn {...{ item, value: item.package.description, searchTerm, setSearchTerm, setCurrentSearchTerm }} />,
+			// 	}
+			// },
 			{
 				key: 'package.keywords',
 				header: {
@@ -180,29 +184,29 @@ export default ({
 					component: (item) => <CollaboratorsColumn {...{ item, contributors }} />
 				}
 			},
-			{
-				key: 'Secondary:Column',
-				header: {
-					align: 'flex-end',
-					noColumn: true,
-				},
-				row: {
-					component: (item) => openRows.some(openRow => openRow === item.package.name)
-						&& <iframe
-							key={item.package.name}
-							src={`https://octo-repo-visualization.vercel.app/?repo=${item?.package?.links.repository.replace('https://github.com/', '')}`}
-							title="Preview of website resource"
-							style={{
-								margin: '8px',
-								backgroundColor: '#FFF',
-								boxShadow: '0px 4px 0px 1px #77777733',
-								border: '2px dotted #777',
-								borderRadius: '8px',
-								width: '100%',
-								height: '350px'
-							}} />
-				}
-			},
+			// {
+			// 	key: 'Secondary:Column',
+			// 	header: {
+			// 		align: 'flex-end',
+			// 		noColumn: true,
+			// 	},
+			// 	row: {
+			// 		component: (item) => openRows.some(openRow => openRow === item.package.name)
+			// 			&& <iframe
+			// 				key={item.package.name}
+			// 				src={`https://octo-repo-visualization.vercel.app/?repo=${item?.package?.links.repository.replace('https://github.com/', '')}`}
+			// 				title="Preview of website resource"
+			// 				style={{
+			// 					margin: '8px',
+			// 					backgroundColor: '#FFF',
+			// 					boxShadow: '0px 4px 0px 1px #77777733',
+			// 					border: '2px dotted #777',
+			// 					borderRadius: '8px',
+			// 					width: '100%',
+			// 					height: '350px'
+			// 				}} />
+			// 	}
+			// },
 			// {
 			//   header: {
 			//     key: 'custom.section.footer',
@@ -242,23 +246,29 @@ export default ({
 		const newGrid = grid
 			.map(column => {
 				if (columnsState.some(cs => cs.key === column.key)) {
-
 				return {
 					...column,
 					header: {
 						...column.header,
 						visible: columnsState.find(cs => cs.key === column.key).visible,
 					},
-					row: {
-						...column.row,
-					}
+					row: { ...column.row, }
 				}
 			}
 			return column
-		})
+			})
+			.reduce((acc, column, index) => {
+				const foundIndex = columnsState.findIndex(cs => cs.key === column.key);
+				if(foundIndex > -1) {
+					acc[foundIndex || index] = column
+				} else {
+					acc.push(column)
+				}
+				return acc
+			}, [])
 
+		console.log('newGrid', newGrid)
 
-		// if (processedGrid.length !== 0) { return; }
 		setProcessedGrid(() => newGrid)
 	}, [setProcessedGrid, setOpenRows, columnsState, openRows, selectedRows, setSelectedRows, searchTerm, richPayloads, setSearchTerm, contributors, setCurrentSearchTerm])
 
