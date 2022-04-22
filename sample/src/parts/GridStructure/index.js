@@ -77,6 +77,13 @@ export default ({
 					// component: 'Packet Description',
 				// },
 			},
+			{
+				key: 'package.links',
+				// header: {
+					// noSort: true,
+					// component: 'Packet Description',
+				// },
+			},
 			// {
 			// 	key: 'package.name',
 			// 	header: {
@@ -156,41 +163,41 @@ export default ({
 			// 		component: item => <MetadataColumn {...{ item, value: item.package.description, searchTerm, setSearchTerm, setCurrentSearchTerm }} />,
 			// 	}
 			// },
-			{
-				key: 'keywords',
-				header: {
-					width: 'minmax(200px, 1fr)',
-					noSort: true,
-					component: 'Keywords',
-				},
-				row: {
-					component: item => <KeywordsColumn {...{ item, searchTerm, setSearchTerm, setCurrentSearchTerm }} />,
-				}
-			},
-			{
-				key: 'package.links',
-				header: {
-					align: 'center',
-					width: 'minmax(140px, 160px)',
-					noSort: true,
-					component: 'Links',
-				},
-				row: {
-					component: (item) => <LinksColumn item={item} />,
-				}
-			},
-			{
-				key: 'Collaborators',
-				header: {
-					align: 'flex-end',
-					width: 'minmax(120px, 145px)',
-					noSort: true,
-					component: 'Collaborators',
-				},
-				row: {
-					component: (item) => <CollaboratorsColumn {...{ item, contributors }} />
-				}
-			},
+			// {
+			// 	key: 'keywords',
+			// 	header: {
+			// 		width: 'minmax(200px, 1fr)',
+			// 		noSort: true,
+			// 		component: 'Keywords',
+			// 	},
+			// 	row: {
+			// 		component: item => <KeywordsColumn {...{ item, searchTerm, setSearchTerm, setCurrentSearchTerm }} />,
+			// 	}
+			// },
+			// {
+			// 	key: 'links',
+			// 	header: {
+			// 		align: 'center',
+			// 		width: 'minmax(140px, 160px)',
+			// 		noSort: true,
+			// 		component: 'Links',
+			// 	},
+			// 	row: {
+			// 		component: (item) => <LinksColumn item={item} />,
+			// 	}
+			// },
+			// {
+			// 	key: 'Collaborators',
+			// 	header: {
+			// 		align: 'flex-end',
+			// 		width: 'minmax(120px, 145px)',
+			// 		noSort: true,
+			// 		component: 'Collaborators',
+			// 	},
+			// 	row: {
+			// 		component: (item) => <CollaboratorsColumn {...{ item, contributors }} />
+			// 	}
+			// },
 			// {
 			// 	key: 'Secondary:Column',
 			// 	header: {
