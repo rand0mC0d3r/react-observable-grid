@@ -3,7 +3,7 @@ import { createContext, useEffect, useState } from 'react'
 
 const Context = createContext()
 
-const Grid = ({ data, grid, global, children, ...props }) => {
+const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
   const naturalSort = createNewSortInstance({ comparer: collator.compare })
 
@@ -120,7 +120,19 @@ const Grid = ({ data, grid, global, children, ...props }) => {
         headerTemplateColumns: _headerTemplateColumns,
         grid, stats, global, onSort
       }}>
-      {children}
+      {_data
+        ? children
+        : <>{emptyComponent
+          ? emptyComponent
+          : <div style={{
+            alignSelf: 'stretch',
+            flex: '1 1 auto',
+            display: 'flex',
+            color: '#888',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>Missing data</div>}
+        </>}
     </Context.Provider>
   </div>
 }

@@ -90,12 +90,12 @@ const App = () => {
           {isLive ? <>
             live
             </>
-            : <Grid {...{ data }}>
-                <GridHeaders
+            : <Grid {...{data}} >
+                {/* <GridHeaders
                   className={classes.header}
                   fallbackComponent={(component, { sort }) => <Typography variant="caption" color={sort.isActive ? 'primary' : 'textSecondary'}>{component}</Typography>}
-                />
-                {/* <GridHeaders /> */}
+                /> */}
+                <GridHeaders />
                 <GridColumns />
                 {/* <GridColumns style={{border: '1px dotted red'}} /> */}
                 {/* <GridColumns>
