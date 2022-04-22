@@ -65,17 +65,17 @@ export default ({
 			},
 			{
 				key: 'package.description',
-				// header: {
+				header: {
 					// noSort: true,
-					// component: 'Packet Description',
-				// },
+					component: 'Packet Description',
+				},
 			},
 			{
 				key: 'package.keywords',
-				// header: {
-					// noSort: true,
-					// component: 'Packet Description',
-				// },
+				header: {
+					noSort: true,
+					component: () => <div>Packet Description</div>
+				},
 			},
 			{
 				key: 'package.links',

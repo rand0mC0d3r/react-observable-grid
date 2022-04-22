@@ -1,12 +1,15 @@
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { cloneElement, useContext } from 'react';
+import { cloneElement, Fragment, useContext } from 'react';
 import DataProvider from './GridStore';
 
 const GridHeaders = ({ children, className, style, upComponent, downComponent, fallbackComponent }) => {
   const { grid, data, headerTemplateColumns, stats, onSort, global } = useContext(DataProvider)
 
-  const componentTypeCheck = (component, options) => {
+  const componentTypeCheck = (component, key, options) => {
+    if (component === undefined) {
+      return <Fragment>{key}</Fragment>
+    }
     const theFallback = fallbackComponent
       ? <>{fallbackComponent(component, options)}</>
       : <>{component}</>
@@ -52,23 +55,26 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
     }}>
       {children
         ? children({
-          headers: grid?.filter(gridItem => gridItem?.header?.visible === undefined  ? true : gridItem?.header?.visible)
-            .filter(gridItem => !gridItem?.header?.noColumn)
-            .map(({ header }) => ({
-              key: header.key,
-              extraKeys: header.extraKeys,
-              align: header.align,
-              component: componentTypeCheck(header.component, {
-              onSort: (path) => onSort(path !== undefined ? path : header.key),
-              sort: {
-                direction: stats.sort.direction,
-                column: stats.sort.column,
-              },
-              directionComponent: (current) => <>{stats.sort.column === current ? <>
-                {stats.sort.direction === 'asc' ? '↑' : '↓'}
-              </> : null}</>
+          headers: grid
+          ? grid?.filter(gridItem => gridItem?.header?.visible === undefined ? true : gridItem?.header?.visible)
+          .filter(gridItem => !gridItem?.header?.noColumn)
+          .map(({ header, key }) => ({
+            key: key,
+            extraKeys: header?.extraKeys,
+            align: header?.align,
+            component: componentTypeCheck(header?.component, key, {
+            onSort: (path) => onSort(path !== undefined ? path : key),
+            sort: {
+              direction: stats.sort.direction,
+              column: stats.sort.column,
+            },
+            directionComponent: (current) => <>{stats.sort.column === current ? <>
+              {stats.sort.direction === 'asc' ? '↑' : '↓'}
+            </> : null}</>
             }),
-          }))})
+          }))
+          : !!data?.length ? Object.keys(data[0]).map(key => ({ key, component: key })) : []
+        })
         : <>
           {grid
             ? grid.filter(gridItem => gridItem?.header?.visible === undefined ? true : gridItem?.header?.visible)
@@ -87,6 +93,7 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
                 >
                   {header?.component !== undefined ? componentTypeCheck(
                     header?.component,
+                    key,
                     {
                       onSort: (path) => !header?.noSort && onSort(path !== undefined ? path : key) ,
                       sort: {
@@ -98,13 +105,22 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
                         {stats.sort.direction === 'asc' ? '↑' : '↓'}
                       </> : null}</>
                     }
-                  ) : key}
+                  ) : fallbackComponent ? fallbackComponent(key, { sort: { isActive: false } }) : key}
                   {(header?.component === undefined || typeof header?.component === 'string' || typeof header?.component?.type === 'symbol')
                     && !header?.noSort && stats.sort.column === key && <span>
                     {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
                   </span>}
                 </div>)
-            : <>{!!data?.length && Object.keys(data[0]).map(key => <div {...{ key }}>{key}</div>)}</>}
+            : <>{!!data?.length && Object.keys(data[0]).map(key => <Fragment {...{ key }}>
+              {fallbackComponent
+                ? fallbackComponent(key, { sort: { isActive: false } })
+                : <div onClick={() => onSort(key)} style={{ cursor: 'pointer', display: 'flex', gap: '8px' }}>
+                  {key}
+                  {stats.sort.column === key && <span>
+                    {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
+                  </span>}
+                </div>}
+            </Fragment>)}</>}
         </>}
     </div>
   </>
