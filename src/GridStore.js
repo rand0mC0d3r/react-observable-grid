@@ -8,6 +8,7 @@ const Grid = ({ data, grid, global, children, ...props }) => {
   const naturalSort = createNewSortInstance({ comparer: collator.compare })
 
   const [_data, set_Data] = useState([])
+  const [_noGrid, set_noGrid] = useState(false)
   const [_headerTemplateColumns, set_HeaderTemplateColumns] = useState('')
   const [_gridTemplateColumns, set_GridTemplateColumns] = useState('')
 
@@ -67,13 +68,28 @@ const Grid = ({ data, grid, global, children, ...props }) => {
   }, [data, global])
 
   useEffect(() => {
-    const gridColumns = grid
-      .filter(gridItem => gridItem?.header?.visible === undefined  ? true : gridItem?.header?.visible)
-      .filter(gridItem => !gridItem?.header?.noColumn)
-      .map(gridItem => gridItem?.header?.width || _defaultWidth)
-      .join(' ')
-    set_HeaderTemplateColumns(gridColumns)
-    set_GridTemplateColumns(gridColumns)
+    if (_noGrid && !!data?.length) {
+      const gridColumns = Object.keys(data[0])
+        .map(() => _defaultWidth)
+        .join(' ')
+      set_HeaderTemplateColumns(gridColumns)
+      set_GridTemplateColumns(gridColumns)
+    }
+  }, [data, _noGrid])
+
+  useEffect(() => {
+    if (grid) {
+      const gridColumns = grid
+        .filter(gridItem => gridItem?.header?.visible === undefined  ? true : gridItem?.header?.visible)
+        .filter(gridItem => !gridItem?.header?.noColumn)
+        .map(gridItem => gridItem?.header?.width || _defaultWidth)
+        .join(' ')
+      set_noGrid(false)
+      set_HeaderTemplateColumns(gridColumns)
+      set_GridTemplateColumns(gridColumns)
+    } else {
+      set_noGrid(true)
+    }
   }, [grid])
 
   const onSort = (key) => {

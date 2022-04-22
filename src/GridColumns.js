@@ -3,22 +3,29 @@ import { useContext, useEffect, useState } from 'react';
 import DataProvider from './GridStore';
 
 export default ({ children, style, className }) => {
-  const { grid, headerTemplateColumns, global } = useContext(DataProvider)
+  const { grid, data, headerTemplateColumns, global } = useContext(DataProvider)
   const [presentColumns, setPresentColumns] = useState([])
 
   useEffect(() => {
-    const columnsVisible = grid
-      .filter(gridItem => gridItem?.header?.visible === undefined  ? true : gridItem?.header?.visible)
-      .filter(gridItem => !gridItem?.header?.noColumn)
-    setPresentColumns(() => columnsVisible
-      .map((gridItem, index) => {
-        return {
-          key: gridItem.key,
-          align: gridItem?.header?.align || 'flex-start',
-          border: index !== columnsVisible.length - 1,
-        }
-      }))
-  }, [grid, headerTemplateColumns])
+    if (grid) {
+      const columnsVisible = grid?.filter(gridItem => gridItem?.header?.visible === undefined
+        ? true
+        : gridItem?.header?.visible)
+        .filter(gridItem => !gridItem?.header?.noColumn)
+      setPresentColumns(() => columnsVisible
+        .map((gridItem, index) => {
+          return {
+            key: gridItem.key,
+            align: gridItem?.header?.align || 'flex-start',
+            border: index !== columnsVisible.length - 1,
+          }
+        }))
+    } else {
+      if (!!data?.length) {
+        setPresentColumns(() => Object.keys(data[0]).map((key, index) => ({ key, align: 'flex-start' })))
+      }
+    }
+  }, [grid, data, headerTemplateColumns])
 
   const classes = `
     .grid-columns-grid {

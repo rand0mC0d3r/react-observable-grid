@@ -4,7 +4,7 @@ import { cloneElement, useContext } from 'react';
 import DataProvider from './GridStore';
 
 const GridHeaders = ({ children, className, style, upComponent, downComponent, fallbackComponent }) => {
-  const { grid, headerTemplateColumns, stats, onSort, global } = useContext(DataProvider)
+  const { grid, data, headerTemplateColumns, stats, onSort, global } = useContext(DataProvider)
 
   const componentTypeCheck = (component, options) => {
     const theFallback = fallbackComponent
@@ -27,8 +27,7 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
       display: flex;
       margin: 0px ${global?.style?.gap || '0'}px;
     }
-    ${grid
-      .filter(gridItem => gridItem?.header?.visible === undefined  ? true : gridItem.header.visible)
+    ${grid?.filter(gridItem => gridItem?.header?.visible === undefined  ? true : gridItem.header.visible)
       .filter(gridItem => !gridItem.header?.noColumn)
       .map((gridItem, index) => `
         .grid-headers-grid > *:nth-child(${index + 1}) {
@@ -53,8 +52,7 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
     }}>
       {children
         ? children({
-          headers: grid
-            .filter(gridItem => gridItem?.header?.visible === undefined  ? true : gridItem?.header?.visible)
+          headers: grid?.filter(gridItem => gridItem?.header?.visible === undefined  ? true : gridItem?.header?.visible)
             .filter(gridItem => !gridItem?.header?.noColumn)
             .map(({ header }) => ({
               key: header.key,
@@ -71,40 +69,43 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
               </> : null}</>
             }),
           }))})
-        : grid
-          .filter(gridItem => gridItem?.header?.visible === undefined  ? true : gridItem?.header?.visible)
-          .filter(gridItem => !gridItem?.header?.noColumn)
-          .map(({ header, key }) => <div
-            key={key}
-            className='grid-headers-injected'
-            style={{
-              cursor: !header?.noSort && !header?.disableOnClick ? 'pointer' : 'default'
-            }}
-            onClick={() => !header?.noSort && !header?.disableOnClick && onSort(key)}
-            onContextMenu={(e) => {
-              e.preventDefault()
-              !header?.noSort && !header?.disableOnClick && onSort('')
-            }}
-          >
-            {header?.component !== undefined ? componentTypeCheck(
-              header?.component,
-              {
-                onSort: (path) => !header?.noSort && onSort(path !== undefined ? path : key) ,
-                sort: {
-                  direction: !header?.noSort && stats.sort.direction,
-                  column: !header?.noSort && stats.sort.column,
-                  isActive: !header?.noSort && stats.sort.column === key,
-                },
-                directionComponent: (current) => <>{!header?.noSort && stats.sort.column === current ? <>
-                  {stats.sort.direction === 'asc' ? '↑' : '↓'}
-                </> : null}</>
-              }
-            ) : key}
-            {(header?.component === undefined || typeof header?.component === 'string' || typeof header?.component?.type === 'symbol')
-              && !header?.noSort && stats.sort.column === key && <span>
-              {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
-            </span>}
-          </div>)}
+        : <>
+          {grid
+            ? grid.filter(gridItem => gridItem?.header?.visible === undefined ? true : gridItem?.header?.visible)
+                .filter(gridItem => !gridItem?.header?.noColumn)
+                .map(({ header, key }) => <div
+                  key={key}
+                  className='grid-headers-injected'
+                  style={{
+                    cursor: !header?.noSort && !header?.disableOnClick ? 'pointer' : 'default'
+                  }}
+                  onClick={() => !header?.noSort && !header?.disableOnClick && onSort(key)}
+                  onContextMenu={(e) => {
+                    e.preventDefault()
+                    !header?.noSort && !header?.disableOnClick && onSort('')
+                  }}
+                >
+                  {header?.component !== undefined ? componentTypeCheck(
+                    header?.component,
+                    {
+                      onSort: (path) => !header?.noSort && onSort(path !== undefined ? path : key) ,
+                      sort: {
+                        direction: !header?.noSort && stats.sort.direction,
+                        column: !header?.noSort && stats.sort.column,
+                        isActive: !header?.noSort && stats.sort.column === key,
+                      },
+                      directionComponent: (current) => <>{!header?.noSort && stats.sort.column === current ? <>
+                        {stats.sort.direction === 'asc' ? '↑' : '↓'}
+                      </> : null}</>
+                    }
+                  ) : key}
+                  {(header?.component === undefined || typeof header?.component === 'string' || typeof header?.component?.type === 'symbol')
+                    && !header?.noSort && stats.sort.column === key && <span>
+                    {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
+                  </span>}
+                </div>)
+            : <>{!!data?.length && Object.keys(data[0]).map(key => <div>{key}</div>)}</>}
+        </>}
     </div>
   </>
 }
