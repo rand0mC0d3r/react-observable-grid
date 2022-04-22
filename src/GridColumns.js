@@ -57,7 +57,7 @@ export default ({ children, style, className }) => {
     <div className={clsx(['grid-columns-grid', className])}
       style={{
         gridTemplateColumns: headerTemplateColumns,
-        ...global.style,
+        ...global?.style,
         paddingTop: '0',
         paddingBottom: '0',
       }}

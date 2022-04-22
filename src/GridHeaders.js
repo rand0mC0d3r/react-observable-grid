@@ -48,7 +48,7 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
     <style>{classes}</style>
     <div {...{
       className: clsx(['grid-headers-grid', className]),
-      style: { ...global.style, ...style, gap: 0 }
+      style: { ...global?.style, ...style, gap: 0 }
     }}>
       {children
         ? children({
@@ -104,7 +104,7 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
                     {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
                   </span>}
                 </div>)
-            : <>{!!data?.length && Object.keys(data[0]).map(key => <div>{key}</div>)}</>}
+            : <>{!!data?.length && Object.keys(data[0]).map(key => <div {...{ key }}>{key}</div>)}</>}
         </>}
     </div>
   </>

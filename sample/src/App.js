@@ -90,18 +90,18 @@ const App = () => {
           {isLive ? <>
             live
             </>
-            : <Grid {...{ data, global }}>
-                {/* <GridHeaders
+            : <Grid {...{ data }}>
+                <GridHeaders
                   className={classes.header}
                   fallbackComponent={(component, { sort }) => <Typography variant="caption" color={sort.isActive ? 'primary' : 'textSecondary'}>{component}</Typography>}
-                /> */}
-                <GridHeaders />
+                />
+                {/* <GridHeaders /> */}
                 <GridColumns />
                 {/* <GridColumns style={{border: '1px dotted red'}} /> */}
                 {/* <GridColumns>
                   {({ columns }) => columns.map(({ key }) => <div style={{ borderRight: '1px dotted red' }} key={key}></div>)}
                 </GridColumns> */}
-                {/* <GridRows selectedRow={selectedRow} generateKey={(row) => row.package.name}>
+                <GridRows selectedRow={selectedRow} generateKey={(row) => row.package.name}>
                   {({ rows, className, styleProps }) => rows.map(({ style, data, component, alternating, index }) => <div
                     onMouseUp={() => {
                       setSelectedRow(index)
@@ -123,7 +123,7 @@ const App = () => {
                     }}>
                     {component}
                   </div>)}
-                </GridRows> */}
+                </GridRows>
                 {/* <GridStats className={classes.stats}>
                   {({ total, sort }) => <div >
                     {total} {sort.column} {sort.direction}

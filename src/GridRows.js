@@ -47,7 +47,6 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
       return <div key={key} style={{ margin: '0px', padding: '0px'}} id="auto-generated" />
     }
     if (!!component.length) {
-      console.log(typeof component)
       return <div key={key} id={component.length} className="grid-row-inferred-array">
         {typeof component !== 'string' && component.length > 0 ? JSON.stringify(component) : component}
       </div>
@@ -61,13 +60,18 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
   }
 
   useEffect(() => {
-    setPresentColumns(grid
-      .filter(gridItem => gridItem?.header?.visible === undefined  ? true : gridItem?.header?.visible)
-      .map(gridItem => ({
-        component: gridItem?.row?.component !== undefined ? gridItem?.row?.component : gridItem.key,
-        key: gridItem.key
-      })))
-  }, [grid])
+    if (grid) {
+      setPresentColumns(grid?.filter(gridItem => gridItem?.header?.visible === undefined ? true : gridItem?.header?.visible)
+        .map(gridItem => ({
+          component: gridItem?.row?.component !== undefined ? gridItem?.row?.component : gridItem.key,
+          key: gridItem.key
+        })))
+    } else {
+      if (!!data?.length) {
+        setPresentColumns(Object.keys(data[0]).map((key, index) => ({ component: key, key })))
+      }
+    }
+  }, [grid, data])
 
   const textMap = [
     { id: 'flex-start', text: 'left' },
@@ -94,8 +98,7 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
       align-items: center;
       grid-template-columns: ${gridTemplateColumns};
     }
-    ${grid
-      .filter(gridItem => gridItem?.header?.visible === undefined  ? true : gridItem?.header?.visible)
+    ${grid?.filter(gridItem => gridItem?.header?.visible === undefined  ? true : gridItem?.header?.visible)
       .map((gridItem, index) => !gridItem?.header?.noColumn
       ? `
         .grid-rows-grid > *:nth-child(${index + 1}) {
@@ -120,8 +123,7 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
           margin: ${index !== 0 ? '0' : `-${global.style.rowPadding.split(" ")[0]}`} -${global.style.rowPadding.split(" ")[1]} ${index === 0 ? '0' : `-${global.style.rowPadding.split(" ")[0]}`} -${global.style.rowPadding.split(" ")[1]} !important;
         }
     `).join('')}
-    ${grid
-    .filter(gridItem => gridItem?.header?.visible === undefined ? true : gridItem?.header?.visible)
+    ${grid?.filter(gridItem => gridItem?.header?.visible === undefined ? true : gridItem?.header?.visible)
     .map((gridItem, index) => gridItem?.header?.noColumn ? `
     .grid-rows-grid > *:nth-child(${index + 1}) {
       ${gridItem.row.component !== null && `
