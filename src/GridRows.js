@@ -177,7 +177,7 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
                   gridTemplateColumns,
               }}>
                 {presentColumns.map(({ component, key }) => <div key={key} style={{padding: global?.style?.rowPadding || '0',}} className='grid-row-inferred'>
-                  {data[key] && typeof data[key] === 'string' ? data[key] : JSON.stringify(data[key], null, 2)}
+                  {data[key] && typeof data[key] === 'string' ? data[key] : String(JSON.stringify(data[key])).substring(0, 250)}
                 </div>)}
               </div>)}
             </>
