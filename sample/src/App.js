@@ -95,8 +95,8 @@ const App = () => {
                   className={classes.header}
                   fallbackComponent={(component, { sort }) => <Typography variant="caption" color={sort.isActive ? 'primary' : 'textSecondary'}>{component}</Typography>}
                 /> */}
-                {/* <GridHeaders /> */}
-                {/* <GridColumns /> */}
+                <GridHeaders />
+                <GridColumns />
                 {/* <GridColumns style={{border: '1px dotted red'}} /> */}
                 {/* <GridColumns>
                   {({ columns }) => columns.map(({ key }) => <div style={{ borderRight: '1px dotted red' }} key={key}></div>)}

@@ -47,7 +47,7 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
       return <div key={key} style={{ margin: '0px', padding: '0px'}} id="auto-generated" />
     }
     if (!!component.length) {
-      return <div key={key} className="grid-row-inferred">{component}</div>
+      return <div key={key} className="grid-row-inferred-array">{JSON.stringify(component)}</div>
     }
     return typeof component === 'string' || typeof component.type === 'symbol'
       ? <div className='grid-row-inferred'>{component}</div>
@@ -71,6 +71,10 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
 
   const classes = `
     .grid-row-inferred {
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+    .grid-row-inferred-array {
       word-break: break-word;
       white-space: pre-wrap;
     }

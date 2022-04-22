@@ -70,6 +70,13 @@ export default ({
 					// component: 'Packet Description',
 				// },
 			},
+			{
+				key: 'package.keywords',
+				// header: {
+					// noSort: true,
+					// component: 'Packet Description',
+				// },
+			},
 			// {
 			// 	key: 'package.name',
 			// 	header: {
@@ -150,7 +157,7 @@ export default ({
 			// 	}
 			// },
 			{
-				key: 'package.keywords',
+				key: 'keywords',
 				header: {
 					width: 'minmax(200px, 1fr)',
 					noSort: true,
