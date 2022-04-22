@@ -74,7 +74,7 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
 
   useEffect(() => {
     if (_noGrid && !!data?.length) {
-      const gridColumns = Object.keys(data[0])
+      const gridColumns = [...new Set(data.map(item => Object.keys(item).map(key => key)).flat())]
         .map(() => _defaultWidth)
         .join(' ')
       set_HeaderTemplateColumns(gridColumns)

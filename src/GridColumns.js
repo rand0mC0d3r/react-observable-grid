@@ -22,7 +22,10 @@ export default ({ children, style, className }) => {
         }))
     } else {
       if (!!data?.length) {
-        setPresentColumns(() => Object.keys(data[0]).map((key, index) => ({ key, align: 'flex-start' })))
+        setPresentColumns(() => [...new Set(data
+            .map(item => Object.keys(item).map(key => key)).flat())]
+          .sort()
+          .map((key, index) => ({ key, align: 'flex-start' })))
       }
     }
   }, [grid, data, headerTemplateColumns])
@@ -33,8 +36,13 @@ export default ({ children, style, className }) => {
       left: 0px;
       bottom: 0px;
       right: 0px;
+      grid-template-rows: 1fr;
       position: absolute;
       display: grid;
+    }
+    .grid-column {
+      border: 0px none transparent;
+      border-right: 1px solid #CCC;
     }
     ${!children && `
       .grid-columns-grid > * {
@@ -45,10 +53,6 @@ export default ({ children, style, className }) => {
       .grid-columns-grid > *:last-child {
         border-right-style: none !important;
       }`
-    }
-    .grid-column {
-      border: 0px none transparent;
-      border-right: 1px solid #CCC;
     }
   `
 

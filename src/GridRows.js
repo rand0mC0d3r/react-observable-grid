@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import PropTypes from 'prop-types';
+import PropTypes, { string } from 'prop-types';
 import { Fragment, useContext, useEffect, useState } from 'react';
 import DataProvider from './GridStore';
 
@@ -68,7 +68,7 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
         })))
     } else {
       if (!!data?.length) {
-        setPresentColumns(Object.keys(data[0]).map((key, index) => ({ component: key, key })))
+        setPresentColumns([...new Set(data.map(item => Object.keys(item).map(key => key)).flat())].sort().map((key, index) => ({ component: key, key })))
       }
     }
   }, [grid, data])
@@ -149,32 +149,41 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
       <div style={scrollerStyle}>
         {children
           ? data && children({
-          styleProps: {
+            styleProps: {
+              display: 'grid',
+              alignItems: 'center',
+              padding: global?.style?.rowPadding || '0',
+              gridTemplateColumns,
+            },
+            className: clsx(['grid-rows-grid', className]),
+            rows: (data.length ? data : []).map((dataItem, index) => ({
+              index,
+              alternating: global?.alternatingRows?.stepping(index),
+              data: dataItem,
+              key: `${index}.${generateKey(dataItem)}`,
+              component: presentColumns.map(({ component, key }) => componentTypeCheck(
+                typeof component !== 'string'
+                  ? component(dataItem, index)
+                  : jsonPathToValue(dataItem, key),
+                `${index}.${key}.${generateKey(dataItem)}`,
+                index))
+            }))
+          })
+        : <>{!!data?.length && data.map(data => <div key={Object.values(data).filter(d => typeof d === 'string').join("")} style={{
             display: 'grid',
             alignItems: 'center',
             padding: global?.style?.rowPadding || '0',
             gridTemplateColumns,
-          },
-          className: clsx(['grid-rows-grid', className]),
-          rows: (data.length ? data : []).map((dataItem, index) => ({
-            index,
-            alternating: global?.alternatingRows?.stepping(index),
-            data: dataItem,
-            key: `${index}.${generateKey(dataItem)}`,
-            component: presentColumns.map(({ component, key }) => componentTypeCheck(
-              typeof component !== 'string'
-                ? component(dataItem, index)
-                : jsonPathToValue(dataItem, key),
-              `${index}.${key}.${generateKey(dataItem)}`,
-              index))
-          }))
-        })
-        : <>ddd</>}
+        }}>
+          {presentColumns.map(({ component, key }) => <div className='grid-row-inferred'>
+            {data[key] && typeof data[key] === 'string' ? data[key] : JSON.stringify(data[key])}
+          </div>)}
+        </div>)}</>}
       </div>
     </div>
   </>
 }
 
-GridRows.propTypes = { children: PropTypes.func.isRequired }
+GridRows.propTypes = { children: PropTypes.func }
 
 export default GridRows

@@ -87,7 +87,7 @@ const App = () => {
           {isLive ? <>
             live
             </>
-            : <Grid {...{ data: data.map(data => ({ ...data.package, ...data.score })) }} flattenObjects >
+            : <Grid {...{ data: data.map(data => ({ ...data.package, ...data.score })) }}>
 
                 {/* Grid Headers */}
                 <GridHeaders />
@@ -104,11 +104,11 @@ const App = () => {
                 </GridHeaders>
 
                 {/* Grid Columns */}
-                {/* <GridColumns /> */}
+                <GridColumns />
                 {/* <GridColumns style={{border: '1px dotted red'}} /> */}
-                <GridColumns>
+                {/* <GridColumns>
                   {({ columns }) => columns.map(({ key }, index) => <div style={index !== columns.length - 1 ? { borderRight: '1px dotted red' } : {}} key={key}></div>)}
-                </GridColumns>
+                </GridColumns> */}
 
                 <GridRows />
                 {/* <GridRows selectedRow={selectedRow} generateKey={(row) => row}>

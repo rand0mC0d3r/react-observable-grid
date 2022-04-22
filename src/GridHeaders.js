@@ -73,7 +73,7 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
             </> : null}</>
             }),
           }))
-          : !!data?.length ? Object.keys(data[0]).map(key => ({ key, component: key })) : []
+          : !!data?.length ? [...new Set(data.map(item => Object.keys(item).map(key => key)).flat())].sort().map(key => ({ key, component: key })) : []
         })
         : <>
           {grid
@@ -111,7 +111,7 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
                     {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
                   </span>}
                 </div>)
-            : <>{!!data?.length && Object.keys(data[0]).map(key => <Fragment {...{ key }}>
+            : <>{!!data?.length && [...new Set(data.map(item => Object.keys(item).map(key => key)).flat())].sort().map(key => <Fragment {...{ key }}>
               {fallbackComponent
                 ? fallbackComponent(key, { sort: { isActive: false } })
                 : <div onClick={() => onSort(key)} style={{ cursor: 'pointer', display: 'flex', gap: '8px' }}>
