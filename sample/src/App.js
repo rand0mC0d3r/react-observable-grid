@@ -87,7 +87,7 @@ const App = () => {
           {isLive ? <>
             live
             </>
-            : <Grid {...{ data }} >
+            : <Grid {...{ data }} flattenObjects >
 
                 {/* Grid Headers */}
                 <GridHeaders />

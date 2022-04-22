@@ -48,11 +48,16 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
   })
 
   const sortData = (data, column, direction) => {
+    const extractPath = (item, column) => {
+      const result = jsonPathToValue(item, column)
+      return typeof result === 'object' ? JSON.stringify(result) : result
+    }
+    const naturallySorted = column !== '' && naturalSort(data)
     return column === ''
       ? data
       : direction === 'asc'
-        ? naturalSort(data).asc([item => jsonPathToValue(item, column)])
-        : naturalSort(data).desc([item => jsonPathToValue(item, column)])
+        ? naturallySorted.asc([item => extractPath(item, column)])
+        : naturallySorted.desc([item => extractPath(item, column)])
   }
 
   useEffect(() => {
