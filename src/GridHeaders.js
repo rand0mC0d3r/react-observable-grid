@@ -68,12 +68,19 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
               direction: stats.sort.direction,
               column: stats.sort.column,
             },
-            directionComponent: (current) => <>{stats.sort.column === current ? <>
-              {stats.sort.direction === 'asc' ? '↑' : '↓'}
+            directionComponent: <>{stats.sort.column === current ? <>
+              {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
             </> : null}</>
             }),
           }))
-          : !!data?.length ? [...new Set(data.map(item => Object.keys(item).map(key => key)).flat())].sort().map(key => ({ key, component: key })) : []
+            : !!data?.length ? [...new Set(data.map(item => Object.keys(item).map(key => key)).flat())].sort().map(key => ({
+              key,
+              component: key,
+              onSort: (path) => onSort(path !== undefined && path.length > 0 ? path : key),
+              directionComponent: <>{stats.sort.column === key ? <>
+              {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
+            </> : null}</>
+            })) : []
         })
         : <>
           {grid
@@ -111,15 +118,26 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
                     {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
                   </span>}
                 </div>)
-            : <>{!!data?.length && [...new Set(data.map(item => Object.keys(item).map(key => key)).flat())].sort().map(key => <Fragment {...{ key }}>
-              {fallbackComponent
-                ? fallbackComponent(key, { sort: { isActive: false } })
-                : <div onClick={() => onSort(key)} style={{ cursor: 'pointer', display: 'flex', gap: '8px' }}>
-                  {key}
-                  {stats.sort.column === key && <span>
-                    {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
-                  </span>}
-                </div>}
+            : <>{!!data?.length && [...new Set(data.map(item => Object.keys(item).map(key => key)).flat())]
+              .sort()
+              .map(key => <Fragment {...{ key }}>
+                {fallbackComponent
+                  ? fallbackComponent(
+                    key, {
+                      key,
+                      onSort: () => onSort(key),
+                      sort: { isActive: stats.sort.column === key },
+                      directionComponent: <>{stats.sort.column === key ? <>
+                        {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
+                      </> : null}</>
+                    }
+                  )
+                  : <div key={key} onClick={() => onSort(key)} style={{ cursor: 'pointer', display: 'flex', gap: '8px' }}>
+                    {key}
+                    {stats.sort.column === key && <span>
+                      {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
+                    </span>}
+                  </div>}
             </Fragment>)}</>}
         </>}
     </div>

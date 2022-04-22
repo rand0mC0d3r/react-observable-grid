@@ -108,6 +108,18 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
     set_Data(sortData(data, key, stats.sort.direction))
   }
 
+  const emptyFallback = <>{emptyComponent
+          ? emptyComponent
+          : <div style={{
+              alignSelf: 'stretch',
+              flex: '1 1 auto',
+              display: 'flex',
+              color: '#888',
+              justifyContent: 'center',
+              alignItems: 'center',
+          }}>Missing data</div>}
+        </>
+
   return <div style={{
     display: 'flex',
     position: 'relative',
@@ -125,19 +137,7 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
         headerTemplateColumns: _headerTemplateColumns,
         grid, stats, global, onSort
       }}>
-      {_data
-        ? children
-        : <>{emptyComponent
-          ? emptyComponent
-          : <div style={{
-            alignSelf: 'stretch',
-            flex: '1 1 auto',
-            display: 'flex',
-            color: '#888',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>Missing data</div>}
-        </>}
+      {_data ? children ? children : emptyFallback : emptyFallback}
     </Context.Provider>
   </div>
 }

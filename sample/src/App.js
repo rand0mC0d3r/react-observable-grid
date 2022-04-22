@@ -93,14 +93,24 @@ const App = () => {
                 <GridHeaders />
                 <GridHeaders
                   className={classes.header}
-                  fallbackComponent={(component, { sort }) => <Typography
-                    style={{ padding: '10px', cursor: 'default' }}
-                    variant="caption"
-                    color={sort.isActive ? 'primary' : 'textSecondary'}
-                  >{component}</Typography>}
+                  fallbackComponent={(component, { onSort, sort, key, directionComponent }) => <div key={key} style={{ display: 'flex', gap: '4px', padding: '10px', alignItems: 'center'}}>
+                    <Typography
+                      style={{ cursor: 'default' }}
+                      variant="caption"
+                      onClick={onSort}
+                      color={sort.isActive ? 'primary' : 'textSecondary'}
+                    >
+                      {component}
+                    </Typography>
+                    {directionComponent}
+                  </div>}
                 />
                 <GridHeaders className={classes.header}>
-                  {({ headers }) => headers.map(({ key, component }) => <Typography {...{ key }} variant="caption">{component}</Typography>)}
+                {({ headers }) => headers.map(({ key, onSort, component, directionComponent }) => <div
+                  style={{ display: 'flex', gap: '4px', padding: '10px', alignItems: 'center' }} {...{ key }}>
+                  <Typography onClick={onSort} style={{ cursor: 'default' }} variant="caption">{component}</Typography>
+                  {directionComponent}
+                </div>)}
                 </GridHeaders>
 
                 {/* Grid Columns */}
@@ -110,7 +120,7 @@ const App = () => {
                   {({ columns }) => columns.map(({ key }, index) => <div style={index !== columns.length - 1 ? { borderRight: '1px dotted red' } : {}} key={key}></div>)}
                 </GridColumns> */}
 
-                <GridRows />
+                {/* <GridRows /> */}
                 {/* <GridRows selectedRow={selectedRow} generateKey={(row) => row}>
                   {({ rows, className, styleProps }) => rows.map(({ style, data, component, alternating, index }) => <div
                     onMouseUp={() => {
