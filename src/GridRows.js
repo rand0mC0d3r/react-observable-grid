@@ -172,12 +172,14 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
             ? <>{!!data?.length && data.map((data, index) => <div key={Object.values(data).filter(d => typeof d === 'string').join("")} style={{
                   display: 'grid',
                   alignItems: 'center',
-                  backgroundColor: global?.alternatingRows?.stepping(index) ? global?.alternatingRows?.color : 'transparent',
+                  backgroundColor: global?.alternatingRows?.stepping(index) ? global?.alternatingRows?.color : index % 2 === 0 ? '#f0f0f0' : 'transparent',
                   padding: global?.style?.rowPadding || '0',
                   gridTemplateColumns,
               }}>
-                {presentColumns.map(({ component, key }) => <div key={key} style={{padding: global?.style?.rowPadding || '0',}} className='grid-row-inferred'>
-                  {data[key] && typeof data[key] === 'string' ? data[key] : String(JSON.stringify(data[key])).substring(0, 250)}
+              {presentColumns.map(({ key }) => <div key={key} style={{
+                padding: global?.style?.rowPadding || '0',
+              }} className='grid-row-inferred'>
+                  {data[key] && typeof data[key] === 'string' ? data[key] : String(JSON.stringify(data[key]) || '').substring(0, 250)}
                 </div>)}
               </div>)}
             </>
