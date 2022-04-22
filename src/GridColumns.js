@@ -39,6 +39,8 @@ export default ({ children, style, className }) => {
       grid-template-rows: 1fr;
       position: absolute;
       display: grid;
+      z-index: 1;
+      pointer-events: none;
     }
     .grid-column {
       border: 0px none transparent;

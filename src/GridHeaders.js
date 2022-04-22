@@ -24,7 +24,6 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
       display: grid;
       z-index: 1;
       align-items: center;
-      grid-template-columns: ${headerTemplateColumns};
     }
     .grid-headers-grid > * {
       display: flex;
@@ -51,7 +50,7 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
     <style>{classes}</style>
     <div {...{
       className: clsx(['grid-headers-grid', className]),
-      style: { ...global?.style, ...style, gap: 0 }
+      style: { ...global?.style, ...style, gap: 0, gridTemplateColumns: headerTemplateColumns }
     }}>
       {children
         ? children({
@@ -79,7 +78,6 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
               key,
               component: key,
               onSort: (path) => {
-                console.log("b")
                 onSort(path !== undefined && path.length > 0 ? path : key)
 
               },

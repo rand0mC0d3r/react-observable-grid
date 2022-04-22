@@ -40,7 +40,8 @@ const App = () => {
 
   const global =  {
 		alternatingRows: {
-			enabled: true,
+      enabled: true,
+      color: '#f5f5f5',
 			stepping: (index) => index % 2 === 0,
     },
     sort: {
@@ -54,49 +55,14 @@ const App = () => {
     }
   }
 
-  return <>
-    <GridStructure {...{
-      processedGrid, searchTerm, setOpenRows, openRows, selectedRows, setSelectedRows, richPayloads, setCurrentSearchTerm,
-      setSearchTerm, contributors, setProcessedGrid, columnsState,
-    }} />
-    <DataStores {...{currentSearchTerm, setTotal, setCurrentSearchTerm,
-      setDataNew: setData, setTerms, suggestions, setSuggestions,
-      richPayloads, selectedItem, setRichPayloads, trees, setTrees,
-      contributors, setContributors}} />
-    <ThemeProvider {...{ theme }} >
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '8px',
-      position: 'absolute',
-      top: '24px',
-      left: '24px',
-      right: '24px',
-      bottom: '24px',
-      }}>
-        <Flexbox style={{ gap: '8px' }} container direction='row' justifyContent='space-between' alignItems='center' wrap="nowrap">
-          <SearchField {...{ searchTerm, suggestions, setSearchTerm, setCurrentSearchTerm }} />
-          <Button disabled={isLive} onClick={() => setIsLive(true)}>Live</Button>
-          <Button disabled={!isLive} onClick={() => setIsLive(false)}>Sandbox</Button>
-          <ColumnManager {...{ processedGrid, setProcessedGrid, columnsState, setColumnsState }} />
-        </Flexbox>
-      <div style={{display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-        {terms.map(term => <Chip key={term.term} avatar={<Avatar>{term.count}</Avatar>} variant="outlined" size="small" label={`${term.term}`}/>)}
-      </div>
-        <div className={classes.backgroundContainer} style={{ display: 'flex', flexDirection: 'column', position: 'relative', gap: '8px', flex: '1 1 auto' }}>
-          {isLive ? <>
-            live
-            </>
-            // : <Grid {...{ data: data.map(data => ({ ...data.package, ...data.score })) }}>
-            : <Grid {...{ data, grid: processedGrid }}>
-
-                {/* Grid Headers */}
+  const filling = () => <>
+    {/* Grid Headers */}
                 <GridHeaders />
-                <GridHeaders
+                {/* <GridHeaders
                   className={classes.header}
                   fallbackComponent={(component, { onSort, sort, key, directionComponent }) => <div key={key} style={{ display: 'flex', gap: '4px', padding: '10px', alignItems: 'center'}}>
                     <Typography
-                      style={{ cursor: 'default' }}
+                      style={{ cursor: 'pointer' }}
                       variant="caption"
                       onClick={onSort}
                       color={sort.isActive ? 'primary' : 'textSecondary'}
@@ -108,10 +74,10 @@ const App = () => {
                 />
                 <GridHeaders className={classes.header}>
                   {({ headers }) => headers.map(({ key, onSort, component, directionComponent }) => <div style={{ display: 'flex', gap: '4px', padding: '10px', alignItems: 'center' }} {...{ key }}>
-                    <Typography onClick={onSort} style={{ cursor: 'default' }} variant="caption">{component}</Typography>
+                    <Typography onClick={onSort} style={{ cursor: 'pointer' }} variant="caption">{component}</Typography>
                     {directionComponent}
                   </div>)}
-                </GridHeaders>
+                </GridHeaders> */}
 
                 {/* Grid Columns */}
                 <GridColumns />
@@ -120,7 +86,7 @@ const App = () => {
                   {({ columns }) => columns.map(({ key }, index) => <div style={index !== columns.length - 1 ? { borderRight: '1px dotted red' } : {}} key={key}></div>)}
                 </GridColumns> */}
 
-                {/* <GridRows /> */}
+                <GridRows />
                 {/* <GridRows selectedRow={selectedRow} generateKey={(row) => row}>
                   {({ rows, className, styleProps }) => rows.map(({ style, data, component, alternating, index }) => <div
                     onMouseUp={() => {
@@ -150,7 +116,48 @@ const App = () => {
                   </div>}
                 </GridStats>
                 <GridSticky style={{backgroundColor: '#FFF', border: '1px solid #c7d0ff8a'}}/> */}
-              </Grid>}
+  </>
+
+
+  return <>
+    <GridStructure {...{
+      processedGrid, searchTerm, setOpenRows, openRows, selectedRows, setSelectedRows, richPayloads, setCurrentSearchTerm,
+      setSearchTerm, contributors, setProcessedGrid, columnsState,
+    }} />
+    <DataStores {...{currentSearchTerm, setTotal, setCurrentSearchTerm,
+      setDataNew: setData, setTerms, suggestions, setSuggestions,
+      richPayloads, selectedItem, setRichPayloads, trees, setTrees,
+      contributors, setContributors}} />
+    <ThemeProvider {...{ theme }} >
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '8px',
+      position: 'absolute',
+      top: '24px',
+      left: '24px',
+      right: '24px',
+      bottom: '24px',
+      }}>
+        <Flexbox style={{ gap: '8px' }} container direction='row' justifyContent='space-between' alignItems='center' wrap="nowrap">
+          <SearchField {...{ searchTerm, suggestions, setSearchTerm, setCurrentSearchTerm }} />
+          <Button disabled={isLive} onClick={() => setIsLive(true)}>Live</Button>
+          <Button disabled={!isLive} onClick={() => setIsLive(false)}>Sandbox</Button>
+          <ColumnManager {...{ processedGrid, setProcessedGrid, columnsState, setColumnsState }} />
+        </Flexbox>
+      <div style={{display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        {terms.map(term => <Chip key={term.term} avatar={<Avatar>{term.count}</Avatar>} variant="outlined" size="small" label={`${term.term}`}/>)}
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', height: '100%', backgroundColor: '#EEE'}}>
+          <div className={classes.backgroundContainer} style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#FFF", margin: '16px', position: 'relative', gap: '8px', flex: '1 1 auto' }}>
+            <Grid {...{ global, data: data.map(data => ({ ...data.package, ...data.score })) }}>{filling()}</Grid>
+          </div>
+          <div className={classes.backgroundContainer} style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#FFF", margin: '16px', position: 'relative', gap: '8px', flex: '1 1 auto' }}>
+            <Grid {...{ data, grid: processedGrid }}>{filling()}</Grid>
+          </div>
+          <div className={classes.backgroundContainer} style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#FFF", margin: '16px', position: 'relative', gap: '8px', flex: '1 1 auto' }}>
+            <Grid {...{ global, data, grid: processedGrid }}>{filling()}</Grid>
+          </div>
         </div>
       </div>
     </ThemeProvider>

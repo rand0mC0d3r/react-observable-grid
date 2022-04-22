@@ -15,7 +15,6 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
   const _defaultWidth = '1fr'
 
   const jsonPathToValue = (jsonData, path) => {
-    console.log('path',path)
     if (!(jsonData instanceof Object) || typeof (path) === "undefined" || path === null) {
       throw "Not valid argument:jsonData:" + jsonData + ", path:" + path;
     }

@@ -46,12 +46,12 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
     if (component === null) {
       return <div key={key} style={{ margin: '0px', padding: '0px'}} id="auto-generated" />
     }
-    if (!!component.length) {
+    if (!!component?.length) {
       return <div key={key} id={component.length} className="grid-row-inferred-array">
         {typeof component !== 'string' && component.length > 0 ? JSON.stringify(component) : component}
       </div>
     }
-    if (!!!component.$$typeof) {
+    if (!!!component?.$$typeof) {
       return <div key={key} className="grid-row-inferred-object">{JSON.stringify(component, null, 2)}</div>
     }
     return typeof component === 'string' || typeof component.type === 'symbol'
@@ -96,14 +96,13 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
       display: grid;
       z-index: 1;
       align-items: center;
-      grid-template-columns: ${gridTemplateColumns};
     }
     ${grid?.filter(gridItem => gridItem?.header?.visible === undefined  ? true : gridItem?.header?.visible)
       .map((gridItem, index) => !gridItem?.header?.noColumn
       ? `
         .grid-rows-grid > *:nth-child(${index + 1}) {
           display: ${gridItem?.row?.noWrapper ? 'flex' : 'inline-block'};
-          padding: ${global.style.rowPadding.split(" ")[0]} ${(global?.style?.gap || '0')}px;
+          padding: ${global?.style?.rowPadding.split(" ")[0]} ${(global?.style?.gap || '0')}px;
           margin: -${(global?.style?.gap || '0')}px 0px;
         }
         .grid-rows-grid > *:nth-child(${index + 1}) {
@@ -169,16 +168,43 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
                 index))
             }))
           })
-        : <>{!!data?.length && data.map(data => <div key={Object.values(data).filter(d => typeof d === 'string').join("")} style={{
-            display: 'grid',
-            alignItems: 'center',
-            padding: global?.style?.rowPadding || '0',
-            gridTemplateColumns,
-        }}>
-          {presentColumns.map(({ component, key }) => <div className='grid-row-inferred'>
-            {data[key] && typeof data[key] === 'string' ? data[key] : JSON.stringify(data[key])}
-          </div>)}
-        </div>)}</>}
+          : <>{!grid
+            ? <>{!!data?.length && data.map((data, index) => <div key={Object.values(data).filter(d => typeof d === 'string').join("")} style={{
+                  display: 'grid',
+                  alignItems: 'center',
+                  backgroundColor: global?.alternatingRows?.stepping(index) ? global?.alternatingRows?.color : 'transparent',
+                  padding: global?.style?.rowPadding || '0',
+                  gridTemplateColumns,
+              }}>
+                {presentColumns.map(({ component, key }) => <div key={key} style={{padding: global?.style?.rowPadding || '0',}} className='grid-row-inferred'>
+                  {data[key] && typeof data[key] === 'string' ? data[key] : JSON.stringify(data[key], null, 2)}
+                </div>)}
+              </div>)}
+            </>
+            : <>
+              {data.map((dataItem, index) => <div
+                className={clsx(['grid-rows-grid', className])}
+                key={Object.values(dataItem).filter(d => typeof d === 'string').join("")}
+                style={{
+                  display: 'grid',
+                  alignItems: 'center',
+                  backgroundColor: global?.alternatingRows?.stepping(index) ? global?.alternatingRows?.color : index % 2 === 0 ? '#f0f0f0' : 'transparent',
+                  padding: global?.style?.rowPadding || '0',
+                  gridTemplateColumns,
+              }}>
+                {grid.map((gridItem, index) => <>
+                  {gridItem.row.component !== undefined
+                    ? <>{typeof gridItem.row.component === 'function'
+                        ? <>{gridItem?.row?.component(dataItem, index)}</>
+                        : <div id="b">{gridItem?.row?.component}</div>
+                      }
+                    </>
+                    : <div className='grid-row-inferred' style={{padding: global?.style?.rowPadding || '0'}} >{JSON.stringify(jsonPathToValue(dataItem, gridItem.key))}</div>}
+                </>)}
+              </div>)}
+            </>
+          }
+        </>}
       </div>
     </div>
   </>

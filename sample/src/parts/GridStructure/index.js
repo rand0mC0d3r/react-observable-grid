@@ -66,9 +66,11 @@ export default ({
 			{
 				key: 'package.description',
 				header: {
-					// noSort: true,
 					component: 'Packet Description',
 				},
+				row: {
+					component: item => <div>{item.package.description}</div>
+				}
 			},
 			{
 				key: 'package.keywords',
@@ -117,87 +119,86 @@ export default ({
 			// 		</div>,
 			// 	}
 			// },
-			// {
-			// 	key: 'searchScore',
-			// 	header: {
-			// 		align: 'flex-end',
-			// 		width: '120px',
-			// 		component: 'Search Score',
-			// 	},
-			// 	row: {
-			// 		noWrapper: true,
-			// 		component: item => <SearchScoreColumn {...{ item }} />,
-			// 	}
-			// },
-			// {
-			// 	key: 'package.name',
-			// 	header: {
-			// 		width: 'minmax(250px, 1fr)',
-			// 		disableOnClick: true,
-			// 		component: ({ onSort, sort, directionComponent }) => <div style={{ display: 'flex', gap: '4px', alignItems: 'flex-start', flexDirection: 'column' }}>
-			// 			{[{ key: 'package.version', label: 'Version' }, { key: 'package.name', label: 'Package Name' }].map(item => <div key={item.key} style={{ display: 'flex', gap: '8px' }}>
-			// 				<Typography
-			// 					onClick={() => onSort(item.key)}
-			// 					style={{ cursor: 'pointer' }}
-			// 					color={item.key === sort.column ? 'primary' : 'textSecondary'}
-			// 					variant="subtitle2">
-			// 					{item.label}
-			// 				</Typography>
-			// 				{item.key === sort.column && directionComponent(item.key)}
-			// 			</div>)}
-			// 		</div>,
-			// 	},
-			// 	row: {
-			// 		component: item => <NameColumn {...{ item, searchTerm, richPayloads }} />
-			// 	}
-			// },
-			// {
-			// 	key: 'package.descriptionxx',
-			// 	header: {
-			// 		width: 'minmax(200px, 1fr)',
-			// 		align: 'flex-end',
-			// 		component: 'Description',
-			// 	},
-			// 	row: {
-			// 		noWrapper: true,
-			// 		component: item => <MetadataColumn {...{ item, value: item.package.description, searchTerm, setSearchTerm, setCurrentSearchTerm }} />,
-			// 	}
-			// },
-			// {
-			// 	key: 'keywords',
-			// 	header: {
-			// 		width: 'minmax(200px, 1fr)',
-			// 		noSort: true,
-			// 		component: 'Keywords',
-			// 	},
-			// 	row: {
-			// 		component: item => <KeywordsColumn {...{ item, searchTerm, setSearchTerm, setCurrentSearchTerm }} />,
-			// 	}
-			// },
-			// {
-			// 	key: 'links',
-			// 	header: {
-			// 		align: 'center',
-			// 		width: 'minmax(140px, 160px)',
-			// 		noSort: true,
-			// 		component: 'Links',
-			// 	},
-			// 	row: {
-			// 		component: (item) => <LinksColumn item={item} />,
-			// 	}
-			// },
-			// {
-			// 	key: 'Collaborators',
-			// 	header: {
-			// 		align: 'flex-end',
-			// 		width: 'minmax(120px, 145px)',
-			// 		noSort: true,
-			// 		component: 'Collaborators',
-			// 	},
-			// 	row: {
-			// 		component: (item) => <CollaboratorsColumn {...{ item, contributors }} />
-			// 	}
-			// },
+			{
+				key: 'searchScore',
+				header: {
+					align: 'flex-end',
+					width: '170px',
+					component: 'Search Score',
+				},
+				row: {
+					component: item => <SearchScoreColumn {...{ item }} />,
+				}
+			},
+			{
+				key: 'package.name',
+				header: {
+					width: 'minmax(250px, 1fr)',
+					disableOnClick: true,
+					component: ({ onSort, sort, directionComponent }) => <div style={{ display: 'flex', gap: '4px', alignItems: 'flex-start', flexDirection: 'column' }}>
+						{[{ key: 'package.version', label: 'Version' }, { key: 'package.name', label: 'Package Name' }].map(item => <div key={item.key} style={{ display: 'flex', gap: '8px' }}>
+							<Typography
+								onClick={() => onSort(item.key)}
+								style={{ cursor: 'pointer' }}
+								color={item.key === sort.column ? 'primary' : 'textSecondary'}
+								variant="subtitle2">
+								{item.label}
+							</Typography>
+							{item.key === sort.column && directionComponent(item.key)}
+						</div>)}
+					</div>,
+				},
+				row: {
+					component: item => <NameColumn {...{ item, searchTerm, richPayloads }} />
+				}
+			},
+			{
+				key: 'description',
+				header: {
+					width: 'minmax(200px, 1fr)',
+					align: 'flex-end',
+					component: 'Description',
+				},
+				row: {
+					noWrapper: true,
+					component: item => <MetadataColumn {...{ item, value: item.package.description, searchTerm, setSearchTerm, setCurrentSearchTerm }} />,
+				}
+			},
+			{
+				key: 'keywords',
+				header: {
+					width: 'minmax(200px, 1fr)',
+					noSort: true,
+					component: 'Keywords',
+				},
+				row: {
+					component: item => <KeywordsColumn {...{ item, searchTerm, setSearchTerm, setCurrentSearchTerm }} />,
+				}
+			},
+			{
+				key: 'links',
+				header: {
+					align: 'center',
+					width: 'minmax(140px, 160px)',
+					noSort: true,
+					component: 'Links',
+				},
+				row: {
+					component: (item) => <LinksColumn item={item} />,
+				}
+			},
+			{
+				key: 'Collaborators',
+				header: {
+					align: 'flex-end',
+					width: 'minmax(120px, 145px)',
+					noSort: true,
+					component: 'Collaborators',
+				},
+				row: {
+					component: (item) => <CollaboratorsColumn {...{ item, contributors }} />
+				}
+			},
 			// {
 			// 	key: 'Secondary:Column',
 			// 	header: {
@@ -281,7 +282,7 @@ export default ({
 				return acc
 			}, [])
 
-		console.log('newGrid', newGrid)
+		// console.log('newGrid', newGrid)
 
 		setProcessedGrid(() => newGrid)
 	}, [setProcessedGrid, setOpenRows, columnsState, openRows, selectedRows, setSelectedRows, searchTerm, richPayloads, setSearchTerm, contributors, setCurrentSearchTerm])
