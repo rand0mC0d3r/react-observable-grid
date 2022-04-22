@@ -147,7 +147,8 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
     <style>{classes}</style>
     <div style={wrapperStyle}>
       <div style={scrollerStyle}>
-        {children && data && children({
+        {children
+          ? data && children({
           styleProps: {
             display: 'grid',
             alignItems: 'center',
@@ -167,7 +168,8 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
               `${index}.${key}.${generateKey(dataItem)}`,
               index))
           }))
-        })}
+        })
+        : <>ddd</>}
       </div>
     </div>
   </>
