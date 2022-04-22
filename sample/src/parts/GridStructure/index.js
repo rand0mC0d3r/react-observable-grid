@@ -74,7 +74,7 @@ export default ({
 				key: 'package.keywords',
 				header: {
 					noSort: true,
-					component: () => <div>Packet Description</div>
+					component: () => <div>Packet Keywords</div>
 				},
 			},
 			{

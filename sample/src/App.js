@@ -87,7 +87,8 @@ const App = () => {
           {isLive ? <>
             live
             </>
-            : <Grid {...{ data: data.map(data => ({ ...data.package, ...data.score })) }}>
+            // : <Grid {...{ data: data.map(data => ({ ...data.package, ...data.score })) }}>
+            : <Grid {...{ data, grid: processedGrid }}>
 
                 {/* Grid Headers */}
                 <GridHeaders />
@@ -106,11 +107,10 @@ const App = () => {
                   </div>}
                 />
                 <GridHeaders className={classes.header}>
-                {({ headers }) => headers.map(({ key, onSort, component, directionComponent }) => <div
-                  style={{ display: 'flex', gap: '4px', padding: '10px', alignItems: 'center' }} {...{ key }}>
-                  <Typography onClick={onSort} style={{ cursor: 'default' }} variant="caption">{component}</Typography>
-                  {directionComponent}
-                </div>)}
+                  {({ headers }) => headers.map(({ key, onSort, component, directionComponent }) => <div style={{ display: 'flex', gap: '4px', padding: '10px', alignItems: 'center' }} {...{ key }}>
+                    <Typography onClick={onSort} style={{ cursor: 'default' }} variant="caption">{component}</Typography>
+                    {directionComponent}
+                  </div>)}
                 </GridHeaders>
 
                 {/* Grid Columns */}
