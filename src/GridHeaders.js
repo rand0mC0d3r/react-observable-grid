@@ -7,15 +7,10 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
   const { grid, data, headerTemplateColumns, stats, onSort, global } = useContext(DataProvider)
 
   const componentTypeCheck = (component, key, options) => {
-    if (component === undefined) {
-      return <Fragment>{key}</Fragment>
-    }
-    const theFallback = fallbackComponent
-      ? <>{fallbackComponent(component, options)}</>
-      : <>{component}</>
+    if (component === undefined) return <Fragment>{key}</Fragment>
 
     return typeof component === 'string' || typeof component.type === 'symbol'
-      ? <>{theFallback}</>
+      ? fallbackComponent ? fallbackComponent(component, options) : component
       : component({ ...options })
   }
 
@@ -47,7 +42,8 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
   `
 
   const renderChildrenWithGrid = () => {
-    return (grid || []).filter(gridItem => gridItem?.header?.visible === undefined ? true : gridItem?.header?.visible)
+    return (grid || [])
+        .filter(gridItem => gridItem?.header?.visible === undefined ? true : gridItem?.header?.visible)
         .filter(gridItem => !gridItem?.header?.noColumn)
         .map(({ header, key }) => ({
           key: key,
