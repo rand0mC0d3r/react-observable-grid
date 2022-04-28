@@ -73,12 +73,12 @@ const App = () => {
                     {directionComponent}
                   </div>}
                 />
-                <GridHeaders className={classes.header}>
+                {/* <GridHeaders className={classes.header}>
                   {({ headers }) => headers.map(({ key, onSort, component, directionComponent }) => <div style={{ display: 'flex', gap: '4px', padding: '10px', alignItems: 'center' }} {...{ key }}>
                     <Typography onClick={onSort} style={{ cursor: 'pointer' }} variant="caption">{component}</Typography>
                     {directionComponent}
                   </div>)}
-                </GridHeaders>
+                </GridHeaders> */}
 
                 {/* Grid Columns */}
                 <GridColumns />
