@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { parse, stringify } from 'css';
 import PropTypes from 'prop-types';
 import { Fragment, useContext, useEffect, useState } from 'react';
 import DataProvider from './GridStore';
@@ -14,7 +15,7 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
       : typeof component === 'function' && component({ ...options })
   }
 
-  const classes = `
+  const classes = parse(`
     .${uniqueId}-headers-grid {
       display: grid;
       z-index: 1;
@@ -47,7 +48,7 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
       font-size: 0.9em;
       align-items: center;
     }
-  `
+  `)
 
   const renderDirectionComponent = (key) => {
     const { direction, column } = stats.sort
@@ -112,7 +113,7 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
           }
           )
           : <div {...{ key }} className={clsx([`${uniqueId}-header`, column === key &&`${uniqueId}-header-sorting`])}  onClick={() => onSort(key)}>
-              <span>{key}</span>
+              {column === key ? <span>{key}</span> : key}
               {renderDirectionComponent(key)}
           </div>}
       </Fragment>)
@@ -169,7 +170,7 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
   }
 
   return <>
-    <style>{classes}</style>
+    <style>{stringify(classes, { compress: true })}</style>
     <div {...{
       className: clsx([`${uniqueId}-headers-grid`, className]),
       style: { ...global?.style, ...style, gap: 0, gridTemplateColumns: headerTemplateColumns }
