@@ -64,7 +64,7 @@ const App = () => {
                 />
                 <GridHeaders
                   className={classes.header}
-                  fallbackComponent={(component, { onSort, sort, key, directionComponent }) => <div key={key} style={{ display: 'flex', gap: '4px', padding: '10px', alignItems: 'center'}}>
+                  fallbackComponent={(component, { onSort, sort, key, directionComponent }) => <div key={key} style={{ display: 'flex', gap: '4px', alignItems: 'center'}}>
                     <Typography
                       style={{ cursor: 'pointer' }}
                       variant="caption"
@@ -77,9 +77,9 @@ const App = () => {
                   </div>}
                 />
                 <GridHeaders className={classes.header}>
-                  {({ headers }) => headers.map(({ key, onSort, component, directionComponent }) => <div style={{ display: 'flex', gap: '4px', padding: '10px', alignItems: 'center' }} {...{ key }}>
+                  {({ headers }) => headers.map(({ key, onSort, component, directionComponent }) => <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }} {...{ key }}>
                     <Typography onClick={onSort} style={{ cursor: 'pointer' }} variant="caption">{component}</Typography>
-                    {/* {directionComponent} */}
+                    {directionComponent}
                   </div>)}
                 </GridHeaders>
 
