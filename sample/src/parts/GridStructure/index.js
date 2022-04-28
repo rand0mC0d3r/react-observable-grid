@@ -144,7 +144,7 @@ export default ({
 								variant="subtitle2">
 								{item.label}
 							</Typography>
-							{item.key === sort.column && directionComponent(item.key)}
+							{item.key === sort.column && directionComponent}
 						</div>)}
 					</div>,
 				},

@@ -1,10 +1,10 @@
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { cloneElement, Fragment, useContext } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import DataProvider from './GridStore';
 
 const GridHeaders = ({ children, className, style, upComponent, downComponent, fallbackComponent }) => {
-  const { grid, data, headerTemplateColumns, stats, onSort, global } = useContext(DataProvider)
+  const { uniqueId, grid, data, headerTemplateColumns, stats, onSort, global } = useContext(DataProvider)
 
   const componentTypeCheck = (component, key, options) => {
     if (component === undefined) return <Fragment>{key}</Fragment>
@@ -15,27 +15,35 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
   }
 
   const classes = `
-    .grid-headers-grid {
+    .${uniqueId}-headers-grid {
       display: grid;
       z-index: 1;
       align-items: center;
     }
-    .grid-headers-grid > * {
-      display: flex;
-      margin: 0px ${global?.style?.gap || '0'}px;
+    .${uniqueId}-header {
+      cursor: pointer;
     }
-    ${grid?.filter(gridItem => gridItem?.header?.visible === undefined  ? true : gridItem.header.visible)
-      .filter(gridItem => !gridItem.header?.noColumn)
-      .map((gridItem, index) => `
-        .grid-headers-grid > *:nth-child(${index + 1}) {
-          content: '${gridItem.key}';
-          justify-content: ${gridItem?.header?.align || 'flex-start'};
-        }`).join('')}
-    .grid-headers-injected {
+    .${uniqueId}-header-sorting {
+      display: flex;
+      gap: ${global?.style?.gap || '0px'};
+    }
+    .${uniqueId}-headers-grid > * {
+      ${grid?.length ? `display: flex;` : ''}
+      margin: 0px ${global?.style?.gap || '0px'};
+    }
+    ${((grid || [])
+      .filter(({ header }) => header?.visible === undefined ? true : header.visible)
+      .filter(({ header }) => !header?.noColumn)
+      .map(({ key, header }, index) => `
+        .${uniqueId}-headers-grid > *:nth-child(${index + 1}) {
+          content: '${key}';
+          justify-content: ${header?.align || 'flex-start'};
+        }`).join('') || '').trim()}
+    .${uniqueId}-headers-injected {
       display: flex;
       overflow: hidden;
       user-select: none;
-      gap: 4px;
+      gap: ${global?.style?.gap || '4px'};
       font-size: 0.9em;
       align-items: center;
     }
@@ -51,62 +59,63 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
   const renderChildrenWithGrid = () => {
     const { direction, column } = stats.sort
     return (grid || [])
-        .filter(({ header }) => header?.visible === undefined ? true : gridItem?.header?.visible)
-        .filter(({ header }) => !header?.noColumn)
-        .map(({ header, key }) => ({
-          key: key,
-          extraKeys: header?.extraKeys,
-          align: header?.align,
-          directionComponent: renderDirectionComponent(),
-          onSort: (path) => !header?.noSort && onSort(path !== undefined && path.length > 0 ? path : key),
-          sort: {
-            direction,
-            column
-          },
-          component: componentTypeCheck(header?.component, key, { }),
-        }))
+      .filter(({ header }) => header?.visible === undefined ? true : gridItem?.header?.visible)
+      .filter(({ header }) => !header?.noColumn)
+      .map(({ header, key }) => ({
+        key,
+        extraKeys: header?.extraKeys,
+        align: header?.align,
+        directionComponent: renderDirectionComponent(key),
+        onSort: (path) => !header?.noSort && onSort(path !== undefined && path.length > 0 ? path : key),
+        sort: {
+          direction,
+          column
+        },
+        component: componentTypeCheck(header?.component, key, {}),
+      }))
   }
 
   const renderChildrenByDiscovery = () => {
     return !!data?.length ? [...new Set(data
-        .map(item => Object
-          .keys(item)
-          .map(key => key))
-          .flat())]
+      .map(item => Object
+        .keys(item)
+        .map(key => key))
+      .flat())]
       .sort()
       .map(key => ({
-      key,
-      component: key,
-      onSort: (path) => {
-        onSort(path !== undefined && path.length > 0 ? path : key)
-      },
-        directionComponent: renderDirectionComponent()
-    }))
-    : []
+        key,
+        component: key,
+        onSort: (path) => {
+          onSort(path !== undefined && path.length > 0 ? path : key)
+        },
+        directionComponent: renderDirectionComponent(key)
+      }))
+      : []
   }
 
   const renderDOMByDiscovery = () => {
-    return <>{!!data?.length && [...new Set(data.map(item => Object.keys(item).map(key => key)).flat())]
-              .sort()
-              .map(key => <Fragment {...{ key }}>
-                {fallbackComponent
-                  ? fallbackComponent(
-                    key, {
-                      key,
-                      onSort: () => onSort(String(key)),
-                      sort: { isActive: stats.sort.column === key },
-                      directionComponent: <>{stats.sort.column === key ? <>
-                        {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
-                      </> : null}</>
-                    }
-                  )
-                  : <div key={key} onClick={() => onSort(key)} style={{ cursor: 'pointer', display: 'flex', gap: '8px' }}>
-                    {key}
-                    {stats.sort.column === key && <span>
-                      {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
-                    </span>}
-                  </div>}
-            </Fragment>)}</>
+    const { column } = stats.sort
+    return !!data?.length && [...new Set(data
+      .map(item => Object
+        .keys(item)
+        .map(key => key))
+      .flat())]
+      .sort()
+      .map(key => <Fragment {...{ key }}>
+        {fallbackComponent
+          ? fallbackComponent(
+            key, {
+            key,
+            onSort: () => onSort(String(key)),
+            sort: { isActive: column === key },
+            directionComponent: renderDirectionComponent(key)
+          }
+          )
+          : <div {...{ key }} className={clsx([`${uniqueId}-header`, column === key &&`${uniqueId}-header-sorting`])}  onClick={() => onSort(key)}>
+              <span>{key}</span>
+              {renderDirectionComponent(key)}
+          </div>}
+      </Fragment>)
   }
 
   const renderDOMWithGrid = () => {
@@ -116,7 +125,7 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
       .filter(({ header }) => !header?.noColumn)
       .map(({ header, key }) => <div
         {...{ key }}
-        className='grid-headers-injected'
+        className={`${uniqueId}-headers-injected`}
         style={{
           cursor: !header?.noSort && !header?.disableOnClick ? 'pointer' : 'default'
         }}
@@ -126,48 +135,43 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
           !header?.noSort && !header?.disableOnClick && onSort('')
         }}
       >
-        {header?.component !== undefined ? <>
-          {componentTypeCheck(
-            header?.component,
-            key,
-            {
-              onSort: (path) => !header?.noSort && onSort(path !== undefined && path.length > 0 ? path : key) ,
-              sort: {
-                direction: !header?.noSort && direction,
-                column: !header?.noSort && column,
-                isActive: !header?.noSort && column === key,
-              },
-              directionComponent: !header?.noSort && renderDirectionComponent(key)
-            }
-          )}
-          {((typeof header?.component === 'string' || typeof header?.component?.type === 'symbol'))
-              && !header?.noSort && stats.sort.column === key && <span>
-              {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
-            </span>}
-        </> : fallbackComponent ? fallbackComponent(key, {
-          directionComponent: <>{stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}</>,
-          sort: { isActive: false }
-        }) : <div className='grid-headers-injected'>
-            {key}
-            {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
-        </div>}
-
-        {/* {header?.component === undefined
-          ?
-          <>
+        {header?.component !== undefined
+          ? <>
+            {componentTypeCheck(
+              header?.component,
+              key,
+              {
+                onSort: (path) => !header?.noSort && onSort(path !== undefined && path.length > 0 ? path : key),
+                sort: {
+                  direction: !header?.noSort && direction,
+                  column: !header?.noSort && column,
+                  isActive: !header?.noSort && column === key,
+                },
+                directionComponent: !header?.noSort && renderDirectionComponent(key)
+              }
+            )}
             {((typeof header?.component === 'string' || typeof header?.component?.type === 'symbol'))
-              && !header?.noSort && stats.sort.column === key && <span>
-              {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
-            </span>}
+              && !header?.noSort && renderDirectionComponent(key)}
           </>
-          : <>{stats.sort.column === key && 'x'} </>} */}
+          : <>
+            {fallbackComponent
+              ? fallbackComponent(
+                key, {
+                directionComponent: renderDirectionComponent(key),
+                sort: { isActive: false }
+              })
+              : <div className={`${uniqueId}-headers-injected`} >
+                {key}
+                {renderDirectionComponent(key)}
+              </div>}
+          </>}
       </div>)
   }
 
   return <>
     <style>{classes}</style>
     <div {...{
-      className: clsx(['grid-headers-grid', className]),
+      className: clsx([`${uniqueId}-headers-grid`, className]),
       style: { ...global?.style, ...style, gap: 0, gridTemplateColumns: headerTemplateColumns }
     }}>
       {children

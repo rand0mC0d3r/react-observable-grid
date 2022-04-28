@@ -52,7 +52,7 @@ const App = () => {
     style: {
       padding: '16px',
       rowPadding: '8px 16px',
-      gap: '8'
+      gap: '8px'
     }
   }
 
@@ -111,12 +111,12 @@ const App = () => {
                     {component}
                   </div>)}
                 </GridRows> */}
-                {/* <GridStats className={classes.stats}>
+                <GridStats className={classes.stats}>
                   {({ total, sort }) => <div >
                     {total} {sort.column} {sort.direction}
                   </div>}
                 </GridStats>
-                <GridSticky style={{backgroundColor: '#FFF', border: '1px solid #c7d0ff8a'}}/> */}
+                {/* <GridSticky style={{backgroundColor: '#FFF', border: '1px solid #c7d0ff8a'}}/> */}
   </>
 
 
@@ -212,6 +212,14 @@ const useStyles = makeStyles(() => ({
     backgroundColor: '#BBB',
     border: '1px solid #888',
     right: '16px',
+    padding: '16px',
+    bottom: '60px'
+  },
+  statsLeft: {
+    position: 'absolute',
+    backgroundColor: '#BBB',
+    border: '1px dotted #888',
+    left: '16px',
     padding: '16px',
     bottom: '60px'
   },

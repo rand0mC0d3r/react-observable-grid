@@ -7,7 +7,9 @@ const GridStats = ({ children, className, style }) => {
   const { total, sort }  = stats
 
   return <div {...{ className }} style={{ ...style, zIndex: 2}}>
-    {children && children({ total, sort })}
+    {children
+      ? children({ total, sort })
+      : <>{console.log("Please provide children. Headless component")}</>}
   </div>
 }
 
