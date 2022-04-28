@@ -80,10 +80,10 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
         directionComponent: renderDirectionComponent(key),
         onSort: (path) => !header?.noSort && onSort(path !== undefined && path.length > 0 ? path : key),
         sort: {
-          direction,
-          column
+          direction: direction || 'asc',
+          column: column || '',
         },
-        component: componentTypeCheck(header?.component, key, {}),
+        component: componentTypeCheck(header?.component, key, { sort: { direction, column } }),
       }))
   }
 

@@ -60,6 +60,9 @@ const App = () => {
     {/* Grid Headers */}
                 <GridHeaders />
                 <GridHeaders
+                  upComponent={"UP"}
+                />
+                <GridHeaders
                   className={classes.header}
                   fallbackComponent={(component, { onSort, sort, key, directionComponent }) => <div key={key} style={{ display: 'flex', gap: '4px', padding: '10px', alignItems: 'center'}}>
                     <Typography
@@ -73,12 +76,12 @@ const App = () => {
                     {directionComponent}
                   </div>}
                 />
-                {/* <GridHeaders className={classes.header}>
+                <GridHeaders className={classes.header}>
                   {({ headers }) => headers.map(({ key, onSort, component, directionComponent }) => <div style={{ display: 'flex', gap: '4px', padding: '10px', alignItems: 'center' }} {...{ key }}>
                     <Typography onClick={onSort} style={{ cursor: 'pointer' }} variant="caption">{component}</Typography>
-                    {directionComponent}
+                    {/* {directionComponent} */}
                   </div>)}
-                </GridHeaders> */}
+                </GridHeaders>
 
                 {/* Grid Columns */}
                 <GridColumns />
