@@ -59,7 +59,7 @@ const App = () => {
   const filling = () => <>
     {/* Grid Headers */}
                 <GridHeaders />
-                {/* <GridHeaders
+                <GridHeaders
                   className={classes.header}
                   fallbackComponent={(component, { onSort, sort, key, directionComponent }) => <div key={key} style={{ display: 'flex', gap: '4px', padding: '10px', alignItems: 'center'}}>
                     <Typography
@@ -78,7 +78,7 @@ const App = () => {
                     <Typography onClick={onSort} style={{ cursor: 'pointer' }} variant="caption">{component}</Typography>
                     {directionComponent}
                   </div>)}
-                </GridHeaders> */}
+                </GridHeaders>
 
                 {/* Grid Columns */}
                 <GridColumns />
@@ -167,24 +167,24 @@ const App = () => {
               }),
               grid: undefined,
             },
-            // {
-            //   key: 'noGlobalAndDiscoveryData',
-            //   global: undefined,
-            //   data,
-            //   grid: undefined,
-            // },
-            // {
-            //   key: 'dataAndGrid',
-            //   global: undefined,
-            //   data,
-            //   grid: processedGrid,
-            // },
-            // {
-            //   key: 'globalAbdDataAndGrid',
-            //   global,
-            //   data,
-            //   grid: processedGrid,
-            // }
+            {
+              key: 'noGlobalAndDiscoveryData',
+              global: undefined,
+              data,
+              grid: undefined,
+            },
+            {
+              key: 'dataAndGrid',
+              global: undefined,
+              data,
+              grid: processedGrid,
+            },
+            {
+              key: 'globalAbdDataAndGrid',
+              global,
+              data,
+              grid: processedGrid,
+            }
           ]
             .map(({ key, global, data, grid }) => <div {...{key, className: `${classes.backgroundContainer} ${classes.wrapperGrid}`}}>
               <Grid {...{ global, data, grid }}>{filling()}</Grid>

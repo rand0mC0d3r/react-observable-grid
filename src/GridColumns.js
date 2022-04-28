@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { parse, stringify } from 'css';
 import { useContext, useEffect, useState } from 'react';
 import DataProvider from './GridStore';
 
@@ -40,7 +41,7 @@ export default ({ children, style, className }) => {
     }
   }, [grid, data, headerTemplateColumns])
 
-  const classes = `
+  const classes = parse(`
     .${uniqueId}-columns-grid {
       top: 0px;
       left: 0px;
@@ -53,23 +54,17 @@ export default ({ children, style, className }) => {
       pointer-events: none;
     }
     .${uniqueId}-columns-item {
-      border: 0px none transparent;
-      border-right: 1px solid #CCC;
+      box-shadow: inset -0.5px 0px 0px 0px #ccc;
     }
     ${!children && `
-      .${uniqueId}-columns-grid > * {
-        border-top-style: none !important;
-        border-left-style: none !important;
-        border-bottom-style: none !important;
-      }
       .${uniqueId}-columns-grid > *:last-child {
-        border-right-style: none !important;
+        box-shadow: none;
       }`
     }
-  `
+  `)
 
   return <>
-    <style>{classes}</style>
+    <style>{stringify(classes, { compress: true })}</style>
     <div className={clsx([`${uniqueId}-columns-grid`, className])}
       style={{
         gridTemplateColumns: headerTemplateColumns,

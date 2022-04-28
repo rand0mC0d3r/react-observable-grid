@@ -23,14 +23,22 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
     }
     .${uniqueId}-header {
       cursor: pointer;
+      overflow: hidden;
     }
     .${uniqueId}-header-sorting {
       display: flex;
-      gap: ${global?.style?.gap || '0px'};
+      gap: ${global?.style?.gap || '4px'};
+    }
+    .${uniqueId}-header-ellipsis {
+      flex: 0 0 70%;
+      text-overflow: ellipsis;
+    }
+    .${uniqueId}-header-inner-ellipsis {
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .${uniqueId}-headers-grid > * {
-      ${grid?.length ? `display: flex;` : ''}
-      margin: 0px ${global?.style?.gap || '0px'};
+      margin: 0px ${global?.style?.gap || '0px'} 0px  0px;
     }
     ${((grid || [])
       .filter(({ header }) => header?.visible === undefined ? true : header.visible)
@@ -115,9 +123,21 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
             directionComponent: renderDirectionComponent(key)
           }
           )
-          : <div {...{ key }} className={clsx([`${uniqueId}-header`, column === key &&`${uniqueId}-header-sorting`])}  onClick={() => onSort(key)}>
-              {column === key ? <span>{key}</span> : key}
-              {renderDirectionComponent(key)}
+          : <div
+            {...{ key }}
+            className={clsx([
+              `${uniqueId}-header`,
+              `${uniqueId}-header-ellipsis`,
+              column === key && `${uniqueId}-header-sorting`
+            ])}
+            onClick={() => onSort(key)}
+            onContextMenu={(e) => {
+              e.preventDefault()
+              stats.sort.column !== '' && onSort('')
+            }}
+          >
+            {column === key ? <span className={`${uniqueId}-header-inner-ellipsis`}>{key}</span> : key}
+            {renderDirectionComponent(key)}
           </div>}
       </Fragment>)
   }
@@ -176,7 +196,14 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
     <style>{stringify(classes, { compress: true })}</style>
     <div {...{
       className: clsx([`${uniqueId}-headers-grid`, className]),
-      style: { ...global?.style, ...style, gap: 0, gridTemplateColumns: headerTemplateColumns }
+      // id={}
+      style: {
+        ...global?.style,
+        ...style,
+        gap: `${(parseInt(global?.style?.gap?.replace('px', '')) / 2) || 0}px`,
+        // gap: `30px`,
+        gridTemplateColumns: headerTemplateColumns
+      }
     }}>
       {children
         ? children({ headers: grid ? renderChildrenWithGrid() : renderChildrenByDiscovery()})
