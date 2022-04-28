@@ -20,6 +20,7 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
       display: grid;
       z-index: 1;
       align-items: center;
+      ${!children ? `gap: ${global?.style?.gap || '4px'};` : ''}
     }
     .${uniqueId}-header {
       cursor: pointer;
@@ -53,6 +54,14 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
       overflow: hidden;
       user-select: none;
       gap: ${global?.style?.gap || '4px'};
+      font-size: 0.9em;
+      align-items: center;
+    }
+    .${uniqueId}-headers-wrapper {
+      display: flex;
+      overflow: hidden;
+      user-select: none;
+      margin: 0px ${global?.style?.gap || '0px'} 0px  0px;
       font-size: 0.9em;
       align-items: center;
     }
@@ -150,7 +159,7 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
       .map(({ header, key }) => <div
         {...{ key }}
         className={clsx([
-          `${uniqueId}-headers-injected`,
+          `${uniqueId}-headers-wrapper`,
           !header?.noSort && !header?.disableOnClick && `${uniqueId}-header-action`
         ])}
         onClick={() => !header?.noSort && !header?.disableOnClick && onSort(key)}
@@ -196,12 +205,10 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
     <style>{stringify(classes, { compress: true })}</style>
     <div {...{
       className: clsx([`${uniqueId}-headers-grid`, className]),
-      // id={}
       style: {
         ...global?.style,
         ...style,
-        gap: `${(parseInt(global?.style?.gap?.replace('px', '')) / 2) || 0}px`,
-        // gap: `30px`,
+        gap: `${parseInt(global?.style?.gap?.replace('px', '')) || 0}px`,
         gridTemplateColumns: headerTemplateColumns
       }
     }}>
