@@ -7,7 +7,8 @@ export default ({ children, style, className }) => {
   const [presentColumns, setPresentColumns] = useState([])
 
   const setGridPresentColumns = () => {
-    const columnsVisible = grid?.filter(({ header }) => header?.visible === undefined
+    const columnsVisible = (grid || {})
+      .filter(({ header }) => header?.visible === undefined
         ? true
         : header?.visible)
           .filter(({ header }) => !header?.noColumn)

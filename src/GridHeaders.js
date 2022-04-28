@@ -46,49 +46,67 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
     }
   `
 
-  return <>
-    <style>{classes}</style>
-    <div {...{
-      className: clsx(['grid-headers-grid', className]),
-      style: { ...global?.style, ...style, gap: 0, gridTemplateColumns: headerTemplateColumns }
-    }}>
-      {children
-        ? children({
-          headers: grid
-          ? grid?.filter(gridItem => gridItem?.header?.visible === undefined ? true : gridItem?.header?.visible)
-          .filter(gridItem => !gridItem?.header?.noColumn)
-          .map(({ header, key }) => ({
-            key: key,
-            extraKeys: header?.extraKeys,
-            align: header?.align,
-            directionComponent: <>{stats.sort.column === key ? <>
-              {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
-            </> : null}</>,
-            onSort: (path) => !header?.noSort && onSort(path !== undefined && path.length > 0 ? path : key),
-            sort: {
-              direction: stats.sort.direction,
-              column: stats.sort.column,
-            },
-            component: componentTypeCheck(header?.component, key, {
+  const renderChildrenWithGrid = () => {
+    return (grid || []).filter(gridItem => gridItem?.header?.visible === undefined ? true : gridItem?.header?.visible)
+        .filter(gridItem => !gridItem?.header?.noColumn)
+        .map(({ header, key }) => ({
+          key: key,
+          extraKeys: header?.extraKeys,
+          align: header?.align,
+          directionComponent: <>{stats.sort.column === key ? <>
+            {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
+          </> : null}</>,
+          onSort: (path) => !header?.noSort && onSort(path !== undefined && path.length > 0 ? path : key),
+          sort: {
+            direction: stats.sort.direction,
+            column: stats.sort.column,
+          },
+          component: componentTypeCheck(header?.component, key, {
+          }),
+        }))
+  }
 
+  const renderChildrenByDiscovery = () => {
+    return !!data?.length ? [...new Set(data.map(item => Object.keys(item).map(key => key)).flat())].sort().map(key => ({
+      key,
+      component: key,
+      onSort: (path) => {
+        onSort(path !== undefined && path.length > 0 ? path : key)
 
-            }),
-          }))
-            : !!data?.length ? [...new Set(data.map(item => Object.keys(item).map(key => key)).flat())].sort().map(key => ({
-              key,
-              component: key,
-              onSort: (path) => {
-                onSort(path !== undefined && path.length > 0 ? path : key)
+      },
+      directionComponent: <>{stats.sort.column === key ? <>
+      {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
+    </> : null}</>
+    }))
+    : []
+  }
 
-              },
-              directionComponent: <>{stats.sort.column === key ? <>
-              {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
-            </> : null}</>
-            })) : []
-        })
-        : <>
-          {grid
-            ? grid.filter(gridItem => gridItem?.header?.visible === undefined ? true : gridItem?.header?.visible)
+  const renderDOMByDiscovery = () => {
+    return <>{!!data?.length && [...new Set(data.map(item => Object.keys(item).map(key => key)).flat())]
+              .sort()
+              .map(key => <Fragment {...{ key }}>
+                {fallbackComponent
+                  ? fallbackComponent(
+                    key, {
+                      key,
+                      onSort: () => onSort(String(key)),
+                      sort: { isActive: stats.sort.column === key },
+                      directionComponent: <>{stats.sort.column === key ? <>
+                        {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
+                      </> : null}</>
+                    }
+                  )
+                  : <div key={key} onClick={() => onSort(key)} style={{ cursor: 'pointer', display: 'flex', gap: '8px' }}>
+                    {key}
+                    {stats.sort.column === key && <span>
+                      {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
+                    </span>}
+                  </div>}
+            </Fragment>)}</>
+  }
+
+  const renderDOMWithGrid = () => {
+    return grid.filter(gridItem => gridItem?.header?.visible === undefined ? true : gridItem?.header?.visible)
                 .filter(gridItem => !gridItem?.header?.noColumn)
                 .map(({ header, key }) => <div
                   key={key}
@@ -140,28 +158,17 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
                     </>
                     : <>{stats.sort.column === key && 'x'} </>} */}
                 </div>)
-            : <>{!!data?.length && [...new Set(data.map(item => Object.keys(item).map(key => key)).flat())]
-              .sort()
-              .map(key => <Fragment {...{ key }}>
-                {fallbackComponent
-                  ? fallbackComponent(
-                    key, {
-                      key,
-                      onSort: () => onSort(String(key)),
-                      sort: { isActive: stats.sort.column === key },
-                      directionComponent: <>{stats.sort.column === key ? <>
-                        {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
-                      </> : null}</>
-                    }
-                  )
-                  : <div key={key} onClick={() => onSort(key)} style={{ cursor: 'pointer', display: 'flex', gap: '8px' }}>
-                    {key}
-                    {stats.sort.column === key && <span>
-                      {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
-                    </span>}
-                  </div>}
-            </Fragment>)}</>}
-        </>}
+  }
+
+  return <>
+    <style>{classes}</style>
+    <div {...{
+      className: clsx(['grid-headers-grid', className]),
+      style: { ...global?.style, ...style, gap: 0, gridTemplateColumns: headerTemplateColumns }
+    }}>
+      {children
+        ? children({ headers: grid ? renderChildrenWithGrid() : renderChildrenByDiscovery()})
+        : grid ? renderDOMWithGrid() : renderDOMByDiscovery()}
     </div>
   </>
 }
