@@ -40,6 +40,7 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
     }
     .${uniqueId}-headers-grid > * {
       margin: 0px ${global?.style?.gap || '0px'} 0px  0px;
+      overflow: hidden;
     }
     ${((grid || [])
       .filter(({ header }) => header?.visible === undefined ? true : header.visible)

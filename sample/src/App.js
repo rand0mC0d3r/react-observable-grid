@@ -165,7 +165,8 @@ const App = () => {
               global,
               data: data.map((data) => {
                 const { final, detail } = { ...data.score }
-                const dataItem = { ...data.package, ...{ final, ...detail } }
+                const { searchScore } = data
+                const dataItem = { ...data.package, searchScore, ...{ final, ...detail } }
                 return dataItem
               }),
               grid: undefined,
