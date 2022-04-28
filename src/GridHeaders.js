@@ -48,6 +48,9 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
       font-size: 0.9em;
       align-items: center;
     }
+    .${uniqueId}-header-action {
+      cursor: pointer;
+    }
   `)
 
   const renderDirectionComponent = (key) => {
@@ -126,10 +129,10 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
       .filter(({ header }) => !header?.noColumn)
       .map(({ header, key }) => <div
         {...{ key }}
-        className={`${uniqueId}-headers-injected`}
-        style={{
-          cursor: !header?.noSort && !header?.disableOnClick ? 'pointer' : 'default'
-        }}
+        className={clsx([
+          `${uniqueId}-headers-injected`,
+          !header?.noSort && !header?.disableOnClick && `${uniqueId}-header-action`
+        ])}
         onClick={() => !header?.noSort && !header?.disableOnClick && onSort(key)}
         onContextMenu={(e) => {
           e.preventDefault()

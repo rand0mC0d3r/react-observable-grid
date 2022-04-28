@@ -3,6 +3,25 @@ import { createContext, useEffect, useState } from 'react'
 
 const Context = createContext()
 
+const wrapperStyle = {
+  display: 'flex',
+  position: 'relative',
+  width: '100%',
+  height: '100%',
+  inset: '0px',
+  flexDirection: 'column',
+  overflow: 'hidden'
+}
+
+const fallbackStyle = {
+  alignSelf: 'stretch',
+  flex: '1 1 auto',
+  display: 'flex',
+  color: '#888',
+  justifyContent: 'center',
+  alignItems: 'center',
+}
+
 const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
   const naturalSort = createNewSortInstance({ comparer: collator.compare })
@@ -112,25 +131,10 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
 
   const emptyFallback = <>{emptyComponent
           ? emptyComponent
-          : <div style={{
-              alignSelf: 'stretch',
-              flex: '1 1 auto',
-              display: 'flex',
-              color: '#888',
-              justifyContent: 'center',
-              alignItems: 'center',
-          }}>Missing data</div>}
+          : <div style={fallbackStyle}>Missing data</div>}
         </>
 
-  return <div style={{
-    display: 'flex',
-    position: 'relative',
-    width: '100%',
-    height: '100%',
-    inset: '0px',
-    flexDirection: 'column',
-    overflow: 'hidden'
-  }}>
+  return <div id={uniqueId} style={wrapperStyle}>
     <Context.Provider
       id="provider"
       value={{

@@ -140,28 +140,55 @@ const App = () => {
       right: '24px',
       bottom: '24px',
       }}>
-        <Flexbox style={{ gap: '8px' }} container direction='row' justifyContent='space-between' alignItems='center' wrap="nowrap">
+        {/* <Flexbox style={{ gap: '8px' }} container direction='row' justifyContent='space-between' alignItems='center' wrap="nowrap">
           <SearchField {...{ searchTerm, suggestions, setSearchTerm, setCurrentSearchTerm }} />
           <Button disabled={isLive} onClick={() => setIsLive(true)}>Live</Button>
           <Button disabled={!isLive} onClick={() => setIsLive(false)}>Sandbox</Button>
           <ColumnManager {...{ processedGrid, setProcessedGrid, columnsState, setColumnsState }} />
         </Flexbox>
-      <div style={{display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-        {terms.map(term => <Chip key={term.term} avatar={<Avatar>{term.count}</Avatar>} variant="outlined" size="small" label={`${term.term}`}/>)}
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', height: '100%', backgroundColor: '#EEE'}}>
-          <div className={classes.backgroundContainer} style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#FFF", margin: '16px', position: 'relative', gap: '8px', flex: '1 1 auto' }}>
-            <Grid {...{ global, data: data.map(data => ({ ...data.package, ...data.score })) }}>{filling()}</Grid>
-          </div>
-          <div className={classes.backgroundContainer} style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#FFF", margin: '16px', position: 'relative', gap: '8px', flex: '1 1 auto' }}>
-            <Grid {...{ data: data.map(data => ({ ...data.package, ...data.score })) }}>{filling()}</Grid>
-          </div>
-          <div className={classes.backgroundContainer} style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#FFF", margin: '16px', position: 'relative', gap: '8px', flex: '1 1 auto' }}>
-            <Grid {...{ data, grid: processedGrid }}>{filling()}</Grid>
-          </div>
-          <div className={classes.backgroundContainer} style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#FFF", margin: '16px', position: 'relative', gap: '8px', flex: '1 1 auto' }}>
-            <Grid {...{ global, data, grid: processedGrid }}>{filling()}</Grid>
-          </div>
+        <div style={{display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          {terms.map(term => <Chip key={term.term} avatar={<Avatar>{term.count}</Avatar>} variant="outlined" size="small" label={`${term.term}`}/>)}
+        </div> */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', height: '100%', backgroundColor: '#EEE' }}>
+          {[
+            {
+              key: 'globalAndDiscoveryData',
+              global,
+              data: data.map(data => ({ ...data.package, ...data.score })),
+              grid: undefined,
+            },
+            {
+              key: 'globalAndDiscoveryDataSpread',
+              global,
+              data: data.map((data) => {
+                const { final, detail } = { ...data.score }
+                const dataItem = { ...data.package, ...{ final, ...detail } }
+                return dataItem
+              }),
+              grid: undefined,
+            },
+            // {
+            //   key: 'noGlobalAndDiscoveryData',
+            //   global: undefined,
+            //   data,
+            //   grid: undefined,
+            // },
+            // {
+            //   key: 'dataAndGrid',
+            //   global: undefined,
+            //   data,
+            //   grid: processedGrid,
+            // },
+            // {
+            //   key: 'globalAbdDataAndGrid',
+            //   global,
+            //   data,
+            //   grid: processedGrid,
+            // }
+          ]
+            .map(({ key, global, data, grid }) => <div {...{key, className: `${classes.backgroundContainer} ${classes.wrapperGrid}`}}>
+              <Grid {...{ global, data, grid }}>{filling()}</Grid>
+          </div>)}
         </div>
       </div>
     </ThemeProvider>
@@ -169,6 +196,15 @@ const App = () => {
 }
 
 const useStyles = makeStyles(() => ({
+  wrapperGrid: {
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: "#FFF",
+    margin: '16px',
+    position: 'relative',
+    gap: '8px',
+    flex: '1 1 auto'
+  },
   observableGrid: {
     '& #Header-wrapper': {
       boxShadow: 'none',
