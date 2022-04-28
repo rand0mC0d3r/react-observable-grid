@@ -87,7 +87,7 @@ const App = () => {
                   {({ columns }) => columns.map(({ key }, index) => <div style={index !== columns.length - 1 ? { borderRight: '1px dotted red' } : {}} key={key}></div>)}
                 </GridColumns> */}
 
-                <GridRows />
+                {/* <GridRows /> */}
                 {/* <GridRows selectedRow={selectedRow} generateKey={(row) => row}>
                   {({ rows, className, styleProps }) => rows.map(({ style, data, component, alternating, index }) => <div
                     onMouseUp={() => {

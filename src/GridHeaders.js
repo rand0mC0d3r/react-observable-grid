@@ -11,7 +11,7 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
 
     return typeof component === 'string' || typeof component.type === 'symbol'
       ? fallbackComponent ? fallbackComponent(component, options) : component
-      : component({ ...options })
+      : typeof component === 'function' && component({ ...options })
   }
 
   const classes = `
@@ -41,38 +41,46 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
     }
   `
 
+  const renderDirectionComponent = (key) => {
+    const { direction, column } = stats.sort
+    return column === key
+      ? direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')
+      : null
+  }
+
   const renderChildrenWithGrid = () => {
+    const { direction, column } = stats.sort
     return (grid || [])
-        .filter(gridItem => gridItem?.header?.visible === undefined ? true : gridItem?.header?.visible)
-        .filter(gridItem => !gridItem?.header?.noColumn)
+        .filter(({ header }) => header?.visible === undefined ? true : gridItem?.header?.visible)
+        .filter(({ header }) => !header?.noColumn)
         .map(({ header, key }) => ({
           key: key,
           extraKeys: header?.extraKeys,
           align: header?.align,
-          directionComponent: <>{stats.sort.column === key ? <>
-            {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
-          </> : null}</>,
+          directionComponent: renderDirectionComponent(),
           onSort: (path) => !header?.noSort && onSort(path !== undefined && path.length > 0 ? path : key),
           sort: {
-            direction: stats.sort.direction,
-            column: stats.sort.column,
+            direction,
+            column
           },
-          component: componentTypeCheck(header?.component, key, {
-          }),
+          component: componentTypeCheck(header?.component, key, { }),
         }))
   }
 
   const renderChildrenByDiscovery = () => {
-    return !!data?.length ? [...new Set(data.map(item => Object.keys(item).map(key => key)).flat())].sort().map(key => ({
+    return !!data?.length ? [...new Set(data
+        .map(item => Object
+          .keys(item)
+          .map(key => key))
+          .flat())]
+      .sort()
+      .map(key => ({
       key,
       component: key,
       onSort: (path) => {
         onSort(path !== undefined && path.length > 0 ? path : key)
-
       },
-      directionComponent: <>{stats.sort.column === key ? <>
-      {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
-    </> : null}</>
+        directionComponent: renderDirectionComponent()
     }))
     : []
   }
@@ -102,58 +110,58 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
   }
 
   const renderDOMWithGrid = () => {
-    return grid.filter(gridItem => gridItem?.header?.visible === undefined ? true : gridItem?.header?.visible)
-                .filter(gridItem => !gridItem?.header?.noColumn)
-                .map(({ header, key }) => <div
-                  key={key}
-                  className='grid-headers-injected'
-                  style={{
-                    cursor: !header?.noSort && !header?.disableOnClick ? 'pointer' : 'default'
-                  }}
-                  onClick={() => !header?.noSort && !header?.disableOnClick && onSort(key)}
-                  onContextMenu={(e) => {
-                    e.preventDefault()
-                    !header?.noSort && !header?.disableOnClick && onSort('')
-                  }}
-                >
-                  {header?.component !== undefined ? <>
-                    {componentTypeCheck(
-                      header?.component,
-                      key,
-                      {
-                        onSort: (path) => !header?.noSort && onSort(path !== undefined && path.length > 0 ? path : key) ,
-                        sort: {
-                          direction: !header?.noSort && stats.sort.direction,
-                          column: !header?.noSort && stats.sort.column,
-                          isActive: !header?.noSort && stats.sort.column === key,
-                        },
-                        directionComponent: <>{!header?.noSort && stats.sort.column === key ? <>
-                          {stats.sort.direction === 'asc' ? '↑' : '↓'}
-                        </> : null}</>
-                      }
-                    )}
-                    {((typeof header?.component === 'string' || typeof header?.component?.type === 'symbol'))
-                        && !header?.noSort && stats.sort.column === key && <span>
-                        {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
-                      </span>}
-                  </> : fallbackComponent ? fallbackComponent(key, {
-                    directionComponent: <>{stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}</>,
-                    sort: { isActive: false }
-                  }) : <div className='grid-headers-injected'>
-                      {key}
-                      {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
-                  </div>}
+    const { direction, column } = stats.sort
+    return grid
+      .filter(({ header }) => header?.visible === undefined ? true : header?.visible)
+      .filter(({ header }) => !header?.noColumn)
+      .map(({ header, key }) => <div
+        {...{ key }}
+        className='grid-headers-injected'
+        style={{
+          cursor: !header?.noSort && !header?.disableOnClick ? 'pointer' : 'default'
+        }}
+        onClick={() => !header?.noSort && !header?.disableOnClick && onSort(key)}
+        onContextMenu={(e) => {
+          e.preventDefault()
+          !header?.noSort && !header?.disableOnClick && onSort('')
+        }}
+      >
+        {header?.component !== undefined ? <>
+          {componentTypeCheck(
+            header?.component,
+            key,
+            {
+              onSort: (path) => !header?.noSort && onSort(path !== undefined && path.length > 0 ? path : key) ,
+              sort: {
+                direction: !header?.noSort && direction,
+                column: !header?.noSort && column,
+                isActive: !header?.noSort && column === key,
+              },
+              directionComponent: !header?.noSort && renderDirectionComponent(key)
+            }
+          )}
+          {((typeof header?.component === 'string' || typeof header?.component?.type === 'symbol'))
+              && !header?.noSort && stats.sort.column === key && <span>
+              {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
+            </span>}
+        </> : fallbackComponent ? fallbackComponent(key, {
+          directionComponent: <>{stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}</>,
+          sort: { isActive: false }
+        }) : <div className='grid-headers-injected'>
+            {key}
+            {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
+        </div>}
 
-                  {/* {header?.component === undefined
-                    ?
-                    <>
-                      {((typeof header?.component === 'string' || typeof header?.component?.type === 'symbol'))
-                        && !header?.noSort && stats.sort.column === key && <span>
-                        {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
-                      </span>}
-                    </>
-                    : <>{stats.sort.column === key && 'x'} </>} */}
-                </div>)
+        {/* {header?.component === undefined
+          ?
+          <>
+            {((typeof header?.component === 'string' || typeof header?.component?.type === 'symbol'))
+              && !header?.noSort && stats.sort.column === key && <span>
+              {stats.sort.direction === 'asc' ? (upComponent || '↑') : (downComponent || '↓')}
+            </span>}
+          </>
+          : <>{stats.sort.column === key && 'x'} </>} */}
+      </div>)
   }
 
   return <>
