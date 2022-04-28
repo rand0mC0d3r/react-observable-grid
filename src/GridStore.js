@@ -7,6 +7,8 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
   const naturalSort = createNewSortInstance({ comparer: collator.compare })
 
+  const uniqueId = `rog-${(Math.random() + 1).toString(36).substring(7)}`
+
   const [_data, set_Data] = useState([])
   const [_noGrid, set_noGrid] = useState(false)
   const [_headerTemplateColumns, set_HeaderTemplateColumns] = useState('')
@@ -132,6 +134,7 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
     <Context.Provider
       id="provider"
       value={{
+        uniqueId,
         data: _data,
         gridTemplateColumns: _gridTemplateColumns,
         headerTemplateColumns: _headerTemplateColumns,

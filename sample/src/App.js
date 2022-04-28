@@ -11,6 +11,7 @@ import SearchField from './parts/SearchField';
 
 const App = () => {
   let queryTimeout
+  let uniqueId = (Math.random() + 1).toString(36).substring(7);
 
   const [isLive, setIsLive] = useState(false)
   const [data, setData] = useState([]);
@@ -155,12 +156,12 @@ const App = () => {
           <div className={classes.backgroundContainer} style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#FFF", margin: '16px', position: 'relative', gap: '8px', flex: '1 1 auto' }}>
             <Grid {...{ data: data.map(data => ({ ...data.package, ...data.score })) }}>{filling()}</Grid>
           </div>
-          {/* <div className={classes.backgroundContainer} style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#FFF", margin: '16px', position: 'relative', gap: '8px', flex: '1 1 auto' }}>
+          <div className={classes.backgroundContainer} style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#FFF", margin: '16px', position: 'relative', gap: '8px', flex: '1 1 auto' }}>
             <Grid {...{ data, grid: processedGrid }}>{filling()}</Grid>
           </div>
           <div className={classes.backgroundContainer} style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#FFF", margin: '16px', position: 'relative', gap: '8px', flex: '1 1 auto' }}>
             <Grid {...{ global, data, grid: processedGrid }}>{filling()}</Grid>
-          </div> */}
+          </div>
         </div>
       </div>
     </ThemeProvider>
