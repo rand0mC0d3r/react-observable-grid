@@ -1,7 +1,10 @@
 import clsx from 'clsx';
 import { parse, stringify } from 'css';
 import PropTypes, { string } from 'prop-types';
-import { Fragment, useContext, useEffect, useState } from 'react';
+import { createRef, Fragment, useContext, useEffect, useRef, useState } from 'react';
+import { useLayoutEffect } from 'react/cjs/react.development';
+// import { useRef } from 'react/cjs/react.production.min';
+import GridObservable from './GridObservable';
 import DataProvider from './GridStore';
 
 const wrapperStyle = {
@@ -20,6 +23,8 @@ const scrollerStyle = {
 const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
   const { uniqueId, data, gridTemplateColumns, grid, global } = useContext(DataProvider)
   const [presentColumns, setPresentColumns] = useState([])
+  const [minHeight, setMinHeight] = useState('100px')
+  const [totalHeight, setTotalHeight] = useState('100px')
 
   const jsonPathToValue = (jsonData, path) => {
     if (!(jsonData instanceof Object) || typeof (path) === "undefined") {
@@ -97,6 +102,15 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
       white-space: pre-wrap;
       margin: 0px ${halfGap()} 0px 0px;
     }
+    .${uniqueId}-row-scrollable {
+      overflow: hidden scroll;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    },
+    ${uniqueId}-row-scrollable::-webkit-scrollbar {
+      display: none;
+    },
     .grid-row-inferred {
       word-break: break-word;
       white-space: pre-wrap;
@@ -191,17 +205,25 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
   }
 
   const renderDOMWithDiscovery = () => {
-    return <>{!!data?.length && data.map((data, index) => <div key={Object.values(data).filter(d => typeof d === 'string').join("")} style={{
+    const rowRef = useRef()
+
+    useLayoutEffect(() => {
+      console.log('rendering', rowRef, rowRef?.current?.clientHeight)
+      // setMinHeight(rowRef?.current?.clientHeight)
+    }, [rowRef])
+
+    return <>{!!data?.length && data.map((data, index) => <div ref={rowRef} key={Object.values(data).filter(d => typeof d === 'string').join("")} style={{
           display: 'grid',
           alignItems: 'center',
           backgroundColor: global?.alternatingRows?.stepping(index) ? global?.alternatingRows?.color : index % 2 === 0 ? '#f0f0f0' : 'transparent',
           padding: global?.style?.rowPadding || '0',
           gap: `${parseInt(global?.style?.gap?.replace('px', '')) || 0}px`,
           gridTemplateColumns,
+          minHeight: '100px'
     }}>
-      {presentColumns.map(({ key }) => <div key={key} className={`${uniqueId}-row-discovered`}>
+      {presentColumns.map(({ key }) => <GridObservable {...{key}} className={`${uniqueId}-row-discovered`}>
           {data[key] && typeof data[key] === 'string' ? data[key] : String(JSON.stringify(data[key]) || '').substring(0, 250)}
-        </div>)}
+        </GridObservable>)}
       </div>)}
     </>
   }
@@ -234,10 +256,12 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
   return <>
     <style>{stringify(classes, { compress: true })}</style>
     <div style={wrapperStyle}>
-      <div style={scrollerStyle}>
-        {children
-          ? data && <>{renderChildren()}</>
-          : <>{grid ? renderDOMWithGrid() : renderDOMWithDiscovery()}</>}
+      <div className={`${uniqueId}-row-scrollable`}>
+        <div style={{ height: `${(totalHeight)}px`}}>
+          {children
+            ? data && <>{renderChildren()}</>
+            : <>{grid ? renderDOMWithGrid() : renderDOMWithDiscovery()}</>}
+        </div>
       </div>
     </div>
   </>
