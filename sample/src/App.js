@@ -182,27 +182,27 @@ const App = () => {
             //   key: 'globalAndDiscoveryData',
             //   data: data.map(data => ({ ...data.package, ...data.score })),
             // },
-            {
-              key: 'globalAndDiscoveryDataSpread',
-              global,
-              data: data.map((data) => {
-                const { final, detail } = { ...data.score }
-                const { searchScore } = data
-                const dataItem = { ...data.package, searchScore, ...{ final, ...detail } }
-                return dataItem
-              }),
-            },
+            // {
+            //   key: 'globalAndDiscoveryDataSpread',
+            //   global,
+            //   data: data.map((data) => {
+            //     const { final, detail } = { ...data.score }
+            //     const { searchScore } = data
+            //     const dataItem = { ...data.package, searchScore, ...{ final, ...detail } }
+            //     return dataItem
+            //   }),
+            // },
             // {
             //   key: 'dataAndGrid',
             //   data,
             //   grid: processedGrid,
             // },
-            // {
-            //   key: 'globalAbdDataAndGrid',
-            //   global,
-            //   data,
-            //   grid: processedGrid,
-            // }
+            {
+              key: 'globalAbdDataAndGrid',
+              global,
+              data,
+              grid: processedGrid,
+            }
           ]
             .map(({ key, global, data, grid }) => <div {...{key, className: `${classes.backgroundContainer} ${classes.wrapperGrid}`}}>
               <Grid {...{ global, data, grid }}>{filling()}</Grid>
