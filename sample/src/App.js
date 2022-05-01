@@ -1,13 +1,11 @@
-import { Avatar, Button, Chip, Grid as Flexbox, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import { useMemo, useState } from 'react';
 // import { Grid, GridColumns, GridHeaders, GridRows, GridStats, GridSticky } from 'react-observable-grid';
-import { Grid, GridColumns, GridHeaders, GridRows, GridStats, GridSticky } from './components';
+import { Grid, GridColumns, GridHeaders, GridRows, GridStats } from './components';
 // import { Grid } from './components/GridStoreNg';
-import ColumnManager from './parts/ColumnManager';
 import DataStores from './parts/DataStores';
 import GridStructure from './parts/GridStructure';
-import SearchField from './parts/SearchField';
 
 const App = () => {
   let queryTimeout
@@ -90,7 +88,7 @@ const App = () => {
                   {({ columns }) => columns.map(({ key }, index) => <div style={index !== columns.length - 1 ? { borderRight: '1px dotted red' } : {}} key={key}></div>)}
                 </GridColumns> */}
 
-                {/* <GridRows /> */}
+                <GridRows />
                 {/* <GridRows selectedRow={selectedRow} generateKey={(row) => row}>
                   {({ rows, className, styleProps }) => rows.map(({ style, data, component, alternating, index }) => <div
                     onMouseUp={() => {
@@ -156,9 +154,7 @@ const App = () => {
           {[
             {
               key: 'globalAndDiscoveryData',
-              global,
               data: data.map(data => ({ ...data.package, ...data.score })),
-              grid: undefined,
             },
             {
               key: 'globalAndDiscoveryDataSpread',
@@ -169,26 +165,19 @@ const App = () => {
                 const dataItem = { ...data.package, searchScore, ...{ final, ...detail } }
                 return dataItem
               }),
-              grid: undefined,
             },
-            {
-              key: 'noGlobalAndDiscoveryData',
-              global: undefined,
-              data,
-              grid: undefined,
-            },
-            {
-              key: 'dataAndGrid',
-              global: undefined,
-              data,
-              grid: processedGrid,
-            },
-            {
-              key: 'globalAbdDataAndGrid',
-              global,
-              data,
-              grid: processedGrid,
-            }
+            // {
+            //   key: 'dataAndGrid',
+            //   global: undefined,
+            //   data,
+            //   grid: processedGrid,
+            // },
+            // {
+            //   key: 'globalAbdDataAndGrid',
+            //   global,
+            //   data,
+            //   grid: processedGrid,
+            // }
           ]
             .map(({ key, global, data, grid }) => <div {...{key, className: `${classes.backgroundContainer} ${classes.wrapperGrid}`}}>
               <Grid {...{ global, data, grid }}>{filling()}</Grid>
