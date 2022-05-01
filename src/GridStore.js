@@ -34,6 +34,8 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
   const [_headerTemplateColumns, set_HeaderTemplateColumns] = useState('')
   const [_gridTemplateColumns, set_GridTemplateColumns] = useState('')
   const [_rowHeight, set_RowHeight] = useState(0)
+  const [_earliestIndex, set_EarliestIndex] = useState(0)
+  const [_latestIndex, set_LatestIndex] = useState(0)
 
   const _defaultWidth = '1fr'
 
@@ -151,10 +153,15 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
         uniqueId,
         data: _data,
         rowHeight: _rowHeight,
+        earliestIndex: _earliestIndex,
+        latestIndex: _latestIndex,
+        setEarliestIndex: set_EarliestIndex,
+        setLatestIndex: set_LatestIndex,
         gridTemplateColumns: _gridTemplateColumns,
         headerTemplateColumns: _headerTemplateColumns,
         grid, stats, global, onSort, updateDeterminedHeight
       }}>
+      ei {_earliestIndex} li {_latestIndex}
       {_data ? children ? children : emptyFallback : emptyFallback}
     </Context.Provider>
   </div>

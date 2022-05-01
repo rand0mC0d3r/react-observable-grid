@@ -176,10 +176,11 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
 
   const renderDOMWithGrid = () => <>
     {!!data?.length && data.map((dataItem, index) => <GridObservable
+      index={index}
       defaultStyle={{
         minHeight: `${defaultMinHeight}px`,
       }}
-      className={clsx([`${uniqueId}-rows-grid`, className])}
+      inViewClassName={clsx([`${uniqueId}-rows-grid`, className])}
       key={Object.values(dataItem).map(di => JSON.stringify(di)).join('').replace(/[^a-z0-9]/gmi, " ").replace(/\s+/g, '')}
       style={{
         minHeight: `${Math.max(defaultMinHeight / 1.5)}px`,
