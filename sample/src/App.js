@@ -126,9 +126,7 @@ const App = () => {
                   </div>)}
                 </GridRows> */}
                 <GridStats className={classes.stats}>
-                  {({ total, sort }) => <div >
-                    {total} {sort.column} {sort.direction}
-                  </div>}
+                  {({ ...rest }) => <div>{JSON.stringify(rest)}</div>}
                 </GridStats>
 
   </>

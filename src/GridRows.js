@@ -21,11 +21,11 @@ const scrollerStyle = {
 }
 
 const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
-  const { uniqueId, data, gridTemplateColumns, grid, global } = useContext(DataProvider)
+  const { uniqueId, data, rowHeight, gridTemplateColumns, grid, global } = useContext(DataProvider)
   const [presentColumns, setPresentColumns] = useState([])
-  const [minHeight, setMinHeight] = useState('100px')
+  const [minHeight, setMinHeight] = useState(100)
   const [totalHeight, setTotalHeight] = useState('100px')
-  const defaultMinHeight = '100px'
+  const defaultMinHeight = 100
 
   const jsonPathToValue = (jsonData, path) => {
     if (!(jsonData instanceof Object) || typeof (path) === "undefined") {
@@ -218,7 +218,8 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
       // ref={rowRef}
       key={Object.values(data).filter(d => typeof d === 'string').join("")}
       defaultStyle={{
-        minHeight: defaultMinHeight,
+        // minHeight: `${Math.max(minHeight, defaultMinHeight)}px`,
+        minHeight: `${Math.max(rowHeight || defaultMinHeight)}px`,
       }}
       style={{
           display: 'grid',
@@ -227,15 +228,11 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
           padding: global?.style?.rowPadding || '0',
           gap: `${parseInt(global?.style?.gap?.replace('px', '')) || 0}px`,
           gridTemplateColumns,
-    }}>
-      {presentColumns.map(({ key }) => <GridObservable
+      }}>
+      {presentColumns.map(({ key }, index) => <GridObservable
         {...{ key }}
-        // onUpdateHeight={(value) => {
-        //   if (!!value && parseInt(defaultMinHeight.replace(/\D/g, '')) !== value) {
-        //     setMinHeight(`${value}px`)
-        //     // console.log(value)
-        //   }
-        // }}
+        sample={index === 0}
+        sampleViability={value => !!value && minHeight !== value && defaultMinHeight !== value}
         className={`${uniqueId}-row-discovered`}
       >
           {data[key] && typeof data[key] === 'string' ? data[key] : String(JSON.stringify(data[key]) || '').substring(0, 250)}

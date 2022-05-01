@@ -25,6 +25,7 @@ const fallbackStyle = {
 const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
   const naturalSort = createNewSortInstance({ comparer: collator.compare })
+  let defaultHeight = 0
 
   const uniqueId = `rog-${(Math.random() + 1).toString(36).substring(7)}`
 
@@ -32,6 +33,7 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
   const [_noGrid, set_noGrid] = useState(false)
   const [_headerTemplateColumns, set_HeaderTemplateColumns] = useState('')
   const [_gridTemplateColumns, set_GridTemplateColumns] = useState('')
+  const [_rowHeight, set_RowHeight] = useState(0)
 
   const _defaultWidth = '1fr'
 
@@ -61,6 +63,8 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
     total: '1',
     filtered: '2',
     order: 'asc',
+    defaultHeight: 100,
+    determinedHeight: 100,
     orderBy: '',
     sort: {
       direction: 'asc',
@@ -79,6 +83,13 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
       : direction === 'asc'
         ? naturallySorted.asc([item => extractPath(item, column)])
         : naturallySorted.desc([item => extractPath(item, column)])
+  }
+
+  const updateDeterminedHeight = (height) => {
+    // console.log(height)
+    // defaultHeight = height
+    set_RowHeight(!!height && height > 0 ? height : stats.defaultHeight)
+    // setStats(prevStats => ({ ...prevStats, determinedHeight: height }))
   }
 
   useEffect(() => {
@@ -130,9 +141,9 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
   }
 
   const emptyFallback = <>{emptyComponent
-          ? emptyComponent
-          : <div style={fallbackStyle}>Missing data</div>}
-        </>
+    ? emptyComponent
+    : <div style={fallbackStyle}>Missing data</div>}
+  </>
 
   return <div id={uniqueId} style={wrapperStyle}>
     <Context.Provider
@@ -140,9 +151,10 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
       value={{
         uniqueId,
         data: _data,
+        rowHeight: _rowHeight,
         gridTemplateColumns: _gridTemplateColumns,
         headerTemplateColumns: _headerTemplateColumns,
-        grid, stats, global, onSort
+        grid, stats, global, onSort, updateDeterminedHeight
       }}>
       {_data ? children ? children : emptyFallback : emptyFallback}
     </Context.Provider>
