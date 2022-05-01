@@ -72,7 +72,7 @@ const MetadataColumn = memo(({ item, value, searchTerm, setSearchTerm, setCurren
   };
 
   return <>
-      <Typography key={`${item.package.name}.${value}`} variant="caption"  onMouseUp={handleMouseUp} color="textSecondary">{searchString(
+      <Typography key={`${item.package.name}.${value}`} style={{ display: 'inline-block' }} variant="caption"  onMouseUp={handleMouseUp} color="textSecondary">{searchString(
         value,
         searchTerm,
         (children) => <Typography variant="caption" color="primary" style={{ display: 'inline-block', borderBottom: '2px dashed #3f51b5'}}>{children}</Typography>)

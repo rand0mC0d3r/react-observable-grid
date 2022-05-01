@@ -56,7 +56,7 @@ const App = () => {
 
   const filling = () => <>
     {/* Grid Headers */}
-                {/* <GridHeaders />
+                <GridHeaders />
                 <GridHeaders
                   upComponent={"UP"}
                 />
@@ -79,10 +79,10 @@ const App = () => {
                     <Typography onClick={onSort} style={{ cursor: 'pointer' }} variant="caption">{component}</Typography>
                     {directionComponent}
                   </div>)}
-                </GridHeaders> */}
+                </GridHeaders>
 
                 {/* Grid Columns */}
-                {/* <GridColumns /> */}
+                <GridColumns />
                 {/* <GridColumns style={{border: '1px dotted red'}} /> */}
                 {/* <GridColumns>
                   {({ columns }) => columns.map(({ key }, index) => <div style={index !== columns.length - 1 ? { borderRight: '1px dotted red' } : {}} key={key}></div>)}
@@ -171,12 +171,12 @@ const App = () => {
               data,
               grid: processedGrid,
             },
-            // {
-            //   key: 'globalAbdDataAndGrid',
-            //   global,
-            //   data,
-            //   grid: processedGrid,
-            // }
+            {
+              key: 'globalAbdDataAndGrid',
+              global,
+              data,
+              grid: processedGrid,
+            }
           ]
             .map(({ key, global, data, grid }) => <div {...{key, className: `${classes.backgroundContainer} ${classes.wrapperGrid}`}}>
               <Grid {...{ global, data, grid }}>{filling()}</Grid>

@@ -175,11 +175,11 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
       }}>
         {grid.map((gridItem, index) => <Fragment key={`column.${gridItem?.row?.key || gridItem.key}`}>
           {gridItem?.row?.component !== undefined
-            ? <>{typeof gridItem.row.component === 'function'
-                ? <div key={gridItem.row.key || gridItem.key}>{gridItem?.row?.component(dataItem, index)}</div>
-                : <div key={gridItem.row.key || gridItem.key}>{gridItem?.row?.component}</div>
-              }
-            </>
+            ? <Fragment key={gridItem.row.key || gridItem.key}>
+                {typeof gridItem.row.component === 'function'
+                ? gridItem?.row?.component(dataItem, index)
+                  : gridItem?.row?.component}
+              </Fragment>
             : <div
               id={`${gridItem.key}`}
               key={gridItem.key}
@@ -238,20 +238,8 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
     <div style={wrapperStyle}>
       <div style={scrollerStyle}>
         {children
-          ? data && <>
-            {renderChildren()}
-          </>
-          : <>
-            {/* {renderDOM()} */}
-            <>{grid
-              ? <>
-                {renderDOMWithGrid()}
-              </>
-              : <>
-                {renderDOMWithDiscovery()}
-              </>
-            }</>
-          </>}
+          ? data && <>{renderChildren()}</>
+          : <>{grid ? renderDOMWithGrid() : renderDOMWithDiscovery()}</>}
       </div>
     </div>
   </>
