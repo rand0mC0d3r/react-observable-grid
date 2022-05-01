@@ -21,7 +21,7 @@ const scrollerStyle = {
 }
 
 const GridRows = ({ children, className, style, focusIndex, generateKey, selectedRow }) => {
-  const { uniqueId, data, rowHeight, gridTemplateColumns, grid, global } = useContext(DataProvider)
+  const { uniqueId, data, rowHeight, visibleIndexes, gridTemplateColumns, grid, global } = useContext(DataProvider)
   const [presentColumns, setPresentColumns] = useState([])
   const [minHeight, setMinHeight] = useState(100)
   const [lastFocusedItem, setLastFocusedItem] = useState(-1)
@@ -189,6 +189,7 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
   }, [focusIndex, uniqueId, lastFocusedItem])
 
   const renderDOMWithGrid = () => <>
+    {/* {visibleIndexes.current} */}
     {!!data?.length && data.map((dataItem, index) => <GridObservable
       index={index}
       id={`${uniqueId}.${index}`}

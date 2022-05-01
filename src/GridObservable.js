@@ -9,11 +9,14 @@ const GridObservable = ({ index, id, children, defaultStyle, inViewClassName, cl
 	const removeIndexes = index => [...new Set([...visibleIndexes.current.filter(vi => vi !== index)])].sort((a,b) => a - b)
 
 	const updateIndexes = (inView, index) => {
-		if (inView && !visibleIndexes?.current?.some(vi => vi === index)) {
-			visibleIndexes.current = addIndexes(index)
-		}
-		if (!inView && visibleIndexes?.current?.some(vi => vi === index)) {
-			visibleIndexes.current = removeIndexes(index)
+		if (index % 5 === 0) {
+			if (inView && !visibleIndexes?.current?.some(vi => vi === index)) {
+				visibleIndexes.current = addIndexes(index)
+			}
+			if (!inView && visibleIndexes?.current?.some(vi => vi === index)) {
+				visibleIndexes.current = removeIndexes(index)
+			}
+			console.log(visibleIndexes.current)
 		}
 	}
 
