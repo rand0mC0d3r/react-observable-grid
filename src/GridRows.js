@@ -128,6 +128,12 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
       display: grid;
       z-index: 1;
       align-items: center;
+      grid-template-columns: ${gridTemplateColumns};
+      gap: ${global?.style?.gap || '0px'};
+      padding: ${global?.style?.rowPadding || '0px'};
+    }
+    .${uniqueId}-row-alternating {
+      background-color: #f0f0f0;
     }
     ${(grid || [])
       .filter(gridItem => gridItem?.header?.visible === undefined ? true : gridItem?.header?.visible)
@@ -180,27 +186,17 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
       defaultStyle={{
         minHeight: `${defaultMinHeight}px`,
       }}
-      inViewClassName={clsx([`${uniqueId}-rows-grid`, className])}
+      inViewClassName={clsx([
+        `${uniqueId}-rows-grid`,
+        (global?.alternatingRows?.stepping(index) ? global?.alternatingRows?.color : index % 2 === 0) && `${uniqueId}-row-alternating`,
+        className])}
       key={Object.values(dataItem).map(di => JSON.stringify(di)).join('').replace(/[^a-z0-9]/gmi, " ").replace(/\s+/g, '')}
-      style={{
-        minHeight: `${Math.max(defaultMinHeight / 1.5)}px`,
-        display: 'grid',
-        alignItems: 'center',
-        gap: global?.style?.gap || '0',
-        backgroundColor: global?.alternatingRows?.stepping(index) ? global?.alternatingRows?.color : index % 2 === 0 ? '#f0f0f0' : 'transparent',
-        padding: global?.style?.rowPadding || '0px',
-        gridTemplateColumns,
-    }}>
-      {grid.map((gridItem, index) => <Fragment key={`column.${gridItem?.row?.key || gridItem.key}`}>
-        {gridItem?.row?.component !== undefined
-          ? <>
-              {typeof gridItem.row.component === 'function' ? gridItem?.row?.component(dataItem, index) : gridItem?.row?.component}
-            </>
-          : <div
-            key={gridItem.key}
-            className={`${uniqueId}-row-discovered`}
-          >
-            {JSON.stringify(jsonPathToValue(dataItem, gridItem.key))}
+    >
+      {grid.map(({ row, key }, index) => <Fragment key={`column.${row?.key || key}`}>
+        {row?.component !== undefined
+          ? typeof row.component === 'function' ? row?.component(dataItem, index) : row?.component
+          : <div {...{ key }} className={`${uniqueId}-row-discovered`}>
+            {JSON.stringify(jsonPathToValue(dataItem, key))}
           </div>}
       </Fragment>)}
     </GridObservable>)}
