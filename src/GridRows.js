@@ -25,6 +25,7 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
   const [presentColumns, setPresentColumns] = useState([])
   const [minHeight, setMinHeight] = useState('100px')
   const [totalHeight, setTotalHeight] = useState('100px')
+  const defaultMinHeight = '100px'
 
   const jsonPathToValue = (jsonData, path) => {
     if (!(jsonData instanceof Object) || typeof (path) === "undefined") {
@@ -212,11 +213,12 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
       // setMinHeight(rowRef?.current?.clientHeight)
     // }, [rowRef])
 
+
     return <>{!!data?.length && data.map((data, index) => <GridObservable
       // ref={rowRef}
       key={Object.values(data).filter(d => typeof d === 'string').join("")}
       defaultStyle={{
-        minHeight: '100px'
+        minHeight: defaultMinHeight,
       }}
       style={{
           display: 'grid',
@@ -226,7 +228,16 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
           gap: `${parseInt(global?.style?.gap?.replace('px', '')) || 0}px`,
           gridTemplateColumns,
     }}>
-      {presentColumns.map(({ key }) => <GridObservable {...{key}} className={`${uniqueId}-row-discovered`}>
+      {presentColumns.map(({ key }) => <GridObservable
+        {...{ key }}
+        // onUpdateHeight={(value) => {
+        //   if (!!value && parseInt(defaultMinHeight.replace(/\D/g, '')) !== value) {
+        //     setMinHeight(`${value}px`)
+        //     // console.log(value)
+        //   }
+        // }}
+        className={`${uniqueId}-row-discovered`}
+      >
           {data[key] && typeof data[key] === 'string' ? data[key] : String(JSON.stringify(data[key]) || '').substring(0, 250)}
         </GridObservable>)}
       </GridObservable>)}
