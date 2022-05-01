@@ -132,8 +132,9 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
     ${(grid || [])
       .filter(gridItem => gridItem?.header?.visible === undefined ? true : gridItem?.header?.visible)
       .map((gridItem, index) => !gridItem?.header?.noColumn
-      ? `
-        .${uniqueId}-rows-inherit-${index} > * {
+        ? `
+
+        .${uniqueId}-rows-grid > *:nth-child(${index + 1}) {
           display: ${gridItem?.row?.noWrapper ? 'flex' : 'inline-block'};
           padding: ${global?.style?.rowPadding.split(" ")[0]} ${(global?.style?.gap || '0px')};
           margin: 0px 0px 0px -${(global?.style?.gap || '0px')};
@@ -142,6 +143,7 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
           align-items: ${gridItem?.header?.align || 'flex-start'};
           ${gridItem?.row?.noWrapper ? `text-align: ${(textMap.find(tm => tm.id === gridItem?.header?.align || '') || []).text}` : ''}
         }
+
     ` : `
         .${uniqueId}-rows-grid > *:nth-child(${index + 1}) {
           display: ${gridItem?.row?.noWrapper ? 'flex' : 'inline-block'};
@@ -172,42 +174,41 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
     `:'').join('')}
   `)
 
-  const renderDOMWithGrid = () => {
-    return <>
-      {data.map((dataItem, index) => <GridObservable
-        defaultStyle={{
-          minHeight: `${Math.max(defaultMinHeight)}px`,
-        }}
-        className={clsx([`${uniqueId}-rows-grid`, className])}
-        key={Object.values(dataItem).map(di => JSON.stringify(di)).join('').replace(/[^a-z0-9]/gmi, " ").replace(/\s+/g, '')}
-        style={{
-          display: 'grid',
-          alignItems: 'center',
-          gap: global?.style?.gap || '0',
-          backgroundColor: global?.alternatingRows?.stepping(index) ? global?.alternatingRows?.color : index % 2 === 0 ? '#f0f0f0' : 'transparent',
-          padding: global?.style?.rowPadding || '0px',
-          gridTemplateColumns,
-      }}>
-        {grid.map((gridItem, index) => <Fragment key={`column.${gridItem?.row?.key || gridItem.key}`}>
-          {gridItem?.row?.component !== undefined
-            ? <GridObservable className={`${uniqueId}-rows-inherit-${index}`} key={gridItem.row.key || gridItem.key}>
-                {typeof gridItem.row.component === 'function' ? gridItem?.row?.component(dataItem, index) : gridItem?.row?.component}
-              </GridObservable>
-            : <GridObservable
-              key={gridItem.key}
-              className={`${uniqueId}-row-discovered`}
-            >
-              {JSON.stringify(jsonPathToValue(dataItem, gridItem.key))}
-            </GridObservable>}
-        </Fragment>)}
-      </GridObservable>)}
-    </>
-  }
+  const renderDOMWithGrid = () => <>
+    {!!data?.length && data.map((dataItem, index) => <GridObservable
+      defaultStyle={{
+        minHeight: `${defaultMinHeight}px`,
+      }}
+      className={clsx([`${uniqueId}-rows-grid`, className])}
+      key={Object.values(dataItem).map(di => JSON.stringify(di)).join('').replace(/[^a-z0-9]/gmi, " ").replace(/\s+/g, '')}
+      style={{
+        minHeight: `${Math.max(defaultMinHeight / 1.5)}px`,
+        display: 'grid',
+        alignItems: 'center',
+        gap: global?.style?.gap || '0',
+        backgroundColor: global?.alternatingRows?.stepping(index) ? global?.alternatingRows?.color : index % 2 === 0 ? '#f0f0f0' : 'transparent',
+        padding: global?.style?.rowPadding || '0px',
+        gridTemplateColumns,
+    }}>
+      {grid.map((gridItem, index) => <Fragment key={`column.${gridItem?.row?.key || gridItem.key}`}>
+        {gridItem?.row?.component !== undefined
+          ? <>
+              {typeof gridItem.row.component === 'function' ? gridItem?.row?.component(dataItem, index) : gridItem?.row?.component}
+            </>
+          : <div
+            key={gridItem.key}
+            className={`${uniqueId}-row-discovered`}
+          >
+            {JSON.stringify(jsonPathToValue(dataItem, gridItem.key))}
+          </div>}
+      </Fragment>)}
+    </GridObservable>)}
+  </>
 
   const renderDOMWithDiscovery = () => <>{!!data?.length && data.map((data, index) => <GridObservable
     key={Object.values(data).filter(d => typeof d === 'string').join("")}
     defaultStyle={{
-      minHeight: `${Math.max(defaultMinHeight)}px`,
+      minHeight: `${defaultMinHeight}px`,
     }}
     style={{
         display: 'grid',

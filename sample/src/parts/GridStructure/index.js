@@ -63,21 +63,21 @@ export default ({
 					component: (item, index) => <SelectionAndOpenColumn {...{ item, index, setOpenRows, openRows, selectedRows, setSelectedRows }} />,
 				}
 			},
-			{
-				key: 'package.description',
-				header: {
-					width: '250px',
-					component: 'Packet Description',
-				},
-			},
-			{
-				key: 'package.keywords',
-				header: {
-					noSort: true,
-					width: '290px',
-					component: () => <div>Packet Keywords</div>
-				},
-			},
+			// {
+			// 	key: 'package.description',
+			// 	header: {
+			// 		width: '250px',
+			// 		component: 'Packet Description',
+			// 	},
+			// },
+			// {
+			// 	key: 'package.keywords',
+			// 	header: {
+			// 		noSort: true,
+			// 		width: '290px',
+			// 		component: () => <div>Packet Keywords</div>
+			// 	},
+			// },
 			// {
 			// 	key: 'package.links',
 			// 	// header: {
