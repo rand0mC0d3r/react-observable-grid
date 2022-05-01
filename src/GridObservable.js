@@ -12,7 +12,7 @@ const GridObservable = ({ children, defaultStyle, sample = false, sampleViabilit
 		}
 	}, [height])
 
-	return <InView>{({ inView, ref, entry }) => <div  {...{ ref, style: { ...inView ? { ...style } : { ...defaultStyle } }, ...rest }}>
+	return <InView>{({ inView, ref, entry }) => <div {...{ ref, style: { ...inView ? { ...style } : { ...defaultStyle } }, ...rest }}>
 		{inView && children}
 		{inView
 			&& entry?.target?.parentElement

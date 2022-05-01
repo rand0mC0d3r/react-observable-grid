@@ -66,7 +66,7 @@ export default ({
 			{
 				key: 'package.description',
 				header: {
-					width: '150px',
+					width: '250px',
 					component: 'Packet Description',
 				},
 			},
@@ -74,7 +74,7 @@ export default ({
 				key: 'package.keywords',
 				header: {
 					noSort: true,
-					width: '90px',
+					width: '290px',
 					component: () => <div>Packet Keywords</div>
 				},
 			},
