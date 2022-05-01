@@ -183,6 +183,8 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
   const renderDOMWithGrid = () => <>
     {!!data?.length && data.map((dataItem, index) => <GridObservable
       index={index}
+      // sample={index === 0}
+      // sampleViability={value => !!value && minHeight !== value && defaultMinHeight !== value}
       defaultStyle={{
         minHeight: `${defaultMinHeight}px`,
       }}

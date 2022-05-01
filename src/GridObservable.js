@@ -1,8 +1,8 @@
 import React from 'react';
 import { InView } from 'react-intersection-observer';
 
-const GridObservable = ({ index, children, defaultStyle, inViewClassName, className, sample = false, sampleViability, style, ...rest }) => {
-	return <InView>{({ inView, ref }) => <div {...{
+
+const GridObservable = ({ index, children, defaultStyle, inViewClassName, className, sample = false, sampleViability, style, ...rest }) => <InView>{({ inView, ref }) => <div {...{
 		ref,
 		className: inView ? inViewClassName : className,
 		style: { ...inView ? { ...style } : { ...defaultStyle } },
@@ -10,6 +10,5 @@ const GridObservable = ({ index, children, defaultStyle, inViewClassName, classN
 	}}>
 		{inView && children}
 	</div>}</InView>
-}
 
 export default GridObservable

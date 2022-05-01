@@ -36,6 +36,7 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
   const [_rowHeight, set_RowHeight] = useState(0)
   const [_earliestIndex, set_EarliestIndex] = useState(0)
   const [_latestIndex, set_LatestIndex] = useState(0)
+  const [_visibleIndexes, set_VisibleIndexes] = useState([])
 
   const _defaultWidth = '1fr'
 
@@ -141,6 +142,17 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
     set_Data(sortData(data, key, stats.sort.direction))
   }
 
+  const gatherIndexes = (index, add = true) => {
+    // if (index > 0) {
+      console.log(index)
+      // set_VisibleIndexes([..._visibleIndexes, index])
+      // console.log(_visibleIndexes)
+    // }
+
+    // set_VisibleIndexes([...new Set([..._visibleIndexes, index])].sort())
+    // set_VisibleIndexes([..._visibleIndexes, index])
+  }
+
   const emptyFallback = <>{emptyComponent
     ? emptyComponent
     : <div style={fallbackStyle}>Missing data</div>}
@@ -153,15 +165,15 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
         uniqueId,
         data: _data,
         rowHeight: _rowHeight,
-        earliestIndex: _earliestIndex,
-        latestIndex: _latestIndex,
-        setEarliestIndex: set_EarliestIndex,
-        setLatestIndex: set_LatestIndex,
+
+        visibleIndexes: _visibleIndexes,
+        gatherIndexes: gatherIndexes,
+
         gridTemplateColumns: _gridTemplateColumns,
         headerTemplateColumns: _headerTemplateColumns,
         grid, stats, global, onSort, updateDeterminedHeight
       }}>
-      ei {_earliestIndex} li {_latestIndex}
+      v{_visibleIndexes}i
       {_data ? children ? children : emptyFallback : emptyFallback}
     </Context.Provider>
   </div>

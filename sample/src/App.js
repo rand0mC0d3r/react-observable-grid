@@ -29,6 +29,7 @@ const App = () => {
   const [trees, setTrees] = useState([]);
   const [openRows, setOpenRows] = useState([]);
   const [keywords, setKeywords] = useState([]);
+  const [focusIndex, setFocusIndex] = useState(-1);
 
   const theme = useMemo(() => createTheme({
     palette: { type: 'light', },
@@ -128,21 +129,50 @@ const App = () => {
                 <GridStats className={classes.stats}>
                   {({ ...rest }) => <div>{JSON.stringify(rest)}</div>}
                 </GridStats>
+                <GridSticky
+                  style={{
+                    backgroundColor: '#FFF',
+                    padding: '8px',
+                    gap: '8px',
+                    flexWrap: 'wrap',
+                    display: 'flex',
+                    border: '1px solid blue'
+                  }}
+                  >
+      <>
+        {/* {JSON.stringify(keywords)} */}
+                  {keywords.map(keyword => <Chip
+                    key={keyword.value}
+                    onClick={() => setFocusIndex(keyword.index)}
+                    label={`${keyword.index} - ${keyword.value}`}
+                    size="small"
+                    variant="outlined" />)}
+                  </>
+                </GridSticky>
+
 
   </>
 
   useEffect(() => {
-    const steps = 20
-    if (data.length <= 20) {
+    const steps = 10
+    if (data.length <= steps) {
       setKeywords([])
     } else {
       const step = Math.floor(data.length / steps)
-      if (step < 3) {
+      if (step < 4) {
         setKeywords([])
       } else {
         setKeywords(data
-          .filter((_, index) => index % step === 0)
-          .map(dataItem => dataItem.package.name))
+          .map((dataItem, index) => {
+            if (index % step === 0) {
+              return {
+                value: dataItem.package.name,
+                index,
+              }
+            }
+          })
+          .filter(Boolean)
+        )
       }
     }
   }, [data])
@@ -176,6 +206,7 @@ const App = () => {
         <div style={{display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           {terms.map(term => <Chip key={term.term} avatar={<Avatar>{term.count}</Avatar>} variant="outlined" size="small" label={`${term.term}`}/>)}
         </div> */}
+        focus {focusIndex}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', height: '100%', backgroundColor: '#EEE' }}>
           {[
             // {
@@ -267,7 +298,7 @@ const useStyles = makeStyles(() => ({
     border: '1px solid #888',
     right: '16px',
     padding: '16px',
-    bottom: '60px'
+    bottom: '100px'
   },
   statsLeft: {
     position: 'absolute',
