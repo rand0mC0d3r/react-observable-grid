@@ -190,7 +190,9 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
   }, [focusIndex, uniqueId, lastFocusedItem])
 
   const renderDOMWithGrid = () => <>
-    {!!data?.length && data.map((dataItem, index) => <GridObservable
+    {!!data?.length && data
+      .filter((_, i) => i < (_visibleIndexes.slice(-1)[0] || 10) + 10)
+      .map((dataItem, index) => <GridObservable
       index={index}
       id={`${uniqueId}.${index}`}
       defaultStyle={{
@@ -202,7 +204,7 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
         className])}
       key={Object.values(dataItem).map(di => JSON.stringify(di)).join('').replace(/[^a-z0-9]/gmi, " ").replace(/\s+/g, '')}
     >
-      {_visibleIndexes}
+      {/* {_visibleIndexes} */}
       {grid.map(({ row, key }, index) => <Fragment key={`column.${row?.key || key}`}>
         {row?.component !== undefined
           ? typeof row.component === 'function' ? row?.component(dataItem, index) : row?.component
