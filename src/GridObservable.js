@@ -16,7 +16,6 @@ const GridObservable = ({ index, id, children, defaultStyle, inViewClassName, cl
 			if (!inView && visibleIndexes?.current?.some(vi => vi === index)) {
 				visibleIndexes.current = removeIndexes(index)
 			}
-			console.log(visibleIndexes.current)
 		}
 	}
 

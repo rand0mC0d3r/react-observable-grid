@@ -25,6 +25,7 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
   const [presentColumns, setPresentColumns] = useState([])
   const [minHeight, setMinHeight] = useState(100)
   const [lastFocusedItem, setLastFocusedItem] = useState(-1)
+  const [_visibleIndexes, set_VisibleIndexes] = useState([])
   const [totalHeight, setTotalHeight] = useState('100px')
   const defaultMinHeight = 100
 
@@ -189,7 +190,6 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
   }, [focusIndex, uniqueId, lastFocusedItem])
 
   const renderDOMWithGrid = () => <>
-    {/* {visibleIndexes.current} */}
     {!!data?.length && data.map((dataItem, index) => <GridObservable
       index={index}
       id={`${uniqueId}.${index}`}
@@ -202,6 +202,7 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
         className])}
       key={Object.values(dataItem).map(di => JSON.stringify(di)).join('').replace(/[^a-z0-9]/gmi, " ").replace(/\s+/g, '')}
     >
+      {_visibleIndexes}
       {grid.map(({ row, key }, index) => <Fragment key={`column.${row?.key || key}`}>
         {row?.component !== undefined
           ? typeof row.component === 'function' ? row?.component(dataItem, index) : row?.component
@@ -262,7 +263,7 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
   return <>
     <style>{stringify(classes, { compress: true })}</style>
     <div style={wrapperStyle}>
-      <div className={`${uniqueId}-row-scrollable`}>
+      <div className={`${uniqueId}-row-scrollable`} onScroll={() => set_VisibleIndexes(visibleIndexes.current)}>
         {children
           ? data && <>{renderChildren()}</>
           : <>{grid ? renderDOMWithGrid() : renderDOMWithDiscovery()}</>}
