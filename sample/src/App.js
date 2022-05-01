@@ -94,9 +94,9 @@ const App = () => {
                   {({ columns }) => columns.map(({ key }, index) => <div style={index !== columns.length - 1 ? { borderRight: '1px dotted red' } : {}} key={key}></div>)}
                 </GridColumns> */}
 
-                <GridRows />
-                {/* <GridRows selectedRow={selectedRow} generateKey={(row) => row}>
-                  {({ rows, className, styleProps }) => rows.map(({ style, data, component, alternating, index }) => <div
+                {/* <GridRows /> */}
+                <GridRows selectedRow={selectedRow} generateKey={(row) => row}>
+                  {({ rows, className, styleProps }) => rows.map(({ style, data, component, alternating, key, index }) => <div
                     onMouseUp={() => {
                       setSelectedRow(index)
                       setSelectedItem({
@@ -104,13 +104,15 @@ const App = () => {
                         name: data.package.name,
                       })
                     }}
-                    style={styleProps}
+                    key={key}
+                    style={{
+                      ...styleProps,
+                      ...alternating ? { backgroundColor: '#f5f5f5' }: {},
+                    }}
                     // className={[className]}
                     className={[
-                    className,
-
-                    alternating ? classes.alternating : '',
-                    selectedRows.includes(data.package.name) ? classes.selected : '',
+                      className,
+                    // selectedRows.includes(data.package.name) ? classes.selected : '',
                     // (selectedItem?.name === data.package.name && !richPayloads.some(rp => rp.repo === data.package.name)) ? classes.isBusy : '',
                     // index === selectedRow ? classes.focused : '',
                     ]
@@ -121,7 +123,7 @@ const App = () => {
                   >
                     {component}
                   </div>)}
-                </GridRows> */}
+                </GridRows>
                 {/* <GridStats className={classes.stats}>
                   {({ total, sort }) => <div >
                     {total} {sort.column} {sort.direction}

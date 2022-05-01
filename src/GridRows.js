@@ -218,9 +218,9 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
       className: clsx([`${uniqueId}-rows-grid`, className]),
       rows: (data.length ? data : []).map((dataItem, index) => ({
         index,
-        alternating: global?.alternatingRows?.stepping(index),
+        alternating: global?.alternatingRows?.stepping(index) || index % 2 === 0,
         data: dataItem,
-        key: `${index}.${generateKey(dataItem)}`,
+        key: Object.values(dataItem).map(di => JSON.stringify(di)).join('').replace(/[^a-z0-9]/gmi, " ").replace(/\s+/g, ''),
         component: presentColumns.map(({ component, key }) => componentTypeCheck(
           typeof component !== 'string'
             ? component(dataItem, index)

@@ -78,13 +78,13 @@ export default ({
 					component: () => <div>Packet Keywords</div>
 				},
 			},
-			{
-				key: 'package.links',
-				// header: {
-					// noSort: true,
-					// component: 'Packet Description',
-				// },
-			},
+			// {
+			// 	key: 'package.links',
+			// 	// header: {
+			// 		// noSort: true,
+			// 		// component: 'Packet Description',
+			// 	// },
+			// },
 			// {
 			// 	key: 'package.name',
 			// 	header: {
