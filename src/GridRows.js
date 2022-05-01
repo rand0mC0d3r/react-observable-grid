@@ -187,57 +187,54 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
       }}>
         {grid.map((gridItem, index) => <Fragment key={`column.${gridItem?.row?.key || gridItem.key}`}>
           {gridItem?.row?.component !== undefined
-            ? <Fragment key={gridItem.row.key || gridItem.key}>
+            ? <GridObservable
+                defaultStyle={{
+                    minHeight: `${Math.max(rowHeight || defaultMinHeight)}px`,
+                }}
+                sample={index === 0}
+                sampleViability={value => true}
+                key={gridItem.row.key || gridItem.key}
+              >
                 {typeof gridItem.row.component === 'function'
                 ? gridItem?.row?.component(dataItem, index)
                   : gridItem?.row?.component}
-              </Fragment>
-            : <div
+              </GridObservable>
+            : <GridObservable
               id={`${gridItem.key}`}
               key={gridItem.key}
               className={`${uniqueId}-row-discovered`}
               // style={{ padding: global?.style?.rowPadding || '0' }}
             >
               {JSON.stringify(jsonPathToValue(dataItem, gridItem.key))}
-            </div>}
+            </GridObservable>}
         </Fragment>)}
       </div>)}
     </>
   }
 
-  const renderDOMWithDiscovery = () => {
-    // const rowRef = useRef()
-
-    // useLayoutEffect(() => {
-      // console.log('rendering', rowRef, rowRef?.current?.clientHeight)
-      // setMinHeight(rowRef?.current?.clientHeight)
-    // }, [rowRef])
-
-
-    return <>{!!data?.length && data.map((data, index) => <GridObservable
-      key={Object.values(data).filter(d => typeof d === 'string').join("")}
-      defaultStyle={{
-        minHeight: `${Math.max(rowHeight || defaultMinHeight)}px`,
-      }}
-      style={{
-          display: 'grid',
-          alignItems: 'center',
-          backgroundColor: global?.alternatingRows?.stepping(index) ? global?.alternatingRows?.color : index % 2 === 0 ? '#f0f0f0' : 'transparent',
-          padding: global?.style?.rowPadding || '0',
-          gap: `${parseInt(global?.style?.gap?.replace('px', '')) || 0}px`,
-          gridTemplateColumns,
-      }}>
-      {presentColumns.map(({ key }, index) => <GridObservable
-        {...{ key }}
-        sample={index === 0}
-        sampleViability={value => !!value && minHeight !== value && defaultMinHeight !== value}
-        className={`${uniqueId}-row-discovered`}
-      >
-          {data[key] && typeof data[key] === 'string' ? data[key] : String(JSON.stringify(data[key]) || '').substring(0, 250)}
-        </GridObservable>)}
+  const renderDOMWithDiscovery = () => <>{!!data?.length && data.map((data, index) => <GridObservable
+    key={Object.values(data).filter(d => typeof d === 'string').join("")}
+    defaultStyle={{
+      minHeight: `${Math.max(rowHeight || defaultMinHeight)}px`,
+    }}
+    style={{
+        display: 'grid',
+        alignItems: 'center',
+        backgroundColor: global?.alternatingRows?.stepping(index) ? global?.alternatingRows?.color : index % 2 === 0 ? '#f0f0f0' : 'transparent',
+        padding: global?.style?.rowPadding || '0',
+        gap: `${parseInt(global?.style?.gap?.replace('px', '')) || 0}px`,
+        gridTemplateColumns,
+    }}>
+    {presentColumns.map(({ key }, index) => <GridObservable
+      {...{ key }}
+      sample={index === 0}
+      sampleViability={value => !!value && minHeight !== value && defaultMinHeight !== value}
+      className={`${uniqueId}-row-discovered`}
+    >
+        {data[key] && typeof data[key] === 'string' ? data[key] : String(JSON.stringify(data[key]) || '').substring(0, 250)}
       </GridObservable>)}
-    </>
-  }
+    </GridObservable>)}
+  </>
 
   const renderChildren = () => {
     return children({
