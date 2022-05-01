@@ -120,19 +120,12 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
       ? `
         .${uniqueId}-rows-grid > *:nth-child(${index + 1}) {
           display: ${gridItem?.row?.noWrapper ? 'flex' : 'inline-block'};
-          padding: ${global?.style?.rowPadding.split(" ")[0]} ${(global?.style?.gap || '0')}px;
-          margin: -${(global?.style?.gap || '0')}px 0px;
-        }
-        .${uniqueId}-rows-grid > *:nth-child(${index + 1}) {
+          padding: ${global?.style?.rowPadding.split(" ")[0]} ${(global?.style?.gap || '0px')};
+          margin: 0px 0px 0px -${(global?.style?.gap || '0px')};
           justify-content: ${gridItem?.header?.align || 'flex-start'};
           justify-items: ${gridItem?.header?.align || 'flex-start'};
           align-items: ${gridItem?.header?.align || 'flex-start'};
           ${gridItem?.row?.noWrapper ? `text-align: ${(textMap.find(tm => tm.id === gridItem?.header?.align || '') || []).text}` : ''}
-        }
-        .${uniqueId}-rows-grid > *:nth-child(${index + 1}) > * {
-          justify-content: ${gridItem?.header?.align || 'flex-start'};
-          justify-items: ${gridItem?.header?.align || 'flex-start'};
-          text-align: ${(textMap.find(tm => tm.id === gridItem?.header?.align || '') || []).text};
         }
     ` : `
         .${uniqueId}-rows-grid > *:nth-child(${index + 1}) {
@@ -140,6 +133,9 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
           margin: ${index !== 0 ? '0' : `-${global.style.rowPadding.split(" ")[0]}`} -${global.style.rowPadding.split(" ")[1]} ${index === 0 ? '0' : `-${global.style.rowPadding.split(" ")[0]}`} -${global.style.rowPadding.split(" ")[1]} !important;
         }
     `).join('')}
+    .${uniqueId}-rows-grid > *:last-child {
+      padding: ${global?.style?.rowPadding.split(" ")[0]} 0px ${global?.style?.rowPadding.split(" ")[0]} ${(global?.style?.gap || '0px')};
+    }
     ${(grid || [])
       .filter(gridItem => gridItem?.header?.visible === undefined ? true : gridItem?.header?.visible)
       .map((gridItem, index) => gridItem?.header?.noColumn ? `

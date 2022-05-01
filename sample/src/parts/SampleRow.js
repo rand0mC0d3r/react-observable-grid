@@ -132,7 +132,7 @@ const SearchScoreColumn = memo(({ item, index }) => {
 
   const average = parseFloat(((item.score.detail.quality + item.score.detail.popularity + item.score.detail.maintenance) / 3) * 100)
   return <div className={classes.container} style={{ backgroundColor: item.searchScore > 100 ? '#e3fee399' : 'transparent' }}>
-    <div style={{ flex: '1 1 100%', display: 'flex', gap: '8px', alignItems: 'center' }}>
+    <div style={{ justifyContent: 'flex-end', flex: '1 1 100%', display: 'flex', gap: '8px', alignItems: 'center' }}>
       {item.searchScore > 100 && <ThumbUpIcon color="action" />}
       <Tooltip title={`Position: ${average}`}>
         <Typography color="textSecondary" variant="h6">{`${average.toFixed(2)}%`}</Typography>

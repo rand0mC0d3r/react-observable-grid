@@ -49,6 +49,12 @@ const App = () => {
     },
     style: {
       padding: '16px',
+      header: {
+        padding: '16px',
+      },
+      row: {
+        padding: '0px 16px',
+      },
       rowPadding: '0px 16px',
       gap: '8px'
     }
@@ -57,7 +63,7 @@ const App = () => {
   const filling = () => <>
     {/* Grid Headers */}
                 <GridHeaders />
-                <GridHeaders
+                {/* <GridHeaders
                   upComponent={"UP"}
                 />
                 <GridHeaders
@@ -79,7 +85,7 @@ const App = () => {
                     <Typography onClick={onSort} style={{ cursor: 'pointer' }} variant="caption">{component}</Typography>
                     {directionComponent}
                   </div>)}
-                </GridHeaders>
+                </GridHeaders> */}
 
                 {/* Grid Columns */}
                 <GridColumns />
@@ -166,11 +172,11 @@ const App = () => {
             //     return dataItem
             //   }),
             // },
-            {
-              key: 'dataAndGrid',
-              data,
-              grid: processedGrid,
-            },
+            // {
+            //   key: 'dataAndGrid',
+            //   data,
+            //   grid: processedGrid,
+            // },
             {
               key: 'globalAbdDataAndGrid',
               global,
