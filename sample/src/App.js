@@ -104,17 +104,21 @@ const App = () => {
                         name: data.package.name,
                       })
                     }}
-                    style={style}
+                    style={styleProps}
+                    // className={[className]}
                     className={[
                     className,
-                    classes.row,
+
                     alternating ? classes.alternating : '',
                     selectedRows.includes(data.package.name) ? classes.selected : '',
-                    (selectedItem?.name === data.package.name && !richPayloads.some(rp => rp.repo === data.package.name)) ? classes.isBusy : '',
-                    index === selectedRow ? classes.focused : '',
-                    ].filter(Boolean).join(' ')}
-                    {...{ id: data.package.name, key: data.package.name, style: { ...styleProps, borderBottom: '1px solid #DDD', }
-                    }}>
+                    // (selectedItem?.name === data.package.name && !richPayloads.some(rp => rp.repo === data.package.name)) ? classes.isBusy : '',
+                    // index === selectedRow ? classes.focused : '',
+                    ]
+                    // .filter(Boolean).join(' ')}
+                    // {...{ id: data.package.name, key: data.package.name, style: { ...styleProps, borderBottom: '1px solid #DDD', }
+                    // }
+                  }
+                  >
                     {component}
                   </div>)}
                 </GridRows> */}

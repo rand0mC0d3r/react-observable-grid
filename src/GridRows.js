@@ -210,11 +210,12 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
     return children({
       styleProps: {
         display: 'grid',
+        gap: `${parseInt(global?.style?.gap?.replace('px', '')) || 0}px`,
         alignItems: 'center',
         padding: global?.style?.rowPadding || '0',
         gridTemplateColumns,
       },
-      className: clsx(['grid-rows-grid', className]),
+      className: clsx([`${uniqueId}-rows-grid`, className]),
       rows: (data.length ? data : []).map((dataItem, index) => ({
         index,
         alternating: global?.alternatingRows?.stepping(index),
