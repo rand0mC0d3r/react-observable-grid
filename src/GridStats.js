@@ -5,13 +5,11 @@ import DataProvider from './GridStore';
 const GridStats = ({ children, className, style }) => {
   const { stats } = useContext(DataProvider)
 
-  return <div {...{ className }} style={{ ...style, zIndex: 2}}>
-    {children
-      ? children({ ...stats })
-      : <>{console.log("Please provide children. Headless component")}</>}
-  </div>
+  return children
+    ? <div {...{ className }} style={{ ...style, zIndex: 2 }}>{children({ ...stats })}</div>
+    : null
 }
 
-GridStats.propTypes = { children: PropTypes.func.isRequired }
+GridStats.propTypes = { children: PropTypes.oneOfType([PropTypes.func, PropTypes.element ])}
 
 export default GridStats

@@ -1,5 +1,5 @@
 import { createNewSortInstance } from 'fast-sort'
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useEffect, useRef, useState } from 'react'
 
 const Context = createContext()
 
@@ -36,7 +36,7 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
   const [_rowHeight, set_RowHeight] = useState(0)
   const [_earliestIndex, set_EarliestIndex] = useState(0)
   const [_latestIndex, set_LatestIndex] = useState(0)
-  const [_visibleIndexes, set_VisibleIndexes] = useState([])
+  const visibleIndexes = useRef([])
 
   const _defaultWidth = '1fr'
 
@@ -153,6 +153,10 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
     // set_VisibleIndexes([..._visibleIndexes, index])
   }
 
+  useEffect(() => {
+    console.log(visibleIndexes.current)
+  }, [visibleIndexes])
+
   const emptyFallback = <>{emptyComponent
     ? emptyComponent
     : <div style={fallbackStyle}>Missing data</div>}
@@ -166,14 +170,14 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
         data: _data,
         rowHeight: _rowHeight,
 
-        visibleIndexes: _visibleIndexes,
-        gatherIndexes: gatherIndexes,
+        visibleIndexes,
+        // set_VisibleIndexes,
 
         gridTemplateColumns: _gridTemplateColumns,
         headerTemplateColumns: _headerTemplateColumns,
         grid, stats, global, onSort, updateDeterminedHeight
       }}>
-      v{_visibleIndexes}i
+      {visibleIndexes.current}
       {_data ? children ? children : emptyFallback : emptyFallback}
     </Context.Provider>
   </div>

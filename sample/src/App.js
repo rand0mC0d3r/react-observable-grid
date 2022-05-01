@@ -96,7 +96,7 @@ const App = () => {
                   {({ columns }) => columns.map(({ key }, index) => <div style={index !== columns.length - 1 ? { borderRight: '1px dotted red' } : {}} key={key}></div>)}
                 </GridColumns> */}
 
-                <GridRows />
+                <GridRows {...{ focusIndex }} />
                 {/* <GridRows selectedRow={selectedRow} generateKey={(row) => row}>
                   {({ rows, className, styleProps }) => rows.map(({ style, data, component, alternating, key, index }) => <div
                     onMouseUp={() => {
@@ -126,7 +126,7 @@ const App = () => {
                     {component}
                   </div>)}
                 </GridRows> */}
-                <GridStats className={classes.stats}>
+                <GridStats  className={classes.stats}>
                   {({ ...rest }) => <div>{JSON.stringify(rest)}</div>}
                 </GridStats>
                 <GridSticky
@@ -136,11 +136,12 @@ const App = () => {
                     gap: '8px',
                     flexWrap: 'wrap',
                     display: 'flex',
-                    border: '1px solid blue'
+                    justifyContent: 'space-around',
+                    alignItems: 'center',
+                    alignContent: 'center',
                   }}
                   >
-      <>
-        {/* {JSON.stringify(keywords)} */}
+                  <>
                   {keywords.map(keyword => <Chip
                     key={keyword.value}
                     onClick={() => setFocusIndex(keyword.index)}
@@ -206,7 +207,7 @@ const App = () => {
         <div style={{display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           {terms.map(term => <Chip key={term.term} avatar={<Avatar>{term.count}</Avatar>} variant="outlined" size="small" label={`${term.term}`}/>)}
         </div> */}
-        focus {focusIndex}
+        {/* focus {focusIndex} */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', height: '100%', backgroundColor: '#EEE' }}>
           {[
             // {

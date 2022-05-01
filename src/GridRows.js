@@ -20,10 +20,11 @@ const scrollerStyle = {
   height: '100%'
 }
 
-const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
+const GridRows = ({ children, className, style, focusIndex, generateKey, selectedRow }) => {
   const { uniqueId, data, rowHeight, gridTemplateColumns, grid, global } = useContext(DataProvider)
   const [presentColumns, setPresentColumns] = useState([])
   const [minHeight, setMinHeight] = useState(100)
+  const [lastFocusedItem, setLastFocusedItem] = useState(-1)
   const [totalHeight, setTotalHeight] = useState('100px')
   const defaultMinHeight = 100
 
@@ -31,27 +32,27 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
     if (!(jsonData instanceof Object) || typeof (path) === "undefined") {
       throw "Not valid argument:jsonData:" + jsonData + ", path:" + path;
     }
-      path = path.replace(/\[(\w+)\]/g, '.$1');
-      path = path.replace(/^\./, '');
-      var pathArray = path.split('.');
-      for (var i = 0, n = pathArray.length; i < n; ++i) {
-        var key = pathArray[i];
-        if (key in jsonData) {
-          if (jsonData[key] !== null) {
-            jsonData = jsonData[key];
-          } else {
-            return null;
-          }
+    path = path.replace(/\[(\w+)\]/g, '.$1');
+    path = path.replace(/^\./, '');
+    var pathArray = path.split('.');
+    for (var i = 0, n = pathArray.length; i < n; ++i) {
+      var key = pathArray[i];
+      if (key in jsonData) {
+        if (jsonData[key] !== null) {
+          jsonData = jsonData[key];
         } else {
-          return key;
+          return null;
         }
+      } else {
+        return key;
       }
-      return jsonData;
+    }
+    return jsonData;
   }
 
   const componentTypeCheck = (component, key, index) => {
     if (component === null) {
-      return <div key={key} style={{ margin: '0px', padding: '0px'}} id="auto-generated" />
+      return <div key={key} style={{ margin: '0px', padding: '0px' }} id="auto-generated" />
     }
     if (!!component?.length) {
       return <div key={key} id={component.length} className="grid-row-inferred-array">
@@ -170,21 +171,27 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
         ${index === 0 ? '0' : `-${global.style.rowPadding.split(" ")[0]}`}
         -${(gridItem?.row?.columnStart && gridItem?.row?.columnStart !== 0) ? 0 : global.style.rowPadding.split(" ")[1]} !important;
       `
-      }
+        }
       grid-column-start: ${gridItem?.row?.columnStart || '1'};
       grid-column-end: ${gridItem?.row?.columnEnd || 'none'};
       grid-row-start: ${gridItem?.row?.rowStart || '0'};
       grid-row-end: ${gridItem?.row?.rowEnd || '0'};
       z-index: 1;
     }
-    `:'').join('')}
+    `: '').join('')}
   `)
+
+  useEffect(() => {
+    if (lastFocusedItem !== focusIndex) {
+      document.getElementById(`${uniqueId}.${focusIndex}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      setLastFocusedItem(focusIndex)
+    }
+  }, [focusIndex, uniqueId, lastFocusedItem])
 
   const renderDOMWithGrid = () => <>
     {!!data?.length && data.map((dataItem, index) => <GridObservable
       index={index}
-      // sample={index === 0}
-      // sampleViability={value => !!value && minHeight !== value && defaultMinHeight !== value}
+      id={`${uniqueId}.${index}`}
       defaultStyle={{
         minHeight: `${defaultMinHeight}px`,
       }}
