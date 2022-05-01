@@ -1,8 +1,8 @@
 import { Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 // import { Grid, GridColumns, GridHeaders, GridRows, GridStats, GridSticky } from 'react-observable-grid';
-import { Grid, GridColumns, GridHeaders, GridRows, GridStats } from './components';
+import { Grid, GridColumns, GridHeaders, GridRows, GridStats, GridSticky } from './components';
 // import { Grid } from './components/GridStoreNg';
 import DataStores from './parts/DataStores';
 import GridStructure from './parts/GridStructure';
@@ -28,6 +28,7 @@ const App = () => {
   const [contributors, setContributors] = useState([]);
   const [trees, setTrees] = useState([]);
   const [openRows, setOpenRows] = useState([]);
+  const [keywords, setKeywords] = useState([]);
 
   const theme = useMemo(() => createTheme({
     palette: { type: 'light', },
@@ -124,14 +125,31 @@ const App = () => {
                     {component}
                   </div>)}
                 </GridRows>
-                {/* <GridStats className={classes.stats}>
+                <GridStats className={classes.stats}>
                   {({ total, sort }) => <div >
                     {total} {sort.column} {sort.direction}
                   </div>}
-                </GridStats> */}
-                {/* <GridSticky style={{backgroundColor: '#FFF', border: '1px solid #c7d0ff8a'}}/> */}
+                </GridStats>
+                {/* <GridSticky style={{ backgroundColor: '#FFF', border: '1px solid blue' }}>
+                  <div>ddd</div>
+                </GridSticky> */}
   </>
 
+  useEffect(() => {
+    const steps = 20
+    if (data.length <= 20) {
+      setKeywords([])
+    } else {
+      const step = Math.floor(data.length / steps)
+      if (step < 3) {
+        setKeywords([])
+      } else {
+        setKeywords(data
+          .filter((_, index) => index % step === 0)
+          .map(dataItem => dataItem.package.name))
+      }
+    }
+  }, [data])
 
   return <>
     <GridStructure {...{
@@ -153,6 +171,7 @@ const App = () => {
       right: '24px',
       bottom: '24px',
       }}>
+        x{JSON.stringify(keywords)}x
         {/* <Flexbox style={{ gap: '8px' }} container direction='row' justifyContent='space-between' alignItems='center' wrap="nowrap">
           <SearchField {...{ searchTerm, suggestions, setSearchTerm, setCurrentSearchTerm }} />
           <Button disabled={isLive} onClick={() => setIsLive(true)}>Live</Button>
@@ -164,10 +183,10 @@ const App = () => {
         </div> */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', height: '100%', backgroundColor: '#EEE' }}>
           {[
-            // {
-            //   key: 'globalAndDiscoveryData',
-            //   data: data.map(data => ({ ...data.package, ...data.score })),
-            // },
+            {
+              key: 'globalAndDiscoveryData',
+              data: data.map(data => ({ ...data.package, ...data.score })),
+            },
             // {
             //   key: 'globalAndDiscoveryDataSpread',
             //   global,
@@ -183,12 +202,12 @@ const App = () => {
             //   data,
             //   grid: processedGrid,
             // },
-            {
-              key: 'globalAbdDataAndGrid',
-              global,
-              data,
-              grid: processedGrid,
-            }
+            // {
+            //   key: 'globalAbdDataAndGrid',
+            //   global,
+            //   data,
+            //   grid: processedGrid,
+            // }
           ]
             .map(({ key, global, data, grid }) => <div {...{key, className: `${classes.backgroundContainer} ${classes.wrapperGrid}`}}>
               <Grid {...{ global, data, grid }}>{filling()}</Grid>
