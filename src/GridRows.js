@@ -212,19 +212,24 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
       // setMinHeight(rowRef?.current?.clientHeight)
     }, [rowRef])
 
-    return <>{!!data?.length && data.map((data, index) => <div ref={rowRef} key={Object.values(data).filter(d => typeof d === 'string').join("")} style={{
+    return <>{!!data?.length && data.map((data, index) => <GridObservable
+      ref={rowRef}
+      key={Object.values(data).filter(d => typeof d === 'string').join("")}
+      defaultStyle={{
+        minHeight: '100px'
+      }}
+      style={{
           display: 'grid',
           alignItems: 'center',
           backgroundColor: global?.alternatingRows?.stepping(index) ? global?.alternatingRows?.color : index % 2 === 0 ? '#f0f0f0' : 'transparent',
           padding: global?.style?.rowPadding || '0',
           gap: `${parseInt(global?.style?.gap?.replace('px', '')) || 0}px`,
           gridTemplateColumns,
-          minHeight: '100px'
     }}>
       {presentColumns.map(({ key }) => <GridObservable {...{key}} className={`${uniqueId}-row-discovered`}>
           {data[key] && typeof data[key] === 'string' ? data[key] : String(JSON.stringify(data[key]) || '').substring(0, 250)}
         </GridObservable>)}
-      </div>)}
+      </GridObservable>)}
     </>
   }
 

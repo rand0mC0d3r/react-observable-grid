@@ -1,9 +1,8 @@
 import React from 'react'
 import { InView } from 'react-intersection-observer'
 
-const GridObservable = ({ children, ...rest }) => {
-	return <InView>{({ inView, ref }) => <div id="observable" {...{ ref, ...rest }}>
-		{/* {inView && entry.target.parentNode.clientHeight} */}
+const GridObservable = ({ children, defaultStyle, style,...rest }) => {
+	return <InView>{({ inView, ref }) => <div {...{ ref, style: { ...inView ? { ...style } : {}, ...defaultStyle },...rest }}>
 		{inView && children}
 	</div>}</InView>
 }
