@@ -165,7 +165,7 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
     return <>
       {data.map((dataItem, index) => <div
         className={clsx(['grid-rows-grid', className])}
-        key={Object.values(dataItem).filter(d => typeof d === 'string').join("")}
+        key={Object.values(dataItem).map(di => JSON.stringify(di)).join('').replace(/[^a-z0-9]/gmi, " ").replace(/\s+/g, '')}
         style={{
           display: 'grid',
           alignItems: 'center',
@@ -173,15 +173,22 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
           padding: global?.style?.rowPadding || '0',
           gridTemplateColumns,
       }}>
-        {grid.map((gridItem, index) => <>
-          {gridItem.row.component !== undefined
+        {grid.map((gridItem, index) => <Fragment key={`column.${gridItem?.row?.key || gridItem.key}`}>
+          {gridItem?.row?.component !== undefined
             ? <>{typeof gridItem.row.component === 'function'
-                ? <>{gridItem?.row?.component(dataItem, index)}</>
-                : <div id="b">{gridItem?.row?.component}</div>
+                ? <div key={gridItem.row.key || gridItem.key}>{gridItem?.row?.component(dataItem, index)}</div>
+                : <div key={gridItem.row.key || gridItem.key}>{gridItem?.row?.component}</div>
               }
             </>
-            : <div className='grid-row-inferred' style={{padding: global?.style?.rowPadding || '0'}} >{JSON.stringify(jsonPathToValue(dataItem, gridItem.key))}</div>}
-        </>)}
+            : <div
+              id={`${gridItem.key}`}
+              key={gridItem.key}
+              className='grid-row-inferred'
+              style={{ padding: global?.style?.rowPadding || '0' }}
+            >
+              {JSON.stringify(jsonPathToValue(dataItem, gridItem.key))}
+            </div>}
+        </Fragment>)}
       </div>)}
     </>
   }
@@ -238,7 +245,7 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
             {/* {renderDOM()} */}
             <>{grid
               ? <>
-                {/* {renderDOMWithGrid()} */}
+                {renderDOMWithGrid()}
               </>
               : <>
                 {renderDOMWithDiscovery()}

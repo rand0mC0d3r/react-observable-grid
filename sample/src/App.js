@@ -56,7 +56,7 @@ const App = () => {
 
   const filling = () => <>
     {/* Grid Headers */}
-                <GridHeaders />
+                {/* <GridHeaders />
                 <GridHeaders
                   upComponent={"UP"}
                 />
@@ -79,10 +79,10 @@ const App = () => {
                     <Typography onClick={onSort} style={{ cursor: 'pointer' }} variant="caption">{component}</Typography>
                     {directionComponent}
                   </div>)}
-                </GridHeaders>
+                </GridHeaders> */}
 
                 {/* Grid Columns */}
-                <GridColumns />
+                {/* <GridColumns /> */}
                 {/* <GridColumns style={{border: '1px dotted red'}} /> */}
                 {/* <GridColumns>
                   {({ columns }) => columns.map(({ key }, index) => <div style={index !== columns.length - 1 ? { borderRight: '1px dotted red' } : {}} key={key}></div>)}
@@ -112,11 +112,11 @@ const App = () => {
                     {component}
                   </div>)}
                 </GridRows> */}
-                <GridStats className={classes.stats}>
+                {/* <GridStats className={classes.stats}>
                   {({ total, sort }) => <div >
                     {total} {sort.column} {sort.direction}
                   </div>}
-                </GridStats>
+                </GridStats> */}
                 {/* <GridSticky style={{backgroundColor: '#FFF', border: '1px solid #c7d0ff8a'}}/> */}
   </>
 
@@ -152,26 +152,25 @@ const App = () => {
         </div> */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', height: '100%', backgroundColor: '#EEE' }}>
           {[
-            {
-              key: 'globalAndDiscoveryData',
-              data: data.map(data => ({ ...data.package, ...data.score })),
-            },
-            {
-              key: 'globalAndDiscoveryDataSpread',
-              global,
-              data: data.map((data) => {
-                const { final, detail } = { ...data.score }
-                const { searchScore } = data
-                const dataItem = { ...data.package, searchScore, ...{ final, ...detail } }
-                return dataItem
-              }),
-            },
             // {
-            //   key: 'dataAndGrid',
-            //   global: undefined,
-            //   data,
-            //   grid: processedGrid,
+            //   key: 'globalAndDiscoveryData',
+            //   data: data.map(data => ({ ...data.package, ...data.score })),
             // },
+            // {
+            //   key: 'globalAndDiscoveryDataSpread',
+            //   global,
+            //   data: data.map((data) => {
+            //     const { final, detail } = { ...data.score }
+            //     const { searchScore } = data
+            //     const dataItem = { ...data.package, searchScore, ...{ final, ...detail } }
+            //     return dataItem
+            //   }),
+            // },
+            {
+              key: 'dataAndGrid',
+              data,
+              grid: processedGrid,
+            },
             // {
             //   key: 'globalAbdDataAndGrid',
             //   global,
