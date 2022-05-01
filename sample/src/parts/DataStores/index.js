@@ -10,7 +10,7 @@ export default ({
 
   useEffect(() => {
     if (currentSearchTerm !== '') {
-      fetch(`https://api.npms.io/v2/search?q=${currentSearchTerm}&size=30`)
+      fetch(`https://api.npms.io/v2/search?q=${currentSearchTerm}&size=100`)
         .then(response => response.json())
         .then(data => {
           setDataNew(data.results.map(item => ({

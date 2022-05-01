@@ -205,15 +205,15 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
   }
 
   const renderDOMWithDiscovery = () => {
-    const rowRef = useRef()
+    // const rowRef = useRef()
 
-    useLayoutEffect(() => {
-      console.log('rendering', rowRef, rowRef?.current?.clientHeight)
+    // useLayoutEffect(() => {
+      // console.log('rendering', rowRef, rowRef?.current?.clientHeight)
       // setMinHeight(rowRef?.current?.clientHeight)
-    }, [rowRef])
+    // }, [rowRef])
 
     return <>{!!data?.length && data.map((data, index) => <GridObservable
-      ref={rowRef}
+      // ref={rowRef}
       key={Object.values(data).filter(d => typeof d === 'string').join("")}
       defaultStyle={{
         minHeight: '100px'

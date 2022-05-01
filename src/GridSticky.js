@@ -1,26 +1,24 @@
 import clsx from 'clsx';
+import { parse, stringify } from 'css';
 import PropTypes from 'prop-types';
-import { cloneElement, useContext } from 'react';
+import { useContext } from 'react';
 import DataProvider from './GridStore';
 
-const GridSticky = ({ children, className, style }) => {
-  const classes = `
-    .grid-sticky-grid {
-      z-index: 1;
-    }
-  `
+const classes = (uniqueId) => parse(`
+  .${uniqueId}-sticky-item {
+    z-index: 1;
+  }
+`)
 
-  return <>
-    <style>{classes}</style>
-    <div {...{
-      className: clsx(['grid-sticky-grid', className]),
-      style: {  ...style, gap: 0 }
-    }}>
-      {children}
-    </div>
-  </>
+const GridSticky = ({ children, className, ...rest }) => {
+  const { uniqueId } = useContext(DataProvider)
+
+  return children ? <>
+    <style>{stringify(classes(uniqueId), { compress: true })}</style>
+    <div {...{ className: clsx([`${uniqueId}-sticky-item`, className]), ...rest }}>{children}</div>
+  </> : null
 }
 
-GridSticky.propTypes = { children: PropTypes.func }
+GridSticky.propTypes = { children: PropTypes.oneOfType([PropTypes.func, PropTypes.element ])}
 
 export default GridSticky

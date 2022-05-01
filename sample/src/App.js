@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core';
+import { Chip, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import { useEffect, useMemo, useState } from 'react';
 // import { Grid, GridColumns, GridHeaders, GridRows, GridStats, GridSticky } from 'react-observable-grid';
@@ -130,9 +130,7 @@ const App = () => {
                     {total} {sort.column} {sort.direction}
                   </div>}
                 </GridStats>
-                {/* <GridSticky style={{ backgroundColor: '#FFF', border: '1px solid blue' }}>
-                  <div>ddd</div>
-                </GridSticky> */}
+
   </>
 
   useEffect(() => {
