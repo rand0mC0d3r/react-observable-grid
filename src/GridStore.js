@@ -86,7 +86,7 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
   }
 
   const updateDeterminedHeight = (height) => {
-    // console.log(height)
+    console.log(height)
     // defaultHeight = height
     set_RowHeight(!!height && height > 0 ? height : stats.defaultHeight)
     // setStats(prevStats => ({ ...prevStats, determinedHeight: height }))

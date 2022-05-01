@@ -167,7 +167,6 @@ const App = () => {
       right: '24px',
       bottom: '24px',
       }}>
-        x{JSON.stringify(keywords)}x
         {/* <Flexbox style={{ gap: '8px' }} container direction='row' justifyContent='space-between' alignItems='center' wrap="nowrap">
           <SearchField {...{ searchTerm, suggestions, setSearchTerm, setCurrentSearchTerm }} />
           <Button disabled={isLive} onClick={() => setIsLive(true)}>Live</Button>
@@ -179,20 +178,20 @@ const App = () => {
         </div> */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', height: '100%', backgroundColor: '#EEE' }}>
           {[
-            {
-              key: 'globalAndDiscoveryData',
-              data: data.map(data => ({ ...data.package, ...data.score })),
-            },
             // {
-            //   key: 'globalAndDiscoveryDataSpread',
-            //   global,
-            //   data: data.map((data) => {
-            //     const { final, detail } = { ...data.score }
-            //     const { searchScore } = data
-            //     const dataItem = { ...data.package, searchScore, ...{ final, ...detail } }
-            //     return dataItem
-            //   }),
+            //   key: 'globalAndDiscoveryData',
+            //   data: data.map(data => ({ ...data.package, ...data.score })),
             // },
+            {
+              key: 'globalAndDiscoveryDataSpread',
+              global,
+              data: data.map((data) => {
+                const { final, detail } = { ...data.score }
+                const { searchScore } = data
+                const dataItem = { ...data.package, searchScore, ...{ final, ...detail } }
+                return dataItem
+              }),
+            },
             // {
             //   key: 'dataAndGrid',
             //   data,

@@ -215,10 +215,8 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
 
 
     return <>{!!data?.length && data.map((data, index) => <GridObservable
-      // ref={rowRef}
       key={Object.values(data).filter(d => typeof d === 'string').join("")}
       defaultStyle={{
-        // minHeight: `${Math.max(minHeight, defaultMinHeight)}px`,
         minHeight: `${Math.max(rowHeight || defaultMinHeight)}px`,
       }}
       style={{
@@ -257,9 +255,7 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
         data: dataItem,
         key: Object.values(dataItem).map(di => JSON.stringify(di)).join('').replace(/[^a-z0-9]/gmi, " ").replace(/\s+/g, ''),
         component: presentColumns.map(({ component, key }) => componentTypeCheck(
-          typeof component !== 'string'
-            ? component(dataItem, index)
-            : jsonPathToValue(dataItem, key),
+          typeof component !== 'string' ? component(dataItem, index) : jsonPathToValue(dataItem, key),
           `${index}.${key}.${generateKey(dataItem)}`,
           index))
       }))
@@ -270,11 +266,9 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
     <style>{stringify(classes, { compress: true })}</style>
     <div style={wrapperStyle}>
       <div className={`${uniqueId}-row-scrollable`}>
-        <div style={{ height: `${(totalHeight)}px`}}>
-          {children
-            ? data && <>{renderChildren()}</>
-            : <>{grid ? renderDOMWithGrid() : renderDOMWithDiscovery()}</>}
-        </div>
+        {children
+          ? data && <>{renderChildren()}</>
+          : <>{grid ? renderDOMWithGrid() : renderDOMWithDiscovery()}</>}
       </div>
     </div>
   </>
