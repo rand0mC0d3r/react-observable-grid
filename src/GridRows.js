@@ -109,7 +109,7 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
       word-break: break-word;
       white-space: pre-wrap;
     }
-    .grid-rows-grid {
+    .${uniqueId}-rows-grid {
       display: grid;
       z-index: 1;
       align-items: center;
@@ -118,24 +118,24 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
       .filter(gridItem => gridItem?.header?.visible === undefined ? true : gridItem?.header?.visible)
       .map((gridItem, index) => !gridItem?.header?.noColumn
       ? `
-        .grid-rows-grid > *:nth-child(${index + 1}) {
+        .${uniqueId}-rows-grid > *:nth-child(${index + 1}) {
           display: ${gridItem?.row?.noWrapper ? 'flex' : 'inline-block'};
           padding: ${global?.style?.rowPadding.split(" ")[0]} ${(global?.style?.gap || '0')}px;
           margin: -${(global?.style?.gap || '0')}px 0px;
         }
-        .grid-rows-grid > *:nth-child(${index + 1}) {
+        .${uniqueId}-rows-grid > *:nth-child(${index + 1}) {
           justify-content: ${gridItem?.header?.align || 'flex-start'};
           justify-items: ${gridItem?.header?.align || 'flex-start'};
           align-items: ${gridItem?.header?.align || 'flex-start'};
           ${gridItem?.row?.noWrapper ? `text-align: ${(textMap.find(tm => tm.id === gridItem?.header?.align || '') || []).text}` : ''}
         }
-        .grid-rows-grid > *:nth-child(${index + 1}) > * {
+        .${uniqueId}-rows-grid > *:nth-child(${index + 1}) > * {
           justify-content: ${gridItem?.header?.align || 'flex-start'};
           justify-items: ${gridItem?.header?.align || 'flex-start'};
           text-align: ${(textMap.find(tm => tm.id === gridItem?.header?.align || '') || []).text};
         }
     ` : `
-        .grid-rows-grid > *:nth-child(${index + 1}) {
+        .${uniqueId}-rows-grid > *:nth-child(${index + 1}) {
           display: ${gridItem?.row?.noWrapper ? 'flex' : 'inline-block'};
           margin: ${index !== 0 ? '0' : `-${global.style.rowPadding.split(" ")[0]}`} -${global.style.rowPadding.split(" ")[1]} ${index === 0 ? '0' : `-${global.style.rowPadding.split(" ")[0]}`} -${global.style.rowPadding.split(" ")[1]} !important;
         }
@@ -143,7 +143,7 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
     ${(grid || [])
       .filter(gridItem => gridItem?.header?.visible === undefined ? true : gridItem?.header?.visible)
       .map((gridItem, index) => gridItem?.header?.noColumn ? `
-    .grid-rows-grid > *:nth-child(${index + 1}) {
+    .${uniqueId}-rows-grid > *:nth-child(${index + 1}) {
       ${gridItem.row.component !== null && `
       margin:
         ${index !== 0 ? '0' : `-${global.style.rowPadding.split(" ")[0]}`}
@@ -164,13 +164,14 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
   const renderDOMWithGrid = () => {
     return <>
       {data.map((dataItem, index) => <div
-        className={clsx(['grid-rows-grid', className])}
+        className={clsx([`${uniqueId}-rows-grid`, className])}
         key={Object.values(dataItem).map(di => JSON.stringify(di)).join('').replace(/[^a-z0-9]/gmi, " ").replace(/\s+/g, '')}
         style={{
           display: 'grid',
           alignItems: 'center',
+          gap: global?.style?.gap || '0',
           backgroundColor: global?.alternatingRows?.stepping(index) ? global?.alternatingRows?.color : index % 2 === 0 ? '#f0f0f0' : 'transparent',
-          padding: global?.style?.rowPadding || '0',
+          padding: global?.style?.rowPadding || '0px',
           gridTemplateColumns,
       }}>
         {grid.map((gridItem, index) => <Fragment key={`column.${gridItem?.row?.key || gridItem.key}`}>
@@ -183,8 +184,8 @@ const GridRows = ({ children, className, style, generateKey, selectedRow }) => {
             : <div
               id={`${gridItem.key}`}
               key={gridItem.key}
-              className='grid-row-inferred'
-              style={{ padding: global?.style?.rowPadding || '0' }}
+              className={`${uniqueId}-row-discovered`}
+              // style={{ padding: global?.style?.rowPadding || '0' }}
             >
               {JSON.stringify(jsonPathToValue(dataItem, gridItem.key))}
             </div>}

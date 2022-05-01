@@ -49,7 +49,7 @@ const App = () => {
     },
     style: {
       padding: '16px',
-      rowPadding: '8px 16px',
+      rowPadding: '0px 16px',
       gap: '8px'
     }
   }

@@ -66,16 +66,15 @@ export default ({
 			{
 				key: 'package.description',
 				header: {
+					width: '150px',
 					component: 'Packet Description',
 				},
-				row: {
-					component: item => <div>{item.package.description}</div>
-				}
 			},
 			{
 				key: 'package.keywords',
 				header: {
 					noSort: true,
+					width: '90px',
 					component: () => <div>Packet Keywords</div>
 				},
 			},
