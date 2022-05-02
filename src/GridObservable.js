@@ -5,18 +5,12 @@ import DataProvider from './GridStore';
 const GridObservable = ({ index, id, children, defaultStyle, inViewClassName, className, sample = false, sampleViability, style, ...rest }) => {
 	const { visibleIndexes } = useContext(DataProvider)
 
-	const addIndexes = index => [...new Set([...visibleIndexes.current, index])].sort((a,b) => a - b)
-	const removeIndexes = index => [...new Set([...visibleIndexes.current.filter(vi => vi !== index)])].sort((a,b) => a - b)
-
 	const updateIndexes = (inView, index) => {
-		if (index % 5 === 0) {
-			if (inView && !visibleIndexes?.current?.some(vi => vi === index)) {
-				visibleIndexes.current = addIndexes(index)
-			}
-			if (!inView && visibleIndexes?.current?.some(vi => vi === index)) {
-				visibleIndexes.current = removeIndexes(index)
-			}
-		}
+		visibleIndexes.current = (index % 5 === 0) && (inView && !visibleIndexes?.current?.some(vi => vi === index))
+			? [...new Set([...visibleIndexes.current, index])].sort((a,b) => a - b)
+			: (!inView && visibleIndexes?.current?.some(vi => vi === index))
+				? [...new Set([...visibleIndexes.current.filter(vi => vi !== index)])].sort((a,b) => a - b)
+				: visibleIndexes.current
 	}
 
 	return <InView>

@@ -6,6 +6,7 @@ import { useLayoutEffect } from 'react/cjs/react.development';
 // import { useRef } from 'react/cjs/react.production.min';
 import GridObservable from './GridObservable';
 import DataProvider from './GridStore';
+import RenderDomChildren from './rowRenderer/RenderDomChildren';
 
 const wrapperStyle = {
   flex: '1 0 auto',
@@ -190,8 +191,8 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
   }, [focusIndex, uniqueId, lastFocusedItem])
 
   const renderDOMWithGrid = () => <>
-    {JSON.stringify(_visibleIndexes)}
-    {_visibleIndexes[0] > 0 && <div style={{ height: `${(defaultMinHeight * (_visibleIndexes[0] - 10))}px` }}></div>}
+    {console.log(_visibleIndexes)}
+    {_visibleIndexes[0] > 0 && <div style={{ height: `${(defaultMinHeight * (_visibleIndexes[0] - 5))}px` }}></div>}
     {!!data?.length && data
       .filter((_, i) => i < (_visibleIndexes.slice(-1)[0] || 10) + 10)
       .map((dataItem, index) => <GridObservable
@@ -206,7 +207,6 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
         className])}
       key={Object.values(dataItem).map(di => JSON.stringify(di)).join('').replace(/[^a-z0-9]/gmi, " ").replace(/\s+/g, '')}
     >
-      {/* {_visibleIndexes} */}
       {grid.map(({ row, key }, index) => <Fragment key={`column.${row?.key || key}`}>
         {row?.component !== undefined
           ? typeof row.component === 'function' ? row?.component(dataItem, index) : row?.component
@@ -215,7 +215,7 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
           </div>}
       </Fragment>)}
       </GridObservable>)}
-    {(data.length - _visibleIndexes.slice(-1)[0]) > 10 && <div style={{ height: `${(defaultMinHeight * (data.length - _visibleIndexes.slice(-1)[0] - 10))}px` }}></div>}
+    {(data.length - _visibleIndexes.slice(-1)[0]) > 10 && <div style={{ height: `${(defaultMinHeight * (data.length - _visibleIndexes.slice(-1)[0] - 5))}px` }}></div>}
   </>
 
   const renderDOMWithDiscovery = () => <>{!!data?.length && data.map((data, index) => <GridObservable
@@ -268,7 +268,11 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
   return <>
     <style>{stringify(classes, { compress: true })}</style>
     <div style={wrapperStyle}>
-      <div className={`${uniqueId}-row-scrollable`} onScroll={() => set_VisibleIndexes(visibleIndexes.current)}>
+      <div className={`${uniqueId}-row-scrollable`} onScroll={() => {
+        if (visibleIndexes.current.reduce((a, b) => a + b, 0) !== _visibleIndexes.reduce((a, b) => a + b, 0)) {
+          set_VisibleIndexes(visibleIndexes.current)
+        }
+      }}>
         {children
           ? data && <>{renderChildren()}</>
           : <>{grid ? renderDOMWithGrid() : renderDOMWithDiscovery()}</>}
