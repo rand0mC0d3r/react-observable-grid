@@ -190,6 +190,8 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
   }, [focusIndex, uniqueId, lastFocusedItem])
 
   const renderDOMWithGrid = () => <>
+    {JSON.stringify(_visibleIndexes)}
+    {_visibleIndexes[0] > 0 && <div style={{ height: `${(defaultMinHeight * (_visibleIndexes[0] - 10))}px` }}></div>}
     {!!data?.length && data
       .filter((_, i) => i < (_visibleIndexes.slice(-1)[0] || 10) + 10)
       .map((dataItem, index) => <GridObservable
@@ -212,7 +214,8 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
             {JSON.stringify(jsonPathToValue(dataItem, key))}
           </div>}
       </Fragment>)}
-    </GridObservable>)}
+      </GridObservable>)}
+    {(data.length - _visibleIndexes.slice(-1)[0]) > 10 && <div style={{ height: `${(defaultMinHeight * (data.length - _visibleIndexes.slice(-1)[0] - 10))}px` }}></div>}
   </>
 
   const renderDOMWithDiscovery = () => <>{!!data?.length && data.map((data, index) => <GridObservable
