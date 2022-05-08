@@ -1,5 +1,5 @@
 import { createNewSortInstance } from 'fast-sort'
-import { createContext, useEffect, useRef, useState } from 'react'
+import React, { createContext, useEffect, useRef, useState } from 'react'
 
 const Context = createContext()
 

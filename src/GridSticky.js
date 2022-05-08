@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { parse, stringify } from 'css';
 import PropTypes from 'prop-types';
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import DataProvider from './GridStore';
 
 const classes = (uniqueId) => parse(`

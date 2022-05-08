@@ -1,9 +1,7 @@
 import clsx from 'clsx';
 import { parse, stringify } from 'css';
 import PropTypes, { string } from 'prop-types';
-import { createRef, Fragment, useContext, useEffect, useRef, useState } from 'react';
-import { useLayoutEffect } from 'react/cjs/react.development';
-// import { useRef } from 'react/cjs/react.production.min';
+import React, { createRef, Fragment, useContext, useEffect, useRef, useState } from 'react';
 import GridObservable from './GridObservable';
 import DataProvider from './GridStore';
 import RenderDomChildren from './rowRenderer/RenderDomChildren';

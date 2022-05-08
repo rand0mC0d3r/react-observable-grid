@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { parse, stringify } from 'css';
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import DataProvider from './GridStore';
 
 export default ({ children, style, className }) => {
