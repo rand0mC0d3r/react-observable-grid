@@ -218,6 +218,7 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
 
   const renderDOMWithDiscovery = () => <>{!!data?.length && data.map((data, index) => <GridObservable
     key={Object.values(data).filter(d => typeof d === 'string').join("")}
+    id={`${uniqueId}.${index}`}
     defaultStyle={{
       minHeight: `${defaultMinHeight}px`,
     }}
@@ -229,14 +230,23 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
         gap: `${parseInt(global?.style?.gap?.replace('px', '')) || 0}px`,
         gridTemplateColumns,
     }}>
-    {presentColumns.map(({ key }, index) => <GridObservable
-        {...{ key }}
-        sample={index === 0}
-        sampleViability={value => !!value && minHeight !== value && defaultMinHeight !== value}
+    {presentColumns.map(({ key }, index) => <Fragment key={key}>
+      <div
+        style={{ overflow: 'auto', wordBreak: 'break-all' }}
         className={`${uniqueId}-row-discovered`}
       >
         {data[key] && typeof data[key] === 'string' ? data[key] : String(JSON.stringify(data[key]) || '').substring(0, 250)}
-      </GridObservable>)}
+      </div>
+      {/* <GridObservable
+        {...{ key }}
+        sample={index === 0}
+        style={{ overflow: 'auto', wordBreak: 'break-all'}}
+        sampleViability={value => !!value && minHeight !== value && defaultMinHeight !== value}
+        className={`${uniqueId}-row-discovered`}
+        >
+          {data[key] && typeof data[key] === 'string' ? data[key] : String(JSON.stringify(data[key]) || '').substring(0, 250)}
+      </GridObservable> */}
+    </Fragment>)}
     </GridObservable>)}
   </>
 

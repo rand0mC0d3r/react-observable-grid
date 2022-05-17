@@ -1,8 +1,8 @@
 import { Chip, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import { useEffect, useMemo, useState } from 'react';
-import { Grid, GridColumns, GridHeaders, GridRows, GridStats, GridSticky } from 'react-observable-grid';
-// import { Grid, GridColumns, GridHeaders, GridRows, GridStats, GridSticky } from './components';
+// import { Grid, GridColumns, GridHeaders, GridRows, GridStats, GridSticky } from 'react-observable-grid';
+import { Grid, GridColumns, GridHeaders, GridRows, GridStats, GridSticky } from './components';
 // import { Grid } from './components/GridStoreNg';
 import DataStores from './parts/DataStores';
 import GridStructure from './parts/GridStructure';
@@ -55,9 +55,9 @@ const App = () => {
         padding: '16px',
       },
       row: {
-        padding: '0px 16px',
+        padding: '8px 16px',
       },
-      rowPadding: '0px 16px',
+      rowPadding: '8px 16px',
       gap: '8px'
     }
   }
@@ -214,27 +214,27 @@ const App = () => {
             //   key: 'globalAndDiscoveryData',
             //   data: data.map(data => ({ ...data.package, ...data.score })),
             // },
-            // {
-            //   key: 'globalAndDiscoveryDataSpread',
-            //   global,
-            //   data: data.map((data) => {
-            //     const { final, detail } = { ...data.score }
-            //     const { searchScore } = data
-            //     const dataItem = { ...data.package, searchScore, ...{ final, ...detail } }
-            //     return dataItem
-            //   }),
-            // },
+            {
+              key: 'globalAndDiscoveryDataSpread',
+              global,
+              data: data.map((data) => {
+                const { final, detail } = { ...data.score }
+                const { searchScore } = data
+                const dataItem = { ...data.package, searchScore, ...{ final, ...detail } }
+                return dataItem
+              }),
+            },
             // {
             //   key: 'dataAndGrid',
             //   data,
             //   grid: processedGrid,
             // },
-            {
-              key: 'globalAbdDataAndGrid',
-              global,
-              data,
-              grid: processedGrid,
-            }
+            // {
+            //   key: 'globalAbdDataAndGrid',
+            //   global,
+            //   data,
+            //   // grid: processedGrid,
+            // }
           ]
             .map(({ key, global, data, grid }) => <div {...{key, className: `${classes.backgroundContainer} ${classes.wrapperGrid}`}}>
               <Grid {...{ global, data, grid }}>{filling()}</Grid>
