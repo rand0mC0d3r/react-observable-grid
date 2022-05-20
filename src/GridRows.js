@@ -5,6 +5,7 @@ import React, { createRef, Fragment, useContext, useEffect, useRef, useState } f
 import GridObservable from './GridObservable';
 import DataProvider from './GridStore';
 import RenderDomChildren from './rowRenderer/RenderDomChildren';
+import RenderDomDiscovery from './rowRenderer/RenderDomDiscovery';
 
 const wrapperStyle = {
   flex: '1 0 auto',
@@ -103,6 +104,11 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
       word-break: break-word;
       white-space: pre-wrap;
       margin: 0px ${halfGap()} 0px 0px;
+      overflow: hidden scroll;
+    }
+    .${uniqueId}-row-discovered-wrapper {
+      display: grid;
+      align-items: center;
     }
     .${uniqueId}-row-scrollable {
       overflow: hidden scroll;
@@ -194,62 +200,64 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
     {!!data?.length && data
       .filter((_, i) => i < (_visibleIndexes.slice(-1)[0] || 10) + 10)
       .map((dataItem, index) => <GridObservable
-      index={index}
-      id={`${uniqueId}.${index}`}
-      defaultStyle={{
-        minHeight: `${defaultMinHeight}px`,
-      }}
-      inViewClassName={clsx([
-        `${uniqueId}-rows-grid`,
-        (global?.alternatingRows?.stepping(index) ? global?.alternatingRows?.color : index % 2 === 0) && `${uniqueId}-row-alternating`,
-        className])}
-      key={Object.values(dataItem).map(di => JSON.stringify(di)).join('').replace(/[^a-z0-9]/gmi, " ").replace(/\s+/g, '')}
-    >
-      {grid.map(({ row, key }, index) => <Fragment key={`column.${row?.key || key}`}>
-        {row?.component !== undefined
-          ? typeof row.component === 'function' ? row?.component(dataItem, index) : row?.component
-          : <div {...{ key }} className={`${uniqueId}-row-discovered`}>
-            {JSON.stringify(jsonPathToValue(dataItem, key))}
-          </div>}
-      </Fragment>)}
+        index={index}
+        id={`${uniqueId}.${index}`}
+        defaultStyle={{
+          minHeight: `${defaultMinHeight}px`,
+        }}
+        inViewClassName={clsx([
+          `${uniqueId}-rows-grid`,
+          (global?.alternatingRows?.stepping(index) ? global?.alternatingRows?.color : index % 2 === 0) && `${uniqueId}-row-alternating`,
+          className])}
+        key={Object.values(dataItem).map(di => JSON.stringify(di)).join('').replace(/[^a-z0-9]/gmi, " ").replace(/\s+/g, '')}
+      >
+        {grid.map(({ row, key }, index) => <Fragment key={`column.${row?.key || key}`}>
+          {row?.component !== undefined
+            ? typeof row.component === 'function' ? row?.component(dataItem, index) : row?.component
+            : <div {...{ key }} className={`${uniqueId}-row-discovered`}>
+              {JSON.stringify(jsonPathToValue(dataItem, key))}
+            </div>}
+        </Fragment>)}
       </GridObservable>)}
     {(data.length - _visibleIndexes.slice(-1)[0]) > 10 && <div style={{ height: `${(defaultMinHeight * (data.length - _visibleIndexes.slice(-1)[0] - 5))}px` }}></div>}
   </>
 
-  const renderDOMWithDiscovery = () => <>{!!data?.length && data.map((data, index) => <GridObservable
-    key={Object.values(data).filter(d => typeof d === 'string').join("")}
-    id={`${uniqueId}.${index}`}
-    defaultStyle={{
-      minHeight: `${defaultMinHeight}px`,
-    }}
-    style={{
-        display: 'grid',
-        alignItems: 'center',
-        backgroundColor: global?.alternatingRows?.stepping(index) ? global?.alternatingRows?.color : index % 2 === 0 ? '#f0f0f0' : 'transparent',
-        padding: global?.style?.rowPadding || '0',
-        gap: `${parseInt(global?.style?.gap?.replace('px', '')) || 0}px`,
-        gridTemplateColumns,
-    }}>
-    {presentColumns.map(({ key }, index) => <Fragment key={key}>
-      <div
-        style={{ overflow: 'auto', wordBreak: 'break-all' }}
-        className={`${uniqueId}-row-discovered`}
-      >
-        {data[key] && typeof data[key] === 'string' ? data[key] : String(JSON.stringify(data[key]) || '').substring(0, 250)}
-      </div>
-      {/* <GridObservable
-        {...{ key }}
-        sample={index === 0}
-        style={{ overflow: 'auto', wordBreak: 'break-all'}}
-        sampleViability={value => !!value && minHeight !== value && defaultMinHeight !== value}
-        className={`${uniqueId}-row-discovered`}
-        >
-          {data[key] && typeof data[key] === 'string' ? data[key] : String(JSON.stringify(data[key]) || '').substring(0, 250)}
-      </GridObservable> */}
-    </Fragment>)}
-    </GridObservable>)}
-  </>
 
+  // const renderDOMWithDiscoveryItem = ({signature, dataItem}) => <>
+  //   {presentColumns.map(({ key }) => <div
+  //     key={`${signature}.${key}`}
+  //     className={`${uniqueId}-row-discovered`}
+  //   >
+  //     {dataItem[key] && typeof dataItem[key] === 'string'
+  //       ? dataItem[key]
+  //       : String(JSON.stringify(dataItem[key]) || '').substring(0, 250)}
+  //   </div>)}
+  // </>
+
+
+  // const renderDOMWithDiscovery = () => {
+  //   const signature = (data) => Object.values(data).filter(d => typeof d === 'string').join("")
+  //   return <>
+  //     {!!data?.length && data.map((dataItem, index) => <GridObservable
+  //       {...{ index }}
+  //       key={signature(dataItem)}
+  //       defaultStyle={{
+  //         minHeight: `${defaultMinHeight}px`,
+  //       }}
+  //       inViewClassName={`${uniqueId}-row-discovered-wrapper`}
+  //       style={{
+  //         backgroundColor: global?.alternatingRows?.stepping(index)
+  //           ? global?.alternatingRows?.color
+  //           : index % 2 === 0 ? '#f0f0f0' : 'transparent',
+  //         padding: global?.style?.rowPadding || '0',
+  //         gap: `${parseInt(global?.style?.gap?.replace('px', '')) || 0}px`,
+  //         gridTemplateColumns,
+  //       }}
+  //     >
+  //       {renderDOMWithDiscoveryItem({ signature: signature(data), dataItem })}
+  //     </GridObservable>)}
+  //   </>
+  // }
   const renderChildren = () => {
     return children({
       styleProps: {
@@ -283,7 +291,7 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
       }}>
         {children
           ? data && <>{renderChildren()}</>
-          : <>{grid ? renderDOMWithGrid() : renderDOMWithDiscovery()}</>}
+          : <>{grid ? renderDOMWithGrid() : <RenderDomDiscovery {...{presentColumns}} />}</>}
       </div>
     </div>
   </>
