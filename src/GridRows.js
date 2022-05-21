@@ -268,12 +268,12 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
       // }}
     >
       <div
-        style={{
-          height: `${(data.length * 100)}px`,
-        }}
+        // style={{
+        //   height: `${(data.length * 100)}px`,
+        // }}
         className={`${uniqueId}-row-scrollable`}
         onScroll={() => {
-          console.log('scroll', visibleIndexes.current)
+          // console.log('scroll', visibleIndexes.current)
           // const sampledDOM = document.getElementById(id);
           // if (sampledDOM?.getBoundingClientRect()?.height) {
           //   console.log('i updated', id, sampledDOM.getBoundingClientRect().height)
