@@ -65,7 +65,7 @@ const App = () => {
   const filling = () => <>
     {/* Grid Headers */}
                 <GridHeaders />
-                {/* <GridHeaders
+                <GridHeaders
                   upComponent={"UP"}
                 />
                 <GridHeaders
@@ -87,7 +87,7 @@ const App = () => {
                     <Typography onClick={onSort} style={{ cursor: 'pointer' }} variant="caption">{component}</Typography>
                     {directionComponent}
                   </div>)}
-                </GridHeaders> */}
+                </GridHeaders>
 
                 {/* Grid Columns */}
                 <GridColumns />

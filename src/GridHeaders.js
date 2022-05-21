@@ -3,6 +3,7 @@ import { parse, stringify } from 'css';
 import PropTypes from 'prop-types';
 import React, { Fragment, useContext, useEffect, useState } from 'react';
 import DataProvider from './GridStore';
+import RenderDomDiscovery from './headerRenderer/RenderDomDiscovery';
 
 const GridHeaders = ({ children, className, style, upComponent, downComponent, fallbackComponent }) => {
   const { uniqueId, grid, data, headerTemplateColumns, stats, onSort, global } = useContext(DataProvider)
@@ -215,7 +216,9 @@ const GridHeaders = ({ children, className, style, upComponent, downComponent, f
     }}>
       {children
         ? children({ headers: grid ? renderChildrenWithGrid() : renderChildrenByDiscovery()})
-        : grid ? renderDOMWithGrid() : renderDOMByDiscovery()}
+        : grid
+          ? renderDOMWithGrid()
+          : <RenderDomDiscovery {...{ upComponent, downComponent, fallbackComponent }} />}
     </div>
   </>
 }

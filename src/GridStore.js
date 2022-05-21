@@ -31,6 +31,7 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
   const [uniqueId, setUniqueId] = useState(`rog-${(Math.random() + 1).toString(36).substring(7)}`)
   const [_noGrid, set_noGrid] = useState(false)
   const [_headerTemplateColumns, set_HeaderTemplateColumns] = useState('')
+  const [headerTemplate, setHeaderTemplate] = useState({ columns: [], css: null})
   const [_gridTemplateColumns, set_GridTemplateColumns] = useState('')
   const [_rowHeight, set_RowHeight] = useState(0)
   const [_earliestIndex, set_EarliestIndex] = useState(0)
@@ -117,18 +118,17 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
 
   useEffect(() => {
     if (grid === undefined && !!data?.length > 0) {
-      const t0 = performance.now();
       const gridColumns = Object.keys(Object
           .values(data)
           .sort((a, b) => Object.keys(b).length - Object.keys(a).length)[0])
           .filter(key => key !== '__signature')
-          .map(() => _defaultWidth)
-          .join(' ')
-      const t1 = performance.now();
-      console.log(`Call to doSomething took ${t1 - t0} milliseconds.`, grid, data);
 
-      set_HeaderTemplateColumns(gridColumns)
-      set_GridTemplateColumns(gridColumns)
+      setHeaderTemplate(() => ({
+        columns: gridColumns,
+        css: gridColumns.map(() => _defaultWidth).join(' ')
+      }))
+      set_HeaderTemplateColumns(gridColumns.map(() => _defaultWidth).join(' '))
+      set_GridTemplateColumns(gridColumns.map(() => _defaultWidth).join(' '))
     }
   }, [data, grid])
 
@@ -186,6 +186,8 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
         visibleIndexes,
         averageHeight,
         initialHeight,
+
+        headerTemplate,
 
         gridTemplateColumns: _gridTemplateColumns,
         headerTemplateColumns: _headerTemplateColumns,

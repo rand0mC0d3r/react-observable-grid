@@ -8,7 +8,7 @@ const listId = uniqueId => `${uniqueId}-columns-grid`
 const itemId = uniqueId => `${uniqueId}-columns-grid-item`
 
 export default ({ children, style, className }) => {
-  const { uniqueId, grid, data, headerTemplateColumns, global } = useContext(DataProvider)
+  const { uniqueId, grid, data, headerTemplate, headerTemplateColumns, global } = useContext(DataProvider)
   const [ columns, setColumns ] = useState([])
 
   const generateCss = () => <style>{stringify(parse(`
@@ -40,9 +40,7 @@ export default ({ children, style, className }) => {
           .filter(({ header }) => header?.visible === undefined ? true : header?.visible)
           .filter(({ header }) => !header?.noColumn)
           .map(({ key, header }) => ({ key, align: header?.align || fallbackAlign }))
-        : [...new Set(data.map(item => Object.keys(item).map(key => key)).flat())]
-          .sort()
-          .map(key => ({ key, align: fallbackAlign }))
+        : []
       : [])
   }, [grid, data, headerTemplateColumns])
 
@@ -59,7 +57,7 @@ export default ({ children, style, className }) => {
     >
       {children
         ? children({ columns: columns.map(({ key, align }) => ({ key, align })) })
-        : columns.map(({ key }) => <div {...{
+        : headerTemplate.columns.map(key => ({ key, align: fallbackAlign })).map(({ key }) => <div {...{
             key,
             className: itemId(uniqueId),
             style: {
