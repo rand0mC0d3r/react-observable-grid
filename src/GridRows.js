@@ -21,7 +21,7 @@ const scrollerStyle = {
 }
 
 const GridRows = ({ children, className, style, focusIndex, generateKey, selectedRow }) => {
-  const { uniqueId, data, rowHeight, visibleIndexes, gridTemplateColumns, grid, global } = useContext(DataProvider)
+  const { uniqueId, data, rowHeight, averageHeight, visibleIndexes, gridTemplateColumns, grid, global } = useContext(DataProvider)
   const [presentColumns, setPresentColumns] = useState([])
   const [minHeight, setMinHeight] = useState(100)
   const [lastFocusedItem, setLastFocusedItem] = useState(-1)
@@ -111,14 +111,18 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
       align-items: center;
     }
     .${uniqueId}-row-scrollable {
-      overflow: hidden scroll;
       position: absolute;
       width: 100%;
-      height: 100%;
-    },
+    }
+    .${uniqueId}-row-scrollable-wrapper {
+      overflow: hidden scroll;
+      flex: 1 0 auto;
+      position: relative;
+      align-self: stretch;
+    }
     ${uniqueId}-row-scrollable::-webkit-scrollbar {
       display: none;
-    },
+    }
     .grid-row-inferred {
       word-break: break-word;
       white-space: pre-wrap;
@@ -222,42 +226,6 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
     {(data.length - _visibleIndexes.slice(-1)[0]) > 10 && <div style={{ height: `${(defaultMinHeight * (data.length - _visibleIndexes.slice(-1)[0] - 5))}px` }}></div>}
   </>
 
-
-  // const renderDOMWithDiscoveryItem = ({signature, dataItem}) => <>
-  //   {presentColumns.map(({ key }) => <div
-  //     key={`${signature}.${key}`}
-  //     className={`${uniqueId}-row-discovered`}
-  //   >
-  //     {dataItem[key] && typeof dataItem[key] === 'string'
-  //       ? dataItem[key]
-  //       : String(JSON.stringify(dataItem[key]) || '').substring(0, 250)}
-  //   </div>)}
-  // </>
-
-
-  // const renderDOMWithDiscovery = () => {
-  //   const signature = (data) => Object.values(data).filter(d => typeof d === 'string').join("")
-  //   return <>
-  //     {!!data?.length && data.map((dataItem, index) => <GridObservable
-  //       {...{ index }}
-  //       key={signature(dataItem)}
-  //       defaultStyle={{
-  //         minHeight: `${defaultMinHeight}px`,
-  //       }}
-  //       inViewClassName={`${uniqueId}-row-discovered-wrapper`}
-  //       style={{
-  //         backgroundColor: global?.alternatingRows?.stepping(index)
-  //           ? global?.alternatingRows?.color
-  //           : index % 2 === 0 ? '#f0f0f0' : 'transparent',
-  //         padding: global?.style?.rowPadding || '0',
-  //         gap: `${parseInt(global?.style?.gap?.replace('px', '')) || 0}px`,
-  //         gridTemplateColumns,
-  //       }}
-  //     >
-  //       {renderDOMWithDiscoveryItem({ signature: signature(data), dataItem })}
-  //     </GridObservable>)}
-  //   </>
-  // }
   const renderChildren = () => {
     return children({
       styleProps: {
@@ -283,15 +251,37 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
 
   return <>
     <style>{stringify(classes, { compress: true })}</style>
-    <div style={wrapperStyle}>
-      <div className={`${uniqueId}-row-scrollable`} onScroll={() => {
-        if (visibleIndexes.current.reduce((a, b) => a + b, 0) !== _visibleIndexes.reduce((a, b) => a + b, 0)) {
-          set_VisibleIndexes(visibleIndexes.current)
-        }
+    {averageHeight.current}
+    <div
+      className={`${uniqueId}-row-scrollable-wrapper`}
+      // onScroll={() => {
+      //   console.log('scroll', visibleIndexes.current.slice(-1)[0])
+      //    const sampledDOM = document.getElementById(id);
+      //     if (sampledDOM?.getBoundingClientRect()?.height) {
+      //       console.log('i updated', id, sampledDOM.getBoundingClientRect().height)
+      //       averageHeight.current = sampledDOM.getBoundingClientRect().height
+      //     }
+      // }}
+    >
+      <div
+        style={{
+          height: `${(data.length * 100)}px`,
+        }}
+        className={`${uniqueId}-row-scrollable`}
+        onScroll={() => {
+          console.log('scroll', visibleIndexes.current)
+          // const sampledDOM = document.getElementById(id);
+          // if (sampledDOM?.getBoundingClientRect()?.height) {
+          //   console.log('i updated', id, sampledDOM.getBoundingClientRect().height)
+          //   averageHeight.current = sampledDOM.getBoundingClientRect().height
+          // }
+          if (visibleIndexes.current.reduce((a, b) => a + b, 0) !== _visibleIndexes.reduce((a, b) => a + b, 0)) {
+            set_VisibleIndexes(visibleIndexes.current)
+          }
       }}>
         {children
           ? data && <>{renderChildren()}</>
-          : <>{grid ? renderDOMWithGrid() : <RenderDomDiscovery {...{presentColumns}} />}</>}
+          : <>{grid ? renderDOMWithGrid() : <RenderDomDiscovery {...{ presentColumns, _visibleIndexes }} />}</>}
       </div>
     </div>
   </>

@@ -2,11 +2,8 @@ import React, { useContext, useState } from 'react';
 import GridObservable from '../GridObservable';
 import DataProvider from '../GridStore';
 
-export default ({ presentColumns }) => {
-  const { uniqueId, data, rowHeight, visibleIndexes, gridTemplateColumns, grid, global } = useContext(DataProvider)
-  const [_visibleIndexes, set_VisibleIndexes] = useState([])
-  const [totalHeight, setTotalHeight] = useState('100px')
-  const defaultMinHeight = 100
+export default ({ presentColumns, _visibleIndexes }) => {
+  const { uniqueId, data, gridTemplateColumns, global, averageHeight, initialHeight } = useContext(DataProvider)
 
   const renderDOMWithDiscoveryItem = ({signature, dataItem}) => <>
     {presentColumns.map(({ key }) => <div
@@ -24,9 +21,10 @@ export default ({ presentColumns }) => {
     return <>
       {!!data?.length && data.map((dataItem, index) => <GridObservable
         {...{ index }}
+        id={`${uniqueId}.${index}`}
         key={signature(dataItem)}
         defaultStyle={{
-          minHeight: `${defaultMinHeight}px`,
+          minHeight: `${averageHeight.current || initialHeight}px`,
         }}
         inViewClassName={`${uniqueId}-row-discovered-wrapper`}
         style={{

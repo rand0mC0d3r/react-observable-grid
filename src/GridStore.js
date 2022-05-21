@@ -27,9 +27,8 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
   const naturalSort = createNewSortInstance({ comparer: collator.compare })
   let defaultHeight = 0
 
-  const uniqueId = `rog-${(Math.random() + 1).toString(36).substring(7)}`
-
   const [_data, set_Data] = useState([])
+  const [uniqueId, setUniqueId] = useState(`rog-${(Math.random() + 1).toString(36).substring(7)}`)
   const [_noGrid, set_noGrid] = useState(false)
   const [_headerTemplateColumns, set_HeaderTemplateColumns] = useState('')
   const [_gridTemplateColumns, set_GridTemplateColumns] = useState('')
@@ -37,8 +36,10 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
   const [_earliestIndex, set_EarliestIndex] = useState(0)
   const [_latestIndex, set_LatestIndex] = useState(0)
   const visibleIndexes = useRef([])
+  const averageHeight = useRef([])
 
   const _defaultWidth = '1fr'
+  const initialHeight = 100
 
   const jsonPathToValue = (jsonData, path) => {
     if (!(jsonData instanceof Object) || typeof (path) === "undefined" || path === null) {
@@ -93,6 +94,10 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
       set_RowHeight(height)
     }
   }
+
+  useEffect(() => {
+    averageHeight.current = '100px'
+  }, [])
 
   useEffect(() => {
     setStats(prevStats => ({
@@ -171,13 +176,13 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
         rowHeight: _rowHeight,
 
         visibleIndexes,
-        // set_VisibleIndexes,
+        averageHeight,
+        initialHeight,
 
         gridTemplateColumns: _gridTemplateColumns,
         headerTemplateColumns: _headerTemplateColumns,
         grid, stats, global, onSort, updateDeterminedHeight
       }}>
-      {visibleIndexes.current}
       {_data ? children ? children : emptyFallback : emptyFallback}
     </Context.Provider>
   </div>
