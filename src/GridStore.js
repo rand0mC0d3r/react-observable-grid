@@ -108,18 +108,29 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
         column: global?.sort?.initialColumn || '',
       }
       }))
-    set_Data(sortData(data, stats.sort.column, stats.sort.direction))
+    set_Data(() => sortData(data, stats.sort.column, stats.sort.direction)
+      .map(dataItem => ({
+      ...dataItem,
+      __signature: Object.values(dataItem).filter(d => typeof d === 'string').join("").replace(/[^a-z0-9]/gi, '')
+    })))
   }, [data, global])
 
   useEffect(() => {
-    if (_noGrid && !!data?.length) {
-      const gridColumns = [...new Set(data.map(item => Object.keys(item).map(key => key)).flat())]
-        .map(() => _defaultWidth)
-        .join(' ')
+    if (grid === undefined && !!data?.length > 0) {
+      const t0 = performance.now();
+      const gridColumns = Object.keys(Object
+          .values(data)
+          .sort((a, b) => Object.keys(b).length - Object.keys(a).length)[0])
+          .filter(key => key !== '__signature')
+          .map(() => _defaultWidth)
+          .join(' ')
+      const t1 = performance.now();
+      console.log(`Call to doSomething took ${t1 - t0} milliseconds.`, grid, data);
+
       set_HeaderTemplateColumns(gridColumns)
       set_GridTemplateColumns(gridColumns)
     }
-  }, [data, _noGrid])
+  }, [data, grid])
 
   useEffect(() => {
     if (grid) {
@@ -128,11 +139,8 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
         .filter(gridItem => !gridItem?.header?.noColumn)
         .map(gridItem => gridItem?.header?.width || _defaultWidth)
         .join(' ')
-      set_noGrid(false)
       set_HeaderTemplateColumns(gridColumns)
       set_GridTemplateColumns(gridColumns)
-    } else {
-      set_noGrid(true)
     }
   }, [grid])
 

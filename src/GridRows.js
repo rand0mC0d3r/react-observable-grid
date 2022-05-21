@@ -77,7 +77,11 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
         })))
     } else {
       if (!!data?.length) {
-        setPresentColumns([...new Set(data.map(item => Object.keys(item).map(key => key)).flat())].sort().map((key, index) => ({ component: key, key })))
+        setPresentColumns(Object.keys(Object
+          .values(data)
+          .sort((a, b) => Object.keys(b).length - Object.keys(a).length)[0])
+          .filter(key => key !== '__signature')
+          .map((key, index) => ({ component: key, key })))
       }
     }
   }, [grid, data])
