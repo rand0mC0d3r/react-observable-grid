@@ -12,17 +12,16 @@ export default ({ upComponent, downComponent, fallbackComponent }) => {
     : <></>
 
   return <>{headerTemplate.columns.length > 0 && headerTemplate.columns
-    .map(key => <Fragment {...{ key }}>
-    {fallbackComponent
+    .map(key => fallbackComponent
       ? fallbackComponent(
         key, {
-        key,
-        onSort: () => onSort(String(key)),
-        sort: { isActive: stats.sort.column === key },
-        directionComponent: renderDirectionComponent(key)
-      }
+          key,
+          onSort: () => onSort(String(key)),
+          sort: { isActive: stats.sort.column === key },
+          directionComponent: renderDirectionComponent(key)
+        }
       )
-      : <div {...{
+      : <span {...{
           key: `${uniqueId}.${key}`,
           onClick: () => onSort(key),
           onContextMenu: (e) => { e.preventDefault(); stats.sort.column !== '' && onSort('') },
@@ -34,7 +33,6 @@ export default ({ upComponent, downComponent, fallbackComponent }) => {
         }}>
           {stats.sort.column === key ? <span className={`${uniqueId}-header-inner-ellipsis`}>{key}</span> : key}
           {renderDirectionComponent(key)}
-      </div>}
-  </Fragment>)}
+      </span>)}
   </>
 }

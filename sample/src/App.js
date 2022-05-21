@@ -1,6 +1,6 @@
 import { Chip, Typography } from '@material-ui/core';
 import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 // import { Grid, GridColumns, GridHeaders, GridRows, GridStats, GridSticky } from 'react-observable-grid';
 import { Grid, GridColumns, GridHeaders, GridRows, GridStats, GridSticky } from './components';
 // import { Grid } from './components/GridStoreNg';
@@ -65,29 +65,38 @@ const App = () => {
   const filling = () => <>
     {/* Grid Headers */}
                 <GridHeaders />
-                <GridHeaders
+                {/* <GridHeaders
                   upComponent={"UP"}
+                  downComponent={"DOWN"}
                 />
                 <GridHeaders
+                  upComponent={"UP"}
                   className={classes.header}
-                  fallbackComponent={(component, { onSort, sort, key, directionComponent }) => <div key={key} style={{ display: 'flex', gap: '4px', alignItems: 'center'}}>
-                    <Typography
-                      style={{ cursor: 'pointer' }}
-                      variant="caption"
-                      onClick={onSort}
-                      color={sort.isActive ? 'primary' : 'textSecondary'}
-                    >
-                      {component}
-                    </Typography>
-                    {directionComponent}
-                  </div>}
+                  fallbackComponent={(component, { onSort, sort, key, directionComponent }) => <Fragment {...{key}}>
+                    {sort.isActive
+                      ? <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                          <Typography
+                            style={{ cursor: 'pointer' }}
+                            variant="caption"
+                            onClick={onSort}
+                            color={sort.isActive ? 'primary' : 'textSecondary'}
+                          >
+                            {component}
+                          </Typography>
+                          {directionComponent}
+                        </div>
+                      : <Typography {...{ onClick: onSort, variant: 'caption', color: 'textSecondary', style: { cursor: 'pointer' } }}>
+                          {component}
+                        </Typography>}
+
+                  </Fragment>}
                 />
                 <GridHeaders className={classes.header}>
                   {({ headers }) => headers.map(({ key, onSort, component, directionComponent }) => <div style={{ display: 'flex', alignItems: 'center' }} {...{ key }}>
                     <Typography onClick={onSort} style={{ cursor: 'pointer' }} variant="caption">{component}</Typography>
                     {directionComponent}
                   </div>)}
-                </GridHeaders>
+                </GridHeaders> */}
 
                 {/* Grid Columns */}
                 <GridColumns />

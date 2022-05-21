@@ -255,7 +255,7 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
 
   return <>
     <style>{stringify(classes, { compress: true })}</style>
-    {averageHeight.current}
+    {/* {averageHeight.current} */}
     <div
       className={`${uniqueId}-row-scrollable-wrapper`}
       // onScroll={() => {
