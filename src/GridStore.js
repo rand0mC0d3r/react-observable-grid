@@ -36,7 +36,7 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
   const [_earliestIndex, set_EarliestIndex] = useState(0)
   const [_latestIndex, set_LatestIndex] = useState(0)
   const visibleIndexes = useRef([])
-  const averageHeight = useRef([])
+  const averageHeight = useRef()
 
   const _defaultWidth = '1fr'
   const initialHeight = 100
@@ -95,9 +95,9 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
     }
   }
 
-  useEffect(() => {
-    averageHeight.current = '100px'
-  }, [])
+  // useEffect(() => {
+  //   averageHeight.current = '101px'
+  // }, [])
 
   useEffect(() => {
     setStats(prevStats => ({

@@ -23,9 +23,6 @@ export default ({ presentColumns, _visibleIndexes }) => {
         {...{ index }}
         id={`${uniqueId}.${index}`}
         key={signature(dataItem)}
-        defaultStyle={{
-          minHeight: `${averageHeight.current || initialHeight}px`,
-        }}
         inViewClassName={`${uniqueId}-row-discovered-wrapper`}
         style={{
           backgroundColor: global?.alternatingRows?.stepping(index)

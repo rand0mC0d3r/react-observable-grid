@@ -9,18 +9,17 @@ export default ({ index, id, children, defaultStyle, inViewClassName, className,
 
 	const updateIndexes = (inView, index, id) => {
 		visibleIndexes.current = (index % sampleStepping === 0) && (inView && !visibleIndexes?.current?.some(vi => vi === index))
-			? [...new Set([...visibleIndexes.current, index])].sort((a,b) => a - b)
+			? [...new Set([...visibleIndexes.current, index])].sort((a, b) => a - b)
 			: (!inView && visibleIndexes?.current?.some(vi => vi === index))
-				? [...new Set([...visibleIndexes.current.filter(vi => vi !== index)])].sort((a,b) => a - b)
+				? [...new Set([...visibleIndexes.current.filter(vi => vi !== index)])].sort((a, b) => a - b)
 				: visibleIndexes.current
 	}
 
 	const getHeight = (id) => {
 		const sampledDOM = document.getElementById(id);
 		const elementHeight = sampledDOM?.getBoundingClientRect()?.height
-		if (elementHeight && elementHeight !== initialHeight) {
-			console.log('i updated', id, sampledDOM.getBoundingClientRect().height)
-			averageHeight.current = sampledDOM.getBoundingClientRect().height
+		if (elementHeight && elementHeight !== initialHeight && elementHeight !== averageHeight) {
+			averageHeight.current = elementHeight
 		}
 	}
 
@@ -29,7 +28,7 @@ export default ({ index, id, children, defaultStyle, inViewClassName, className,
 			{...{
 				id, ref,
 				className: inView ? inViewClassName : className,
-				style: { ...inView ? { ...style } : { ...defaultStyle } },
+				style: { ...inView ? { ...style } : { ...defaultStyle, minHeight: `${averageHeight.current}px` } },
 				...rest
 			}}
 		>
