@@ -21,7 +21,11 @@ const scrollerStyle = {
 }
 
 const GridRows = ({ children, className, style, focusIndex, generateKey, selectedRow }) => {
-  const { uniqueId, data, rowHeight, averageHeight, visibleIndexes, gridTemplateColumns, grid, global } = useContext(DataProvider)
+  const {
+    uniqueId, data, rowHeight, instantAverageHeight,
+    setInstantAverageHeight, averageHeight, visibleIndexes,
+    gridTemplateColumns, grid, global
+  } = useContext(DataProvider)
   const [presentColumns, setPresentColumns] = useState([])
   const [minHeight, setMinHeight] = useState(100)
   const [lastFocusedItem, setLastFocusedItem] = useState(-1)
@@ -258,31 +262,18 @@ const GridRows = ({ children, className, style, focusIndex, generateKey, selecte
     {/* {averageHeight.current} */}
     <div
       className={`${uniqueId}-row-scrollable-wrapper`}
-      // onScroll={() => {
-      //   console.log('scroll', visibleIndexes.current.slice(-1)[0])
-      //    const sampledDOM = document.getElementById(id);
-      //     if (sampledDOM?.getBoundingClientRect()?.height) {
-      //       console.log('i updated', id, sampledDOM.getBoundingClientRect().height)
-      //       averageHeight.current = sampledDOM.getBoundingClientRect().height
-      //     }
-      // }}
-    >
-      <div
-        // style={{
-        //   height: `${(data.length * 100)}px`,
-        // }}
-        className={`${uniqueId}-row-scrollable`}
-        onScroll={() => {
-          // console.log('scroll', visibleIndexes.current)
-          // const sampledDOM = document.getElementById(id);
-          // if (sampledDOM?.getBoundingClientRect()?.height) {
-          //   console.log('i updated', id, sampledDOM.getBoundingClientRect().height)
-          //   averageHeight.current = sampledDOM.getBoundingClientRect().height
-          // }
-          if (visibleIndexes.current.reduce((a, b) => a + b, 0) !== _visibleIndexes.reduce((a, b) => a + b, 0)) {
+      onScroll={() => {
+        if (instantAverageHeight !== averageHeight.current) {
+          console.log('ahc', averageHeight.current)
+          console.log('iah', instantAverageHeight)
+          setInstantAverageHeight(averageHeight.current)
+        }
+        if (visibleIndexes.current.reduce((a, b) => a + b, 0) !== _visibleIndexes.reduce((a, b) => a + b, 0)) {
             set_VisibleIndexes(visibleIndexes.current)
-          }
-      }}>
+        }
+      }}
+    >
+      <div {...{ className: `${uniqueId}-row-scrollable` }}>
         {children
           ? data && <>{renderChildren()}</>
           : <>{grid ? renderDOMWithGrid() : <RenderDomDiscovery {...{ presentColumns, _visibleIndexes }} />}</>}

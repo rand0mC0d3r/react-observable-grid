@@ -36,6 +36,7 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
   const [_rowHeight, set_RowHeight] = useState(0)
   const [_earliestIndex, set_EarliestIndex] = useState(0)
   const [_latestIndex, set_LatestIndex] = useState(0)
+  const [instantAverageHeight, setInstantAverageHeight] = useState()
   const visibleIndexes = useRef([])
   const averageHeight = useRef()
 
@@ -186,6 +187,7 @@ const Grid = ({ data, grid, emptyComponent, global, children, ...props }) => {
         visibleIndexes,
         averageHeight,
         initialHeight,
+        instantAverageHeight, setInstantAverageHeight,
 
         headerTemplate,
 

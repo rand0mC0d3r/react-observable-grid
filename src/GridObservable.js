@@ -1,4 +1,4 @@
-import React, { useContext, useLayoutEffect } from 'react';
+import React, { useContext } from 'react';
 import { InView } from 'react-intersection-observer';
 import DataProvider from './GridStore';
 
@@ -7,7 +7,7 @@ const sampleStepping = 5
 export default ({ index, id, children, defaultStyle, inViewClassName, className, sample = false, sampleViability, style, ...rest }) => {
 	const { visibleIndexes, averageHeight, initialHeight } = useContext(DataProvider)
 
-	const updateIndexes = (inView, index, id) => {
+	const updateIndexes = (inView, index) => {
 		visibleIndexes.current = (index % sampleStepping === 0) && (inView && !visibleIndexes?.current?.some(vi => vi === index))
 			? [...new Set([...visibleIndexes.current, index])].sort((a, b) => a - b)
 			: (!inView && visibleIndexes?.current?.some(vi => vi === index))
@@ -16,9 +16,8 @@ export default ({ index, id, children, defaultStyle, inViewClassName, className,
 	}
 
 	const getHeight = (id) => {
-		const sampledDOM = document.getElementById(id);
-		const elementHeight = sampledDOM?.getBoundingClientRect()?.height
-		if (elementHeight && elementHeight !== initialHeight && elementHeight !== averageHeight) {
+		const elementHeight = document.getElementById(id)?.getBoundingClientRect()?.height
+		if (elementHeight && ![initialHeight, averageHeight].some(e => e === elementHeight)) {
 			averageHeight.current = elementHeight
 		}
 	}

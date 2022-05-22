@@ -229,7 +229,8 @@ const App = () => {
               data: data.map((data) => {
                 const { final, detail } = { ...data.score }
                 const { searchScore } = data
-                const dataItem = { ...data.package, searchScore, ...{ final, ...detail } }
+                const { maintainers, links, keywords, ...rest } = data.package
+                const dataItem = { ...rest, searchScore, ...{ final, ...detail } }
                 return dataItem
               }),
             },
